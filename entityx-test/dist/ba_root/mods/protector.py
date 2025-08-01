@@ -1,16 +1,13 @@
 """ Protects the server from unwanted players..
 though I'm not unwanted :D (hope so)
 """
-
-# ba_meta require api 9
 from __future__ import annotations
 import bascenev1 as bs
 import babase as ba
 from types import Role
 from clients import get_clients
 
-# ba_meta export plugin
-class Protector(ba.Plugin):
+class Protector:
 	"""somewhat fishy name.."""
 	def __init__(self):
 		self.afk_time = 20 # seconds, + 10 will be added in code.
@@ -25,7 +22,7 @@ class Protector(ba.Plugin):
 		if session:
 			with session.context:
 				self.runner_loop_timer = bs.timer(1, ba.Call(self.runner_loop), repeat=True)
-				print("Protector is on..")
+				print("✅ Initiated protector utility. ")
 		
 	def runner_loop(self):
 		"""this is the runner loop that protects everything.."""

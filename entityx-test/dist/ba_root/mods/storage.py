@@ -1,9 +1,7 @@
 """ storage that holds file configuration. """
-# ba_meta require api 9
 from types import Role, Utility, Authority, Playlist, Match
 from typing import override
 from clients import Client
-import babase, bascenev1
 import os, json
 from utils import success
 
@@ -245,13 +243,3 @@ class Tournament(Storage):
 			bascenev1.timer(2, start_over)
 			success("Match is starting soon.. be ready..")
 
-# ba_meta export plugin
-class Initialize(babase.Plugin):
-	"""initializes the module and sets up methods."""
-
-	def __init__(self) -> None:
-		bascenev1.storage = Storage()
-		bascenev1.storage.config = Config()
-		bascenev1.storage.roles = Roles()
-		bascenev1.storage.tournament = Tournament()
-		print("✅ Initiated storage methods. ")

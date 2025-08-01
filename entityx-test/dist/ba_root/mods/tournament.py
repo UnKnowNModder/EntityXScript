@@ -1,5 +1,5 @@
 """ tournament related. """
-# ba_meta require api 9
+
 from __future__ import annotations
 import bascenev1 as bs
 import babase
@@ -87,11 +87,12 @@ def discard(client: Client):
 		return
 	client.error("No match is registered. ")
 
-# ba_meta export plugin
-class Initiate(babase.Plugin):
-	def on_app_running(self):
-		bs._session.Session.on_player_request = new_on_player_request
-		baclassic._servermode.ServerController.handle_transition = new_handle_transition
-		bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin = new_on_begin
-		bs._dualteamsession.DualTeamSession.on_team_join = new_on_team_join
+
+
+def replace() -> None:
+	""" replaces the original methods with newly defined ones. """
+	bs._session.Session.on_player_request = new_on_player_request
+	baclassic._servermode.ServerController.handle_transition = new_handle_transition
+	bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin = new_on_begin
+	bs._dualteamsession.DualTeamSession.on_team_join = new_on_team_join
 		
