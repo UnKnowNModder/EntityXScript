@@ -13,8 +13,6 @@ import textwrap
 import threading
 import io
 from contextlib import redirect_stdout
-from serverfiles.config import get_data as settings
-import serverfiles.config as config
 
 class MyClient(commands.Bot):
     def __init__(self, *, intents: discord.Intents, application_id: int):
@@ -40,22 +38,17 @@ intents = discord.Intents.all()
 intents.message_content = True
 bot = MyClient(intents=intents, application_id=1238760771052245042)
 setting = settings()
-staff_cmds = ["send"]
+staff_ids = []
 no_perms = "Sorry! You aren't one of the staff team."
-
+BOT_TOKEN = ""
 # Main Permission Handler
 def is_owner():
     async def predicate(interaction: discord.Interaction) -> bool:
         return interaction.user.id == bot.owner_id
     return app_commands.check(predicate)
 
-def perm_check(userid, type: Literal["leader", "staff"], cmd: str):
-    staffs = setting["botdata"]["staff"]
-    leaders = setting["botdata"]["leaders"]
-
-    if str(userid) in leaders:
-        return True
-    elif str(userid) in staffs and type == "staff" and cmd in staff_cmds:
+def perm_check(userid):
+    if str(userid) in staff_ids:
         return True
     else:
         return False
@@ -78,18 +71,6 @@ def get_acc_creation(pb_id: str):
     except Exception as e:
         print(f"Error: {e}")
         return "Unknown"
-# Slash Command Error Handlers
-@bot.tree.error
-async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
-    if isinstance(error, app_commands.MissingPermissions):
-        await interaction.response.send_message(f"You lack the required permissions: {error}", ephemeral=True)
-    elif isinstance(error, app_commands.BotMissingPermissions):
-        await interaction.response.send_message(f"I lack the required permissions: {error}", ephemeral=True)
-    elif isinstance(error, app_commands.CommandInvokeError):
-        await interaction.response.send_message(f"An error occurred: {error}", ephemeral=True)
-        print(f"CommandInvokeError: {traceback.format_exc()}")
-    else:
-        await interaction.response.send_message(f"An unexpected error occurred: {error}", ephemeral=True)
 
 # Message Command Error Handlers
 @bot.event
@@ -150,11 +131,15 @@ async def eval(ctx: commands.Context, *, body: str):
         else:
             await ctx.send(f"```py\n{value}{ret}\n```")
 
-
-
+@bot.command()
+async def hi(ctx):
+    if perm_check(ctx.user.id):
+        await ctx.send(f"Hello {ctx.user.name}")
+    else:
+        await ctx.send("You dont belong to the staff team")
 
 async def start_bot():
-    await bot.start("")
+    await bot.start(BOT_TOKEN)
 
 def run_thread(loop):
     asyncio.set_event_loop(loop)
