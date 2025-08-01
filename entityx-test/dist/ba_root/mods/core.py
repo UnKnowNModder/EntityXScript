@@ -5,7 +5,7 @@ from storage import Storage, Config, Roles, Tournament
 from protector import Protector
 from tournament import replace
 
-# ba_meta export plugin
+# ba_meta export babase.Plugin
 class Initialize(babase.Plugin):
 	"""initializes the module and sets up methods."""
 	def __init__(self) -> None:
