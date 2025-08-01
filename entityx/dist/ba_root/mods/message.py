@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from clients import Dummy, get_client
-import core
+import cmd_core as core
 import commands
 
 def filter_chat_message(msg: str, client_id: int):

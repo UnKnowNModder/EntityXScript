@@ -1,6 +1,6 @@
 """ commands file."""
 from __future__ import annotations
-from core import on_command
+from cmd_core import on_command
 from types import Authority, Role, Playlist, Utility
 from utils import success, send
 import bascenev1 as bs
