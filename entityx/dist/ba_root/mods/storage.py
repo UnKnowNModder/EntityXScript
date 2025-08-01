@@ -1,4 +1,4 @@
-""" storage file. """
+""" storage that holds file configuration. """
 # ba_meta require api 9
 from types import Role, Utility, Authority, Playlist, Match
 from typing import override
@@ -160,7 +160,6 @@ class Tournament(Storage):
 		super().__init__()
 		self.path = os.path.join(self.directory, "tournament.json")
 		self.results = os.path.join(self.directory, "tournament_results.json")
-		self._matches: dict[int, Match] = {}
 		self.match: Match = {}
 		self.bootstrap()
 
@@ -197,6 +196,7 @@ class Tournament(Storage):
 		"""inserts the match to the database."""
 		tournament = self.read()
 		match["id"] = len(tournament) + 1
+		match["players"] = []
 		tournament.append(match)
 		self.commit(tournament)
 
@@ -209,22 +209,20 @@ class Tournament(Storage):
 	def confirm(self, client: str) -> bool:
 		"""confirms the client if they are in a match."""
 		tournament = self.read()
-		for match in tournament:
-			id = match["id"]
-			all_members = set(next(iter(match["team1"].values())) + next(iter(match["team2"].values()))) # messy but okayish, does it's work.
-
+		for index, match in enumerate(tournament):
+			all_members = list(match["team1"].values())[0] + list(match["team2"].values())[0] # messy but works.
+			
 			if client in all_members:
-				if id not in self._matches:
-					self._matches[id] = match
-					self._matches[id]["players"] = set()
-				self._matches[id]["players"].add(client)
-				if self._matches[id]["players"] == all_members:
+				match["players"].append(client)
+				tournament[index] = match
+				if len(match["players"]) == len(all_members):
 					# all clients have been registered, assign the self.match it's value.
-					self.match = self._matches[id]
+					self.match = match
 					# do registeration.
-					self.on_match_registration(match)
+					self.on_match_registration()
 					# clean up.
-					del self._matches[id]
+					tournament.remove(match)
+				self.commit(tournament)
 				return True
 
 	def save_result(self, winner: bascenev1.SessionTeam) -> None:
@@ -238,7 +236,7 @@ class Tournament(Storage):
 			success("The server will restart soon. ")
 			bascenev1.timer(5, babase.quit)
 
-	def on_match_registration(self, match: Match) -> None:
+	def on_match_registration(self) -> None:
 		""" called when a match has been registered. """
 		# start the match.
 		def start_over():

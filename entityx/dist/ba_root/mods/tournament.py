@@ -3,7 +3,7 @@
 from __future__ import annotations
 import bascenev1 as bs
 import babase
-from core import on_command
+from cmd_core import on_command
 import baclassic._servermode
 import bascenev1lib.activity.multiteamvictory
 from utils import success
@@ -65,6 +65,8 @@ def new_on_team_join(self, team: bs.SessionTeam) -> None:
 		if account_id in members2:
 			team.name = team2_name
 			return
+
+## tournament-related commands.
 
 @on_command(name="/confirm")
 def confirm(client: Client, args: list[str]) -> None:
