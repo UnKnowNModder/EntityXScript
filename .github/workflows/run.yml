@@ -2,16 +2,18 @@ name: Run server
 
 on:
   workflow_dispatch:
+  push:
 jobs:
-  unzip:
+  server:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Unzip the script.
+      - name: run the server
         run: |
           cd entityx-test
           chmod 777 ballisticakit_server
           chmod 777 dist/ballisticakit_headless
           ./ballisticakit_server
+          fi
