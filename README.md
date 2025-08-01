@@ -2,6 +2,8 @@
 - has important commands
 - tournament utility
 - protection (v2 check)
+- party and session leave/join messages has been removed
+- a devicename.txt will be created in your dist alongside headless binary, you can change your server's device name in that.
 
 # Tournament Utility:
 - it's basically an utility that manages tournament matches, the storage for it can be seen in storage.py, it's not much advanced but helpful.
