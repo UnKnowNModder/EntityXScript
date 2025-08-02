@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 import bascenev1 as bs
-import babase
+import babase, core
 from cmd_core import on_command
 import baclassic._servermode
 import bascenev1lib.activity.multiteamvictory
@@ -15,7 +15,7 @@ series: list = []  # i like lists.. (more like i hate using global keyword)
 
 def new_handle_transition(self) -> bool:
 	# this is a modified function of ServerController class..
-	if bs.storage.tournament.match:
+	if core.storage.tournament.match:
 		# we don't wanna restart yet if a match is ongoing/registered.
 		return False
 	if self._shutdown_reason is not None:
@@ -30,7 +30,7 @@ old_on_begin = (
 
 
 def new_on_begin(self) -> None:
-	if match := bs.storage.tournament.match:
+	if match := core.storage.tournament.match:
 		# a series has ended-.
 		series.append(
 			1
@@ -39,7 +39,7 @@ def new_on_begin(self) -> None:
 			# hmph, the given series count has matched.
 			series.clear()
 			# save the result
-			bs.storage.tournament.save_result(self.settings_raw["winner"])
+			core.storage.tournament.save_result(self.settings_raw["winner"])
 			# announce.
 			success("The tournament match has ended..\n.")
 		else:
@@ -52,7 +52,7 @@ old_on_player_request = bs._session.Session.on_player_request
 
 def new_on_player_request(self, player: bs.SessionPlayer) -> bool:
 	client = Dummy(player.inputdevice.client_id, player.get_v1_account_id())
-	if match := bs.storage.tournament.match:
+	if match := core.storage.tournament.match:
 		if client.account_id not in match["players"]:
 			# match is on.
 			client.error("You cannot join in between matches.. ")
@@ -66,7 +66,7 @@ old_on_team_join = bs._dualteamsession.DualTeamSession.on_team_join
 
 def new_on_team_join(self, team: bs.SessionTeam) -> None:
 	old_on_team_join(self, team)
-	if match := bs.storage.tournament.match:
+	if match := core.storage.tournament.match:
 		account_id = team.players[0].get_v1_account_id()
 		team1_name, members1 = next(iter(match["team1"].items()))
 		if account_id in members1:
@@ -84,7 +84,7 @@ def new_on_team_join(self, team: bs.SessionTeam) -> None:
 @on_command(name="/confirm")
 def confirm(client: Client, args: list[str]) -> None:
 	"""confirms the client to the tournament match."""
-	if status := bs.storage.tournament.confirm(client.account_id):
+	if status := core.storage.tournament.confirm(client.account_id):
 		client.success("You've been confirmed in the match. ")
 		return
 	client.error("You're not in any match, cannot confirm.")
@@ -96,7 +96,7 @@ def confirm(client: Client, args: list[str]) -> None:
 def discard(client: Client):
 	"""discards the match if registered..
 	it can be up again if players confirm."""
-	if match := bs.storage.tournament.match:
+	if match := core.storage.tournament.match:
 		match.clear()
 		series.clear()
 		client.success("Match has been discarded.")
@@ -104,11 +104,9 @@ def discard(client: Client):
 	client.error("No match is registered. ")
 
 
-def replace() -> None:
+def replace_old_methods_with_new() -> None:
 	"""replaces the original methods with newly defined ones."""
 	bs._session.Session.on_player_request = new_on_player_request
 	baclassic._servermode.ServerController.handle_transition = new_handle_transition
-	bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin = (
-		new_on_begin
-	)
+	bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin = new_on_begin
 	bs._dualteamsession.DualTeamSession.on_team_join = new_on_team_join

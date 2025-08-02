@@ -3,6 +3,7 @@ though I'm not unwanted :D (hope so)
 """
 
 from __future__ import annotations
+import core
 import bascenev1 as bs
 import babase as ba
 from enums import Role
@@ -31,8 +32,8 @@ class Protector:
 
 	def runner_loop(self):
 		"""this is the runner loop that protects everything.."""
-		config = bs.storage.config
-		roles = bs.storage.roles
+		config = core.storage.config
+		roles = core.storage.roles
 		clients = get_clients()
 		for client in clients:
 			if client.authority:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 from cmd_core import on_command
 from enums import Authority, Role, Playlist, Utility
+import core
 from utils import success, send
 import bascenev1 as bs
 import babase as ba
@@ -167,7 +168,7 @@ def set_max_players(client: Client, args: list[str]):
 @on_command(name="/spectator", aliases=["/lobby"], authority=Authority.ADMIN)
 def toggle_spectators(client: Client):
 	"""Toggle spectator mode"""
-	status = "allowed" if bs.storage.config.toggle(Utility.SPECTATOR) else "disallowed"
+	status = "allowed" if core.storage.config.toggle(Utility.SPECTATOR) else "disallowed"
 	success(f"{client.name} has {status} spectators")
 
 
@@ -193,13 +194,13 @@ def unmute_player(client: Client, target: Client):
 @on_command(name="/ffa", authority=Authority.ADMIN)
 def set_ffa_playlist(client: Client):
 	"""Set FFA playlist"""
-	bs.storage.config.set_playlist(Playlist.FFA)
+	core.storage.config.set_playlist(Playlist.FFA)
 
 
 @on_command(name="/teams", authority=Authority.ADMIN)
 def set_teams_playlist(client: Client):
 	"""Set Teams playlist"""
-	bs.storage.config.set_playlist(Playlist.TEAMS)
+	core.storage.config.set_playlist(Playlist.TEAMS)
 
 
 # =================== #
@@ -210,28 +211,28 @@ def set_teams_playlist(client: Client):
 @on_command(name="/ban", authority=Authority.LEADER, usage="/ban <account_id>")
 def ban_player(client: Client, account_id: str):
 	"""Ban player"""
-	bs.storage.roles.add(Role.BANLIST, account_id)
+	core.storage.roles.add(Role.BANLIST, account_id)
 	client.success(f"Banned {account_id}")
 
 
 @on_command(name="/unban", authority=Authority.LEADER, usage="/unban <account_id>")
 def unban_player(client: Client, account_id: str):
 	"""Unban account"""
-	bs.storage.roles.remove(Role.BANLIST, account_id)
+	core.storage.roles.remove(Role.BANLIST, account_id)
 	client.success(f"Unbanned {account_id}")
 
 
 @on_command(name="/whitelist", aliases=["/wl"], authority=Authority.LEADER)
 def toggle_whitelist(client: Client):
 	"""Toggle whitelist"""
-	status = "enabled" if bs.storage.config.toggle(Utility.WHITELIST) else "disabled"
+	status = "enabled" if core.storage.config.toggle(Utility.WHITELIST) else "disabled"
 	success(f"{client.name} has {status} whitelist")
 
 
 @on_command(name="/addwl", authority=Authority.LEADER, usage="/addwl <account_id>")
 def add_to_whitelist(client: Client, account_id: str):
 	"""Add to whitelist"""
-	bs.storage.roles.add(Role.WHITELIST, account_id)
+	core.storage.roles.add(Role.WHITELIST, account_id)
 	client.success(f"Whitelisted {account_id}")
 
 
@@ -243,19 +244,19 @@ def add_to_whitelist(client: Client, account_id: str):
 )
 def remove_from_whitelist(client: Client, account_id: str):
 	"""Remove from whitelist"""
-	bs.storage.roles.remove(Role.WHITELIST, account_id)
+	core.storage.roles.remove(Role.WHITELIST, account_id)
 	client.success(f"Removed {account_id} from whitelist")
 
 
 @on_command(name="/admin", authority=Authority.LEADER, usage="/admin <client_id>")
 def add_admin(client: Client, target: Client):
 	"""Add admin"""
-	bs.storage.roles.add(Role.ADMIN, target.account_id)
+	core.storage.roles.add(Role.ADMIN, target.account_id)
 	client.success(f"Added {target.name} as admin")
 
 
 @on_command(name="/rmadmin", authority=Authority.LEADER, usage="/rmadmin <client_id>")
 def remove_admin(client: Client, target: Client):
 	"""Remove admin"""
-	bs.storage.roles.remove(Role.ADMIN, target.account_id)
+	core.storage.roles.remove(Role.ADMIN, target.account_id)
 	client.success(f"Removed {target.name} as admin")
