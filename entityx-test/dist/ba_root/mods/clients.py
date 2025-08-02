@@ -7,161 +7,161 @@ from enums import Authority
 
 
 class Player:
-    """Player object."""
+	"""Player object."""
 
-    def __init__(self, player: bs.SessionPlayer) -> None:
-        self._player = player
+	def __init__(self, player: bs.SessionPlayer) -> None:
+		self._player = player
 
-    @property
-    def name(self) -> str:
-        """name of the player."""
-        if self.exists():
-            return self._player.getname(True, True)
-        return ""
+	@property
+	def name(self) -> str:
+		"""name of the player."""
+		if self.exists():
+			return self._player.getname(True, True)
+		return ""
 
-    def handle(self, message) -> None:
-        """handles message for the player."""
-        if self.is_alive():
-            player = self._player.activityplayer
-            player.actor.handlemessage(message)
+	def handle(self, message) -> None:
+		"""handles message for the player."""
+		if self.is_alive():
+			player = self._player.activityplayer
+			player.actor.handlemessage(message)
 
-    def exists(self) -> bool:
-        """returns whether the bascenev1.SessionPlayer exists."""
-        return self._player.exists()
+	def exists(self) -> bool:
+		"""returns whether the bascenev1.SessionPlayer exists."""
+		return self._player.exists()
 
-    def is_alive(self) -> bool:
-        """returns whether the bascenev1.Player is alive"""
-        return self.exists() and self._player.activityplayer.is_alive()
+	def is_alive(self) -> bool:
+		"""returns whether the bascenev1.Player is alive"""
+		return self.exists() and self._player.activityplayer.is_alive()
 
-    def remove(self) -> None:
-        """removes the player from game."""
-        if self.exists():
-            self._player.remove_from_game()
+	def remove(self) -> None:
+		"""removes the player from game."""
+		if self.exists():
+			self._player.remove_from_game()
 
-    def profiles(self) -> list[str]:
-        """returns the profiles of the session player.."""
-        if self.exists():
-            return self._player.inputdevice.get_player_profiles()
-        return []
+	def profiles(self) -> list[str]:
+		"""returns the profiles of the session player.."""
+		if self.exists():
+			return self._player.inputdevice.get_player_profiles()
+		return []
 
-    def kill(self) -> None:
-        """kill this player."""
-        self.handle(bs.DieMessage())
+	def kill(self) -> None:
+		"""kill this player."""
+		self.handle(bs.DieMessage())
 
-    def freeze(self) -> None:
-        self.handle(bs.FreezeMessage())
+	def freeze(self) -> None:
+		self.handle(bs.FreezeMessage())
 
-    def thaw(self) -> None:
-        self.handle(bs.ThawMessage())
+	def thaw(self) -> None:
+		self.handle(bs.ThawMessage())
 
 
 class Client:
-    """Client object."""
+	"""Client object."""
 
-    __mute_clients = set()  # class level var
+	__mute_clients = set()  # class level var
 
-    def __init__(
-        self,
-        client_id: int = 0,
-        account_id: str = "",
-        name: str = "",
-        is_v2: bool = True,
-        in_lobby: bool = True,
-    ) -> None:
-        self.client_id = client_id
-        self.account_id = account_id
-        self.name = name
-        self.is_v2 = is_v2
-        self.in_lobby = in_lobby
+	def __init__(
+		self,
+		client_id: int = 0,
+		account_id: str = "",
+		name: str = "",
+		is_v2: bool = True,
+		in_lobby: bool = True,
+	) -> None:
+		self.client_id = client_id
+		self.account_id = account_id
+		self.name = name
+		self.is_v2 = is_v2
+		self.in_lobby = in_lobby
 
-    @property
-    def authority(self) -> Authority:
-        """this client's authority level."""
-        if self.client_id == -1:
-            # special access to server.
-            return Authority.HOST
-        return bs.storage.roles.get_authority_level(self.account_id)
+	@property
+	def authority(self) -> Authority:
+		"""this client's authority level."""
+		if self.client_id == -1:
+			# special access to server.
+			return Authority.HOST
+		return bs.storage.roles.get_authority_level(self.account_id)
 
-    @property
-    def is_mute(self) -> bool:
-        """returns whether the client is mute or not."""
-        return self.account_id in Client.__mute_clients
+	@property
+	def is_mute(self) -> bool:
+		"""returns whether the client is mute or not."""
+		return self.account_id in Client.__mute_clients
 
-    def mute(self) -> None:
-        """mute this client."""
-        if self.account_id not in Client.__mute_clients:
-            Client.__mute_clients.add(self.account_id)
-            return True
-        # already mute.
+	def mute(self) -> None:
+		"""mute this client."""
+		if self.account_id not in Client.__mute_clients:
+			Client.__mute_clients.add(self.account_id)
+			return True
+		# already mute.
 
-    def unmute(self) -> None:
-        """unmute this client."""
-        if self.account_id in Client.__mute_clients:
-            Client.__mute_clients.discard(self.account_id)
-            return True
-        # not mute.
+	def unmute(self) -> None:
+		"""unmute this client."""
+		if self.account_id in Client.__mute_clients:
+			Client.__mute_clients.discard(self.account_id)
+			return True
+		# not mute.
 
-    def kick(self, time: int = 300) -> None:
-        """kick this client."""
-        bs.disconnect_client(self.client_id, ban_time=time)
+	def kick(self, time: int = 300) -> None:
+		"""kick this client."""
+		bs.disconnect_client(self.client_id, ban_time=time)
 
-    def success(self, message: str) -> None:
-        """show this client a success message."""
-        utils.success(message, clients=[self.client_id])
+	def success(self, message: str) -> None:
+		"""show this client a success message."""
+		utils.success(message, clients=[self.client_id])
 
-    def error(self, message: str) -> None:
-        """show this client an error message."""
-        utils.error(message, clients=[self.client_id])
+	def error(self, message: str) -> None:
+		"""show this client an error message."""
+		utils.error(message, clients=[self.client_id])
 
-    def send(self, message: str, sender: str | None) -> None:
-        """show this client a chat message."""
-        utils.send(message, clients=[self.client_id], sender=sender)
+	def send(self, message: str, sender: str | None) -> None:
+		"""show this client a chat message."""
+		utils.send(message, clients=[self.client_id], sender=sender)
 
 
 class Dummy(Client):
-    """dummy client."""
+	"""dummy client."""
 
-    def __init__(self, client_id: int, account_id: str) -> None:
-        self.client_id = client_id
-        self.account_id = account_id
+	def __init__(self, client_id: int, account_id: str) -> None:
+		self.client_id = client_id
+		self.account_id = account_id
 
 
 def get_clients() -> list[Client]:
-    """returns a list of Client object."""
-    clients = []
-    for client in bs.get_game_roster()[1:]:
-        client_id = client["client_id"]
-        account_id = client["account_id"]
-        spec_string = eval(client["spec_string"])
-        name = spec_string["n"]
-        # handle for pc players..
-        if spec_string["a"].lower() == "local" and name.startswith("PC"):
-            is_v2 = True
-        else:
-            is_v2 = spec_string["a"] == "V2"
-        in_lobby = not client["players"]
-        if not in_lobby:
-            name = client["players"][0]["name"]
-        else:
-            name = client["display_string"]
-        clients.append(Client(client_id, account_id, name, is_v2, in_lobby))
-    return clients
+	"""returns a list of Client object."""
+	clients = []
+	for client in bs.get_game_roster()[1:]:
+		client_id = client["client_id"]
+		account_id = client["account_id"]
+		spec_string = eval(client["spec_string"])
+		name = spec_string["n"]
+		# handle for pc players..
+		if spec_string["a"].lower() == "local" and name.startswith("PC"):
+			is_v2 = True
+		else:
+			is_v2 = spec_string["a"] == "V2"
+		in_lobby = not client["players"]
+		if not in_lobby:
+			name = client["players"][0]["name"]
+		else:
+			name = client["display_string"]
+		clients.append(Client(client_id, account_id, name, is_v2, in_lobby))
+	return clients
 
 
 def get_client(client_id: int | str) -> Client | None:
-    """fetches and tries to returns a valid client."""
-    # manual converting to avoid str cases.
-    client_id = int(client_id)
-    for client in get_clients():
-        if client.client_id == client_id:
-            return client
-    return
+	"""fetches and tries to returns a valid client."""
+	# manual converting to avoid str cases.
+	client_id = int(client_id)
+	for client in get_clients():
+		if client.client_id == client_id:
+			return client
+	return
 
 
 def get_player(player_index: int | str) -> Player | None:
-    """fetches and tries to returns a valid player."""
-    # manual converting to avoid str cases.
-    player_index = int(player_index)
-    if session := bs.get_foreground_host_session():
-        sessionplayer = session.sessionplayers[player_index]
-        return Player(sessionplayer)
+	"""fetches and tries to returns a valid player."""
+	# manual converting to avoid str cases.
+	player_index = int(player_index)
+	if session := bs.get_foreground_host_session():
+		sessionplayer = session.sessionplayers[player_index]
+		return Player(sessionplayer)
