@@ -3,29 +3,46 @@ from __future__ import annotations
 import bascenev1 as bs
 import utils
 from enums import Authority
-from typing import override
 
-class ClientPlayer:
-	""" the related player to the given Client. """
+class Player:
+	""" Player object. """
 	def __init__(self, player: bs.SessionPlayer) -> None:
-		self.player = player
+		self._player = player
+	
+	@property
+	def name(self) -> str:
+		""" name of the player. """
+		if self.exists():
+			return self._player.getname(True, True)
+		return ""
 	
 	def handle(self, message) -> None:
 		""" handles message for the player. """
-		player = self.player.activityplayer
-		if not player.actor:
-			return
-		player.actor.node.handlemessage(message)
+		if self.is_alive():
+			player = self._player.activityplayer
+			player.actor.handlemessage(message)
+	
+	def exists(self) -> bool:
+		""" returns whether the bascenev1.SessionPlayer exists. """
+		return self._player.exists()
+	
+	def is_alive(self) -> bool:
+		""" returns whether the bascenev1.Player is alive """
+		return self.exists() and self._player.activityplayer.is_alive()
 	
 	def remove(self) -> None:
 		""" removes the player from game. """
-		self.player.remove_from_game()
+		if self.exists():
+			self._player.remove_from_game()
 	
 	def profiles(self) -> list[str]:
 		""" returns the profiles of the session player.. """
-		return self.player.inputdevice.get_player_profiles()
+		if self.exists():
+			return self._player.inputdevice.get_player_profiles()
+		return []
 	
 	def kill(self) -> None:
+		""" kill this player. """
 		self.handle(bs.DieMessage())
 	
 	def freeze(self) -> None:
@@ -35,7 +52,7 @@ class ClientPlayer:
 		self.handle(bs.ThawMessage())
 
 class Client:
-	""" Client class for multiple features at one place. """
+	""" Client object. """
 	__mute_clients = set() # class level var
 	def __init__(
 		self, client_id: int = 0, account_id: str = "", name: str = "", is_v2: bool = True, in_lobby: bool = True
@@ -45,14 +62,6 @@ class Client:
 		self.name = name
 		self.is_v2 = is_v2
 		self.in_lobby = in_lobby
-
-	@property
-	def player(self) -> ClientPlayer | None:
-		""" returns the ClientPlayer associated with this client.. """
-		for splayer in bs.get_foreground_host_session().sessionplayers:
-			if splayer.inputdevice.client_id == self.client_id:
-				return ClientPlayer(splayer)
-		return
 	
 	@property
 	def authority(self) -> Authority:
@@ -126,10 +135,18 @@ def get_clients() -> list[Client]:
 	return clients
 
 def get_client(client_id: int | str) -> Client | None:
-	""" fetches and returns a Client class based on the client_id. """
+	""" fetches and tries to returns a valid client. """
 	# manual converting to avoid str cases.
 	client_id = int(client_id)
 	for client in get_clients():
 		if client.client_id == client_id:
 			return client
 	return
+
+def get_player(player_index: int | str) -> Player | None:
+	""" fetches and tries to returns a valid player. """
+	# manual converting to avoid str cases.
+	player_index = int(player_index)
+	if session := bs.get_foreground_host_session():
+		sessionplayer = session.sessionplayers[player_index]
+		return Player(sessionplayer)

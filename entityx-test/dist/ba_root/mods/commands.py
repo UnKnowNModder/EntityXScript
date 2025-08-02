@@ -5,33 +5,30 @@ from enums import Authority, Role, Playlist, Utility
 from utils import success, send
 import bascenev1 as bs
 import babase as ba
-from clients import Client, get_clients, get_client
+from clients import Client, Player, get_client
 
 # =================== #
 #     USER COMMANDS     #
 # =================== #
 @on_command(name="/list", aliases=["/ls"])
 def list(client: Client):
-	""" shows the client a list of clients. """
-	clients = get_clients()
-	heads = u"{0:^16}{1:^16}"
+	""" shows the client, a list of players. """
+	heads = u"{0:^16}{1:^14}{2:^12}"
 	sep = "\n------------------------------------------------------\n"
-	string = heads.format("Name", "Client ID") + sep
-	for i in clients:
-		string += heads.format(i.name, i.client_id) + "\n"
+	string = heads.format("Name", "Client ID", "Index ID") + sep
+	for index, player in enumerate(bs.get_foreground_host_session().sessionplayers):
+		string += heads.format(player.getname(True, False), player.inputdevice.client_id, index) + "\n"
 	client.success(string)
 
 @on_command(name="/pb", aliases=["/ac", "/id"])
-def show_account_id(client: Client, args: list[str]):
+def show_account_id(client: Client, target: Client):
 	"""Shows the client's or target's account ID."""
-	target = get_client(int(args[0])) if args else client
+	target = target or client
 	client.send(target.account_id, sender=f"{target.name}'s ID")
 
 @on_command(name="/pm", aliases=["/dm"], usage="/pm <client id> <message>")
-def private_message(client: Client, args: list[str]):
-	"""Sends a private message to another client."""
-	target = int(args[0])
-	target = get_client(target)
+def private_message(client: Client, target: Client):
+	"""Sends a private message to target client."""
 	message = " ".join(args[1:])
 	name = f"{client.name} (pvt)"
 	target.send(message, sender = name)
@@ -48,10 +45,33 @@ def end_game(client: Client):
 		activity.end_game()
 		success(f"{client.name} ended the game")
 
-@on_command(name="/kill", authority=Authority.ADMIN, usage="/kill <client_id>")
-def kill_player(client: Client, args: list[str]):
+@on_command(name="/kill", authority=Authority.ADMIN, usage="/kill <index id>")
+def kill_player(client: Client, player: Player):
 	"""Kill target player"""
-	get_client(int(args[0])).player.kill()
+	player.kill()
+
+@on_command(name="/freeze", authority=Authority.ADMIN, usage="/freeze <index id>")
+def freeze_player(client: Client, player: Player):
+	"""Freeze target player"""
+	player.freeze()
+
+@on_command(name="/thaw", authority=Authority.ADMIN, usage="/thaw <index id>")
+def thaw_player(client: Client, player: Player):
+	"""thaw the freezed target player"""
+	player.thaw()
+
+@on_command(name="/remove", aliases=["/rm"], authority=Authority.ADMIN, usage="/remove <index id>")
+def remove_player(client: Client, player: Player):
+	"""Remove player from game"""
+	player.remove()
+	client.success(f"Removed {player.name}")
+
+@on_command(name="/info", aliases=["/gp", "/profiles", "/pf"], authority=Authority.ADMIN, usage="/info <index id>")
+def show_profiles(client: Client, player: Player):
+	"""Show player profiles"""
+	profiles = player.profiles()
+	for index, profile in enumerate(profiles, start=1):
+		client.send(f"{profile}", sender=f"{index}")
 
 @on_command(name="/say", authority=Authority.ADMIN, usage="/say <message>")
 def server_say(client: Client, args: list[str]):
@@ -67,21 +87,14 @@ def server_say(client: Client, args: list[str]):
 	send(message)
 
 @on_command(name="/kick", authority=Authority.ADMIN, usage="/kick <client id>")
-def kick_player(client: Client, args: list[str]):
+def kick_player(client: Client, target: Client):
 	"""Kicks a player from the server."""
-	if target := get_client(args[0]):
+	if target:
 		if target.authority < client.authority:
 			target.kick()
 			client.success(f"kicked {target.name}")
 		else:
 			client.error(f"Cannot kick {target.name} (higher authority)")
-
-@on_command(name="/info", aliases=["/gp", "/profiles", "/pf"], authority=Authority.ADMIN, usage="/info <client_id>")
-def show_profiles(client: Client, args: list[str]):
-	"""Show player profiles"""
-	profiles = get_client(int(args[0])).player.profiles()
-	for index, profile in enumerate(profiles, start=1):
-		client.send(f"{profile}", sender=f"{index}")
 
 @on_command(name="/resume", authority=Authority.ADMIN)
 def resume_game(client: Client):
@@ -113,14 +126,6 @@ def set_max_players(client: Client, args: list[str]):
 	bs.get_foreground_host_session().max_players = limit
 	client.success(f"Limit set to {limit}")
 
-@on_command(name="/remove", aliases=["/rm"], authority=Authority.ADMIN, usage="/remove <client_id>")
-def remove_player(client: Client, args: list[str]):
-	"""Remove player from game"""
-	target = get_client(int(args[0]))
-	if not target.in_lobby:
-		target.player.remove()
-		client.success(f"Removed {target.name}")
-
 @on_command(name="/spectator", aliases=["/lobby"], authority=Authority.ADMIN)
 def toggle_spectators(client: Client):
 	"""Toggle spectator mode"""
@@ -128,9 +133,8 @@ def toggle_spectators(client: Client):
 	success(f"{client.name} has {status} spectators")
 
 @on_command(name="/mute", authority=Authority.ADMIN, usage="/mute <client_id>")
-def mute_player(client: Client, args: list[str]):
+def mute_player(client: Client, target: Client):
 	"""Mute player"""
-	target = get_client(int(args[0]))
 	if target.authority < client.authority:
 		if target.mute():
 			client.success(f"Muted {target.name}")
@@ -140,9 +144,8 @@ def mute_player(client: Client, args: list[str]):
 	
 
 @on_command(name="/unmute", authority=Authority.ADMIN, usage="/unmute <client_id>")
-def unmute_player(client: Client, args: list[str]):
+def unmute_player(client: Client, target: Client):
 	"""Unmute player"""
-	target = get_client(int(args[0]))
 	if target.unmute():
 		client.success(f"Unmuted {target.name}")
 		target.success(f"You've been unmuted by {client.name}")
@@ -161,18 +164,17 @@ def set_teams_playlist(client: Client):
 #  LEADER COMMANDS   #
 # =================== #
 
-@on_command(name="/ban", authority=Authority.LEADER, usage="/ban <client_id>")
-def ban_player(client: Client, args: list[str]):
+@on_command(name="/ban", authority=Authority.LEADER, usage="/ban <account_id>")
+def ban_player(client: Client, account_id: str):
 	"""Ban player"""
-	target = get_client(int(args[0]))
-	bs.storage.roles.add(Role.BANLIST, target.account_id)
-	client.success(f"Banned {target.name}")
+	bs.storage.roles.add(Role.BANLIST, account_id)
+	client.success(f"Banned {account_id}")
 
 @on_command(name="/unban", authority=Authority.LEADER, usage="/unban <account_id>")
-def unban_player(client: Client, args: list[str]):
+def unban_player(client: Client, account_id: str):
 	"""Unban account"""
-	bs.storage.roles.remove(Role.BANLIST, args[0])
-	client.success(f"Unbanned {args[0]}")
+	bs.storage.roles.remove(Role.BANLIST, account_id)
+	client.success(f"Unbanned {account_id}")
 
 @on_command(name="/whitelist", aliases=["/wl"], authority=Authority.LEADER)
 def toggle_whitelist(client: Client):
@@ -181,27 +183,25 @@ def toggle_whitelist(client: Client):
 	success(f"{client.name} has {status} whitelist")
 
 @on_command(name="/addwl", authority=Authority.LEADER, usage="/addwl <account_id>")
-def add_to_whitelist(client: Client, args: list[str]):
+def add_to_whitelist(client: Client, account_id: str):
 	"""Add to whitelist"""
-	bs.storage.roles.add(Role.WHITELIST, args[0])
-	client.success(f"Whitelisted {args[0]}")
+	bs.storage.roles.add(Role.WHITELIST, account_id)
+	client.success(f"Whitelisted {account_id}")
 
 @on_command(name="/removewl", aliases=["/rmwl"], authority=Authority.LEADER, usage="/removewl <account_id>")
-def remove_from_whitelist(client: Client, args: list[str]):
+def remove_from_whitelist(client: Client, account_id: str):
 	"""Remove from whitelist"""
-	bs.storage.roles.remove(Role.WHITELIST, args[0])
-	client.success(f"Removed {args[0]} from whitelist")
+	bs.storage.roles.remove(Role.WHITELIST, account_id)
+	client.success(f"Removed {account_id} from whitelist")
 
 @on_command(name="/admin", authority=Authority.LEADER, usage="/admin <client_id>")
-def add_admin(client: Client, args: list[str]):
+def add_admin(client: Client, target: Client):
 	"""Add admin"""
-	target = get_client(int(args[0]))
 	bs.storage.roles.add(Role.ADMIN, target.account_id)
 	client.success(f"Added {target.name} as admin")
 
 @on_command(name="/rmadmin", authority=Authority.LEADER, usage="/rmadmin <client_id>")
-def remove_admin(client: Client, args: list[str]):
+def remove_admin(client: Client, target: Client):
 	"""Remove admin"""
-	target = get_client(int(args[0]))
 	bs.storage.roles.remove(Role.ADMIN, target.account_id)
 	client.success(f"Removed {target.name} as admin")
