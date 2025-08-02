@@ -55,8 +55,8 @@ old_on_team_join = bs._dualteamsession.DualTeamSession.on_team_join
 
 def new_on_team_join(self, team: bs.SessionTeam) -> None:
 	old_on_team_join(self, team)
-	account_id = team.players[0].get_v1_account_id()
 	if match := bs.storage.tournament.match:
+		account_id = team.players[0].get_v1_account_id()
 		team1_name, members1 = next(iter(match["team1"].items()))
 		if account_id in members1:
 			team.name = team1_name
