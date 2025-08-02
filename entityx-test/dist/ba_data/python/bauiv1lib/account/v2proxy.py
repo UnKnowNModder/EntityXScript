@@ -29,10 +29,8 @@ class V2ProxySignInWindow(bui.Window):
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
-                transition='in_scale',
-                scale_origin_stack_offset=(
-                    origin_widget.get_screen_space_center()
-                ),
+                transition="in_scale",
+                scale_origin_stack_offset=(origin_widget.get_screen_space_center()),
                 scale=(
                     1.16
                     if uiscale is bui.UIScale.SMALL
@@ -45,13 +43,13 @@ class V2ProxySignInWindow(bui.Window):
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.5),
             size=60,
-            style='bomb',
+            style="bomb",
         )
         self._state_text = bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.6),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             size=(0, 0),
             scale=1.4,
             maxwidth=0.9 * self._width,
@@ -59,28 +57,28 @@ class V2ProxySignInWindow(bui.Window):
             #     value='${A}...',
             #     subs=[('${A}', bui.Lstr(resource='loadingText'))],
             # ),
-            text='',
+            text="",
             color=(1, 1, 1),
         )
         self._sub_state_text = bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.55),
-            h_align='center',
-            v_align='top',
+            h_align="center",
+            v_align="top",
             scale=0.85,
             size=(0, 0),
             maxwidth=0.9 * self._width,
-            text='',
+            text="",
         )
         self._sub_state_text2 = bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.1, self._height * 0.3),
-            h_align='left',
-            v_align='top',
+            h_align="left",
+            v_align="top",
             scale=0.7,
             size=(0, 0),
             maxwidth=0.9 * self._width,
-            text='',
+            text="",
         )
 
         self._cancel_button = bui.buttonwidget(
@@ -88,14 +86,12 @@ class V2ProxySignInWindow(bui.Window):
             position=(30, self._height - 65),
             size=(130, 50),
             scale=0.8,
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             on_activate_call=self._done,
             autoselect=True,
         )
 
-        bui.containerwidget(
-            edit=self._root_widget, cancel_button=self._cancel_button
-        )
+        bui.containerwidget(edit=self._root_widget, cancel_button=self._cancel_button)
 
         self._message_in_flight = False
         self._complete = False
@@ -126,10 +122,7 @@ class V2ProxySignInWindow(bui.Window):
 
         # Spin for a moment if it looks like we have no server
         # connection; it might still be getting on its feet.
-        if (
-            not plus.cloud.connected
-            and now < self._connection_wait_timeout_time
-        ):
+        if not plus.cloud.connected and now < self._connection_wait_timeout_time:
             return
 
         plus.cloud.send_message_cb(
@@ -147,29 +140,29 @@ class V2ProxySignInWindow(bui.Window):
 
     def _set_error_state(self, error_location: str) -> None:
         msaddress = self._get_server_address()
-        addr = msaddress.removeprefix('https://')
+        addr = msaddress.removeprefix("https://")
         bui.spinnerwidget(edit=self._loading_spinner, visible=False)
         bui.textwidget(
             edit=self._state_text,
-            text=f'Unable to connect to {addr}.',
+            text=f"Unable to connect to {addr}.",
             color=(1, 0, 0),
         )
-        support_email = 'support@froemling.net'
+        support_email = "support@froemling.net"
         bui.textwidget(
             edit=self._sub_state_text,
             text=(
-                f'Usually this means your internet is down.\n'
-                f'Please contact {support_email} if this is not the case.'
+                f"Usually this means your internet is down.\n"
+                f"Please contact {support_email} if this is not the case."
             ),
             color=(1, 0, 0),
         )
         bui.textwidget(
             edit=self._sub_state_text2,
             text=(
-                f'debug-info:\n'
-                f'  error-location: {error_location}\n'
-                f'  connectivity: {bui.app.net.connectivity_state}\n'
-                f'  transport: {bui.app.net.transport_state}'
+                f"debug-info:\n"
+                f"  error-location: {error_location}\n"
+                f"  connectivity: {bui.app.net.connectivity_state}\n"
+                f"  transport: {bui.app.net.transport_state}"
             ),
             color=(0.8, 0.2, 0.3),
             flatness=1.0,
@@ -184,14 +177,14 @@ class V2ProxySignInWindow(bui.Window):
 
         if not self._message_in_flight:
             logging.warning(
-                'v2proxy got _on_proxy_request_response'
-                ' without _message_in_flight set; unexpected.'
+                "v2proxy got _on_proxy_request_response"
+                " without _message_in_flight set; unexpected."
             )
         self._message_in_flight = False
 
         # Something went wrong. Show an error message and schedule retry.
         if isinstance(response, Exception):
-            self._set_error_state(f'response exc ({type(response).__name__})')
+            self._set_error_state(f"response exc ({type(response).__name__})")
             self._complete = True
             return
 
@@ -207,7 +200,7 @@ class V2ProxySignInWindow(bui.Window):
         if bui.overlay_web_browser_is_supported():
             bui.textwidget(
                 edit=self._state_text,
-                text=bui.Lstr(resource='pleaseWaitText'),
+                text=bui.Lstr(resource="pleaseWaitText"),
             )
             self._show_overlay_sign_in_ui(response)
             self._overlay_web_browser_open = True
@@ -219,9 +212,7 @@ class V2ProxySignInWindow(bui.Window):
         # In either case, start querying for results now.
         self._proxyid = response.proxyid
         self._proxykey = response.proxykey
-        bui.apptimer(
-            STATUS_CHECK_INTERVAL_SECONDS, bui.WeakCall(self._ask_for_status)
-        )
+        bui.apptimer(STATUS_CHECK_INTERVAL_SECONDS, bui.WeakCall(self._ask_for_status))
 
     def _show_overlay_sign_in_ui(
         self, response: bacommon.cloud.LoginProxyRequestResponse
@@ -237,20 +228,18 @@ class V2ProxySignInWindow(bui.Window):
 
         # Show link(s) the user can use to sign in.
         address = msaddress + response.url
-        address_pretty = address.removeprefix('https://')
+        address_pretty = address.removeprefix("https://")
 
         assert bui.app.classic is not None
         bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height - 95),
             size=(0, 0),
-            text=bui.Lstr(
-                resource='accountSettingsWindow.v2LinkInstructionsText'
-            ),
+            text=bui.Lstr(resource="accountSettingsWindow.v2LinkInstructionsText"),
             color=bui.app.ui_v1.title_color,
             maxwidth=self._width * 0.9,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         button_width = 450
         if bui.is_browser_likely_available():
@@ -277,8 +266,8 @@ class V2ProxySignInWindow(bui.Window):
                 flatness=1.0,
                 maxwidth=self._width,
                 scale=0.75,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 autoselect=True,
                 on_activate_call=bui.Call(self._copy_link, address_pretty),
                 selectable=True,
@@ -314,9 +303,9 @@ class V2ProxySignInWindow(bui.Window):
             isinstance(response, bacommon.cloud.LoginProxyStateQueryResponse)
             and response.state is response.State.FAIL
         ):
-            logging.info('LoginProxy failed.')
-            bui.getsound('error').play()
-            bui.screenmessage(bui.Lstr(resource='errorText'), color=(1, 0, 0))
+            logging.info("LoginProxy failed.")
+            bui.getsound("error").play()
+            bui.screenmessage(bui.Lstr(resource="errorText"), color=(1, 0, 0))
             self._done()
             return
 
@@ -335,16 +324,14 @@ class V2ProxySignInWindow(bui.Window):
             assert self._proxyid is not None
             try:
                 plus.cloud.send_message_cb(
-                    bacommon.cloud.LoginProxyCompleteMessage(
-                        proxyid=self._proxyid
-                    ),
+                    bacommon.cloud.LoginProxyCompleteMessage(proxyid=self._proxyid),
                     on_response=bui.WeakCall(self._proxy_complete_response),
                 )
             except CommunicationError:
                 pass
             except Exception:
                 logging.warning(
-                    'Unexpected error sending login-proxy-complete message',
+                    "Unexpected error sending login-proxy-complete message",
                     exc_info=True,
                 )
 
@@ -352,10 +339,7 @@ class V2ProxySignInWindow(bui.Window):
             return
 
         # If we're still waiting, ask again soon.
-        if (
-            isinstance(response, Exception)
-            or response.state is response.State.WAITING
-        ):
+        if isinstance(response, Exception) or response.state is response.State.WAITING:
             bui.apptimer(
                 STATUS_CHECK_INTERVAL_SECONDS,
                 bui.WeakCall(self._ask_for_status),
@@ -369,9 +353,7 @@ class V2ProxySignInWindow(bui.Window):
     def _copy_link(self, link: str) -> None:
         if bui.clipboard_is_supported():
             bui.clipboard_set_text(link)
-            bui.screenmessage(
-                bui.Lstr(resource='copyConfirmText'), color=(0, 1, 0)
-            )
+            bui.screenmessage(bui.Lstr(resource="copyConfirmText"), color=(0, 1, 0))
 
     def _done(self) -> None:
         # no-op if our underlying widget is dead or on its way out.
@@ -382,4 +364,4 @@ class V2ProxySignInWindow(bui.Window):
         if self._overlay_web_browser_open:
             bui.overlay_web_browser_close()
 
-        bui.containerwidget(edit=self._root_widget, transition='out_scale')
+        bui.containerwidget(edit=self._root_widget, transition="out_scale")

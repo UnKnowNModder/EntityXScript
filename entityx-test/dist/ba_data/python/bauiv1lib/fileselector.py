@@ -27,7 +27,7 @@ class FileSelectorWindow(bui.MainWindow):
         show_base_path: bool = True,
         valid_file_extensions: Sequence[str] | None = None,
         allow_folders: bool = False,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         if valid_file_extensions is None:
@@ -42,15 +42,13 @@ class FileSelectorWindow(bui.MainWindow):
         self._path: str | None = None
         self._recent_paths: list[str] = []
         self._show_base_path = show_base_path
-        self._valid_file_extensions = [
-            '.' + ext for ext in valid_file_extensions
-        ]
+        self._valid_file_extensions = ["." + ext for ext in valid_file_extensions]
         self._allow_folders = allow_folders
         self._subcontainer: bui.Widget | None = None
         self._subcontainerheight: float | None = None
         self._scroll_width = self._width - (80 + 2 * x_inset)
         self._scroll_height = self._height - 170
-        self._r = 'fileSelectorWindow'
+        self._r = "fileSelectorWindow"
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
@@ -59,9 +57,7 @@ class FileSelectorWindow(bui.MainWindow):
                     if uiscale is bui.UIScale.SMALL
                     else 1.4 if uiscale is bui.UIScale.MEDIUM else 1.0
                 ),
-                stack_offset=(
-                    (0, -35) if uiscale is bui.UIScale.SMALL else (0, 0)
-                ),
+                stack_offset=((0, -35) if uiscale is bui.UIScale.SMALL else (0, 0)),
             ),
             transition=transition,
             origin_widget=origin_widget,
@@ -71,15 +67,15 @@ class FileSelectorWindow(bui.MainWindow):
             position=(self._width * 0.5, self._height - 42),
             size=(0, 0),
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             text=(
-                bui.Lstr(resource=f'{self._r}.titleFolderText')
+                bui.Lstr(resource=f"{self._r}.titleFolderText")
                 if (allow_folders and not valid_file_extensions)
                 else (
-                    bui.Lstr(resource=f'{self._r}.titleFileText')
+                    bui.Lstr(resource=f"{self._r}.titleFileText")
                     if not allow_folders
-                    else bui.Lstr(resource=f'{self._r}.titleFileFolderText')
+                    else bui.Lstr(resource=f"{self._r}.titleFileFolderText")
                 )
             ),
             maxwidth=210,
@@ -91,7 +87,7 @@ class FileSelectorWindow(bui.MainWindow):
             position=(35 + x_inset, self._height - 67),
             autoselect=True,
             size=(self._button_width, 50),
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             on_activate_call=self._cancel,
         )
         bui.widget(edit=self._cancel_button, left_widget=self._cancel_button)
@@ -100,7 +96,7 @@ class FileSelectorWindow(bui.MainWindow):
 
         self._back_button = bui.buttonwidget(
             parent=self._root_widget,
-            button_type='square',
+            button_type="square",
             position=(43 + x_inset, self._height - 113),
             color=b_color,
             textcolor=(0.75, 0.7, 0.8),
@@ -110,9 +106,9 @@ class FileSelectorWindow(bui.MainWindow):
             on_activate_call=self._on_back_press,
         )
 
-        self._folder_tex = bui.gettexture('folder')
+        self._folder_tex = bui.gettexture("folder")
         self._folder_color = (1.1, 0.8, 0.2)
-        self._file_tex = bui.gettexture('file')
+        self._file_tex = bui.gettexture("file")
         self._file_color = (1, 1, 1)
         self._use_folder_button: bui.Widget | None = None
         self._folder_center = self._width * 0.5 + 15
@@ -128,15 +124,13 @@ class FileSelectorWindow(bui.MainWindow):
             position=(self._folder_center, self._height - 98),
             size=(0, 0),
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             text=self._path,
             maxwidth=self._width * 0.9,
         )
         self._scrollwidget: bui.Widget | None = None
-        bui.containerwidget(
-            edit=self._root_widget, cancel_button=self._cancel_button
-        )
+        bui.containerwidget(edit=self._root_widget, cancel_button=self._cancel_button)
         self._set_path(path)
 
     @override
@@ -165,15 +159,15 @@ class FileSelectorWindow(bui.MainWindow):
         )
 
     def _on_up_press(self) -> None:
-        self._on_entry_activated('..')
+        self._on_entry_activated("..")
 
     def _on_back_press(self) -> None:
         if len(self._recent_paths) > 1:
-            bui.getsound('swish').play()
+            bui.getsound("swish").play()
             self._recent_paths.pop()
             self._set_path(self._recent_paths.pop())
         else:
-            bui.getsound('error').play()
+            bui.getsound("error").play()
 
     def _on_folder_entry_activated(self) -> None:
         if self._callback is not None:
@@ -185,48 +179,44 @@ class FileSelectorWindow(bui.MainWindow):
         new_path = None
         try:
             assert self._path is not None
-            if entry == '..':
-                chunks = self._path.split('/')
+            if entry == "..":
+                chunks = self._path.split("/")
                 if len(chunks) > 1:
-                    new_path = '/'.join(chunks[:-1])
-                    if new_path == '':
-                        new_path = '/'
+                    new_path = "/".join(chunks[:-1])
+                    if new_path == "":
+                        new_path = "/"
                 else:
-                    bui.getsound('error').play()
+                    bui.getsound("error").play()
             else:
-                if self._path == '/':
+                if self._path == "/":
                     test_path = self._path + entry
                 else:
-                    test_path = self._path + '/' + entry
+                    test_path = self._path + "/" + entry
                 if os.path.isdir(test_path):
-                    bui.getsound('swish').play()
+                    bui.getsound("swish").play()
                     new_path = test_path
                 elif os.path.isfile(test_path):
                     if self._is_valid_file_path(test_path):
-                        bui.getsound('swish').play()
+                        bui.getsound("swish").play()
                         if self._callback is not None:
                             self._callback(test_path)
                     else:
-                        bui.getsound('error').play()
+                        bui.getsound("error").play()
                 else:
                     print(
                         (
-                            'Error: FileSelectorWindow found non-file/dir:',
+                            "Error: FileSelectorWindow found non-file/dir:",
                             test_path,
                         )
                     )
         except Exception:
-            logging.exception(
-                'Error in FileSelectorWindow._on_entry_activated().'
-            )
+            logging.exception("Error in FileSelectorWindow._on_entry_activated().")
 
         if new_path is not None:
             self._set_path(new_path)
 
     class _RefreshThread(Thread):
-        def __init__(
-            self, path: str, callback: Callable[[list[str], str | None], Any]
-        ):
+        def __init__(self, path: str, callback: Callable[[list[str], str | None], Any]):
             super().__init__()
             self._callback = callback
             self._path = path
@@ -249,8 +239,8 @@ class FileSelectorWindow(bui.MainWindow):
                 )
             except Exception as exc:
                 # Ignore permission-denied.
-                if 'Errno 13' not in str(exc):
-                    logging.exception('Error in fileselector refresh thread.')
+                if "Errno 13" not in str(exc):
+                    logging.exception("Error in fileselector refresh thread.")
                 nofiles: list[str] = []
                 bui.pushcall(
                     bui.Call(self._callback, nofiles, str(exc)),
@@ -279,9 +269,9 @@ class FileSelectorWindow(bui.MainWindow):
         hide_top_folder = in_top_folder and self._show_base_path is False
 
         if hide_top_folder:
-            folder_name = ''
-        elif self._path == '/':
-            folder_name = '/'
+            folder_name = ""
+        elif self._path == "/":
+            folder_name = "/"
         else:
             assert self._path is not None
             folder_name = os.path.basename(self._path)
@@ -307,9 +297,7 @@ class FileSelectorWindow(bui.MainWindow):
             max_str_width,
             bui.get_string_width(folder_name, suppress_warning=True),
         )
-        bui.textwidget(
-            edit=self._path_text, text=folder_name, maxwidth=max_str_width
-        )
+        bui.textwidget(edit=self._path_text, text=folder_name, maxwidth=max_str_width)
         bui.imagewidget(
             edit=self._folder_icon,
             position=(
@@ -357,12 +345,12 @@ class FileSelectorWindow(bui.MainWindow):
                     self._scroll_height * 0.57,
                 ),
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
 
         else:
-            file_names = [f for f in file_names if not f.startswith('.')]
+            file_names = [f for f in file_names if not f.startswith(".")]
             file_names.sort(key=lambda x: x[0].lower())
 
             entries = file_names
@@ -404,9 +392,7 @@ class FileSelectorWindow(bui.MainWindow):
                         self._height - 67,
                     ),
                     size=(self._button_width, 50),
-                    label=bui.Lstr(
-                        resource=f'{self._r}.useThisFolderButtonText'
-                    ),
+                    label=bui.Lstr(resource=f"{self._r}.useThisFolderButtonText"),
                     on_activate_call=self._on_folder_entry_activated,
                 )
                 bui.widget(
@@ -432,7 +418,7 @@ class FileSelectorWindow(bui.MainWindow):
                     bui.widget(edit=cnt, up_widget=self._back_button)
                 is_valid_file_path = self._is_valid_file_path(entry)
                 assert self._path is not None
-                is_dir = os.path.isdir(self._path + '/' + entry)
+                is_dir = os.path.isdir(self._path + "/" + entry)
                 if is_dir:
                     bui.imagewidget(
                         parent=cnt,
@@ -462,8 +448,8 @@ class FileSelectorWindow(bui.MainWindow):
                     parent=cnt,
                     draw_controller=cnt,
                     text=entry,
-                    h_align='left',
-                    v_align='center',
+                    h_align="left",
+                    v_align="center",
                     position=(10 + folder_icon_size * 1.05, entry_height * 0.5),
                     size=(0, 0),
                     maxwidth=self._scroll_width * 0.93 - 50,
@@ -476,9 +462,7 @@ class FileSelectorWindow(bui.MainWindow):
                 v -= entry_height
 
     def _is_valid_file_path(self, path: str) -> bool:
-        return any(
-            path.lower().endswith(ext) for ext in self._valid_file_extensions
-        )
+        return any(path.lower().endswith(ext) for ext in self._valid_file_extensions)
 
     def _cancel(self) -> None:
         self.main_window_back()

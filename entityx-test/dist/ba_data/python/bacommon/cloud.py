@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 class WebLocation(Enum):
     """Set of places we can be directed on ballistica.net."""
 
-    ACCOUNT_EDITOR = 'e'
-    ACCOUNT_DELETE_SECTION = 'd'
+    ACCOUNT_EDITOR = "e"
+    ACCOUNT_DELETE_SECTION = "d"
 
 
 @ioprepped
@@ -35,12 +35,12 @@ class CloudVals:
 
     #: Fully qualified type names we should emit extra debug logs for
     #: when garbage-collected (for debugging ref loops).
-    gc_debug_types: Annotated[
-        list[str], IOAttrs('gct', store_default=False)
-    ] = field(default_factory=list)
+    gc_debug_types: Annotated[list[str], IOAttrs("gct", store_default=False)] = field(
+        default_factory=list
+    )
 
     #: Max number of objects of a given type to emit debug logs for.
-    gc_debug_type_limit: Annotated[int, IOAttrs('gdl', store_default=False)] = 2
+    gc_debug_type_limit: Annotated[int, IOAttrs("gdl", store_default=False)] = 2
 
 
 @ioprepped
@@ -60,16 +60,16 @@ class LoginProxyRequestResponse(Response):
     """Response to a request for a login proxy."""
 
     # URL to direct the user to for sign in.
-    url: Annotated[str, IOAttrs('u')]
+    url: Annotated[str, IOAttrs("u")]
 
     # URL to use for overlay-web-browser sign ins.
-    url_overlay: Annotated[str, IOAttrs('uo')]
+    url_overlay: Annotated[str, IOAttrs("uo")]
 
     # Proxy-Login id for querying results.
-    proxyid: Annotated[str, IOAttrs('p')]
+    proxyid: Annotated[str, IOAttrs("p")]
 
     # Proxy-Login key for querying results.
-    proxykey: Annotated[str, IOAttrs('k')]
+    proxykey: Annotated[str, IOAttrs("k")]
 
 
 @ioprepped
@@ -77,8 +77,8 @@ class LoginProxyRequestResponse(Response):
 class LoginProxyStateQueryMessage(Message):
     """Soo.. how is that login proxy going?"""
 
-    proxyid: Annotated[str, IOAttrs('p')]
-    proxykey: Annotated[str, IOAttrs('k')]
+    proxyid: Annotated[str, IOAttrs("p")]
+    proxykey: Annotated[str, IOAttrs("k")]
 
     @override
     @classmethod
@@ -94,14 +94,14 @@ class LoginProxyStateQueryResponse(Response):
     class State(Enum):
         """States a login-proxy can be in."""
 
-        WAITING = 'waiting'
-        SUCCESS = 'success'
-        FAIL = 'fail'
+        WAITING = "waiting"
+        SUCCESS = "success"
+        FAIL = "fail"
 
-    state: Annotated[State, IOAttrs('s')]
+    state: Annotated[State, IOAttrs("s")]
 
     # On success, these will be filled out.
-    credentials: Annotated[str | None, IOAttrs('tk')]
+    credentials: Annotated[str | None, IOAttrs("tk")]
 
 
 @ioprepped
@@ -109,7 +109,7 @@ class LoginProxyStateQueryResponse(Response):
 class LoginProxyCompleteMessage(Message):
     """Just so you know, we're done with this proxy."""
 
-    proxyid: Annotated[str, IOAttrs('p')]
+    proxyid: Annotated[str, IOAttrs("p")]
 
 
 @ioprepped
@@ -134,7 +134,7 @@ class PingResponse(Response):
 class TestMessage(Message):
     """Can I get some of that workspace action?"""
 
-    testfoo: Annotated[int, IOAttrs('f')]
+    testfoo: Annotated[int, IOAttrs("f")]
 
     @override
     @classmethod
@@ -147,7 +147,7 @@ class TestMessage(Message):
 class TestResponse(Response):
     """Here's that workspace you asked for, boss."""
 
-    testfoo: Annotated[int, IOAttrs('f')]
+    testfoo: Annotated[int, IOAttrs("f")]
 
 
 @ioprepped
@@ -155,7 +155,7 @@ class TestResponse(Response):
 class SendInfoMessage(Message):
     """User is using the send-info function"""
 
-    description: Annotated[str, IOAttrs('c')]
+    description: Annotated[str, IOAttrs("c")]
 
     @override
     @classmethod
@@ -168,9 +168,9 @@ class SendInfoMessage(Message):
 class SendInfoResponse(Response):
     """Response to sending into the server."""
 
-    handled: Annotated[bool, IOAttrs('v')]
-    message: Annotated[str | None, IOAttrs('m', store_default=False)] = None
-    legacy_code: Annotated[str | None, IOAttrs('l', store_default=False)] = None
+    handled: Annotated[bool, IOAttrs("v")]
+    message: Annotated[str | None, IOAttrs("m", store_default=False)] = None
+    legacy_code: Annotated[str | None, IOAttrs("l", store_default=False)] = None
 
 
 @ioprepped
@@ -178,11 +178,11 @@ class SendInfoResponse(Response):
 class WorkspaceFetchState:
     """Common state data for a workspace fetch."""
 
-    manifest: Annotated[DirectoryManifest, IOAttrs('m')]
-    iteration: Annotated[int, IOAttrs('i')] = 0
-    total_deletes: Annotated[int, IOAttrs('tdels')] = 0
-    total_downloads: Annotated[int, IOAttrs('tdlds')] = 0
-    total_up_to_date: Annotated[int | None, IOAttrs('tunmd')] = None
+    manifest: Annotated[DirectoryManifest, IOAttrs("m")]
+    iteration: Annotated[int, IOAttrs("i")] = 0
+    total_deletes: Annotated[int, IOAttrs("tdels")] = 0
+    total_downloads: Annotated[int, IOAttrs("tdlds")] = 0
+    total_up_to_date: Annotated[int | None, IOAttrs("tunmd")] = None
 
 
 @ioprepped
@@ -190,8 +190,8 @@ class WorkspaceFetchState:
 class WorkspaceFetchMessage(Message):
     """Can I get some of that workspace action?"""
 
-    workspaceid: Annotated[str, IOAttrs('w')]
-    state: Annotated[WorkspaceFetchState, IOAttrs('s')]
+    workspaceid: Annotated[str, IOAttrs("w")]
+    state: Annotated[WorkspaceFetchState, IOAttrs("s")]
 
     @override
     @classmethod
@@ -204,15 +204,15 @@ class WorkspaceFetchMessage(Message):
 class WorkspaceFetchResponse(Response):
     """Here's that workspace you asked for, boss."""
 
-    state: Annotated[WorkspaceFetchState, IOAttrs('s')]
-    deletes: Annotated[list[str], IOAttrs('dlt', store_default=False)] = field(
+    state: Annotated[WorkspaceFetchState, IOAttrs("s")]
+    deletes: Annotated[list[str], IOAttrs("dlt", store_default=False)] = field(
         default_factory=list
     )
     downloads_inline: Annotated[
-        dict[str, bytes], IOAttrs('dinl', store_default=False)
+        dict[str, bytes], IOAttrs("dinl", store_default=False)
     ] = field(default_factory=dict)
 
-    done: Annotated[bool, IOAttrs('d')] = False
+    done: Annotated[bool, IOAttrs("d")] = False
 
 
 @ioprepped
@@ -231,7 +231,7 @@ class MerchAvailabilityMessage(Message):
 class MerchAvailabilityResponse(Response):
     """About that merch..."""
 
-    url: Annotated[str | None, IOAttrs('u')]
+    url: Annotated[str | None, IOAttrs("u")]
 
 
 @ioprepped
@@ -239,12 +239,12 @@ class MerchAvailabilityResponse(Response):
 class SignInMessage(Message):
     """Can I sign in please?"""
 
-    login_type: Annotated[LoginType, IOAttrs('l')]
-    sign_in_token: Annotated[str, IOAttrs('t')]
+    login_type: Annotated[LoginType, IOAttrs("l")]
+    sign_in_token: Annotated[str, IOAttrs("t")]
 
     # For debugging. Can remove soft_default once build 20988+ is ubiquitous.
-    description: Annotated[str, IOAttrs('d', soft_default='-')]
-    apptime: Annotated[float, IOAttrs('at', soft_default=-1.0)]
+    description: Annotated[str, IOAttrs("d", soft_default="-")]
+    apptime: Annotated[float, IOAttrs("at", soft_default=-1.0)]
 
     @override
     @classmethod
@@ -257,7 +257,7 @@ class SignInMessage(Message):
 class SignInResponse(Response):
     """Here's that sign-in result you asked for, boss."""
 
-    credentials: Annotated[str | None, IOAttrs('c')]
+    credentials: Annotated[str | None, IOAttrs("c")]
 
 
 @ioprepped
@@ -265,9 +265,7 @@ class SignInResponse(Response):
 class ManageAccountMessage(Message):
     """Message asking for a manage-account url."""
 
-    weblocation: Annotated[WebLocation, IOAttrs('l')] = (
-        WebLocation.ACCOUNT_EDITOR
-    )
+    weblocation: Annotated[WebLocation, IOAttrs("l")] = WebLocation.ACCOUNT_EDITOR
 
     @override
     @classmethod
@@ -280,7 +278,7 @@ class ManageAccountMessage(Message):
 class ManageAccountResponse(Response):
     """Here's that sign-in result you asked for, boss."""
 
-    url: Annotated[str | None, IOAttrs('u')]
+    url: Annotated[str | None, IOAttrs("u")]
 
 
 @ioprepped
@@ -302,23 +300,23 @@ class StoreQueryResponse(Response):
     class Result(Enum):
         """Our overall result."""
 
-        SUCCESS = 's'
-        ERROR = 'e'
+        SUCCESS = "s"
+        ERROR = "e"
 
     @dataclass
     class Purchase:
         """Info about a purchasable thing."""
 
-        purchaseid: Annotated[str, IOAttrs('id')]
+        purchaseid: Annotated[str, IOAttrs("id")]
 
     # Overall result; all data is undefined if not SUCCESS.
-    result: Annotated[Result, IOAttrs('r')]
+    result: Annotated[Result, IOAttrs("r")]
 
-    tokens: Annotated[int, IOAttrs('t')]
-    gold_pass: Annotated[bool, IOAttrs('g')]
+    tokens: Annotated[int, IOAttrs("t")]
+    gold_pass: Annotated[bool, IOAttrs("g")]
 
-    available_purchases: Annotated[list[Purchase], IOAttrs('p')]
-    token_info_url: Annotated[str, IOAttrs('tiu')]
+    available_purchases: Annotated[list[Purchase], IOAttrs("p")]
+    token_info_url: Annotated[str, IOAttrs("tiu")]
 
 
 @ioprepped
@@ -326,8 +324,8 @@ class StoreQueryResponse(Response):
 class SecureDataCheckMessage(Message):
     """Was this data signed by the master-server?."""
 
-    data: Annotated[bytes, IOAttrs('d')]
-    signature: Annotated[bytes, IOAttrs('s')]
+    data: Annotated[bytes, IOAttrs("d")]
+    signature: Annotated[bytes, IOAttrs("s")]
 
     @override
     @classmethod
@@ -341,7 +339,7 @@ class SecureDataCheckResponse(Response):
     """Here's the result of that data check, boss."""
 
     # Whether the data signature was valid.
-    result: Annotated[bool, IOAttrs('v')]
+    result: Annotated[bool, IOAttrs("v")]
 
 
 @ioprepped
@@ -360,7 +358,7 @@ class SecureDataCheckerRequest(Message):
 class SecureDataCheckerResponse(Response):
     """Here's that checker ya asked for, boss."""
 
-    checker: Annotated[SecureDataChecker, IOAttrs('c')]
+    checker: Annotated[SecureDataChecker, IOAttrs("c")]
 
 
 @ioprepped
@@ -379,4 +377,4 @@ class CloudValsRequest(Message):
 class CloudValsResponse(Response):
     """Here's them cloud vals ya asked for, boss."""
 
-    vals: Annotated[CloudVals, IOAttrs('v')]
+    vals: Annotated[CloudVals, IOAttrs("v")]

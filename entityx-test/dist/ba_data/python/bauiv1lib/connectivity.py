@@ -52,8 +52,8 @@ class WaitForConnectivityWindow(bui.Window):
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
-                transition='in_scale',
-                parent=bui.get_special_widget('overlay_stack'),
+                transition="in_scale",
+                parent=bui.get_special_widget("overlay_stack"),
             )
         )
         bui.textwidget(
@@ -61,16 +61,16 @@ class WaitForConnectivityWindow(bui.Window):
             position=(self._width * 0.5, self._height * 0.7),
             size=(0, 0),
             scale=1.2,
-            h_align='center',
-            v_align='center',
-            text=bui.Lstr(resource='internal.connectingToPartyText'),
+            h_align="center",
+            v_align="center",
+            text=bui.Lstr(resource="internal.connectingToPartyText"),
             maxwidth=self._width * 0.9,
         )
 
         self._spinner = bui.spinnerwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.54),
-            style='bomb',
+            style="bomb",
             size=48,
         )
 
@@ -82,18 +82,18 @@ class WaitForConnectivityWindow(bui.Window):
             flatness=1.0,
             shadow=0.0,
             scale=0.75,
-            h_align='center',
-            v_align='center',
-            text='',
+            h_align="center",
+            v_align="center",
+            text="",
             maxwidth=self._width * 0.9,
         )
-        self._info_text_str = ''
+        self._info_text_str = ""
         cancel_button = bui.buttonwidget(
             parent=self._root_widget,
             autoselect=True,
             position=(50, 30),
             size=(150, 50),
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             on_activate_call=self._cancel,
         )
         bui.containerwidget(edit=self._root_widget, cancel_button=cancel_button)
@@ -128,14 +128,14 @@ class WaitForConnectivityWindow(bui.Window):
         # Show 'connected.' and kill the spinner for the brief moment
         # we're visible on our way out.
         bui.textwidget(
-            edit=self._info_text, text=bui.Lstr(resource='remote_app.connected')
+            edit=self._info_text, text=bui.Lstr(resource="remote_app.connected")
         )
         if self._spinner:
             self._spinner.delete()
 
         bui.containerwidget(
             edit=self._root_widget,
-            transition=('out_scale'),
+            transition=("out_scale"),
         )
         bui.pushcall(self._on_connected)
 
@@ -144,7 +144,7 @@ class WaitForConnectivityWindow(bui.Window):
             return
         bui.containerwidget(
             edit=self._root_widget,
-            transition=('out_scale'),
+            transition=("out_scale"),
         )
         if self._on_cancel is not None:
             bui.pushcall(self._on_cancel)

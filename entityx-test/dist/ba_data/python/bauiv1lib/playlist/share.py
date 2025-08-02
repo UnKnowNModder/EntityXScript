@@ -29,33 +29,31 @@ class SharePlaylistImportWindow(SendInfoWindow):
 
     def _on_import_response(self, response: dict[str, Any] | None) -> None:
         if response is None:
-            bui.screenmessage(bui.Lstr(resource='errorText'), color=(1, 0, 0))
-            bui.getsound('error').play()
+            bui.screenmessage(bui.Lstr(resource="errorText"), color=(1, 0, 0))
+            bui.getsound("error").play()
             return
 
-        if response['playlistType'] == 'Team Tournament':
-            playlist_type_name = bui.Lstr(resource='playModes.teamsText')
-        elif response['playlistType'] == 'Free-for-All':
-            playlist_type_name = bui.Lstr(resource='playModes.freeForAllText')
+        if response["playlistType"] == "Team Tournament":
+            playlist_type_name = bui.Lstr(resource="playModes.teamsText")
+        elif response["playlistType"] == "Free-for-All":
+            playlist_type_name = bui.Lstr(resource="playModes.freeForAllText")
         else:
-            playlist_type_name = bui.Lstr(value=response['playlistType'])
+            playlist_type_name = bui.Lstr(value=response["playlistType"])
 
         bui.screenmessage(
             bui.Lstr(
-                resource='importPlaylistSuccessText',
+                resource="importPlaylistSuccessText",
                 subs=[
-                    ('${TYPE}', playlist_type_name),
-                    ('${NAME}', response['playlistName']),
+                    ("${TYPE}", playlist_type_name),
+                    ("${NAME}", response["playlistName"]),
                 ],
             ),
             color=(0, 1, 0),
         )
-        bui.getsound('gunCocking').play()
+        bui.getsound("gunCocking").play()
         if self._on_success_callback is not None:
             self._on_success_callback()
-        bui.containerwidget(
-            edit=self._root_widget, transition=self._transition_out
-        )
+        bui.containerwidget(edit=self._root_widget, transition=self._transition_out)
 
     @override
     def _do_enter(self) -> None:
@@ -64,22 +62,20 @@ class SharePlaylistImportWindow(SendInfoWindow):
 
         plus.add_v1_account_transaction(
             {
-                'type': 'IMPORT_PLAYLIST',
-                'expire_time': time.time() + 5,
-                'code': bui.textwidget(query=self._text_field),
+                "type": "IMPORT_PLAYLIST",
+                "expire_time": time.time() + 5,
+                "code": bui.textwidget(query=self._text_field),
             },
             callback=bui.WeakCall(self._on_import_response),
         )
         plus.run_v1_account_transactions()
-        bui.screenmessage(bui.Lstr(resource='importingText'))
+        bui.screenmessage(bui.Lstr(resource="importingText"))
 
 
 class SharePlaylistResultsWindow(bui.Window):
     """Window for sharing playlists."""
 
-    def __init__(
-        self, name: str, data: str, origin: tuple[float, float] = (0.0, 0.0)
-    ):
+    def __init__(self, name: str, data: str, origin: tuple[float, float] = (0.0, 0.0)):
         del origin  # unused arg
         self._width = 450
         self._height = 300
@@ -89,7 +85,7 @@ class SharePlaylistResultsWindow(bui.Window):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 color=(0.45, 0.63, 0.15),
-                transition='in_scale',
+                transition="in_scale",
                 scale=(
                     1.8
                     if uiscale is bui.UIScale.SMALL
@@ -97,24 +93,22 @@ class SharePlaylistResultsWindow(bui.Window):
                 ),
             )
         )
-        bui.getsound('cashRegister').play()
-        bui.getsound('swish').play()
+        bui.getsound("cashRegister").play()
+        bui.getsound("swish").play()
 
         self._cancel_button = bui.buttonwidget(
             parent=self._root_widget,
             scale=0.7,
             position=(40, self._height - 40),
             size=(50, 50),
-            label='',
+            label="",
             on_activate_call=self.close,
             autoselect=True,
             color=(0.45, 0.63, 0.15),
-            icon=bui.gettexture('crossOut'),
+            icon=bui.gettexture("crossOut"),
             iconscale=1.2,
         )
-        bui.containerwidget(
-            edit=self._root_widget, cancel_button=self._cancel_button
-        )
+        bui.containerwidget(edit=self._root_widget, cancel_button=self._cancel_button)
 
         bui.textwidget(
             parent=self._root_widget,
@@ -123,11 +117,9 @@ class SharePlaylistResultsWindow(bui.Window):
             color=bui.app.ui_v1.infotextcolor,
             scale=1.0,
             flatness=1.0,
-            h_align='center',
-            v_align='center',
-            text=bui.Lstr(
-                resource='exportSuccessText', subs=[('${NAME}', name)]
-            ),
+            h_align="center",
+            v_align="center",
+            text=bui.Lstr(resource="exportSuccessText", subs=[("${NAME}", name)]),
             maxwidth=self._width * 0.85,
         )
 
@@ -138,9 +130,9 @@ class SharePlaylistResultsWindow(bui.Window):
             color=bui.app.ui_v1.infotextcolor,
             scale=0.6,
             flatness=1.0,
-            h_align='center',
-            v_align='center',
-            text=bui.Lstr(resource='importPlaylistCodeInstructionsText'),
+            h_align="center",
+            v_align="center",
+            text=bui.Lstr(resource="importPlaylistCodeInstructionsText"),
             maxwidth=self._width * 0.85,
         )
 
@@ -150,12 +142,12 @@ class SharePlaylistResultsWindow(bui.Window):
             size=(0, 0),
             color=(1.0, 3.0, 1.0),
             scale=2.3,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             text=data,
             maxwidth=self._width * 0.85,
         )
 
     def close(self) -> None:
         """Close the window."""
-        bui.containerwidget(edit=self._root_widget, transition='out_scale')
+        bui.containerwidget(edit=self._root_widget, transition="out_scale")

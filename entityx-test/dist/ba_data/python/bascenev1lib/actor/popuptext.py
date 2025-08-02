@@ -45,13 +45,13 @@ class PopupText(bs.Actor):
         )
 
         self.node = bs.newnode(
-            'text',
+            "text",
             attrs={
-                'text': text,
-                'in_world': True,
-                'shadow': 1.0,
-                'flatness': 1.0,
-                'h_align': 'center',
+                "text": text,
+                "in_world": True,
+                "shadow": 1.0,
+                "flatness": 1.0,
+                "h_align": "center",
             },
             delegate=self,
         )
@@ -61,7 +61,7 @@ class PopupText(bs.Actor):
         # scale up
         bs.animate(
             self.node,
-            'scale',
+            "scale",
             {
                 0: 0.0,
                 lifespan * 0.11: 0.020 * 0.7 * scale,
@@ -72,30 +72,28 @@ class PopupText(bs.Actor):
 
         # translate upward
         self._tcombine = bs.newnode(
-            'combine',
+            "combine",
             owner=self.node,
-            attrs={'input0': pos[0], 'input2': pos[2], 'size': 3},
+            attrs={"input0": pos[0], "input2": pos[2], "size": 3},
         )
-        bs.animate(
-            self._tcombine, 'input1', {0: pos[1] + 1.5, lifespan: pos[1] + 2.0}
-        )
-        self._tcombine.connectattr('output', self.node, 'position')
+        bs.animate(self._tcombine, "input1", {0: pos[1] + 1.5, lifespan: pos[1] + 2.0})
+        self._tcombine.connectattr("output", self.node, "position")
 
         # fade our opacity in/out
         self._combine = bs.newnode(
-            'combine',
+            "combine",
             owner=self.node,
             attrs={
-                'input0': color[0],
-                'input1': color[1],
-                'input2': color[2],
-                'size': 4,
+                "input0": color[0],
+                "input1": color[1],
+                "input2": color[2],
+                "size": 4,
             },
         )
         for i in range(4):
             bs.animate(
                 self._combine,
-                'input' + str(i),
+                "input" + str(i),
                 {
                     0.13 * lifespan: color[i],
                     0.18 * lifespan: 4.0 * color[i],
@@ -104,7 +102,7 @@ class PopupText(bs.Actor):
             )
         bs.animate(
             self._combine,
-            'input3',
+            "input3",
             {
                 0: 0,
                 0.1 * lifespan: color[3],
@@ -112,7 +110,7 @@ class PopupText(bs.Actor):
                 lifespan: 0,
             },
         )
-        self._combine.connectattr('output', self.node, 'color')
+        self._combine.connectattr("output", self.node, "color")
 
         # kill ourself
         self._die_timer = bs.Timer(

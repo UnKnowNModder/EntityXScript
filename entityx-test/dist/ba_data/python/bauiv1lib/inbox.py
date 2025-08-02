@@ -88,8 +88,8 @@ class _TextSection(_Section):
             shadow=1.0,
             text=self.textbaked,
             size=(0, 0),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
 
@@ -175,9 +175,7 @@ class _DisplayItemsSection(_Section):
         self.sub_width = sub_width
         self.spacing_top = spacing_top
         self.spacing_bottom = spacing_bottom
-        self.full_height = (
-            self.display_item_height + spacing_top + spacing_bottom
-        )
+        self.full_height = self.display_item_height + spacing_top + spacing_bottom
 
     @override
     def get_height(self) -> float:
@@ -189,9 +187,7 @@ class _DisplayItemsSection(_Section):
         from baclassic import show_display_item
 
         xspacing = 1.1 * self.display_item_width
-        total_width = (
-            0 if not self.items else ((len(self.items) - 1) * xspacing)
-        )
+        total_width = 0 if not self.items else ((len(self.items) - 1) * xspacing)
         x = -0.5 * total_width
         for item in self.items:
             show_display_item(
@@ -241,26 +237,22 @@ class _ExpireTimeSection(_Section):
         if now < self.time:
             color = (1.0, 1.0, 1.0, 0.3)
             val = bui.Lstr(
-                resource='expiresInText',
+                resource="expiresInText",
                 subs=[
                     (
-                        '${T}',
-                        bui.timestring(
-                            (self.time - now).total_seconds(), centi=False
-                        ),
+                        "${T}",
+                        bui.timestring((self.time - now).total_seconds(), centi=False),
                     ),
                 ],
             )
         else:
             color = (1.0, 0.3, 0.3, 0.5)
             val = bui.Lstr(
-                resource='expiredAgoText',
+                resource="expiredAgoText",
                 subs=[
                     (
-                        '${T}',
-                        bui.timestring(
-                            (now - self.time).total_seconds(), centi=False
-                        ),
+                        "${T}",
+                        bui.timestring((now - self.time).total_seconds(), centi=False),
                     ),
                 ],
             )
@@ -278,11 +270,11 @@ class _ExpireTimeSection(_Section):
             scale=self.text_scale,
             flatness=1.0,
             shadow=1.0,
-            text='',
+            text="",
             maxwidth=self.sub_width * 0.7,
             size=(0, 0),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         self._timer = bui.AppTimer(1.0, bui.WeakCall(self._update), repeat=True)
         self._update()
@@ -310,7 +302,7 @@ class InboxWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
 
@@ -354,7 +346,7 @@ class InboxWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    'menu_full' if uiscale is bui.UIScale.SMALL else 'menu_full'
+                    "menu_full" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
                 scale=scale,
             ),
@@ -377,12 +369,10 @@ class InboxWindow(bui.MainWindow):
                 size=(60, 60),
                 scale=0.6,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
 
         self._title_text = bui.textwidget(
             parent=self._root_widget,
@@ -391,10 +381,10 @@ class InboxWindow(bui.MainWindow):
                 yoffs - (45 if uiscale is bui.UIScale.SMALL else 30),
             ),
             size=(0, 0),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             scale=0.6 if uiscale is bui.UIScale.SMALL else 0.8,
-            text=bui.Lstr(resource='inboxText'),
+            text=bui.Lstr(resource="inboxText"),
             maxwidth=200,
             color=bui.app.ui_v1.title_color,
         )
@@ -408,15 +398,15 @@ class InboxWindow(bui.MainWindow):
             flatness=1.0,
             color=(0.4, 0.4, 0.5),
             shadow=0.0,
-            text='',
+            text="",
             size=(0, 0),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         self._loading_spinner = bui.spinnerwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.5),
-            style='bomb',
+            style="bomb",
             size=48,
         )
         self._scrollwidget = bui.scrollwidget(
@@ -437,7 +427,7 @@ class InboxWindow(bui.MainWindow):
         if uiscale is bui.UIScale.SMALL:
             bui.widget(
                 edit=self._scrollwidget,
-                left_widget=bui.get_special_widget('back_button'),
+                left_widget=bui.get_special_widget("back_button"),
             )
 
         bui.containerwidget(
@@ -449,7 +439,7 @@ class InboxWindow(bui.MainWindow):
         # Kick off request.
         plus = bui.app.plus
         if plus is None or plus.accounts.primary is None:
-            self._error(bui.Lstr(resource='notSignedInText'))
+            self._error(bui.Lstr(resource="notSignedInText"))
             return
 
         with plus.accounts.primary:
@@ -486,7 +476,7 @@ class InboxWindow(bui.MainWindow):
         if display is None:
             return
 
-        bui.getsound('click01').play()
+        bui.getsound("click01").play()
 
         self._neuter_entry_display(display)
 
@@ -503,10 +493,8 @@ class InboxWindow(bui.MainWindow):
         # Error if we're somehow signed out now.
         plus = bui.app.plus
         if plus is None or plus.accounts.primary is None:
-            bui.screenmessage(
-                bui.Lstr(resource='notSignedInText'), color=(1, 0, 0)
-            )
-            bui.getsound('error').play()
+            bui.screenmessage(bui.Lstr(resource="notSignedInText"), color=(1, 0, 0))
+            bui.getsound("error").play()
             return
 
         # Pause the root ui so stuff like token counts don't change
@@ -536,7 +524,7 @@ class InboxWindow(bui.MainWindow):
             else display.button_spinner_negative
         )
         if button is not None:
-            bui.buttonwidget(edit=button, label='')
+            bui.buttonwidget(edit=button, label="")
         if button_spinner is not None:
             bui.spinnerwidget(edit=button_spinner, visible=True)
 
@@ -550,7 +538,7 @@ class InboxWindow(bui.MainWindow):
         self.main_window_back()
 
     def _neuter_entry_display(self, entry: _EntryDisplay) -> None:
-        errsound = bui.getsound('error')
+        errsound = bui.getsound("error")
         if entry.button_positive is not None:
             bui.buttonwidget(
                 edit=entry.button_positive,
@@ -611,15 +599,15 @@ class InboxWindow(bui.MainWindow):
         if isinstance(response, Exception):
             if isinstance(response, CommunicationError):
                 error_message = bui.Lstr(
-                    resource='internal.unavailableNoConnectionText'
+                    resource="internal.unavailableNoConnectionText"
                 )
             else:
-                error_message = bui.Lstr(resource='errorText')
+                error_message = bui.Lstr(resource="errorText")
         elif response.error_type is not None:
             # If error_type is set, error should be also.
             assert response.error_message is not None
             error_message = bui.Lstr(
-                translate=('serverResponses', response.error_message)
+                translate=("serverResponses", response.error_message)
             )
         else:
             error_message = None
@@ -627,11 +615,9 @@ class InboxWindow(bui.MainWindow):
         # Show error message if so.
         if error_message is not None:
             bui.screenmessage(error_message, color=(1, 0, 0))
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             if button is not None:
-                bui.buttonwidget(
-                    edit=button, label=bui.Lstr(resource='errorText')
-                )
+                bui.buttonwidget(edit=button, label=bui.Lstr(resource="errorText"))
             return
 
         # Success!
@@ -646,9 +632,9 @@ class InboxWindow(bui.MainWindow):
             # If we have full unicode, just show a checkmark in all cases.
             label: str | bui.Lstr
             if bui.supports_unicode_display():
-                label = '✓'
+                label = "✓"
             else:
-                label = bui.Lstr(resource='doneText')
+                label = bui.Lstr(resource="doneText")
             bui.buttonwidget(edit=button, label=label)
 
     def _on_inbox_request_response(
@@ -664,14 +650,14 @@ class InboxWindow(bui.MainWindow):
 
         errmsg: str | bui.Lstr
         if isinstance(response, Exception):
-            errmsg = bui.Lstr(resource='internal.unavailableNoConnectionText')
+            errmsg = bui.Lstr(resource="internal.unavailableNoConnectionText")
             is_error = True
         else:
             is_error = response.error is not None
             errmsg = (
-                ''
+                ""
                 if response.error is None
-                else bui.Lstr(translate=('serverResponses', response.error))
+                else bui.Lstr(translate=("serverResponses", response.error))
             )
 
         if is_error:
@@ -687,14 +673,14 @@ class InboxWindow(bui.MainWindow):
             bui.textwidget(
                 edit=self._infotext,
                 color=(0.4, 0.4, 0.5),
-                text=bui.Lstr(resource='noMessagesText'),
+                text=bui.Lstr(resource="noMessagesText"),
             )
             return
 
         bui.scrollwidget(edit=self._scrollwidget, highlight=False)
 
         bui.spinnerwidget(edit=self._loading_spinner, visible=False)
-        bui.textwidget(edit=self._infotext, text='')
+        bui.textwidget(edit=self._infotext, text="")
 
         uiscale = bui.app.ui_v1.uiscale
 
@@ -747,7 +733,7 @@ class InboxWindow(bui.MainWindow):
                         section = _TextSection(
                             sub_width=sub_width,
                             text=bui.Lstr(
-                                translate=('serverResponses', component.text),
+                                translate=("serverResponses", component.text),
                                 subs=pairs_from_flat(component.subs),
                             ),
                             color=component.color,
@@ -770,7 +756,7 @@ class InboxWindow(bui.MainWindow):
                         section = _ButtonSection(
                             sub_width=sub_width,
                             label=bui.Lstr(
-                                translate=('serverResponses', component.label),
+                                translate=("serverResponses", component.label),
                                 subs=pairs_from_flat(component.subs),
                             ),
                             color=color,
@@ -804,53 +790,47 @@ class InboxWindow(bui.MainWindow):
                             component,
                             bacommon.bs.BasicClientUIBsClassicTourneyResult,
                         )
-                        campaignname, levelname = component.game.split(':')
+                        campaignname, levelname = component.game.split(":")
                         assert bui.app.classic is not None
                         campaign = bui.app.classic.getcampaign(campaignname)
 
                         tourney_name = bui.Lstr(
-                            value='${A} ${B}',
+                            value="${A} ${B}",
                             subs=[
                                 (
-                                    '${A}',
+                                    "${A}",
                                     campaign.getlevel(levelname).displayname,
                                 ),
                                 (
-                                    '${B}',
+                                    "${B}",
                                     bui.Lstr(
-                                        resource='playerCountAbbreviatedText',
-                                        subs=[
-                                            ('${COUNT}', str(component.players))
-                                        ],
+                                        resource="playerCountAbbreviatedText",
+                                        subs=[("${COUNT}", str(component.players))],
                                     ),
                                 ),
                             ],
                         )
 
                         if component.trophy is not None:
-                            trophy_prefix = (
-                                get_trophy_string(component.trophy) + ' '
-                            )
+                            trophy_prefix = get_trophy_string(component.trophy) + " "
                         else:
-                            trophy_prefix = ''
+                            trophy_prefix = ""
 
                         section = _TextSection(
                             sub_width=sub_width,
                             text=bui.Lstr(
-                                value='${P}${V}',
+                                value="${P}${V}",
                                 subs=[
-                                    ('${P}', trophy_prefix),
+                                    ("${P}", trophy_prefix),
                                     (
-                                        '${V}',
+                                        "${V}",
                                         bui.Lstr(
                                             translate=(
-                                                'serverResponses',
-                                                'You placed #${RANK}'
-                                                ' in a tournament!',
+                                                "serverResponses",
+                                                "You placed #${RANK}"
+                                                " in a tournament!",
                                             ),
-                                            subs=[
-                                                ('${RANK}', str(component.rank))
-                                            ],
+                                            subs=[("${RANK}", str(component.rank))],
                                         ),
                                     ),
                                 ],
@@ -882,21 +862,15 @@ class InboxWindow(bui.MainWindow):
                             _ = (
                                 TournamentScoresWindow(
                                     tournament_id=tournament_id,
-                                    position=(
-                                        sec.button
-                                    ).get_screen_space_center(),
+                                    position=(sec.button).get_screen_space_center(),
                                 ),
                             )
 
                         section = _ButtonSection(
                             sub_width=sub_width,
-                            label=bui.Lstr(
-                                resource='tournamentFinalStandingsText'
-                            ),
+                            label=bui.Lstr(resource="tournamentFinalStandingsText"),
                             color=color,
-                            call=partial(
-                                _do_tourney_scores, component.tournament_id
-                            ),
+                            call=partial(_do_tourney_scores, component.tournament_id),
                             label_color=(0.5, 0.7, 0.6),
                             spacing_top=7.0,
                             spacing_bottom=0.0 if component.prizes else 7.0,
@@ -907,7 +881,7 @@ class InboxWindow(bui.MainWindow):
                         if component.prizes:
                             section = _TextSection(
                                 sub_width=sub_width,
-                                text=bui.Lstr(resource='yourPrizeText'),
+                                text=bui.Lstr(resource="yourPrizeText"),
                                 spacing_top=6,
                                 color=(1.0, 1.0, 1.0, 0.4),
                                 scale=0.35,
@@ -939,7 +913,7 @@ class InboxWindow(bui.MainWindow):
                         sections.append(section)
 
                     elif ctypeid is idcls.UNKNOWN:
-                        raise RuntimeError('Should not get here.')
+                        raise RuntimeError("Should not get here.")
 
                     else:
                         # Make sure we handle all types.
@@ -949,19 +923,13 @@ class InboxWindow(bui.MainWindow):
                 # Display anything with unknown components as an
                 # 'upgrade your app to see this' message.
                 color = (0.6, 0.6, 0.6)
-                interaction_style = (
-                    bacommon.bs.BasicClientUI.InteractionStyle.UNKNOWN
-                )
+                interaction_style = bacommon.bs.BasicClientUI.InteractionStyle.UNKNOWN
                 button_label_positive = bacommon.bs.BasicClientUI.ButtonLabel.OK
-                button_label_negative = (
-                    bacommon.bs.BasicClientUI.ButtonLabel.CANCEL
-                )
+                button_label_negative = bacommon.bs.BasicClientUI.ButtonLabel.CANCEL
 
                 section = _TextSection(
                     sub_width=sub_width,
-                    text=bui.Lstr(
-                        value='You must update the app to view this.'
-                    ),
+                    text=bui.Lstr(value="You must update the app to view this."),
                 )
                 total_height += section.get_height()
                 sections.append(section)
@@ -982,7 +950,7 @@ class InboxWindow(bui.MainWindow):
         sub_height += margin_bottom
 
         subcontainer = bui.containerwidget(
-            id='inboxsub',
+            id="inboxsub",
             parent=self._scrollwidget,
             size=(sub_width, sub_height),
             background=False,
@@ -991,7 +959,7 @@ class InboxWindow(bui.MainWindow):
             claims_up_down=True,
         )
 
-        backing_tex = bui.gettexture('buttonSquareWide')
+        backing_tex = bui.gettexture("buttonSquareWide")
 
         assert bui.app.classic is not None
 
@@ -1031,9 +999,7 @@ class InboxWindow(bui.MainWindow):
             buttonrow: list[bui.Widget] = []
             have_negative_button = (
                 entry_display.interaction_style
-                is (
-                    bacommon.bs.BasicClientUI
-                ).InteractionStyle.BUTTON_POSITIVE_NEGATIVE
+                is (bacommon.bs.BasicClientUI).InteractionStyle.BUTTON_POSITIVE_NEGATIVE
             )
 
             bpos = (
@@ -1094,15 +1060,13 @@ class InboxWindow(bui.MainWindow):
                 )
                 bui.widget(edit=btn2, depth_range=(0.1, 1.0))
                 buttonrow.append(btn2)
-                spinner = entry_display.button_spinner_negative = (
-                    bui.spinnerwidget(
-                        parent=subcontainer,
-                        position=(
-                            bpos[0] + 0.5 * bwidth,
-                            bpos[1] + 0.5 * bheight,
-                        ),
-                        visible=False,
-                    )
+                spinner = entry_display.button_spinner_negative = bui.spinnerwidget(
+                    parent=subcontainer,
+                    position=(
+                        bpos[0] + 0.5 * bwidth,
+                        bpos[1] + 0.5 * bheight,
+                    ),
+                    visible=False,
                 )
                 bui.widget(edit=spinner, depth_range=(0.1, 1.0))
 
@@ -1112,7 +1076,7 @@ class InboxWindow(bui.MainWindow):
 
         uiscale = bui.app.ui_v1.uiscale
         above_widget = (
-            bui.get_special_widget('back_button')
+            bui.get_special_widget("back_button")
             if uiscale is bui.UIScale.SMALL
             else self._back_button
         )

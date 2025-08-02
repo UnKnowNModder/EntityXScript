@@ -77,22 +77,20 @@ def explicit_bool(val: bool) -> bool:
 def snake_case_to_title(val: str) -> str:
     """Given a snake-case string 'foo_bar', returns 'Foo Bar'."""
     # Kill empty words resulting from leading/trailing/multiple underscores.
-    return ' '.join(w for w in val.split('_') if w).title()
+    return " ".join(w for w in val.split("_") if w).title()
 
 
 def snake_case_to_camel_case(val: str) -> str:
     """Given a snake-case string 'foo_bar', returns camel-case 'FooBar'."""
     # Replace underscores with spaces; capitalize words; kill spaces.
     # Not sure about efficiency, but logically simple.
-    return val.replace('_', ' ').title().replace(' ', '')
+    return val.replace("_", " ").title().replace(" ", "")
 
 
 def check_utc(value: datetime.datetime) -> None:
     """Ensure a datetime value is timezone-aware utc."""
     if value.tzinfo is not datetime.UTC:
-        raise ValueError(
-            'datetime value does not have timezone set as datetime.UTC'
-        )
+        raise ValueError("datetime value does not have timezone set as datetime.UTC")
 
 
 def utc_now() -> datetime.datetime:
@@ -186,25 +184,25 @@ def data_size_str(bytecount: int, compact: bool = False) -> str:
     # Special case: handle negatives.
     if bytecount < 0:
         val = data_size_str(-bytecount, compact=compact)
-        return f'-{val}'
+        return f"-{val}"
 
     if bytecount <= 999:
-        suffix = 'B' if compact else 'bytes'
-        return f'{bytecount} {suffix}'
+        suffix = "B" if compact else "bytes"
+        return f"{bytecount} {suffix}"
     kbytecount = bytecount / 1024
     if round(kbytecount, 1) < 10.0:
-        return f'{kbytecount:.1f} KB'
+        return f"{kbytecount:.1f} KB"
     if round(kbytecount, 0) < 999:
-        return f'{kbytecount:.0f} KB'
+        return f"{kbytecount:.0f} KB"
     mbytecount = bytecount / (1024 * 1024)
     if round(mbytecount, 1) < 10.0:
-        return f'{mbytecount:.1f} MB'
+        return f"{mbytecount:.1f} MB"
     if round(mbytecount, 0) < 999:
-        return f'{mbytecount:.0f} MB'
+        return f"{mbytecount:.0f} MB"
     gbytecount = bytecount / (1024 * 1024 * 1024)
     if round(gbytecount, 1) < 10.0:
-        return f'{gbytecount:.1f} GB'
-    return f'{gbytecount:.0f} GB'
+        return f"{gbytecount:.1f} GB"
+    return f"{gbytecount:.0f} GB"
 
 
 class DirtyBit:
@@ -271,9 +269,7 @@ class DirtyBit:
         # If we're freshly clean, set our next auto-dirty time (if we have
         # one).
         if self._dirty and not value and self._auto_dirty_seconds is not None:
-            self._next_auto_dirty_time = (
-                time.monotonic() + self._auto_dirty_seconds
-            )
+            self._next_auto_dirty_time = time.monotonic() + self._auto_dirty_seconds
 
         # If we're freshly dirty, schedule an immediate update.
         if not self._dirty and value:
@@ -325,14 +321,14 @@ class DispatchMethodWrapper[ArgT, RetT]():
     """Type-aware standin for the dispatch func returned by dispatchmethod."""
 
     def __call__(self, arg: ArgT) -> RetT:
-        raise RuntimeError('Should not get here')
+        raise RuntimeError("Should not get here")
 
     @staticmethod
     def register(
         func: Callable[[Any, Any], RetT],
     ) -> Callable[[Any, Any], RetT]:
         """Register a new dispatch handler for this dispatch-method."""
-        raise RuntimeError('Should not get here')
+        raise RuntimeError("Should not get here")
 
     registry: dict[Any, Callable]
 
@@ -364,13 +360,11 @@ def dispatchmethod[ArgT, RetT](
     # NOTE: sounds like we can use functools singledispatchmethod in 3.8
     def wrapper(*args: Any, **kw: Any) -> Any:
         if not args or len(args) < 2:
-            raise TypeError(
-                f'{funcname} requires at least ' '2 positional arguments'
-            )
+            raise TypeError(f"{funcname} requires at least " "2 positional arguments")
 
         return dispatch(args[1].__class__)(*args, **kw)
 
-    funcname = getattr(func, '__name__', 'dispatchmethod method')
+    funcname = getattr(func, "__name__", "dispatchmethod method")
     wrapper.register = origwrapper.register  # type: ignore
     wrapper.dispatch = dispatch  # type: ignore
     wrapper.registry = origwrapper.registry  # type: ignore
@@ -407,11 +401,9 @@ class ValueDispatcher[ValT, RetT]:
             return handler()
         return self._base_call(value)
 
-    def _add_handler(
-        self, value: ValT, call: Callable[[], RetT]
-    ) -> Callable[[], RetT]:
+    def _add_handler(self, value: ValT, call: Callable[[], RetT]) -> Callable[[], RetT]:
         if value in self._handlers:
-            raise RuntimeError(f'Duplicate handlers added for {value}')
+            raise RuntimeError(f"Duplicate handlers added for {value}")
         self._handlers[value] = call
         return call
 
@@ -448,7 +440,7 @@ class ValueDispatcher1Arg[ValT, ArgT, RetT]:
         self, value: ValT, call: Callable[[ArgT], RetT]
     ) -> Callable[[ArgT], RetT]:
         if value in self._handlers:
-            raise RuntimeError(f'Duplicate handlers added for {value}')
+            raise RuntimeError(f"Duplicate handlers added for {value}")
         self._handlers[value] = call
         return call
 
@@ -490,7 +482,7 @@ def valuedispatchmethod[SelfT, ValT, RetT](
 
     def _add_handler(value: ValT, addcall: Callable[[SelfT], RetT]) -> None:
         if value in _handlers:
-            raise RuntimeError(f'Duplicate handlers added for {value}')
+            raise RuntimeError(f"Duplicate handlers added for {value}")
         _handlers[value] = addcall
 
     def _register(value: ValT) -> Callable[[Callable[[SelfT], RetT]], None]:
@@ -506,7 +498,7 @@ def valuedispatchmethod[SelfT, ValT, RetT](
 
     # We still want to use our returned object to register handlers, but we're
     # actually just returning a function. So manually stuff the call onto it.
-    setattr(_call_wrapper, 'register', _register)
+    setattr(_call_wrapper, "register", _register)
 
     # To the type checker's eyes we return a ValueDispatchMethod instance;
     # this lets it know about our register func and type-check its usage.
@@ -568,7 +560,7 @@ def asserttype[T](obj: Any, typ: type[T]) -> T:
     Assert is used to check its actual type, so only use this when
     failures are not expected. Otherwise use checktype.
     """
-    assert isinstance(typ, type), 'only actual types accepted'
+    assert isinstance(typ, type), "only actual types accepted"
     assert isinstance(obj, typ)
     return obj
 
@@ -579,7 +571,7 @@ def asserttype_o[T](obj: Any, typ: type[T]) -> T | None:
     Assert is used to check its actual type, so only use this when
     failures are not expected. Otherwise use checktype.
     """
-    assert isinstance(typ, type), 'only actual types accepted'
+    assert isinstance(typ, type), "only actual types accepted"
     assert isinstance(obj, (typ, type(None)))
     return obj
 
@@ -590,9 +582,9 @@ def checktype[T](obj: Any, typ: type[T]) -> T:
     Always checks the type at runtime with isinstance and throws a TypeError
     on failure. Use asserttype for more efficient (but less safe) equivalent.
     """
-    assert isinstance(typ, type), 'only actual types accepted'
+    assert isinstance(typ, type), "only actual types accepted"
     if not isinstance(obj, typ):
-        raise TypeError(f'Expected a {typ}; got a {type(obj)}.')
+        raise TypeError(f"Expected a {typ}; got a {type(obj)}.")
     return obj
 
 
@@ -602,9 +594,9 @@ def checktype_o[T](obj: Any, typ: type[T]) -> T | None:
     Always checks the type at runtime with isinstance and throws a TypeError
     on failure. Use asserttype for more efficient (but less safe) equivalent.
     """
-    assert isinstance(typ, type), 'only actual types accepted'
+    assert isinstance(typ, type), "only actual types accepted"
     if not isinstance(obj, (typ, type(None))):
-        raise TypeError(f'Expected a {typ} or None; got a {type(obj)}.')
+        raise TypeError(f"Expected a {typ} or None; got a {type(obj)}.")
     return obj
 
 
@@ -614,11 +606,11 @@ def warntype[T](obj: Any, typ: type[T]) -> T:
     Always checks the type at runtime and simply logs a warning if it is
     not what is expected.
     """
-    assert isinstance(typ, type), 'only actual types accepted'
+    assert isinstance(typ, type), "only actual types accepted"
     if not isinstance(obj, typ):
         import logging
 
-        logging.warning('warntype: expected a %s, got a %s', typ, type(obj))
+        logging.warning("warntype: expected a %s, got a %s", typ, type(obj))
     return obj  # type: ignore
 
 
@@ -628,13 +620,11 @@ def warntype_o[T](obj: Any, typ: type[T]) -> T | None:
     Always checks the type at runtime and simply logs a warning if it is
     not what is expected.
     """
-    assert isinstance(typ, type), 'only actual types accepted'
+    assert isinstance(typ, type), "only actual types accepted"
     if not isinstance(obj, (typ, type(None))):
         import logging
 
-        logging.warning(
-            'warntype: expected a %s or None, got a %s', typ, type(obj)
-        )
+        logging.warning("warntype: expected a %s or None, got a %s", typ, type(obj))
     return obj  # type: ignore
 
 
@@ -655,7 +645,7 @@ def check_non_optional[T](obj: T | None) -> T:
     Use assert_non_optional for a more efficient (but less safe) equivalent.
     """
     if obj is None:
-        raise ValueError('Got None value in check_non_optional.')
+        raise ValueError("Got None value in check_non_optional.")
     return obj
 
 
@@ -680,18 +670,18 @@ def linearstep(edge0: float, edge1: float, x: float) -> float:
 
 def _compact_id(num: int, chars: str) -> str:
     if num < 0:
-        raise ValueError('Negative integers not allowed.')
+        raise ValueError("Negative integers not allowed.")
 
     # Chars must be in sorted order for sorting to work correctly
     # on our output.
-    assert ''.join(sorted(list(chars))) == chars
+    assert "".join(sorted(list(chars))) == chars
 
     base = len(chars)
-    out = ''
+    out = ""
     while num:
         out += chars[num % base]
         num //= base
-    return out[::-1] or '0'
+    return out[::-1] or "0"
 
 
 def human_readable_compact_id(num: int) -> str:
@@ -718,7 +708,7 @@ def human_readable_compact_id(num: int) -> str:
     If more compactness is desired at the expense of readability, use
     compact_id() instead.
     """
-    return _compact_id(num, '0123456789abcdefghjkmnpqrtuvwxy')
+    return _compact_id(num, "0123456789abcdefghjkmnpqrtuvwxy")
 
 
 def compact_id(num: int) -> str:
@@ -734,7 +724,7 @@ def compact_id(num: int) -> str:
     Sort order for these ids is the same as the original numbers.
     """
     return _compact_id(
-        num, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+        num, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     )
 
 
@@ -754,9 +744,9 @@ def caller_source_location() -> str:
         if frame is None:
             raise RuntimeError()
         fname = os.path.basename(frame.f_code.co_filename)
-        return f'{fname}:{frame.f_lineno}'
+        return f"{fname}:{frame.f_lineno}"
     except Exception:
-        return '<unknown source location>'
+        return "<unknown source location>"
 
 
 def unchanging_hostname() -> str:
@@ -771,36 +761,36 @@ def unchanging_hostname() -> str:
     import subprocess
 
     # On Mac, this should give the computer name assigned in System Prefs.
-    if platform.system() == 'Darwin':
+    if platform.system() == "Darwin":
         return (
             subprocess.run(
-                ['scutil', '--get', 'ComputerName'],
+                ["scutil", "--get", "ComputerName"],
                 check=True,
                 capture_output=True,
             )
             .stdout.decode()
             .strip()
-            .replace(' ', '-')
+            .replace(" ", "-")
         )
     return os.uname().nodename
 
 
 def set_canonical_module_names(module_globals: dict[str, Any]) -> None:
     """Do the thing."""
-    if os.environ.get('EFRO_SUPPRESS_SET_CANONICAL_MODULE_NAMES') == '1':
+    if os.environ.get("EFRO_SUPPRESS_SET_CANONICAL_MODULE_NAMES") == "1":
         return
 
-    modulename = module_globals.get('__name__')
+    modulename = module_globals.get("__name__")
     if not isinstance(modulename, str):
-        raise RuntimeError('Unable to get module name.')
-    assert not modulename.startswith('_')
-    modulename_prefix = f'{modulename}.'
-    modulename_prefix_2 = f'_{modulename}.'
+        raise RuntimeError("Unable to get module name.")
+    assert not modulename.startswith("_")
+    modulename_prefix = f"{modulename}."
+    modulename_prefix_2 = f"_{modulename}."
 
     for name, obj in module_globals.items():
-        if name.startswith('_'):
+        if name.startswith("_"):
             continue
-        existing = getattr(obj, '__module__', None)
+        existing = getattr(obj, "__module__", None)
         try:
             # Override the module ONLY if it lives under us somewhere.
             # So ourpackage._submodule.Foo becomes ourpackage.Foo
@@ -814,7 +804,7 @@ def set_canonical_module_names(module_globals: dict[str, Any]) -> None:
             import logging
 
             logging.warning(
-                'set_canonical_module_names: unable to change __module__'
+                "set_canonical_module_names: unable to change __module__"
                 " from '%s' to '%s' on %s object at '%s'.",
                 existing,
                 modulename,
@@ -848,7 +838,7 @@ def timedelta_str(
 
     # Internally we only handle positive values.
     if timevalfin.total_seconds() < 0:
-        return f'-{timedelta_str(timeval=-timeval, maxparts=maxparts)}'
+        return f"-{timedelta_str(timeval=-timeval, maxparts=maxparts)}"
 
     years = timevalfin.days // 365
     days = timevalfin.days % 365
@@ -883,21 +873,21 @@ def timedelta_str(
 
     parts: list[str] = []
     for part, part_f, suffix in (
-        (years, years_f, 'y'),
-        (days, days_f, 'd'),
-        (hours, hours_f, 'h'),
-        (minutes, minutes_f, 'm'),
-        (seconds, seconds_f, 's'),
+        (years, years_f, "y"),
+        (days, days_f, "d"),
+        (hours, hours_f, "h"),
+        (minutes, minutes_f, "m"),
+        (seconds, seconds_f, "s"),
     ):
-        if part or parts or (not parts and suffix == 's'):
+        if part or parts or (not parts and suffix == "s"):
             # Do decimal version only for the last part.
-            if decimals and (len(parts) >= maxparts - 1 or suffix == 's'):
-                parts.append(f'{part+part_f:.{decimals}f}{suffix}')
+            if decimals and (len(parts) >= maxparts - 1 or suffix == "s"):
+                parts.append(f"{part+part_f:.{decimals}f}{suffix}")
             else:
-                parts.append(f'{part}{suffix}')
+                parts.append(f"{part}{suffix}")
             if len(parts) >= maxparts:
                 break
-    return ' '.join(parts)
+    return " ".join(parts)
 
 
 def ago_str(
@@ -915,17 +905,13 @@ def ago_str(
     """
     if now is None:
         now = utc_now()
-    return (
-        timedelta_str(now - timeval, maxparts=maxparts, decimals=decimals)
-        + ' ago'
-    )
+    return timedelta_str(now - timeval, maxparts=maxparts, decimals=decimals) + " ago"
 
 
 def split_list[T](input_list: list[T], max_length: int) -> list[list[T]]:
     """Split a single list into smaller lists."""
     return [
-        input_list[i : i + max_length]
-        for i in range(0, len(input_list), max_length)
+        input_list[i : i + max_length] for i in range(0, len(input_list), max_length)
     ]
 
 
@@ -938,7 +924,7 @@ def extract_flag(args: list[str], name: str) -> bool:
 
     count = args.count(name)
     if count > 1:
-        raise CleanError(f'Flag {name} passed multiple times.')
+        raise CleanError(f"Flag {name} passed multiple times.")
     if not count:
         return False
     args.remove(name)
@@ -955,9 +941,7 @@ def extract_arg(
 def extract_arg(args: list[str], name: str, required: Literal[True]) -> str: ...
 
 
-def extract_arg(
-    args: list[str], name: str, required: bool = False
-) -> str | None:
+def extract_arg(args: list[str], name: str, required: bool = False) -> str | None:
     """Given a list of args and an arg name, returns a value.
 
     The arg flag and value are removed from the arg list.
@@ -968,15 +952,15 @@ def extract_arg(
     count = args.count(name)
     if not count:
         if required:
-            raise CleanError(f'Required argument {name} not passed.')
+            raise CleanError(f"Required argument {name} not passed.")
         return None
 
     if count > 1:
-        raise CleanError(f'Arg {name} passed multiple times.')
+        raise CleanError(f"Arg {name} passed multiple times.")
 
     argindex = args.index(name)
     if argindex + 1 >= len(args):
-        raise CleanError(f'No value passed after {name} arg.')
+        raise CleanError(f"No value passed after {name} arg.")
 
     val = args[argindex + 1]
     del args[argindex : argindex + 2]
@@ -992,7 +976,7 @@ def pairs_to_flat[T](pairs: Sequence[tuple[T, T]]) -> list[T]:
 def pairs_from_flat[T](flat: Sequence[T]) -> list[tuple[T, T]]:
     """Given a flat even numbered sequence, returns pairs."""
     if len(flat) % 2 != 0:
-        raise ValueError('Provided sequence has an odd number of elements.')
+        raise ValueError("Provided sequence has an odd number of elements.")
     out: list[tuple[T, T]] = []
     for i in range(0, len(flat) - 1, 2):
         out.append((flat[i], flat[i + 1]))
@@ -1020,8 +1004,7 @@ def prune_empty_dirs(prunedir: str) -> None:
         # listed when the parent dir is visited, so we need to explicitly
         # check for their existence.
         any_dirname_exists = any(
-            os.path.exists(os.path.join(dirpath, dirname))
-            for dirname in dirnames
+            os.path.exists(os.path.join(dirpath, dirname)) for dirname in dirnames
         )
         if not any_dirname_exists and not filenames and dirpath != prunedir:
             try:
@@ -1060,11 +1043,11 @@ def strip_exception_tracebacks(exc: BaseException) -> None:
 
         # Exception that was being handled when this one was raised (not
         # an explicit 'raise ... from ...').
-        context = getattr(e, '__context__', None)
+        context = getattr(e, "__context__", None)
         if context is not None:
             stack.append(context)
 
         # Explicit 'raise ... from ...' parent.
-        cause = getattr(e, '__cause__', None)
+        cause = getattr(e, "__cause__", None)
         if cause is not None:
             stack.append(cause)

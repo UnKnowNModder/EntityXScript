@@ -37,11 +37,11 @@ class QRCodeWindow(PopupWindow):
             position=(50, self._height - 30),
             size=(50, 50),
             scale=0.5,
-            label='',
+            label="",
             color=bg_color,
             on_activate_call=self._on_cancel_press,
             autoselect=True,
-            icon=bui.gettexture('crossOut'),
+            icon=bui.gettexture("crossOut"),
             iconscale=1.2,
         )
         bui.imagewidget(
@@ -57,9 +57,9 @@ class QRCodeWindow(PopupWindow):
     def _transition_out(self) -> None:
         if not self._transitioning_out:
             self._transitioning_out = True
-            bui.containerwidget(edit=self.root_widget, transition='out_scale')
+            bui.containerwidget(edit=self.root_widget, transition="out_scale")
 
     @override
     def on_popup_cancel(self) -> None:
-        bui.getsound('swish').play()
+        bui.getsound("swish").play()
         self._transition_out()

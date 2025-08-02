@@ -41,7 +41,7 @@ class ConquestFlag(Flag):
         self._team = team
 
 
-class Player(bs.Player['Team']):
+class Player(bs.Player["Team"]):
     """Our player type for this game."""
 
     # FIXME: We shouldn't be using customdata here
@@ -49,24 +49,24 @@ class Player(bs.Player['Team']):
     @property
     def respawn_timer(self) -> bs.Timer | None:
         """Type safe access to standard respawn timer."""
-        val = self.customdata.get('respawn_timer', None)
+        val = self.customdata.get("respawn_timer", None)
         assert isinstance(val, (bs.Timer, type(None)))
         return val
 
     @respawn_timer.setter
     def respawn_timer(self, value: bs.Timer | None) -> None:
-        self.customdata['respawn_timer'] = value
+        self.customdata["respawn_timer"] = value
 
     @property
     def respawn_icon(self) -> RespawnIcon | None:
         """Type safe access to standard respawn icon."""
-        val = self.customdata.get('respawn_icon', None)
+        val = self.customdata.get("respawn_icon", None)
         assert isinstance(val, (RespawnIcon, type(None)))
         return val
 
     @respawn_icon.setter
     def respawn_icon(self, value: RespawnIcon | None) -> None:
-        self.customdata['respawn_icon'] = value
+        self.customdata["respawn_icon"] = value
 
 
 class Team(bs.Team[Player]):
@@ -80,33 +80,33 @@ class Team(bs.Team[Player]):
 class ConquestGame(bs.TeamGameActivity[Player, Team]):
     """A game where teams try to claim all flags on the map."""
 
-    name = 'Conquest'
-    description = 'Secure all flags on the map to win.'
+    name = "Conquest"
+    description = "Secure all flags on the map to win."
     available_settings = [
         bs.IntChoiceSetting(
-            'Time Limit',
+            "Time Limit",
             choices=[
-                ('None', 0),
-                ('1 Minute', 60),
-                ('2 Minutes', 120),
-                ('5 Minutes', 300),
-                ('10 Minutes', 600),
-                ('20 Minutes', 1200),
+                ("None", 0),
+                ("1 Minute", 60),
+                ("2 Minutes", 120),
+                ("5 Minutes", 300),
+                ("10 Minutes", 600),
+                ("20 Minutes", 1200),
             ],
             default=0,
         ),
         bs.FloatChoiceSetting(
-            'Respawn Times',
+            "Respawn Times",
             choices=[
-                ('Shorter', 0.25),
-                ('Short', 0.5),
-                ('Normal', 1.0),
-                ('Long', 2.0),
-                ('Longer', 4.0),
+                ("Shorter", 0.25),
+                ("Short", 0.5),
+                ("Normal", 1.0),
+                ("Long", 2.0),
+                ("Longer", 4.0),
             ],
             default=1.0,
         ),
-        bs.BoolSetting('Epic Mode', default=False),
+        bs.BoolSetting("Epic Mode", default=False),
     ]
 
     @override
@@ -120,18 +120,18 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
         assert bs.app.classic is not None
-        return bs.app.classic.getmaps('conquest')
+        return bs.app.classic.getmaps("conquest")
 
     def __init__(self, settings: dict):
         super().__init__(settings)
         shared = SharedObjects.get()
         self._scoreboard = Scoreboard()
-        self._score_sound = bs.getsound('score')
-        self._swipsound = bs.getsound('swip')
+        self._score_sound = bs.getsound("score")
+        self._swipsound = bs.getsound("swip")
         self._extraflagmat = bs.Material()
         self._flags: list[ConquestFlag] = []
-        self._epic_mode = bool(settings['Epic Mode'])
-        self._time_limit = float(settings['Time Limit'])
+        self._epic_mode = bool(settings["Epic Mode"])
+        self._time_limit = float(settings["Time Limit"])
 
         # Base class overrides.
         self.slow_motion = self._epic_mode
@@ -141,10 +141,10 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
 
         # We want flags to tell us they've been hit but not react physically.
         self._extraflagmat.add_actions(
-            conditions=('they_have_material', shared.player_material),
+            conditions=("they_have_material", shared.player_material),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('call', 'at_connect', self._handle_flag_player_collide),
+                ("modify_part_collision", "collide", True),
+                ("call", "at_connect", self._handle_flag_player_collide),
             ),
         )
 
@@ -152,13 +152,13 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
     def get_instance_description(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return 'Secure all ${ARG1} flags.', len(self.map.flag_points)
+        return "Secure all ${ARG1} flags.", len(self.map.flag_points)
 
     @override
     def get_instance_description_short(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return 'secure all ${ARG1} flags', len(self.map.flag_points)
+        return "secure all ${ARG1} flags", len(self.map.flag_points)
 
     @override
     def on_team_join(self, team: Team) -> None:
@@ -192,14 +192,14 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
             self._flags.append(flag)
             Flag.project_stand(point)
             flag.light = bs.newnode(
-                'light',
+                "light",
                 owner=flag.node,
                 attrs={
-                    'position': point,
-                    'intensity': 0.25,
-                    'height_attenuated': False,
-                    'radius': 0.3,
-                    'color': (1, 1, 1),
+                    "position": point,
+                    "intensity": 0.25,
+                    "height_attenuated": False,
+                    "radius": 0.3,
+                    "color": (1, 1, 1),
                 },
             )
 
@@ -235,9 +235,7 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
                     player.respawn_icon = None
             if team.flags_held == len(self._flags):
                 self.end_game()
-            self._scoreboard.set_team_value(
-                team, team.flags_held, len(self._flags)
-            )
+            self._scoreboard.set_team_value(team, team.flags_held, len(self._flags))
 
     @override
     def end_game(self) -> None:
@@ -252,23 +250,23 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
         assert flag.node
         assert flag.light
         light = bs.newnode(
-            'light',
+            "light",
             attrs={
-                'position': flag.node.position,
-                'height_attenuated': False,
-                'color': flag.light.color,
+                "position": flag.node.position,
+                "height_attenuated": False,
+                "color": flag.light.color,
             },
         )
-        bs.animate(light, 'intensity', {0: 0, 0.25: 1, 0.5: 0}, loop=True)
+        bs.animate(light, "intensity", {0: 0, 0.25: 1, 0.5: 0}, loop=True)
         bs.timer(length, light.delete)
 
     def _handle_flag_player_collide(self) -> None:
         collision = bs.getcollision()
         try:
             flag = collision.sourcenode.getdelegate(ConquestFlag, True)
-            player = collision.opposingnode.getdelegate(
-                PlayerSpaz, True
-            ).getplayer(Player, True)
+            player = collision.opposingnode.getdelegate(PlayerSpaz, True).getplayer(
+                Player, True
+            )
         except bs.NotFoundError:
             return
         assert flag.light
@@ -316,18 +314,14 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
         # We spawn players at different places based on what flags are held.
-        return self.spawn_player_spaz(
-            player, self._get_player_spawn_position(player)
-        )
+        return self.spawn_player_spaz(player, self._get_player_spawn_position(player))
 
     def _get_player_spawn_position(self, player: Player) -> Sequence[float]:
         # Iterate until we find a spawn owned by this team.
         spawn_count = len(self.map.spawn_by_flag_points)
 
         # Get all spawns owned by this team.
-        spawns = [
-            i for i in range(spawn_count) if self._flags[i].team is player.team
-        ]
+        spawns = [i for i in range(spawn_count) if self._flags[i].team is player.team]
 
         closest_spawn = 0
         closest_distance = 9999.0
@@ -338,9 +332,7 @@ class ConquestGame(bs.TeamGameActivity[Player, Team]):
             spt = self.map.spawn_by_flag_points[spawn]
             our_pt = bs.Vec3(spt[0], spt[1], spt[2])
             for otherspawn in [
-                i
-                for i in range(spawn_count)
-                if self._flags[i].team is not player.team
+                i for i in range(spawn_count) if self._flags[i].team is not player.team
             ]:
                 spt = self.map.spawn_by_flag_points[otherspawn]
                 their_pt = bs.Vec3(spt[0], spt[1], spt[2])

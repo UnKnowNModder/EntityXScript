@@ -35,7 +35,7 @@ class FlagState(Enum):
     HELD = 3
 
 
-class Player(bs.Player['Team']):
+class Player(bs.Player["Team"]):
     """Our player type for this game."""
 
 
@@ -51,41 +51,41 @@ class Team(bs.Team[Player]):
 class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
     """Game where you try to keep the flag away from your enemies."""
 
-    name = 'Keep Away'
-    description = 'Carry the flag for a set length of time.'
+    name = "Keep Away"
+    description = "Carry the flag for a set length of time."
     available_settings = [
         bs.IntSetting(
-            'Hold Time',
+            "Hold Time",
             min_value=10,
             default=30,
             increment=10,
         ),
         bs.IntChoiceSetting(
-            'Time Limit',
+            "Time Limit",
             choices=[
-                ('None', 0),
-                ('1 Minute', 60),
-                ('2 Minutes', 120),
-                ('5 Minutes', 300),
-                ('10 Minutes', 600),
-                ('20 Minutes', 1200),
+                ("None", 0),
+                ("1 Minute", 60),
+                ("2 Minutes", 120),
+                ("5 Minutes", 300),
+                ("10 Minutes", 600),
+                ("20 Minutes", 1200),
             ],
             default=0,
         ),
         bs.FloatChoiceSetting(
-            'Respawn Times',
+            "Respawn Times",
             choices=[
-                ('Shorter', 0.25),
-                ('Short', 0.5),
-                ('Normal', 1.0),
-                ('Long', 2.0),
-                ('Longer', 4.0),
+                ("Shorter", 0.25),
+                ("Short", 0.5),
+                ("Normal", 1.0),
+                ("Long", 2.0),
+                ("Longer", 4.0),
             ],
             default=1.0,
         ),
-        bs.BoolSetting('Epic Mode', default=False),
+        bs.BoolSetting("Epic Mode", default=False),
     ]
-    scoreconfig = bs.ScoreConfig(label='Time Held')
+    scoreconfig = bs.ScoreConfig(label="Time Held")
 
     @override
     @classmethod
@@ -100,24 +100,24 @@ class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
         assert bs.app.classic is not None
-        return bs.app.classic.getmaps('keep_away')
+        return bs.app.classic.getmaps("keep_away")
 
     def __init__(self, settings: dict):
         super().__init__(settings)
         self._scoreboard = Scoreboard()
-        self._swipsound = bs.getsound('swip')
-        self._tick_sound = bs.getsound('tick')
+        self._swipsound = bs.getsound("swip")
+        self._tick_sound = bs.getsound("tick")
         self._countdownsounds = {
-            10: bs.getsound('announceTen'),
-            9: bs.getsound('announceNine'),
-            8: bs.getsound('announceEight'),
-            7: bs.getsound('announceSeven'),
-            6: bs.getsound('announceSix'),
-            5: bs.getsound('announceFive'),
-            4: bs.getsound('announceFour'),
-            3: bs.getsound('announceThree'),
-            2: bs.getsound('announceTwo'),
-            1: bs.getsound('announceOne'),
+            10: bs.getsound("announceTen"),
+            9: bs.getsound("announceNine"),
+            8: bs.getsound("announceEight"),
+            7: bs.getsound("announceSeven"),
+            6: bs.getsound("announceSix"),
+            5: bs.getsound("announceFive"),
+            4: bs.getsound("announceFour"),
+            3: bs.getsound("announceThree"),
+            2: bs.getsound("announceTwo"),
+            1: bs.getsound("announceOne"),
         }
         self._flag_spawn_pos: Sequence[float] | None = None
         self._update_timer: bs.Timer | None = None
@@ -126,9 +126,9 @@ class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
         self._flag_light: bs.Node | None = None
         self._scoring_team: Team | None = None
         self._flag: Flag | None = None
-        self._hold_time = int(settings['Hold Time'])
-        self._time_limit = float(settings['Time Limit'])
-        self._epic_mode = bool(settings['Epic Mode'])
+        self._hold_time = int(settings["Hold Time"])
+        self._time_limit = float(settings["Time Limit"])
+        self._epic_mode = bool(settings["Epic Mode"])
         self.slow_motion = self._epic_mode
         self.default_music = (
             bs.MusicType.EPIC if self._epic_mode else bs.MusicType.KEEP_AWAY
@@ -138,13 +138,13 @@ class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
     def get_instance_description(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return 'Carry the flag for ${ARG1} seconds.', self._hold_time
+        return "Carry the flag for ${ARG1} seconds.", self._hold_time
 
     @override
     def get_instance_description_short(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return 'carry the flag for ${ARG1} seconds', self._hold_time
+        return "carry the flag for ${ARG1} seconds", self._hold_time
 
     @override
     def create_team(self, sessionteam: bs.SessionTeam) -> Team:
@@ -175,9 +175,7 @@ class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
         # Award points to all living players holding the flag.
         for player in self._holding_players:
             if player:
-                self.stats.player_scored(
-                    player, 3, screenmessage=False, display=False
-                )
+                self.stats.player_scored(player, 3, screenmessage=False, display=False)
 
         scoreteam = self._scoring_team
 
@@ -216,16 +214,10 @@ class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
             holdingflag = False
             try:
                 assert isinstance(player.actor, (PlayerSpaz, type(None)))
-                if (
-                    player.actor
-                    and player.actor.node
-                    and player.actor.node.hold_node
-                ):
-                    holdingflag = (
-                        player.actor.node.hold_node.getnodetype() == 'flag'
-                    )
+                if player.actor and player.actor.node and player.actor.node.hold_node:
+                    holdingflag = player.actor.node.hold_node.getnodetype() == "flag"
             except Exception:
-                logging.exception('Error checking hold flag.')
+                logging.exception("Error checking hold flag.")
             if holdingflag:
                 self._holding_players.append(player)
                 player.team.holdingflag = True
@@ -262,25 +254,25 @@ class KeepAwayGame(bs.TeamGameActivity[Player, Team]):
         self._flag = Flag(dropped_timeout=20, position=self._flag_spawn_pos)
         self._flag_state = FlagState.NEW
         self._flag_light = bs.newnode(
-            'light',
+            "light",
             owner=self._flag.node,
-            attrs={'intensity': 0.2, 'radius': 0.3, 'color': (0.2, 0.2, 0.2)},
+            attrs={"intensity": 0.2, "radius": 0.3, "color": (0.2, 0.2, 0.2)},
         )
         assert self._flag.node
-        self._flag.node.connectattr('position', self._flag_light, 'position')
+        self._flag.node.connectattr("position", self._flag_light, "position")
         self._update_flag_state()
 
     def _flash_flag_spawn(self) -> None:
         light = bs.newnode(
-            'light',
+            "light",
             attrs={
-                'position': self._flag_spawn_pos,
-                'color': (1, 1, 1),
-                'radius': 0.3,
-                'height_attenuated': False,
+                "position": self._flag_spawn_pos,
+                "color": (1, 1, 1),
+                "radius": 0.3,
+                "height_attenuated": False,
             },
         )
-        bs.animate(light, 'intensity', {0.0: 0, 0.25: 0.5, 0.5: 0}, loop=True)
+        bs.animate(light, "intensity", {0.0: 0, 0.25: 0.5, 0.5: 0}, loop=True)
         bs.timer(1.0, light.delete)
 
     def _update_scoreboard(self) -> None:

@@ -21,12 +21,12 @@ class DualTeamSession(MultiTeamSession):
     use_teams = True
     use_team_colors = True
 
-    _playlist_selection_var = 'Team Tournament Playlist Selection'
-    _playlist_randomize_var = 'Team Tournament Playlist Randomize'
-    _playlists_var = 'Team Tournament Playlists'
+    _playlist_selection_var = "Team Tournament Playlist Selection"
+    _playlist_randomize_var = "Team Tournament Playlist Randomize"
+    _playlists_var = "Team Tournament Playlists"
 
     def __init__(self) -> None:
-        babase.increment_analytics_count('Teams session start')
+        babase.increment_analytics_count("Teams session start")
         super().__init__()
 
     @override
@@ -47,19 +47,19 @@ class DualTeamSession(MultiTeamSession):
             self.setactivity(_bascenev1.newactivity(DrawScoreScreenActivity))
         else:
             winner = winnergroups[0].teams[0]
-            winner.customdata['score'] += 1
+            winner.customdata["score"] += 1
 
             # If a team has won, show final victory screen.
-            if winner.customdata['score'] >= (self._series_length - 1) / 2 + 1:
+            if winner.customdata["score"] >= (self._series_length - 1) / 2 + 1:
                 self.setactivity(
                     _bascenev1.newactivity(
                         TeamSeriesVictoryScoreScreenActivity,
-                        {'winner': winner},
+                        {"winner": winner},
                     )
                 )
             else:
                 self.setactivity(
                     _bascenev1.newactivity(
-                        TeamVictoryScoreScreenActivity, {'winner': winner}
+                        TeamVictoryScoreScreenActivity, {"winner": winner}
                     )
                 )

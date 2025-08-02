@@ -42,53 +42,53 @@ class Icon(bs.Actor):
         self._show_lives = show_lives
         self._show_death = show_death
         self._name_scale = name_scale
-        self._outline_tex = bs.gettexture('characterIconMask')
+        self._outline_tex = bs.gettexture("characterIconMask")
 
         icon = player.get_icon()
         self.node = bs.newnode(
-            'image',
+            "image",
             delegate=self,
             attrs={
-                'texture': icon['texture'],
-                'tint_texture': icon['tint_texture'],
-                'tint_color': icon['tint_color'],
-                'vr_depth': 400,
-                'tint2_color': icon['tint2_color'],
-                'mask_texture': self._outline_tex,
-                'opacity': 1.0,
-                'absolute_scale': True,
-                'attach': 'bottomCenter',
+                "texture": icon["texture"],
+                "tint_texture": icon["tint_texture"],
+                "tint_color": icon["tint_color"],
+                "vr_depth": 400,
+                "tint2_color": icon["tint2_color"],
+                "mask_texture": self._outline_tex,
+                "opacity": 1.0,
+                "absolute_scale": True,
+                "attach": "bottomCenter",
             },
         )
         self._name_text = bs.newnode(
-            'text',
+            "text",
             owner=self.node,
             attrs={
-                'text': bs.Lstr(value=player.getname()),
-                'color': bs.safecolor(player.team.color),
-                'h_align': 'center',
-                'v_align': 'center',
-                'vr_depth': 410,
-                'maxwidth': name_maxwidth,
-                'shadow': shadow,
-                'flatness': flatness,
-                'h_attach': 'center',
-                'v_attach': 'bottom',
+                "text": bs.Lstr(value=player.getname()),
+                "color": bs.safecolor(player.team.color),
+                "h_align": "center",
+                "v_align": "center",
+                "vr_depth": 410,
+                "maxwidth": name_maxwidth,
+                "shadow": shadow,
+                "flatness": flatness,
+                "h_attach": "center",
+                "v_attach": "bottom",
             },
         )
         if self._show_lives:
             self._lives_text = bs.newnode(
-                'text',
+                "text",
                 owner=self.node,
                 attrs={
-                    'text': 'x0',
-                    'color': (1, 1, 0.5),
-                    'h_align': 'left',
-                    'vr_depth': 430,
-                    'shadow': 1.0,
-                    'flatness': 1.0,
-                    'h_attach': 'center',
-                    'v_attach': 'bottom',
+                    "text": "x0",
+                    "color": (1, 1, 0.5),
+                    "h_align": "left",
+                    "vr_depth": 430,
+                    "shadow": 1.0,
+                    "flatness": 1.0,
+                    "h_attach": "center",
+                    "v_attach": "bottom",
                 },
             )
         self.set_position_and_scale(position, scale)
@@ -118,9 +118,9 @@ class Icon(bs.Actor):
             lives = 0
         if self._show_lives:
             if lives > 0:
-                self._lives_text.text = 'x' + str(lives - 1)
+                self._lives_text.text = "x" + str(lives - 1)
             else:
-                self._lives_text.text = ''
+                self._lives_text.text = ""
         if lives == 0:
             self._name_text.opacity = 0.2
             assert self.node
@@ -141,7 +141,7 @@ class Icon(bs.Actor):
         if self._show_death:
             bs.animate(
                 self.node,
-                'opacity',
+                "opacity",
                 {
                     0.00: 1.0,
                     0.05: 0.0,
@@ -170,7 +170,7 @@ class Icon(bs.Actor):
         return super().handlemessage(msg)
 
 
-class Player(bs.Player['Team']):
+class Player(bs.Player["Team"]):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -190,10 +190,10 @@ class Team(bs.Team[Player]):
 class EliminationGame(bs.TeamGameActivity[Player, Team]):
     """Game type where last player(s) left alive win."""
 
-    name = 'Elimination'
-    description = 'Last remaining alive wins.'
+    name = "Elimination"
+    description = "Last remaining alive wins."
     scoreconfig = bs.ScoreConfig(
-        label='Survived', scoretype=bs.ScoreType.SECONDS, none_is_winner=True
+        label="Survived", scoretype=bs.ScoreType.SECONDS, none_is_winner=True
     )
     # Show messages when players die since it's meaningful here.
     announce_player_deaths = True
@@ -202,47 +202,43 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
 
     @override
     @classmethod
-    def get_available_settings(
-        cls, sessiontype: type[bs.Session]
-    ) -> list[bs.Setting]:
+    def get_available_settings(cls, sessiontype: type[bs.Session]) -> list[bs.Setting]:
         settings = [
             bs.IntSetting(
-                'Lives Per Player',
+                "Lives Per Player",
                 default=1,
                 min_value=1,
                 max_value=10,
                 increment=1,
             ),
             bs.IntChoiceSetting(
-                'Time Limit',
+                "Time Limit",
                 choices=[
-                    ('None', 0),
-                    ('1 Minute', 60),
-                    ('2 Minutes', 120),
-                    ('5 Minutes', 300),
-                    ('10 Minutes', 600),
-                    ('20 Minutes', 1200),
+                    ("None", 0),
+                    ("1 Minute", 60),
+                    ("2 Minutes", 120),
+                    ("5 Minutes", 300),
+                    ("10 Minutes", 600),
+                    ("20 Minutes", 1200),
                 ],
                 default=0,
             ),
             bs.FloatChoiceSetting(
-                'Respawn Times',
+                "Respawn Times",
                 choices=[
-                    ('Shorter', 0.25),
-                    ('Short', 0.5),
-                    ('Normal', 1.0),
-                    ('Long', 2.0),
-                    ('Longer', 4.0),
+                    ("Shorter", 0.25),
+                    ("Short", 0.5),
+                    ("Normal", 1.0),
+                    ("Long", 2.0),
+                    ("Longer", 4.0),
                 ],
                 default=1.0,
             ),
-            bs.BoolSetting('Epic Mode', default=False),
+            bs.BoolSetting("Epic Mode", default=False),
         ]
         if issubclass(sessiontype, bs.DualTeamSession):
-            settings.append(bs.BoolSetting('Solo Mode', default=False))
-            settings.append(
-                bs.BoolSetting('Balance Total Lives', default=False)
-            )
+            settings.append(bs.BoolSetting("Solo Mode", default=False))
+            settings.append(bs.BoolSetting("Balance Total Lives", default=False))
         return settings
 
     @override
@@ -257,7 +253,7 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
     def get_supported_maps(cls, sessiontype: type[bs.Session]) -> list[str]:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
         assert bs.app.classic is not None
-        return bs.app.classic.getmaps('melee')
+        return bs.app.classic.getmaps("melee")
 
     def __init__(self, settings: dict):
         super().__init__(settings)
@@ -265,13 +261,11 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
         self._start_time: float | None = None
         self._vs_text: bs.Actor | None = None
         self._round_end_timer: bs.Timer | None = None
-        self._epic_mode = bool(settings['Epic Mode'])
-        self._lives_per_player = int(settings['Lives Per Player'])
-        self._time_limit = float(settings['Time Limit'])
-        self._balance_total_lives = bool(
-            settings.get('Balance Total Lives', False)
-        )
-        self._solo_mode = bool(settings.get('Solo Mode', False))
+        self._epic_mode = bool(settings["Epic Mode"])
+        self._lives_per_player = int(settings["Lives Per Player"])
+        self._time_limit = float(settings["Time Limit"])
+        self._balance_total_lives = bool(settings.get("Balance Total Lives", False))
+        self._solo_mode = bool(settings.get("Solo Mode", False))
 
         # Base class overrides:
         self.slow_motion = self._epic_mode
@@ -283,18 +277,18 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
     def get_instance_description(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
         return (
-            'Last team standing wins.'
+            "Last team standing wins."
             if isinstance(self.session, bs.DualTeamSession)
-            else 'Last one standing wins.'
+            else "Last one standing wins."
         )
 
     @override
     def get_instance_description_short(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
         return (
-            'last team standing wins'
+            "last team standing wins"
             if isinstance(self.session, bs.DualTeamSession)
-            else 'last one standing wins'
+            else "last one standing wins"
         )
 
     @override
@@ -324,18 +318,18 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
         if self._solo_mode:
             self._vs_text = bs.NodeActor(
                 bs.newnode(
-                    'text',
+                    "text",
                     attrs={
-                        'position': (0, 105),
-                        'h_attach': 'center',
-                        'h_align': 'center',
-                        'maxwidth': 200,
-                        'shadow': 0.5,
-                        'vr_depth': 390,
-                        'scale': 0.6,
-                        'v_attach': 'bottom',
-                        'color': (0.8, 0.8, 0.3, 1.0),
-                        'text': bs.Lstr(resource='vsText'),
+                        "position": (0, 105),
+                        "h_attach": "center",
+                        "h_align": "center",
+                        "maxwidth": 200,
+                        "shadow": 0.5,
+                        "vr_depth": 390,
+                        "scale": 0.6,
+                        "v_attach": "bottom",
+                        "color": (0.8, 0.8, 0.3, 1.0),
+                        "text": bs.Lstr(resource="vsText"),
                     },
                 )
             )
@@ -348,18 +342,18 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
             and self.teams[0].players
             and self.teams[1].players
         ):
-            if self._get_total_team_lives(
-                self.teams[0]
-            ) < self._get_total_team_lives(self.teams[1]):
+            if self._get_total_team_lives(self.teams[0]) < self._get_total_team_lives(
+                self.teams[1]
+            ):
                 lesser_team = self.teams[0]
                 greater_team = self.teams[1]
             else:
                 lesser_team = self.teams[1]
                 greater_team = self.teams[0]
             add_index = 0
-            while self._get_total_team_lives(
-                lesser_team
-            ) < self._get_total_team_lives(greater_team):
+            while self._get_total_team_lives(lesser_team) < self._get_total_team_lives(
+                greater_team
+            ):
                 lesser_team.players[add_index].lives += 1
                 add_index = (add_index + 1) % len(lesser_team.players)
 
@@ -418,9 +412,7 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
                     test_lives = 1
                     while True:
                         players_with_lives = [
-                            p
-                            for p in team.spawn_order
-                            if p and p.lives >= test_lives
+                            p for p in team.spawn_order if p and p.lives >= test_lives
                         ]
                         if not players_with_lives:
                             break
@@ -478,9 +470,7 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
                 points: list[tuple[float, bs.Vec3]] = []
                 for team in self.teams:
                     start_pos = bs.Vec3(self.map.get_start_position(team.id))
-                    points.append(
-                        ((start_pos - player_pos).length(), start_pos)
-                    )
+                    points.append(((start_pos - player_pos).length(), start_pos))
                 # Hmm.. we need to sort vectors too?
                 points.sort(key=lambda x: x[0])
                 return points[-1][1]
@@ -506,7 +496,7 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
             return
 
         popuptext.PopupText(
-            'x' + str(player.lives - 1),
+            "x" + str(player.lives - 1),
             color=(1, 1, 0, 1),
             offset=(0, -0.8, 0),
             random_offset=0.0,
@@ -568,9 +558,7 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
                 # If the whole team is now dead, mark their survival time.
                 if self._get_total_team_lives(player.team) == 0:
                     assert self._start_time is not None
-                    player.team.survival_seconds = int(
-                        bs.time() - self._start_time
-                    )
+                    player.team.survival_seconds = int(bs.time() - self._start_time)
             else:
                 # Otherwise, in regular mode, respawn.
                 if not self._solo_mode:

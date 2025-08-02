@@ -25,17 +25,13 @@ def _safe_set_text(
     txt: bui.Widget | None, val: str | bui.Lstr, success: bool = True
 ) -> None:
     if txt:
-        bui.textwidget(
-            edit=txt, text=val, color=(0, 1, 0) if success else (1, 1, 0)
-        )
+        bui.textwidget(edit=txt, text=val, color=(0, 1, 0) if success else (1, 1, 0))
 
 
 class _HostLookupThread(Thread):
     """Thread to fetch an addr."""
 
-    def __init__(
-        self, name: str, port: int, call: Callable[[str | None, int], Any]
-    ):
+    def __init__(self, name: str, port: int, call: Callable[[str | None, int], Any]):
         super().__init__()
         self._name = name
         self._port = port
@@ -48,25 +44,22 @@ class _HostLookupThread(Thread):
             import socket
 
             aresult = [
-                item[-1][0]
-                for item in socket.getaddrinfo(self.name, self._port)
+                item[-1][0] for item in socket.getaddrinfo(self.name, self._port)
             ][0]
             if isinstance(aresult, int):
-                raise RuntimeError('Unexpected getaddrinfo int result')
+                raise RuntimeError("Unexpected getaddrinfo int result")
             result = aresult
         except Exception:
             # Hmm should we be logging this?
             result = None
-        bui.pushcall(
-            lambda: self._call(result, self._port), from_other_thread=True
-        )
+        bui.pushcall(lambda: self._call(result, self._port), from_other_thread=True)
 
 
 class SubTabType(Enum):
     """Available sub-tabs."""
 
-    JOIN_BY_ADDRESS = 'join_by_address'
-    FAVORITES = 'favorites'
+    JOIN_BY_ADDRESS = "join_by_address"
+    FAVORITES = "favorites"
 
 
 @dataclass
@@ -140,8 +133,8 @@ class ManualGatherTab(GatherTab):
             scale=1.3,
             size=(200, 30),
             maxwidth=250,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             click_activate=True,
             selectable=True,
             autoselect=True,
@@ -151,8 +144,8 @@ class ManualGatherTab(GatherTab):
                 region_height,
                 playsound=True,
             ),
-            text=bui.Lstr(resource='gatherWindow.manualJoinSectionText'),
-            glow_type='uniform',
+            text=bui.Lstr(resource="gatherWindow.manualJoinSectionText"),
+            glow_type="uniform",
         )
         self._favorites_text = bui.textwidget(
             parent=self._container,
@@ -161,8 +154,8 @@ class ManualGatherTab(GatherTab):
             scale=1.3,
             size=(200, 30),
             maxwidth=250,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             click_activate=True,
             selectable=True,
             autoselect=True,
@@ -172,8 +165,8 @@ class ManualGatherTab(GatherTab):
                 region_height,
                 playsound=True,
             ),
-            text=bui.Lstr(resource='gatherWindow.favoritesText'),
-            glow_type='uniform',
+            text=bui.Lstr(resource="gatherWindow.favoritesText"),
+            glow_type="uniform",
         )
         bui.widget(edit=self._join_by_address_text, up_widget=tab_button)
         bui.widget(
@@ -182,9 +175,7 @@ class ManualGatherTab(GatherTab):
             up_widget=tab_button,
         )
         bui.widget(edit=tab_button, down_widget=self._favorites_text)
-        bui.widget(
-            edit=self._join_by_address_text, right_widget=self._favorites_text
-        )
+        bui.widget(edit=self._join_by_address_text, right_widget=self._favorites_text)
         self._set_sub_tab(self._sub_tab, region_width, region_height)
 
         return self._container
@@ -212,7 +203,7 @@ class ManualGatherTab(GatherTab):
     ) -> None:
         assert self._container
         if playsound:
-            bui.getsound('click01').play()
+            bui.getsound("click01").play()
 
         self._sub_tab = value
         active_color = (0.6, 1.0, 0.6)
@@ -220,18 +211,12 @@ class ManualGatherTab(GatherTab):
         bui.textwidget(
             edit=self._join_by_address_text,
             color=(
-                active_color
-                if value is SubTabType.JOIN_BY_ADDRESS
-                else inactive_color
+                active_color if value is SubTabType.JOIN_BY_ADDRESS else inactive_color
             ),
         )
         bui.textwidget(
             edit=self._favorites_text,
-            color=(
-                active_color
-                if value is SubTabType.FAVORITES
-                else inactive_color
-            ),
+            color=(active_color if value is SubTabType.FAVORITES else inactive_color),
         )
 
         # Clear anything existing in the old sub-tab.
@@ -254,8 +239,8 @@ class ManualGatherTab(GatherTab):
     ) -> None:
         c_width = region_width
         c_height = region_height - 20
-        last_addr = bui.app.config.get('Last Manual Party Connect Address', '')
-        last_port = bui.app.config.get('Last Manual Party Connect Port', 43210)
+        last_addr = bui.app.config.get("Last Manual Party Connect Address", "")
+        last_port = bui.app.config.get("Last Manual Party Connect Port", 43210)
         v = c_height - 70
         v -= 70
         bui.textwidget(
@@ -265,18 +250,18 @@ class ManualGatherTab(GatherTab):
             scale=1.0,
             size=(0, 0),
             maxwidth=130,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.' 'manualAddressText'),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "manualAddressText"),
         )
         txt = bui.textwidget(
             parent=self._container,
             editable=True,
-            description=bui.Lstr(resource='gatherWindow.' 'manualAddressText'),
+            description=bui.Lstr(resource="gatherWindow." "manualAddressText"),
             position=(c_width * 0.5 - 240 - 50, v - 30),
             text=last_addr,
             autoselect=True,
-            v_align='center',
+            v_align="center",
             scale=1.0,
             maxwidth=380,
             size=(420, 60),
@@ -292,19 +277,19 @@ class ManualGatherTab(GatherTab):
             scale=1.0,
             size=(0, 0),
             maxwidth=80,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.' 'portText'),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "portText"),
         )
         txt2 = bui.textwidget(
             parent=self._container,
             editable=True,
-            description=bui.Lstr(resource='gatherWindow.' 'portText'),
+            description=bui.Lstr(resource="gatherWindow." "portText"),
             text=str(last_port),
             autoselect=True,
             max_chars=5,
             position=(c_width * 0.5 - 240 + 490, v - 30),
-            v_align='center',
+            v_align="center",
             scale=1.0,
             size=(170, 60),
         )
@@ -314,7 +299,7 @@ class ManualGatherTab(GatherTab):
         btn = bui.buttonwidget(
             parent=self._container,
             size=(300, 70),
-            label=bui.Lstr(resource='gatherWindow.' 'manualConnectText'),
+            label=bui.Lstr(resource="gatherWindow." "manualConnectText"),
             position=(c_width * 0.5 - 300, v),
             autoselect=True,
             on_activate_call=bui.Call(self._connect, txt, txt2),
@@ -322,7 +307,7 @@ class ManualGatherTab(GatherTab):
         savebutton = bui.buttonwidget(
             parent=self._container,
             size=(300, 70),
-            label=bui.Lstr(resource='gatherWindow.favoritesSaveText'),
+            label=bui.Lstr(resource="gatherWindow.favoritesSaveText"),
             position=(c_width * 0.5 - 240 + 490 - 200, v),
             autoselect=True,
             on_activate_call=bui.Call(self._save_server, txt, txt2),
@@ -336,9 +321,9 @@ class ManualGatherTab(GatherTab):
         self._check_button = bui.textwidget(
             parent=self._container,
             size=(250, 60),
-            text=bui.Lstr(resource='gatherWindow.showMyAddressText'),
-            v_align='center',
-            h_align='center',
+            text=bui.Lstr(resource="gatherWindow.showMyAddressText"),
+            v_align="center",
+            h_align="center",
             click_activate=True,
             position=(c_width * 0.5 - 125, v - 30),
             autoselect=True,
@@ -351,14 +336,12 @@ class ManualGatherTab(GatherTab):
                 self._container,
                 c_width,
             ),
-            glow_type='uniform',
+            glow_type="uniform",
         )
         bui.widget(edit=self._check_button, up_widget=btn)
 
     # Tab containing saved favorite addresses.
-    def _build_favorites_tab(
-        self, region_width: float, region_height: float
-    ) -> None:
+    def _build_favorites_tab(self, region_width: float, region_height: float) -> None:
         c_height = region_height - 20
         v = c_height - 35 - 25 - 30
 
@@ -410,30 +393,30 @@ class ManualGatherTab(GatherTab):
             parent=self._container,
             size=(b_width, b_height),
             position=(140 if uiscale is bui.UIScale.SMALL else 40, btnv),
-            button_type='square',
+            button_type="square",
             color=(0.6, 0.53, 0.63),
             textcolor=(0.75, 0.7, 0.8),
             on_activate_call=self._on_favorites_connect_press,
             text_scale=1.0 if uiscale is bui.UIScale.SMALL else 1.2,
-            label=bui.Lstr(resource='gatherWindow.manualConnectText'),
+            label=bui.Lstr(resource="gatherWindow.manualConnectText"),
             autoselect=True,
         )
         if uiscale is bui.UIScale.SMALL:
             bui.widget(
                 edit=btn1,
-                left_widget=bui.get_special_widget('back_button'),
+                left_widget=bui.get_special_widget("back_button"),
             )
         btnv -= b_height + b_space_extra
         bui.buttonwidget(
             parent=self._container,
             size=(b_width, b_height),
             position=(140 if uiscale is bui.UIScale.SMALL else 40, btnv),
-            button_type='square',
+            button_type="square",
             color=(0.6, 0.53, 0.63),
             textcolor=(0.75, 0.7, 0.8),
             on_activate_call=self._on_favorites_edit_press,
             text_scale=1.0 if uiscale is bui.UIScale.SMALL else 1.2,
-            label=bui.Lstr(resource='editText'),
+            label=bui.Lstr(resource="editText"),
             autoselect=True,
         )
         btnv -= b_height + b_space_extra
@@ -441,12 +424,12 @@ class ManualGatherTab(GatherTab):
             parent=self._container,
             size=(b_width, b_height),
             position=(140 if uiscale is bui.UIScale.SMALL else 40, btnv),
-            button_type='square',
+            button_type="square",
             color=(0.6, 0.53, 0.63),
             textcolor=(0.75, 0.7, 0.8),
             on_activate_call=self._on_favorite_delete_press,
             text_scale=1.0 if uiscale is bui.UIScale.SMALL else 1.2,
-            label=bui.Lstr(resource='deleteText'),
+            label=bui.Lstr(resource="deleteText"),
             autoselect=True,
         )
 
@@ -457,9 +440,7 @@ class ManualGatherTab(GatherTab):
             size=(sub_scroll_width, sub_scroll_height),
             claims_left_right=True,
         )
-        bui.widget(
-            edit=self._favorites_connect_button, right_widget=self._scrollwidget
-        )
+        bui.widget(edit=self._favorites_connect_button, right_widget=self._scrollwidget)
         self._columnwidget = bui.columnwidget(
             parent=scrlw,
             left_border=10,
@@ -471,9 +452,9 @@ class ManualGatherTab(GatherTab):
         self._no_parties_added_text = bui.textwidget(
             parent=self._container,
             size=(0, 0),
-            h_align='center',
-            v_align='center',
-            text='',
+            h_align="center",
+            v_align="center",
+            text="",
             color=(0.6, 0.6, 0.6),
             scale=1.2,
             position=(
@@ -483,7 +464,7 @@ class ManualGatherTab(GatherTab):
                 ),
                 v + sub_scroll_height * 0.5,
             ),
-            glow_type='uniform',
+            glow_type="uniform",
         )
 
         self._favorite_selected = None
@@ -491,19 +472,19 @@ class ManualGatherTab(GatherTab):
 
     def _no_favorite_selected_error(self) -> None:
         bui.screenmessage(
-            bui.Lstr(resource='nothingIsSelectedErrorText'), color=(1, 0, 0)
+            bui.Lstr(resource="nothingIsSelectedErrorText"), color=(1, 0, 0)
         )
-        bui.getsound('error').play()
+        bui.getsound("error").play()
 
     def _on_favorites_connect_press(self) -> None:
         if self._favorite_selected is None:
             self._no_favorite_selected_error()
 
         else:
-            config = bui.app.config['Saved Servers'][self._favorite_selected]
+            config = bui.app.config["Saved Servers"][self._favorite_selected]
             _HostLookupThread(
-                name=config['addr'],
-                port=config['port'],
+                name=config["addr"],
+                port=config["port"],
                 call=bui.WeakCall(self._host_lookup_result),
             ).start()
 
@@ -523,15 +504,15 @@ class ManualGatherTab(GatherTab):
                 else 1.55 if uiscale is bui.UIScale.MEDIUM else 1.0
             ),
             size=(c_width, c_height),
-            transition='in_scale',
+            transition="in_scale",
         )
 
         bui.textwidget(
             parent=cnt,
             size=(0, 0),
-            h_align='center',
-            v_align='center',
-            text=bui.Lstr(resource='editText'),
+            h_align="center",
+            v_align="center",
+            text=bui.Lstr(resource="editText"),
             color=(0.6, 1.0, 0.6),
             maxwidth=c_width * 0.8,
             position=(c_width * 0.5, c_height - 60),
@@ -544,21 +525,19 @@ class ManualGatherTab(GatherTab):
             scale=1.0,
             size=(0, 0),
             maxwidth=60,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(resource='nameText'),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="nameText"),
         )
 
         self._party_edit_name_text = bui.textwidget(
             parent=cnt,
             size=(c_width * 0.7, 40),
-            h_align='left',
-            v_align='center',
-            text=bui.app.config['Saved Servers'][self._favorite_selected][
-                'name'
-            ],
+            h_align="left",
+            v_align="center",
+            text=bui.app.config["Saved Servers"][self._favorite_selected]["name"],
             editable=True,
-            description=bui.Lstr(resource='nameText'),
+            description=bui.Lstr(resource="nameText"),
             position=(c_width * 0.2, c_height - 140),
             autoselect=True,
             maxwidth=c_width * 0.6,
@@ -572,21 +551,19 @@ class ManualGatherTab(GatherTab):
             scale=1.0,
             size=(0, 0),
             maxwidth=60,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.' 'manualAddressText'),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "manualAddressText"),
         )
 
         self._party_edit_addr_text = bui.textwidget(
             parent=cnt,
             size=(c_width * 0.4, 40),
-            h_align='left',
-            v_align='center',
-            text=bui.app.config['Saved Servers'][self._favorite_selected][
-                'addr'
-            ],
+            h_align="left",
+            v_align="center",
+            text=bui.app.config["Saved Servers"][self._favorite_selected]["addr"],
             editable=True,
-            description=bui.Lstr(resource='gatherWindow.manualAddressText'),
+            description=bui.Lstr(resource="gatherWindow.manualAddressText"),
             position=(c_width * 0.2, c_height - 200),
             autoselect=True,
             maxwidth=c_width * 0.35,
@@ -600,21 +577,19 @@ class ManualGatherTab(GatherTab):
             scale=1.0,
             size=(0, 0),
             maxwidth=45,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.' 'portText'),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "portText"),
         )
 
         self._party_edit_port_text = bui.textwidget(
             parent=cnt,
             size=(c_width * 0.2, 40),
-            h_align='left',
-            v_align='center',
-            text=str(
-                bui.app.config['Saved Servers'][self._favorite_selected]['port']
-            ),
+            h_align="left",
+            v_align="center",
+            text=str(bui.app.config["Saved Servers"][self._favorite_selected]["port"]),
             editable=True,
-            description=bui.Lstr(resource='gatherWindow.portText'),
+            description=bui.Lstr(resource="gatherWindow.portText"),
             position=(c_width * 0.7, c_height - 200),
             autoselect=True,
             maxwidth=c_width * 0.2,
@@ -622,9 +597,9 @@ class ManualGatherTab(GatherTab):
         )
         cbtn = bui.buttonwidget(
             parent=cnt,
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             on_activate_call=bui.Call(
-                lambda c: bui.containerwidget(edit=c, transition='out_scale'),
+                lambda c: bui.containerwidget(edit=c, transition="out_scale"),
                 cnt,
             ),
             size=(180, 60),
@@ -633,7 +608,7 @@ class ManualGatherTab(GatherTab):
         )
         okb = bui.buttonwidget(
             parent=cnt,
-            label=bui.Lstr(resource='saveText'),
+            label=bui.Lstr(resource="saveText"),
             size=(180, 60),
             position=(c_width - 230, 30),
             on_activate_call=bui.Call(self._edit_saved_party),
@@ -650,29 +625,21 @@ class ManualGatherTab(GatherTab):
             return
         if not self._party_edit_name_text or not self._party_edit_addr_text:
             return
-        new_name_raw = cast(
-            str, bui.textwidget(query=self._party_edit_name_text)
-        )
-        new_addr_raw = cast(
-            str, bui.textwidget(query=self._party_edit_addr_text)
-        )
-        new_port_raw = cast(
-            str, bui.textwidget(query=self._party_edit_port_text)
-        )
-        bui.app.config['Saved Servers'][server]['name'] = new_name_raw
-        bui.app.config['Saved Servers'][server]['addr'] = new_addr_raw
+        new_name_raw = cast(str, bui.textwidget(query=self._party_edit_name_text))
+        new_addr_raw = cast(str, bui.textwidget(query=self._party_edit_addr_text))
+        new_port_raw = cast(str, bui.textwidget(query=self._party_edit_port_text))
+        bui.app.config["Saved Servers"][server]["name"] = new_name_raw
+        bui.app.config["Saved Servers"][server]["addr"] = new_addr_raw
         try:
-            bui.app.config['Saved Servers'][server]['port'] = int(new_port_raw)
+            bui.app.config["Saved Servers"][server]["port"] = int(new_port_raw)
         except ValueError:
             # Notify about incorrect port? I'm lazy; simply leave old value.
             pass
         bui.app.config.commit()
-        bui.getsound('gunCocking').play()
+        bui.getsound("gunCocking").play()
         self._refresh_favorites()
 
-        bui.containerwidget(
-            edit=self._favorite_edit_window, transition='out_scale'
-        )
+        bui.containerwidget(edit=self._favorite_edit_window, transition="out_scale")
 
     def _on_favorite_delete_press(self) -> None:
         from bauiv1lib import confirm
@@ -682,13 +649,13 @@ class ManualGatherTab(GatherTab):
             return
         confirm.ConfirmWindow(
             bui.Lstr(
-                resource='gameListWindow.deleteConfirmText',
+                resource="gameListWindow.deleteConfirmText",
                 subs=[
                     (
-                        '${LIST}',
-                        bui.app.config['Saved Servers'][
-                            self._favorite_selected
-                        ]['name'],
+                        "${LIST}",
+                        bui.app.config["Saved Servers"][self._favorite_selected][
+                            "name"
+                        ],
                     )
                 ],
             ),
@@ -701,11 +668,11 @@ class ManualGatherTab(GatherTab):
         if self._favorite_selected is None:
             self._no_favorite_selected_error()
             return
-        config = bui.app.config['Saved Servers']
+        config = bui.app.config["Saved Servers"]
         del config[self._favorite_selected]
         self._favorite_selected = None
         bui.app.config.commit()
-        bui.getsound('shieldDown').play()
+        bui.getsound("shieldDown").play()
         self._refresh_favorites()
 
     def _on_favorite_select(self, server: str) -> None:
@@ -718,8 +685,8 @@ class ManualGatherTab(GatherTab):
         t_scale = 1.6
 
         config = bui.app.config
-        if 'Saved Servers' in config:
-            servers = config['Saved Servers']
+        if "Saved Servers" in config:
+            servers = config["Saved Servers"]
 
         else:
             servers = []
@@ -729,7 +696,7 @@ class ManualGatherTab(GatherTab):
 
         bui.textwidget(
             edit=self._no_parties_added_text,
-            text='',
+            text="",
         )
         num_of_fav = 0
         for i, server in enumerate(servers):
@@ -742,14 +709,14 @@ class ManualGatherTab(GatherTab):
                 on_select_call=bui.Call(self._on_favorite_select, server),
                 on_activate_call=self._favorites_connect_button.activate,
                 text=(
-                    config['Saved Servers'][server]['name']
-                    if config['Saved Servers'][server]['name'] != ''
-                    else config['Saved Servers'][server]['addr']
-                    + ' '
-                    + str(config['Saved Servers'][server]['port'])
+                    config["Saved Servers"][server]["name"]
+                    if config["Saved Servers"][server]["name"] != ""
+                    else config["Saved Servers"][server]["addr"]
+                    + " "
+                    + str(config["Saved Servers"][server]["port"])
                 ),
-                h_align='left',
-                v_align='center',
+                h_align="left",
+                v_align="center",
                 corner_scale=t_scale,
                 maxwidth=(self._favorites_scroll_width / t_scale) * 0.93,
             )
@@ -778,23 +745,21 @@ class ManualGatherTab(GatherTab):
         if num_of_fav == 0:
             bui.textwidget(
                 edit=self._no_parties_added_text,
-                text=bui.Lstr(resource='gatherWindow.noPartiesAddedText'),
+                text=bui.Lstr(resource="gatherWindow.noPartiesAddedText"),
             )
 
     @override
     def on_deactivate(self) -> None:
         self._access_check_timer = None
 
-    def _connect(
-        self, textwidget: bui.Widget, port_textwidget: bui.Widget
-    ) -> None:
+    def _connect(self, textwidget: bui.Widget, port_textwidget: bui.Widget) -> None:
         addr = cast(str, bui.textwidget(query=textwidget))
-        if addr == '':
+        if addr == "":
             bui.screenmessage(
-                bui.Lstr(resource='internal.invalidAddressErrorText'),
+                bui.Lstr(resource="internal.invalidAddressErrorText"),
                 color=(1, 0, 0),
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
         try:
             port = int(cast(str, bui.textwidget(query=port_textwidget)))
@@ -802,26 +767,24 @@ class ManualGatherTab(GatherTab):
             port = -1
         if port > 65535 or port < 0:
             bui.screenmessage(
-                bui.Lstr(resource='internal.invalidPortErrorText'),
+                bui.Lstr(resource="internal.invalidPortErrorText"),
                 color=(1, 0, 0),
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
 
         _HostLookupThread(
             name=addr, port=port, call=bui.WeakCall(self._host_lookup_result)
         ).start()
 
-    def _save_server(
-        self, textwidget: bui.Widget, port_textwidget: bui.Widget
-    ) -> None:
+    def _save_server(self, textwidget: bui.Widget, port_textwidget: bui.Widget) -> None:
         addr = cast(str, bui.textwidget(query=textwidget))
-        if addr == '':
+        if addr == "":
             bui.screenmessage(
-                bui.Lstr(resource='internal.invalidAddressErrorText'),
+                bui.Lstr(resource="internal.invalidAddressErrorText"),
                 color=(1, 0, 0),
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
         try:
             port = int(cast(str, bui.textwidget(query=port_textwidget)))
@@ -829,50 +792,46 @@ class ManualGatherTab(GatherTab):
             port = -1
         if port > 65535 or port < 0:
             bui.screenmessage(
-                bui.Lstr(resource='internal.invalidPortErrorText'),
+                bui.Lstr(resource="internal.invalidPortErrorText"),
                 color=(1, 0, 0),
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
         config = bui.app.config
 
         if addr:
-            if not isinstance(config.get('Saved Servers'), dict):
-                config['Saved Servers'] = {}
-            config['Saved Servers'][f'{addr}@{port}'] = {
-                'addr': addr,
-                'port': port,
-                'name': addr,
+            if not isinstance(config.get("Saved Servers"), dict):
+                config["Saved Servers"] = {}
+            config["Saved Servers"][f"{addr}@{port}"] = {
+                "addr": addr,
+                "port": port,
+                "name": addr,
             }
             config.commit()
-            bui.getsound('gunCocking').play()
+            bui.getsound("gunCocking").play()
             bui.screenmessage(
-                bui.Lstr(
-                    resource='addedToFavoritesText', subs=[('${NAME}', addr)]
-                ),
+                bui.Lstr(resource="addedToFavoritesText", subs=[("${NAME}", addr)]),
                 color=(0, 1, 0),
             )
         else:
             bui.screenmessage(
-                bui.Lstr(resource='internal.invalidAddressErrorText'),
+                bui.Lstr(resource="internal.invalidAddressErrorText"),
                 color=(1, 0, 0),
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
 
-    def _host_lookup_result(
-        self, resolved_address: str | None, port: int
-    ) -> None:
+    def _host_lookup_result(self, resolved_address: str | None, port: int) -> None:
         if resolved_address is None:
             bui.screenmessage(
-                bui.Lstr(resource='internal.unableToResolveHostText'),
+                bui.Lstr(resource="internal.unableToResolveHostText"),
                 color=(1, 0, 0),
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
         else:
             # Store for later.
             config = bui.app.config
-            config['Last Manual Party Connect Address'] = resolved_address
-            config['Last Manual Party Connect Port'] = port
+            config["Last Manual Party Connect Address"] = resolved_address
+            config["Last Manual Party Connect Port"] = port
             config.commit()
 
             # Store UI location to return to when done.
@@ -887,7 +846,7 @@ class ManualGatherTab(GatherTab):
             import socket
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock.connect(('8.8.8.8', 80))
+            sock.connect(("8.8.8.8", 80))
             val = sock.getsockname()[0]
             sock.close()
             bui.pushcall(
@@ -906,7 +865,7 @@ class ManualGatherTab(GatherTab):
                     bui.Call(
                         _safe_set_text,
                         self._checking_state_text,
-                        bui.Lstr(resource='gatherWindow.' 'noConnectionText'),
+                        bui.Lstr(resource="gatherWindow." "noConnectionText"),
                         False,
                     ),
                     from_other_thread=True,
@@ -916,14 +875,12 @@ class ManualGatherTab(GatherTab):
                     bui.Call(
                         _safe_set_text,
                         self._checking_state_text,
-                        bui.Lstr(
-                            resource='gatherWindow.' 'addressFetchErrorText'
-                        ),
+                        bui.Lstr(resource="gatherWindow." "addressFetchErrorText"),
                         False,
                     ),
                     from_other_thread=True,
                 )
-                logging.exception('Error in AddrFetchThread.')
+                logging.exception("Error in AddrFetchThread.")
 
     def _on_show_my_address_button_press(
         self, v2: float, container: bui.Widget | None, c_width: float
@@ -934,7 +891,7 @@ class ManualGatherTab(GatherTab):
         tscl = 0.85
         tspc = 25
 
-        bui.getsound('swish').play()
+        bui.getsound("swish").play()
         bui.textwidget(
             parent=container,
             position=(c_width * 0.5 - 10, v2),
@@ -943,11 +900,9 @@ class ManualGatherTab(GatherTab):
             size=(0, 0),
             maxwidth=c_width * 0.45,
             flatness=1.0,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(
-                resource='gatherWindow.' 'manualYourLocalAddressText'
-            ),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "manualYourLocalAddressText"),
         )
         self._checking_state_text = bui.textwidget(
             parent=container,
@@ -957,9 +912,9 @@ class ManualGatherTab(GatherTab):
             size=(0, 0),
             maxwidth=c_width * 0.45,
             flatness=1.0,
-            h_align='left',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.' 'checkingText'),
+            h_align="left",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "checkingText"),
         )
 
         Thread(target=self._run_addr_fetch).start()
@@ -973,11 +928,9 @@ class ManualGatherTab(GatherTab):
             size=(0, 0),
             maxwidth=c_width * 0.45,
             flatness=1.0,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(
-                resource='gatherWindow.' 'manualYourAddressFromInternetText'
-            ),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "manualYourAddressFromInternetText"),
         )
 
         t_addr = bui.textwidget(
@@ -987,10 +940,10 @@ class ManualGatherTab(GatherTab):
             scale=tscl,
             size=(0, 0),
             maxwidth=c_width * 0.45,
-            h_align='left',
-            v_align='center',
+            h_align="left",
+            v_align="center",
             flatness=1.0,
-            text=bui.Lstr(resource='gatherWindow.' 'checkingText'),
+            text=bui.Lstr(resource="gatherWindow." "checkingText"),
         )
         v2 -= tspc
         bui.textwidget(
@@ -1001,11 +954,9 @@ class ManualGatherTab(GatherTab):
             size=(0, 0),
             maxwidth=c_width * 0.45,
             flatness=1.0,
-            h_align='right',
-            v_align='center',
-            text=bui.Lstr(
-                resource='gatherWindow.' 'manualJoinableFromInternetText'
-            ),
+            h_align="right",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "manualJoinableFromInternetText"),
         )
 
         t_accessible = bui.textwidget(
@@ -1016,9 +967,9 @@ class ManualGatherTab(GatherTab):
             size=(0, 0),
             maxwidth=c_width * 0.45,
             flatness=1.0,
-            h_align='left',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.' 'checkingText'),
+            h_align="left",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow." "checkingText"),
         )
         v2 -= 28
         t_accessible_extra = bui.textwidget(
@@ -1029,9 +980,9 @@ class ManualGatherTab(GatherTab):
             size=(0, 0),
             maxwidth=c_width * 0.9,
             flatness=1.0,
-            h_align='center',
-            v_align='center',
-            text='',
+            h_align="center",
+            v_align="center",
+            text="",
         )
 
         self._doing_access_check = False
@@ -1069,8 +1020,8 @@ class ManualGatherTab(GatherTab):
             self._t_accessible = t_accessible
             self._t_accessible_extra = t_accessible_extra
             bui.app.classic.master_server_v1_get(
-                'bsAccessCheck',
-                {'b': bui.app.env.engine_build_number},
+                "bsAccessCheck",
+                {"b": bui.app.env.engine_build_number},
                 callback=bui.WeakCall(self._on_accessible_response),
             )
 
@@ -1081,45 +1032,38 @@ class ManualGatherTab(GatherTab):
         self._doing_access_check = False
         color_bad = (1, 1, 0)
         color_good = (0, 1, 0)
-        if data is None or 'address' not in data or 'accessible' not in data:
+        if data is None or "address" not in data or "accessible" not in data:
             if t_addr:
                 bui.textwidget(
                     edit=t_addr,
-                    text=bui.Lstr(resource='gatherWindow.' 'noConnectionText'),
+                    text=bui.Lstr(resource="gatherWindow." "noConnectionText"),
                     color=color_bad,
                 )
             if t_accessible:
                 bui.textwidget(
                     edit=t_accessible,
-                    text=bui.Lstr(resource='gatherWindow.' 'noConnectionText'),
+                    text=bui.Lstr(resource="gatherWindow." "noConnectionText"),
                     color=color_bad,
                 )
             if t_accessible_extra:
-                bui.textwidget(
-                    edit=t_accessible_extra, text='', color=color_bad
-                )
+                bui.textwidget(edit=t_accessible_extra, text="", color=color_bad)
             return
         if t_addr:
-            bui.textwidget(edit=t_addr, text=data['address'], color=color_good)
+            bui.textwidget(edit=t_addr, text=data["address"], color=color_good)
         if t_accessible:
-            if data['accessible']:
+            if data["accessible"]:
                 bui.textwidget(
                     edit=t_accessible,
-                    text=bui.Lstr(
-                        resource='gatherWindow.' 'manualJoinableYesText'
-                    ),
+                    text=bui.Lstr(resource="gatherWindow." "manualJoinableYesText"),
                     color=color_good,
                 )
                 if t_accessible_extra:
-                    bui.textwidget(
-                        edit=t_accessible_extra, text='', color=color_good
-                    )
+                    bui.textwidget(edit=t_accessible_extra, text="", color=color_good)
             else:
                 bui.textwidget(
                     edit=t_accessible,
                     text=bui.Lstr(
-                        resource='gatherWindow.'
-                        'manualJoinableNoWithAsteriskText'
+                        resource="gatherWindow." "manualJoinableNoWithAsteriskText"
                     ),
                     color=color_bad,
                 )
@@ -1127,10 +1071,9 @@ class ManualGatherTab(GatherTab):
                     bui.textwidget(
                         edit=t_accessible_extra,
                         text=bui.Lstr(
-                            resource='gatherWindow.'
-                            'manualRouterForwardingText',
+                            resource="gatherWindow." "manualRouterForwardingText",
                             subs=[
-                                ('${PORT}', str(bs.get_game_port())),
+                                ("${PORT}", str(bs.get_game_port())),
                             ],
                         ),
                         color=color_bad,

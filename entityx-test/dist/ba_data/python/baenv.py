@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 
     from efro.logging import LogHandler
 
-logger = logging.getLogger('ba.env')
+logger = logging.getLogger("ba.env")
 
 # IMPORTANT - It is likely (and in some cases expected) that this
 # module's code will be exec'ed multiple times. This is because it is
@@ -57,7 +57,7 @@ logger = logging.getLogger('ba.env')
 # Build number and version of the ballistica binary we expect to be
 # using.
 TARGET_BALLISTICA_BUILD = 22467
-TARGET_BALLISTICA_VERSION = '1.7.46'
+TARGET_BALLISTICA_VERSION = "1.7.46"
 
 
 @dataclass
@@ -119,7 +119,7 @@ class _EnvGlobals:
     @classmethod
     def get(cls) -> _EnvGlobals:
         """Create/return our singleton."""
-        name = '_baenv_globals'
+        name = "_baenv_globals"
         envglobals: _EnvGlobals | None = getattr(__main__, name, None)
         if envglobals is None:
             envglobals = _EnvGlobals()
@@ -157,8 +157,8 @@ def get_env_config() -> EnvConfig:
     config = envglobals.config
     if config is None:
         raise RuntimeError(
-            'baenv.configure() has been called but no config exists;'
-            ' perhaps it errored?'
+            "baenv.configure() has been called but no config exists;"
+            " perhaps it errored?"
         )
     return config
 
@@ -196,8 +196,7 @@ def configure(
     # overlapping configure calls going.
     if envglobals.called_configure:
         raise RuntimeError(
-            'baenv.configure() has already been called;'
-            ' it can only be called once.'
+            "baenv.configure() has already been called;" " it can only be called once."
         )
     envglobals.called_configure = True
 
@@ -231,7 +230,7 @@ def configure(
     # pyc files made in our custom cache dir.
     prev_pycache_prefix = sys.pycache_prefix
     if setup_pycache_prefix:
-        sys.pycache_prefix = os.path.join(cache_dir, 'pyc')
+        sys.pycache_prefix = os.path.join(cache_dir, "pyc")
 
     # Set up our log-handler and pipe Python's stdout/stderr into it.
     # Later, once the engine comes up, the handler will feed its logs
@@ -245,7 +244,7 @@ def configure(
     )
 
     # Load the raw app-config dict.
-    app_config = _read_app_config(os.path.join(config_dir, 'config.json'))
+    app_config = _read_app_config(os.path.join(config_dir, "config.json"))
 
     # Set logging levels to stored values or defaults.
     if setup_logging:
@@ -255,7 +254,7 @@ def configure(
     if sys.flags.utf8_mode != 1:
         logger.warning(
             "Python's UTF-8 mode is not set. Running Ballistica without"
-            ' it may lead to errors.'
+            " it may lead to errors."
         )
 
     # We (possibly) set pycache_prefix above so that opt .pyc files are
@@ -275,8 +274,8 @@ def configure(
     # things up using PYTHONPYCACHEPREFIX or whatnot.
     if setup_pycache_prefix and prev_pycache_prefix != sys.pycache_prefix:
         logger.warning(
-            'Changing sys.pycache_prefix from %s to %s.'
-            ' For best performance, run with PYTHONPYCACHEPREFIX=%s.',
+            "Changing sys.pycache_prefix from %s to %s."
+            " For best performance, run with PYTHONPYCACHEPREFIX=%s.",
             repr(prev_pycache_prefix),
             repr(sys.pycache_prefix),
             repr(sys.pycache_prefix),
@@ -289,7 +288,7 @@ def configure(
     # random cache files occasionally to help ensure that code responds
     # correctly if/when the OS does the same thing.
     if __debug__:
-        if '_babase' not in sys.modules:
+        if "_babase" not in sys.modules:
             _cache_ninja_rampage(cache_dir)
 
     # Get ssl working if needed so we can use https and all that.
@@ -320,7 +319,7 @@ def _cache_ninja_rampage(cache_dir: str) -> None:
             # as our average cache file count goes up.
             if random.random() < 0.001:
                 fullpath = os.path.join(basename, fname)
-                logging.getLogger('ba.cache').debug(
+                logging.getLogger("ba.cache").debug(
                     "Cache-ninja assasinated '%s'.", fullpath
                 )
                 os.unlink(fullpath)
@@ -331,14 +330,14 @@ def _read_app_config(config_file_path: str) -> dict:
     import json
 
     config: dict | Any
-    config_contents = ''
+    config_contents = ""
     try:
         if os.path.exists(config_file_path):
-            with open(config_file_path, encoding='utf-8') as infile:
+            with open(config_file_path, encoding="utf-8") as infile:
                 config_contents = infile.read()
             config = json.loads(config_contents)
             if not isinstance(config, dict):
-                raise RuntimeError('Got non-dict for config root.')
+                raise RuntimeError("Got non-dict for config root.")
         else:
             config = {}
 
@@ -353,9 +352,9 @@ def _read_app_config(config_file_path: str) -> dict:
         try:
             import shutil
 
-            shutil.copyfile(config_file_path, config_file_path + '.broken')
+            shutil.copyfile(config_file_path, config_file_path + ".broken")
         except Exception:
-            logger.exception('Error copying broken config.')
+            logger.exception("Error copying broken config.")
         config = {}
 
     return config
@@ -365,7 +364,7 @@ def _calc_data_dir(data_dir: str | None) -> str:
     if data_dir is None:
         # To calc default data_dir, we assume this module was imported
         # from that dir's ba_data/python subdir.
-        assert Path(__file__).parts[-3:-1] == ('ba_data', 'python')
+        assert Path(__file__).parts[-3:-1] == ("ba_data", "python")
         data_dir_path = Path(__file__).parents[2]
 
         # Prefer tidy relative paths like './ba_data' if possible so
@@ -417,7 +416,7 @@ def _set_log_levels(app_config: dict) -> None:
     from bacommon.loggercontrol import LoggerControlConfig
 
     try:
-        config = app_config.get('Log Levels', None)
+        config = app_config.get("Log Levels", None)
 
         if config is None:
             get_base_logger_control_config_client().apply()
@@ -447,7 +446,7 @@ def _set_log_levels(app_config: dict) -> None:
         ).apply()
 
     except Exception:
-        logger.exception('Error setting log levels.')
+        logger.exception("Error setting log levels.")
 
 
 def _setup_certs(contains_python_dist: bool) -> None:
@@ -456,16 +455,11 @@ def _setup_certs(contains_python_dist: bool) -> None:
     # overriding this in particular embedded cases if we can verify that
     # system certs are working. We also allow forcing this via an env
     # var if the user desires.
-    if (
-        contains_python_dist
-        or os.environ.get('BA_USE_BUNDLED_ROOT_CERTS') == '1'
-    ):
+    if contains_python_dist or os.environ.get("BA_USE_BUNDLED_ROOT_CERTS") == "1":
         import certifi
 
         # Let both OpenSSL and requests (if present) know to use this.
-        os.environ['SSL_CERT_FILE'] = os.environ['REQUESTS_CA_BUNDLE'] = (
-            certifi.where()
-        )
+        os.environ["SSL_CERT_FILE"] = os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
 
 def _setup_paths(
@@ -487,21 +481,21 @@ def _setup_paths(
 
     # Default config-dir is simply ~/.ballisticakit
     if config_dir is None:
-        config_dir = str(Path(Path.home(), '.ballisticakit'))
+        config_dir = str(Path(Path.home(), ".ballisticakit"))
 
     # By default, cache-dir is simply 'cache' under config-dir.
     if cache_dir is None:
-        cache_dir = str(Path(config_dir, 'cache'))
+        cache_dir = str(Path(config_dir, "cache"))
 
     # Standard app-python-dir is simply ba_data/python under data-dir.
-    standard_app_python_dir = str(Path(data_dir, 'ba_data', 'python'))
+    standard_app_python_dir = str(Path(data_dir, "ba_data", "python"))
 
     # Whether the final app-dir we're returning is a custom user-owned one.
     is_user_app_python_dir = False
 
     # If _babase has already been imported, there's not much we can do
     # at this point aside from complain and inform for next time.
-    if '_babase' in sys.modules:
+    if "_babase" in sys.modules:
         app_python_dir = user_python_dir = site_python_dir = None
 
         # We don't actually complain yet here; we simply take note that
@@ -520,13 +514,11 @@ def _setup_paths(
         # Likewise site-python-dir defaults to
         # ba_data/python-site-packages.
         if site_python_dir is None:
-            site_python_dir = str(
-                Path(data_dir, 'ba_data', 'python-site-packages')
-            )
+            site_python_dir = str(Path(data_dir, "ba_data", "python-site-packages"))
 
         # By default, user-python-dir is simply 'mods' under config-dir.
         if user_python_dir is None:
-            user_python_dir = str(Path(config_dir, 'mods'))
+            user_python_dir = str(Path(config_dir, "mods"))
 
         # Wherever our user_python_dir is, if we find a sys/FOO_BAR dir
         # under it where FOO matches our version and BAR matches our
@@ -535,8 +527,8 @@ def _setup_paths(
         # access to said built-in stuff.
         check_dir = Path(
             user_python_dir,
-            'sys',
-            f'{TARGET_BALLISTICA_VERSION}_{TARGET_BALLISTICA_BUILD}',
+            "sys",
+            f"{TARGET_BALLISTICA_VERSION}_{TARGET_BALLISTICA_BUILD}",
         )
         try:
             if check_dir.is_dir():
@@ -576,7 +568,7 @@ def _setup_paths(
         # dir alongside the 'python' scripts dir which contains our
         # binary Python modules. If we see that, add it to the path also.
         # Not sure if we'd ever have a need to customize this path.
-        dylibdir = f'{app_python_dir}-dylib'
+        dylibdir = f"{app_python_dir}-dylib"
         if os.path.exists(dylibdir):
             ourpaths.append(dylibdir)
 
@@ -598,9 +590,9 @@ def _setup_dirs(
     config_dir: str | None, user_python_dir: str | None, cache_dir: str
 ) -> None:
     create_dirs: list[tuple[str, str | None]] = [
-        ('config', config_dir),
-        ('cache', cache_dir),
-        ('user_python', user_python_dir),
+        ("config", config_dir),
+        ("cache", cache_dir),
+        ("user_python", user_python_dir),
     ]
     for cdirname, cdir in create_dirs:
         if cdir is not None:
@@ -608,9 +600,7 @@ def _setup_dirs(
                 os.makedirs(cdir, exist_ok=True)
             except Exception:
                 # Not the end of the world if we can't make these dirs.
-                logger.warning(
-                    "Unable to create %s dir at '%s'.", cdirname, cdir
-                )
+                logger.warning("Unable to create %s dir at '%s'.", cdirname, cdir)
 
 
 def _extract_arg(args: list[str], names: list[str], is_dir: bool) -> str | None:
@@ -628,26 +618,24 @@ def _extract_arg(args: list[str], names: list[str], is_dir: bool) -> str | None:
         return None
 
     if count > 1:
-        raise CleanError(f'Arg {names} passed multiple times.')
+        raise CleanError(f"Arg {names} passed multiple times.")
 
     for name in names:
         if name not in args:
             continue
         argindex = args.index(name)
         if argindex + 1 >= len(args):
-            raise CleanError(f'No value passed after {name} arg.')
+            raise CleanError(f"No value passed after {name} arg.")
 
         val = args[argindex + 1]
         del args[argindex : argindex + 2]
 
         if is_dir and not os.path.isdir(val):
-            namepretty = names[0].removeprefix('--')
-            raise CleanError(
-                f"Provided {namepretty} path '{val}' is not a directory."
-            )
+            namepretty = names[0].removeprefix("--")
+            raise CleanError(f"Provided {namepretty} path '{val}' is not a directory.")
         return val
 
-    raise RuntimeError(f'Expected arg name not found from {names}')
+    raise RuntimeError(f"Expected arg name not found from {names}")
 
 
 def _modular_main() -> None:
@@ -687,15 +675,15 @@ def _modular_main() -> None:
 
         # Our -c arg basically mirrors Python's -c arg. If we get that,
         # simply exec it and return; no engine stuff.
-        command = _extract_arg(args, ['--command', '-c'], is_dir=False)
+        command = _extract_arg(args, ["--command", "-c"], is_dir=False)
         if command is not None:
             exec(command)  # pylint: disable=exec-used
             return
 
-        config_dir = _extract_arg(args, ['--config-dir', '-C'], is_dir=True)
-        data_dir = _extract_arg(args, ['--data-dir', '-d'], is_dir=True)
-        mods_dir = _extract_arg(args, ['--mods-dir', '-m'], is_dir=True)
-        cache_dir = _extract_arg(args, ['--cache-dir', '-a'], is_dir=True)
+        config_dir = _extract_arg(args, ["--config-dir", "-C"], is_dir=True)
+        data_dir = _extract_arg(args, ["--data-dir", "-d"], is_dir=True)
+        mods_dir = _extract_arg(args, ["--mods-dir", "-m"], is_dir=True)
+        cache_dir = _extract_arg(args, ["--cache-dir", "-a"], is_dir=True)
 
         # We run configure() BEFORE importing babase. (part of its job
         # is to wrangle paths which can affect where babase and
@@ -727,5 +715,5 @@ def _modular_main() -> None:
 
 
 # Exec'ing this module directly will do a standard app run.
-if __name__ == '__main__':
+if __name__ == "__main__":
     _modular_main()

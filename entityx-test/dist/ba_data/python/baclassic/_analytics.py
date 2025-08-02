@@ -37,59 +37,45 @@ def game_begin_analytics() -> None:
         campaign = session.campaign
         assert campaign is not None
         babase.set_analytics_screen(
-            'Coop Game: '
+            "Coop Game: "
             + campaign.name
-            + ' '
-            + campaign.getlevel(
-                babase.app.classic.coop_session_args['level']
-            ).name
+            + " "
+            + campaign.getlevel(babase.app.classic.coop_session_args["level"]).name
         )
-        babase.increment_analytics_count('Co-op round start')
+        babase.increment_analytics_count("Co-op round start")
         if len(activity.players) == 1:
-            babase.increment_analytics_count('Co-op round start 1 human player')
+            babase.increment_analytics_count("Co-op round start 1 human player")
         elif len(activity.players) == 2:
-            babase.increment_analytics_count(
-                'Co-op round start 2 human players'
-            )
+            babase.increment_analytics_count("Co-op round start 2 human players")
         elif len(activity.players) == 3:
-            babase.increment_analytics_count(
-                'Co-op round start 3 human players'
-            )
+            babase.increment_analytics_count("Co-op round start 3 human players")
         elif len(activity.players) >= 4:
-            babase.increment_analytics_count(
-                'Co-op round start 4+ human players'
-            )
+            babase.increment_analytics_count("Co-op round start 4+ human players")
 
     elif isinstance(session, DualTeamSession):
-        babase.set_analytics_screen('Teams Game: ' + activity.getname())
-        babase.increment_analytics_count('Teams round start')
+        babase.set_analytics_screen("Teams Game: " + activity.getname())
+        babase.increment_analytics_count("Teams round start")
         if len(activity.players) == 1:
-            babase.increment_analytics_count('Teams round start 1 human player')
+            babase.increment_analytics_count("Teams round start 1 human player")
         elif 1 < len(activity.players) < 8:
             babase.increment_analytics_count(
-                'Teams round start '
-                + str(len(activity.players))
-                + ' human players'
+                "Teams round start " + str(len(activity.players)) + " human players"
             )
         elif len(activity.players) >= 8:
-            babase.increment_analytics_count(
-                'Teams round start 8+ human players'
-            )
+            babase.increment_analytics_count("Teams round start 8+ human players")
 
     elif isinstance(session, FreeForAllSession):
-        babase.set_analytics_screen('FreeForAll Game: ' + activity.getname())
-        babase.increment_analytics_count('Free-for-all round start')
+        babase.set_analytics_screen("FreeForAll Game: " + activity.getname())
+        babase.increment_analytics_count("Free-for-all round start")
         if len(activity.players) == 1:
-            babase.increment_analytics_count(
-                'Free-for-all round start 1 human player'
-            )
+            babase.increment_analytics_count("Free-for-all round start 1 human player")
         elif 1 < len(activity.players) < 8:
             babase.increment_analytics_count(
-                'Free-for-all round start '
+                "Free-for-all round start "
                 + str(len(activity.players))
-                + ' human players'
+                + " human players"
             )
         elif len(activity.players) >= 8:
             babase.increment_analytics_count(
-                'Free-for-all round start 8+ human players'
+                "Free-for-all round start 8+ human players"
             )

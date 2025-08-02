@@ -15,7 +15,7 @@ class KioskWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals, too-many-statements
@@ -41,7 +41,7 @@ class KioskWindow(bui.MainWindow):
             origin_widget=origin_widget,
         )
 
-        self._r = 'kioskWindow'
+        self._r = "kioskWindow"
 
         self._show_multiplayer = False
 
@@ -49,7 +49,7 @@ class KioskWindow(bui.MainWindow):
         bs.reset_random_player_names()
 
         # Reset achievements too (at least locally).
-        bui.app.config['Achievements'] = {}
+        bui.app.config["Achievements"] = {}
 
         t_delay_base = 0.0
         t_delay_scale = 0.0
@@ -57,9 +57,9 @@ class KioskWindow(bui.MainWindow):
             t_delay_base = 1.0
             t_delay_scale = 1.0
 
-        mesh_opaque = bui.getmesh('level_select_button_opaque')
-        mesh_transparent = bui.getmesh('level_select_button_transparent')
-        mask_tex = bui.gettexture('mapPreviewMask')
+        mesh_opaque = bui.getmesh("level_select_button_opaque")
+        mesh_transparent = bui.getmesh("level_select_button_transparent")
+        mask_tex = bui.gettexture("mapPreviewMask")
 
         y_extra = 130.0 + (0.0 if self._show_multiplayer else -130.0)
         b_width = 250.0
@@ -80,11 +80,11 @@ class KioskWindow(bui.MainWindow):
                 size=(0, 0),
                 position=(self._width * 0.5, self._height + y_extra - 44),
                 transition_delay=tdelay,
-                text=bui.Lstr(resource=f'{self._r}.singlePlayerExamplesText'),
+                text=bui.Lstr(resource=f"{self._r}.singlePlayerExamplesText"),
                 flatness=1.0,
                 scale=1.2,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 shadow=1.0,
             )
         else:
@@ -96,16 +96,16 @@ class KioskWindow(bui.MainWindow):
                 transition_delay=tdelay,
                 text=(
                     bui.Lstr(
-                        resource='demoText',
-                        fallback_resource='mainMenu.demoMenuText',
+                        resource="demoText",
+                        fallback_resource="mainMenu.demoMenuText",
                     )
                     if variant is vart.DEMO
-                    else 'ARCADE'
+                    else "ARCADE"
                 ),
                 flatness=1.0,
                 scale=1.2,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 shadow=1.0,
             )
         h = self._width * 0.5 - b_space
@@ -114,11 +114,11 @@ class KioskWindow(bui.MainWindow):
             parent=self._root_widget,
             autoselect=True,
             size=(b_width, b_height),
-            on_activate_call=bui.Call(self._do_game, 'easy'),
+            on_activate_call=bui.Call(self._do_game, "easy"),
             transition_delay=tdelay,
             position=(h - b_width * 0.5, b_v),
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
         )
         bui.textwidget(
             parent=self._root_widget,
@@ -127,10 +127,10 @@ class KioskWindow(bui.MainWindow):
             size=(0, 0),
             position=(h, label_height),
             maxwidth=b_width * 0.7,
-            text=bui.Lstr(resource=f'{self._r}.easyText'),
+            text=bui.Lstr(resource=f"{self._r}.easyText"),
             scale=1.3,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         bui.imagewidget(
             parent=self._root_widget,
@@ -138,7 +138,7 @@ class KioskWindow(bui.MainWindow):
             size=(img_width, 0.5 * img_width),
             transition_delay=tdelay,
             position=(h - img_width * 0.5, img_v),
-            texture=bui.gettexture('doomShroomPreview'),
+            texture=bui.gettexture("doomShroomPreview"),
             mesh_opaque=mesh_opaque,
             mesh_transparent=mesh_transparent,
             mask_texture=mask_tex,
@@ -149,10 +149,10 @@ class KioskWindow(bui.MainWindow):
             parent=self._root_widget,
             autoselect=True,
             size=(b_width, b_height),
-            on_activate_call=bui.Call(self._do_game, 'medium'),
+            on_activate_call=bui.Call(self._do_game, "medium"),
             position=(h - b_width * 0.5, b_v),
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
             transition_delay=tdelay,
         )
         bui.textwidget(
@@ -162,10 +162,10 @@ class KioskWindow(bui.MainWindow):
             size=(0, 0),
             position=(h, label_height),
             maxwidth=b_width * 0.7,
-            text=bui.Lstr(resource=f'{self._r}.mediumText'),
+            text=bui.Lstr(resource=f"{self._r}.mediumText"),
             scale=1.3,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         bui.imagewidget(
             parent=self._root_widget,
@@ -173,7 +173,7 @@ class KioskWindow(bui.MainWindow):
             size=(img_width, 0.5 * img_width),
             transition_delay=tdelay,
             position=(h - img_width * 0.5, img_v),
-            texture=bui.gettexture('footballStadiumPreview'),
+            texture=bui.gettexture("footballStadiumPreview"),
             mesh_opaque=mesh_opaque,
             mesh_transparent=mesh_transparent,
             mask_texture=mask_tex,
@@ -184,11 +184,11 @@ class KioskWindow(bui.MainWindow):
             parent=self._root_widget,
             autoselect=True,
             size=(b_width, b_height),
-            on_activate_call=bui.Call(self._do_game, 'hard'),
+            on_activate_call=bui.Call(self._do_game, "hard"),
             transition_delay=tdelay,
             position=(h - b_width * 0.5, b_v),
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
         )
         bui.textwidget(
             parent=self._root_widget,
@@ -197,10 +197,10 @@ class KioskWindow(bui.MainWindow):
             size=(0, 0),
             position=(h, label_height),
             maxwidth=b_width * 0.7,
-            text='Hard',
+            text="Hard",
             scale=1.3,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         bui.imagewidget(
             parent=self._root_widget,
@@ -208,7 +208,7 @@ class KioskWindow(bui.MainWindow):
             transition_delay=tdelay,
             size=(img_width, 0.5 * img_width),
             position=(h - img_width * 0.5, img_v),
-            texture=bui.gettexture('courtyardPreview'),
+            texture=bui.gettexture("courtyardPreview"),
             mesh_opaque=mesh_opaque,
             mesh_transparent=mesh_transparent,
             mask_texture=mask_tex,
@@ -226,11 +226,11 @@ class KioskWindow(bui.MainWindow):
                 size=(0, 0),
                 position=(self._width * 0.5, self._height + y_extra - 44),
                 transition_delay=tdelay,
-                text=bui.Lstr(resource=f'{self._r}.versusExamplesText'),
+                text=bui.Lstr(resource=f"{self._r}.versusExamplesText"),
                 flatness=1.0,
                 scale=1.2,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 shadow=1.0,
             )
             h = self._width * 0.5 - b_space
@@ -239,11 +239,11 @@ class KioskWindow(bui.MainWindow):
                 parent=self._root_widget,
                 autoselect=True,
                 size=(b_width, b_height),
-                on_activate_call=bui.Call(self._do_game, 'ctf'),
+                on_activate_call=bui.Call(self._do_game, "ctf"),
                 transition_delay=tdelay,
                 position=(h - b_width * 0.5, b_v),
-                label='',
-                button_type='square',
+                label="",
+                button_type="square",
             )
             bui.textwidget(
                 parent=self._root_widget,
@@ -252,10 +252,10 @@ class KioskWindow(bui.MainWindow):
                 size=(0, 0),
                 position=(h, label_height),
                 maxwidth=b_width * 0.7,
-                text=bui.Lstr(translate=('gameNames', 'Capture the Flag')),
+                text=bui.Lstr(translate=("gameNames", "Capture the Flag")),
                 scale=1.3,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             bui.imagewidget(
                 parent=self._root_widget,
@@ -263,7 +263,7 @@ class KioskWindow(bui.MainWindow):
                 size=(img_width, 0.5 * img_width),
                 transition_delay=tdelay,
                 position=(h - img_width * 0.5, img_v),
-                texture=bui.gettexture('bridgitPreview'),
+                texture=bui.gettexture("bridgitPreview"),
                 mesh_opaque=mesh_opaque,
                 mesh_transparent=mesh_transparent,
                 mask_texture=mask_tex,
@@ -275,10 +275,10 @@ class KioskWindow(bui.MainWindow):
                 parent=self._root_widget,
                 autoselect=True,
                 size=(b_width, b_height),
-                on_activate_call=bui.Call(self._do_game, 'hockey'),
+                on_activate_call=bui.Call(self._do_game, "hockey"),
                 position=(h - b_width * 0.5, b_v),
-                label='',
-                button_type='square',
+                label="",
+                button_type="square",
                 transition_delay=tdelay,
             )
             bui.textwidget(
@@ -288,10 +288,10 @@ class KioskWindow(bui.MainWindow):
                 size=(0, 0),
                 position=(h, label_height),
                 maxwidth=b_width * 0.7,
-                text=bui.Lstr(translate=('gameNames', 'Hockey')),
+                text=bui.Lstr(translate=("gameNames", "Hockey")),
                 scale=1.3,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             bui.imagewidget(
                 parent=self._root_widget,
@@ -299,7 +299,7 @@ class KioskWindow(bui.MainWindow):
                 size=(img_width, 0.5 * img_width),
                 transition_delay=tdelay,
                 position=(h - img_width * 0.5, img_v),
-                texture=bui.gettexture('hockeyStadiumPreview'),
+                texture=bui.gettexture("hockeyStadiumPreview"),
                 mesh_opaque=mesh_opaque,
                 mesh_transparent=mesh_transparent,
                 mask_texture=mask_tex,
@@ -310,11 +310,11 @@ class KioskWindow(bui.MainWindow):
                 parent=self._root_widget,
                 autoselect=True,
                 size=(b_width, b_height),
-                on_activate_call=bui.Call(self._do_game, 'epic'),
+                on_activate_call=bui.Call(self._do_game, "epic"),
                 transition_delay=tdelay,
                 position=(h - b_width * 0.5, b_v),
-                label='',
-                button_type='square',
+                label="",
+                button_type="square",
             )
             bui.textwidget(
                 parent=self._root_widget,
@@ -323,10 +323,10 @@ class KioskWindow(bui.MainWindow):
                 size=(0, 0),
                 position=(h, label_height),
                 maxwidth=b_width * 0.7,
-                text=bui.Lstr(resource=f'{self._r}.epicModeText'),
+                text=bui.Lstr(resource=f"{self._r}.epicModeText"),
                 scale=1.3,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             bui.imagewidget(
                 parent=self._root_widget,
@@ -334,7 +334,7 @@ class KioskWindow(bui.MainWindow):
                 transition_delay=tdelay,
                 size=(img_width, 0.5 * img_width),
                 position=(h - img_width * 0.5, img_v),
-                texture=bui.gettexture('tipTopPreview'),
+                texture=bui.gettexture("tipTopPreview"),
                 mesh_opaque=mesh_opaque,
                 mesh_transparent=mesh_transparent,
                 mask_texture=mask_tex,
@@ -353,16 +353,14 @@ class KioskWindow(bui.MainWindow):
                 scale=0.5,
                 position=(self._width * 0.5 - 60.0, b_v - 70.0),
                 transition_delay=tdelay,
-                label=bui.Lstr(resource=f'{self._r}.fullMenuText'),
+                label=bui.Lstr(resource=f"{self._r}.fullMenuText"),
                 on_activate_call=self._do_full_menu,
             )
         else:
             self._b7 = None
         self._restore_state()
         self._update()
-        self._update_timer = bui.AppTimer(
-            1.0, bui.WeakCall(self._update), repeat=True
-        )
+        self._update_timer = bui.AppTimer(1.0, bui.WeakCall(self._update), repeat=True)
 
     @override
     def get_main_window_state(self) -> bui.MainWindowState:
@@ -382,19 +380,19 @@ class KioskWindow(bui.MainWindow):
         assert bui.app.classic is not None
         sel_name = bui.app.ui_v1.window_states.get(type(self))
         sel: bui.Widget | None
-        if sel_name == 'b1':
+        if sel_name == "b1":
             sel = self._b1
-        elif sel_name == 'b2':
+        elif sel_name == "b2":
             sel = self._b2
-        elif sel_name == 'b3':
+        elif sel_name == "b3":
             sel = self._b3
-        elif sel_name == 'b4':
+        elif sel_name == "b4":
             sel = self._b4
-        elif sel_name == 'b5':
+        elif sel_name == "b5":
             sel = self._b5
-        elif sel_name == 'b6':
+        elif sel_name == "b6":
             sel = self._b6
-        elif sel_name == 'b7':
+        elif sel_name == "b7":
             sel = self._b7
         else:
             sel = self._b1
@@ -404,21 +402,21 @@ class KioskWindow(bui.MainWindow):
     def _save_state(self) -> None:
         sel = self._root_widget.get_selected_child()
         if sel == self._b1:
-            sel_name = 'b1'
+            sel_name = "b1"
         elif sel == self._b2:
-            sel_name = 'b2'
+            sel_name = "b2"
         elif sel == self._b3:
-            sel_name = 'b3'
+            sel_name = "b3"
         elif sel == self._b4:
-            sel_name = 'b4'
+            sel_name = "b4"
         elif sel == self._b5:
-            sel_name = 'b5'
+            sel_name = "b5"
         elif sel == self._b6:
-            sel_name = 'b6'
+            sel_name = "b6"
         elif sel == self._b7:
-            sel_name = 'b7'
+            sel_name = "b7"
         else:
-            sel_name = 'b1'
+            sel_name = "b1"
         assert bui.app.classic is not None
         bui.app.ui_v1.window_states[type(self)] = sel_name
 
@@ -428,39 +426,39 @@ class KioskWindow(bui.MainWindow):
 
         # Kiosk-mode is designed to be used signed-out... try for force
         # the issue.
-        if plus.get_v1_account_state() == 'signed_in':
+        if plus.get_v1_account_state() == "signed_in":
             # _bs.sign_out()
             # FIXME: Try to delete player profiles here too.
             pass
         else:
             # Also make sure there's no player profiles.
             appconfig = bui.app.config
-            appconfig['Player Profiles'] = {}
+            appconfig["Player Profiles"] = {}
 
     def _do_game(self, mode: str) -> None:
         assert bui.app.classic is not None
         self._save_state()
-        if mode in ['epic', 'ctf', 'hockey']:
+        if mode in ["epic", "ctf", "hockey"]:
             appconfig = bui.app.config
-            if 'Team Tournament Playlists' not in appconfig:
-                appconfig['Team Tournament Playlists'] = {}
-            if 'Free-for-All Playlists' not in appconfig:
-                appconfig['Free-for-All Playlists'] = {}
-            appconfig['Show Tutorial'] = False
-            if mode == 'epic':
-                appconfig['Free-for-All Playlists']['Just Epic Elim'] = [
+            if "Team Tournament Playlists" not in appconfig:
+                appconfig["Team Tournament Playlists"] = {}
+            if "Free-for-All Playlists" not in appconfig:
+                appconfig["Free-for-All Playlists"] = {}
+            appconfig["Show Tutorial"] = False
+            if mode == "epic":
+                appconfig["Free-for-All Playlists"]["Just Epic Elim"] = [
                     {
-                        'settings': {
-                            'Epic Mode': 1,
-                            'Lives Per Player': 1,
-                            'Respawn Times': 1.0,
-                            'Time Limit': 0,
-                            'map': 'Tip Top',
+                        "settings": {
+                            "Epic Mode": 1,
+                            "Lives Per Player": 1,
+                            "Respawn Times": 1.0,
+                            "Time Limit": 0,
+                            "map": "Tip Top",
                         },
-                        'type': 'bs_elimination.EliminationGame',
+                        "type": "bs_elimination.EliminationGame",
                     }
                 ]
-                appconfig['Free-for-All Playlist Selection'] = 'Just Epic Elim'
+                appconfig["Free-for-All Playlist Selection"] = "Just Epic Elim"
                 bui.fade_screen(
                     False,
                     endcall=bui.Call(
@@ -469,37 +467,35 @@ class KioskWindow(bui.MainWindow):
                     ),
                 )
             else:
-                if mode == 'ctf':
-                    appconfig['Team Tournament Playlists']['Just CTF'] = [
+                if mode == "ctf":
+                    appconfig["Team Tournament Playlists"]["Just CTF"] = [
                         {
-                            'settings': {
-                                'Epic Mode': False,
-                                'Flag Idle Return Time': 30,
-                                'Flag Touch Return Time': 0,
-                                'Respawn Times': 1.0,
-                                'Score to Win': 3,
-                                'Time Limit': 0,
-                                'map': 'Bridgit',
+                            "settings": {
+                                "Epic Mode": False,
+                                "Flag Idle Return Time": 30,
+                                "Flag Touch Return Time": 0,
+                                "Respawn Times": 1.0,
+                                "Score to Win": 3,
+                                "Time Limit": 0,
+                                "map": "Bridgit",
                             },
-                            'type': 'bs_capture_the_flag.CTFGame',
+                            "type": "bs_capture_the_flag.CTFGame",
                         }
                     ]
-                    appconfig['Team Tournament Playlist Selection'] = 'Just CTF'
+                    appconfig["Team Tournament Playlist Selection"] = "Just CTF"
                 else:
-                    appconfig['Team Tournament Playlists']['Just Hockey'] = [
+                    appconfig["Team Tournament Playlists"]["Just Hockey"] = [
                         {
-                            'settings': {
-                                'Respawn Times': 1.0,
-                                'Score to Win': 1,
-                                'Time Limit': 0,
-                                'map': 'Hockey Stadium',
+                            "settings": {
+                                "Respawn Times": 1.0,
+                                "Score to Win": 1,
+                                "Time Limit": 0,
+                                "map": "Hockey Stadium",
                             },
-                            'type': 'bs_hockey.HockeyGame',
+                            "type": "bs_hockey.HockeyGame",
                         }
                     ]
-                    appconfig['Team Tournament Playlist Selection'] = (
-                        'Just Hockey'
-                    )
+                    appconfig["Team Tournament Playlist Selection"] = "Just Hockey"
                 bui.fade_screen(
                     False,
                     endcall=bui.Call(
@@ -507,23 +503,19 @@ class KioskWindow(bui.MainWindow):
                         bui.Call(bs.new_host_session, bs.DualTeamSession),
                     ),
                 )
-            bui.containerwidget(edit=self._root_widget, transition='out_left')
+            bui.containerwidget(edit=self._root_widget, transition="out_left")
             return
 
         game = (
-            'Easy:Onslaught Training'
-            if mode == 'easy'
-            else (
-                'Easy:Rookie Football'
-                if mode == 'medium'
-                else 'Easy:Uber Onslaught'
-            )
+            "Easy:Onslaught Training"
+            if mode == "easy"
+            else ("Easy:Rookie Football" if mode == "medium" else "Easy:Uber Onslaught")
         )
         cfg = bui.app.config
-        cfg['Selected Coop Game'] = game
+        cfg["Selected Coop Game"] = game
         cfg.commit()
         if bui.app.classic.launch_coop_game(game, force=True):
-            bui.containerwidget(edit=self._root_widget, transition='out_left')
+            bui.containerwidget(edit=self._root_widget, transition="out_left")
 
     def _do_full_menu(self) -> None:
         # pylint: disable=cyclic-import

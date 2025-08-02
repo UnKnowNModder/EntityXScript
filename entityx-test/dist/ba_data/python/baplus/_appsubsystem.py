@@ -167,9 +167,7 @@ class PlusAppSubsystem(AppSubsystem):
         return _baplus.purchase(item)
 
     @staticmethod
-    def report_achievement(
-        achievement: str, pass_to_account: bool = True
-    ) -> None:
+    def report_achievement(achievement: str, pass_to_account: bool = True) -> None:
         """:meta private:"""
         return _baplus.report_achievement(achievement, pass_to_account)
 
@@ -206,9 +204,9 @@ class PlusAppSubsystem(AppSubsystem):
         score: int | None,
         callback: Callable,
         *,
-        order: str = 'increasing',
+        order: str = "increasing",
         tournament_id: str | None = None,
-        score_type: str = 'points',
+        score_type: str = "points",
         campaign: str | None = None,
         level: str | None = None,
     ) -> None:
@@ -235,9 +233,7 @@ class PlusAppSubsystem(AppSubsystem):
         )
 
     @staticmethod
-    def tournament_query(
-        callback: Callable[[dict | None], None], args: dict
-    ) -> None:
+    def tournament_query(callback: Callable[[dict | None], None], args: dict) -> None:
         """:meta private:"""
         return _baplus.tournament_query(callback, args)
 
@@ -251,7 +247,7 @@ class PlusAppSubsystem(AppSubsystem):
 
     @staticmethod
     def show_game_service_ui(
-        show: str = 'general',
+        show: str = "general",
         game: str | None = None,
         game_version: str | None = None,
     ) -> None:

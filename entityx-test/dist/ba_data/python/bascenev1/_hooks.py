@@ -26,10 +26,10 @@ def launch_main_menu_session() -> None:
 def get_player_icon(sessionplayer: bascenev1.SessionPlayer) -> dict[str, Any]:
     info = sessionplayer.get_icon_info()
     return {
-        'texture': _bascenev1.gettexture(info['texture']),
-        'tint_texture': _bascenev1.gettexture(info['tint_texture']),
-        'tint_color': info['tint_color'],
-        'tint2_color': info['tint2_color'],
+        "texture": _bascenev1.gettexture(info["texture"]),
+        "tint_texture": _bascenev1.gettexture(info["tint_texture"]),
+        "tint_color": info["tint_color"],
+        "tint2_color": info["tint2_color"],
     }
 
 
@@ -42,15 +42,14 @@ def filter_chat_message(msg: str, client_id: int) -> str | None:
     to ignore the message.
     """
     import message
+
     return message.filter_chat_message(msg, client_id)
 
 
 def local_chat_message(msg: str) -> None:
     classic = babase.app.classic
     assert classic is not None
-    party_window = (
-        None if classic.party_window is None else classic.party_window()
-    )
+    party_window = None if classic.party_window is None else classic.party_window()
 
     if party_window is not None:
         party_window.on_chat_message(msg)

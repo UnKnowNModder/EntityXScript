@@ -59,11 +59,11 @@ class WorkspaceSubsystem:
 
     def _errmsg(self, msg: babase.Lstr) -> None:
         _babase.screenmessage(msg, color=(1, 0, 0))
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
 
     def _successmsg(self, msg: babase.Lstr) -> None:
         _babase.screenmessage(msg, color=(0, 1, 0))
-        _babase.getsimplesound('gunCocking').play()
+        _babase.getsimplesound("gunCocking").play()
 
     def _set_active_workspace_bg(
         self,
@@ -82,9 +82,7 @@ class WorkspaceSubsystem:
         assert plus is not None
 
         set_path = True
-        wspath = Path(
-            _babase.app.env.cache_directory, 'workspaces', workspaceid
-        )
+        wspath = Path(_babase.app.env.cache_directory, "workspaces", workspaceid)
         try:
             # If it seems we're offline, don't even attempt a sync, but
             # allow using the previous synced state. (is this a good
@@ -116,9 +114,7 @@ class WorkspaceSubsystem:
                         )
                     )
                 state = response.state
-                self._handle_deletes(
-                    workspace_dir=wspath, deletes=response.deletes
-                )
+                self._handle_deletes(workspace_dir=wspath, deletes=response.deletes)
                 self._handle_downloads_inline(
                     workspace_dir=wspath,
                     downloads_inline=response.downloads_inline,
@@ -134,8 +130,8 @@ class WorkspaceSubsystem:
                 partial(
                     self._successmsg,
                     Lstr(
-                        resource='activatedText',
-                        subs=[('${THING}', workspacename)],
+                        resource="activatedText",
+                        subs=[("${THING}", workspacename)],
                     ),
                 ),
                 from_other_thread=True,
@@ -146,8 +142,8 @@ class WorkspaceSubsystem:
                 partial(
                     self._errmsg,
                     Lstr(
-                        resource='workspaceSyncReuseText',
-                        subs=[('${WORKSPACE}', workspacename)],
+                        resource="workspaceSyncReuseText",
+                        subs=[("${WORKSPACE}", workspacename)],
                     ),
                 ),
                 from_other_thread=True,
@@ -169,8 +165,8 @@ class WorkspaceSubsystem:
                 partial(
                     self._errmsg,
                     Lstr(
-                        resource='workspaceSyncErrorText',
-                        subs=[('${WORKSPACE}', workspacename)],
+                        resource="workspaceSyncErrorText",
+                        subs=[("${WORKSPACE}", workspacename)],
                     ),
                 ),
                 from_other_thread=True,
@@ -214,7 +210,7 @@ class WorkspaceSubsystem:
             dirname = os.path.dirname(fname)
             if dirname:
                 os.makedirs(dirname, exist_ok=True)
-            with open(fname, 'wb') as outfile:
+            with open(fname, "wb") as outfile:
                 outfile.write(fdata)
 
     def _handle_dir_prune_empty(self, prunedir: str) -> None:

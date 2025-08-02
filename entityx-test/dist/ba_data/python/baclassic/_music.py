@@ -22,8 +22,8 @@ if TYPE_CHECKING:
 class MusicPlayMode(Enum):
     """Influences behavior when playing music."""
 
-    REGULAR = 'regular'
-    TEST = 'test'
+    REGULAR = "regular"
+    TEST = "test"
 
 
 @dataclass
@@ -37,37 +37,29 @@ class AssetSoundtrackEntry:
 
 # What gets played by default for our different music types:
 ASSET_SOUNDTRACK_ENTRIES: dict[MusicType, AssetSoundtrackEntry] = {
-    MusicType.MENU: AssetSoundtrackEntry('menuMusic'),
-    MusicType.VICTORY: AssetSoundtrackEntry(
-        'victoryMusic', volume=1.2, loop=False
-    ),
-    MusicType.CHAR_SELECT: AssetSoundtrackEntry('charSelectMusic', volume=0.4),
-    MusicType.RUN_AWAY: AssetSoundtrackEntry('runAwayMusic', volume=1.2),
-    MusicType.ONSLAUGHT: AssetSoundtrackEntry('runAwayMusic', volume=1.2),
-    MusicType.KEEP_AWAY: AssetSoundtrackEntry('runAwayMusic', volume=1.2),
-    MusicType.RACE: AssetSoundtrackEntry('runAwayMusic', volume=1.2),
-    MusicType.EPIC_RACE: AssetSoundtrackEntry('slowEpicMusic', volume=1.2),
-    MusicType.SCORES: AssetSoundtrackEntry(
-        'scoresEpicMusic', volume=0.6, loop=False
-    ),
-    MusicType.GRAND_ROMP: AssetSoundtrackEntry('grandRompMusic', volume=1.2),
-    MusicType.TO_THE_DEATH: AssetSoundtrackEntry('toTheDeathMusic', volume=1.2),
-    MusicType.CHOSEN_ONE: AssetSoundtrackEntry('survivalMusic', volume=0.8),
-    MusicType.FORWARD_MARCH: AssetSoundtrackEntry(
-        'forwardMarchMusic', volume=0.8
-    ),
-    MusicType.FLAG_CATCHER: AssetSoundtrackEntry(
-        'flagCatcherMusic', volume=1.2
-    ),
-    MusicType.SURVIVAL: AssetSoundtrackEntry('survivalMusic', volume=0.8),
-    MusicType.EPIC: AssetSoundtrackEntry('slowEpicMusic', volume=1.2),
-    MusicType.SPORTS: AssetSoundtrackEntry('sportsMusic', volume=0.8),
-    MusicType.HOCKEY: AssetSoundtrackEntry('sportsMusic', volume=0.8),
-    MusicType.FOOTBALL: AssetSoundtrackEntry('sportsMusic', volume=0.8),
-    MusicType.FLYING: AssetSoundtrackEntry('flyingMusic', volume=0.8),
-    MusicType.SCARY: AssetSoundtrackEntry('scaryMusic', volume=0.8),
+    MusicType.MENU: AssetSoundtrackEntry("menuMusic"),
+    MusicType.VICTORY: AssetSoundtrackEntry("victoryMusic", volume=1.2, loop=False),
+    MusicType.CHAR_SELECT: AssetSoundtrackEntry("charSelectMusic", volume=0.4),
+    MusicType.RUN_AWAY: AssetSoundtrackEntry("runAwayMusic", volume=1.2),
+    MusicType.ONSLAUGHT: AssetSoundtrackEntry("runAwayMusic", volume=1.2),
+    MusicType.KEEP_AWAY: AssetSoundtrackEntry("runAwayMusic", volume=1.2),
+    MusicType.RACE: AssetSoundtrackEntry("runAwayMusic", volume=1.2),
+    MusicType.EPIC_RACE: AssetSoundtrackEntry("slowEpicMusic", volume=1.2),
+    MusicType.SCORES: AssetSoundtrackEntry("scoresEpicMusic", volume=0.6, loop=False),
+    MusicType.GRAND_ROMP: AssetSoundtrackEntry("grandRompMusic", volume=1.2),
+    MusicType.TO_THE_DEATH: AssetSoundtrackEntry("toTheDeathMusic", volume=1.2),
+    MusicType.CHOSEN_ONE: AssetSoundtrackEntry("survivalMusic", volume=0.8),
+    MusicType.FORWARD_MARCH: AssetSoundtrackEntry("forwardMarchMusic", volume=0.8),
+    MusicType.FLAG_CATCHER: AssetSoundtrackEntry("flagCatcherMusic", volume=1.2),
+    MusicType.SURVIVAL: AssetSoundtrackEntry("survivalMusic", volume=0.8),
+    MusicType.EPIC: AssetSoundtrackEntry("slowEpicMusic", volume=1.2),
+    MusicType.SPORTS: AssetSoundtrackEntry("sportsMusic", volume=0.8),
+    MusicType.HOCKEY: AssetSoundtrackEntry("sportsMusic", volume=0.8),
+    MusicType.FOOTBALL: AssetSoundtrackEntry("sportsMusic", volume=0.8),
+    MusicType.FLYING: AssetSoundtrackEntry("flyingMusic", volume=0.8),
+    MusicType.SCARY: AssetSoundtrackEntry("scaryMusic", volume=0.8),
     MusicType.MARCHING: AssetSoundtrackEntry(
-        'whenJohnnyComesMarchingHomeMusic', volume=0.8
+        "whenJohnnyComesMarchingHomeMusic", volume=0.8
     ),
 }
 
@@ -95,11 +87,11 @@ class MusicSubsystem:
         # platform (which can be discovered via ba_meta).
         # Our standard asset playback should probably just be one of them
         # instead of a special case.
-        if self.supports_soundtrack_entry_type('musicFile'):
+        if self.supports_soundtrack_entry_type("musicFile"):
             from baclassic.osmusic import OSMusicPlayer
 
             self._music_player_type = OSMusicPlayer
-        elif self.supports_soundtrack_entry_type('iTunesPlaylist'):
+        elif self.supports_soundtrack_entry_type("iTunesPlaylist"):
             from baclassic.macmusicapp import MacMusicAppMusicPlayer
 
             self._music_player_type = MacMusicAppMusicPlayer
@@ -112,13 +104,13 @@ class MusicSubsystem:
         # out than later).
         try:
             cfg = babase.app.config
-            if 'Soundtrack' in cfg and cfg['Soundtrack'] not in [
-                '__default__',
-                'Default Soundtrack',
+            if "Soundtrack" in cfg and cfg["Soundtrack"] not in [
+                "__default__",
+                "Default Soundtrack",
             ]:
                 self.get_music_player()
         except Exception:
-            logging.exception('Error prepping music-player.')
+            logging.exception("Error prepping music-player.")
 
     def on_app_shutdown(self) -> None:
         """Should be called when the app is shutting down."""
@@ -133,7 +125,7 @@ class MusicSubsystem:
         """Returns the system music player, instantiating if necessary."""
         if self._music_player is None:
             if self._music_player_type is None:
-                raise TypeError('no music player type set')
+                raise TypeError("no music player type set")
             self._music_player = self._music_player_type()
         return self._music_player
 
@@ -162,16 +154,16 @@ class MusicSubsystem:
         # Note to self; can't access babase.app.classic here because
         # we are called during its construction.
         env = babase.env()
-        platform = env.get('platform')
+        platform = env.get("platform")
         assert isinstance(platform, str)
-        if entry_type == 'iTunesPlaylist':
-            return platform == 'mac' and babase.is_xcode_build()
-        if entry_type in ('musicFile', 'musicFolder'):
+        if entry_type == "iTunesPlaylist":
+            return platform == "mac" and babase.is_xcode_build()
+        if entry_type in ("musicFile", "musicFolder"):
             return (
-                platform == 'android'
+                platform == "android"
                 and babase.android_get_external_files_dir() is not None
             )
-        if entry_type == 'default':
+        if entry_type == "default":
             return True
         return False
 
@@ -180,41 +172,41 @@ class MusicSubsystem:
         account what is supported locally."""
         try:
             if entry is None:
-                entry_type = 'default'
+                entry_type = "default"
 
             # Simple string denotes iTunesPlaylist (legacy format).
             elif isinstance(entry, str):
-                entry_type = 'iTunesPlaylist'
+                entry_type = "iTunesPlaylist"
 
             # For other entries we expect type and name strings in a dict.
             elif (
                 isinstance(entry, dict)
-                and 'type' in entry
-                and isinstance(entry['type'], str)
-                and 'name' in entry
-                and isinstance(entry['name'], str)
+                and "type" in entry
+                and isinstance(entry["type"], str)
+                and "name" in entry
+                and isinstance(entry["name"], str)
             ):
-                entry_type = entry['type']
+                entry_type = entry["type"]
             else:
                 raise TypeError(
-                    'invalid soundtrack entry: '
+                    "invalid soundtrack entry: "
                     + str(entry)
-                    + ' (type '
+                    + " (type "
                     + str(type(entry))
-                    + ')'
+                    + ")"
                 )
             if self.supports_soundtrack_entry_type(entry_type):
                 return entry_type
-            raise ValueError('invalid soundtrack entry:' + str(entry))
+            raise ValueError("invalid soundtrack entry:" + str(entry))
         except Exception:
-            logging.exception('Error in get_soundtrack_entry_type.')
-            return 'default'
+            logging.exception("Error in get_soundtrack_entry_type.")
+            return "default"
 
     def get_soundtrack_entry_name(self, entry: Any) -> str:
         """Given a soundtrack entry, returns its name."""
         try:
             if entry is None:
-                raise TypeError('entry is None')
+                raise TypeError("entry is None")
 
             # Simple string denotes an iTunesPlaylist name (legacy entry).
             if isinstance(entry, str):
@@ -223,16 +215,16 @@ class MusicSubsystem:
             # For other entries we expect type and name strings in a dict.
             if (
                 isinstance(entry, dict)
-                and 'type' in entry
-                and isinstance(entry['type'], str)
-                and 'name' in entry
-                and isinstance(entry['name'], str)
+                and "type" in entry
+                and isinstance(entry["type"], str)
+                and "name" in entry
+                and isinstance(entry["name"], str)
             ):
-                return entry['name']
-            raise ValueError('invalid soundtrack entry:' + str(entry))
+                return entry["name"]
+            raise ValueError("invalid soundtrack entry:" + str(entry))
         except Exception:
-            logging.exception('Error in get_soundtrack_entry_name.')
-            return 'default'
+            logging.exception("Error in get_soundtrack_entry_name.")
+            return "default"
 
     def on_app_unsuspend(self) -> None:
         """Should be run when the app resumes from a suspended state."""
@@ -304,12 +296,12 @@ class MusicSubsystem:
         """Return current user soundtrack or empty dict otherwise."""
         cfg = babase.app.config
         soundtrack: dict[str, Any] = {}
-        soundtrackname = cfg.get('Soundtrack')
-        if soundtrackname is not None and soundtrackname != '__default__':
+        soundtrackname = cfg.get("Soundtrack")
+        if soundtrackname is not None and soundtrackname != "__default__":
             try:
-                soundtrack = cfg.get('Soundtracks', {})[soundtrackname]
+                soundtrack = cfg.get("Soundtracks", {})[soundtrackname]
             except Exception as exc:
-                print(f'Error looking up user soundtrack: {exc}')
+                print(f"Error looking up user soundtrack: {exc}")
                 soundtrack = {}
         return soundtrack
 
@@ -383,9 +375,7 @@ class MusicPlayer:
         selection_target_name: str,
     ) -> bauiv1.MainWindow:
         """Summons a UI to select a new soundtrack entry."""
-        return self.on_select_entry(
-            callback, current_entry, selection_target_name
-        )
+        return self.on_select_entry(callback, current_entry, selection_target_name)
 
     def set_volume(self, volume: float) -> None:
         """Set player volume (value should be between 0 and 1)."""
@@ -396,7 +386,7 @@ class MusicPlayer:
     def play(self, entry: Any) -> None:
         """Play provided entry."""
         if not self._have_set_initial_volume:
-            self._volume = babase.app.config.resolve('Music Volume')
+            self._volume = babase.app.config.resolve("Music Volume")
             self.on_set_volume(self._volume)
             self._have_set_initial_volume = True
         self._entry_to_play = copy.deepcopy(entry)

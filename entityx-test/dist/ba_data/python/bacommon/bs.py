@@ -26,7 +26,7 @@ TOKENS4_COUNT = 2600
 class PrivatePartyMessage(Message):
     """Message asking about info we need for private-party UI."""
 
-    need_datacode: Annotated[bool, IOAttrs('d')]
+    need_datacode: Annotated[bool, IOAttrs("d")]
 
     @override
     @classmethod
@@ -39,10 +39,10 @@ class PrivatePartyMessage(Message):
 class PrivatePartyResponse(Response):
     """Here's that private party UI info you asked for, boss."""
 
-    success: Annotated[bool, IOAttrs('s')]
-    tokens: Annotated[int, IOAttrs('t')]
-    gold_pass: Annotated[bool, IOAttrs('g')]
-    datacode: Annotated[str | None, IOAttrs('d')]
+    success: Annotated[bool, IOAttrs("s")]
+    tokens: Annotated[int, IOAttrs("t")]
+    gold_pass: Annotated[bool, IOAttrs("g")]
+    datacode: Annotated[str | None, IOAttrs("d")]
 
 
 @ioprepped
@@ -61,20 +61,20 @@ class GetClassicPurchasesMessage(Message):
 class GetClassicPurchasesResponse(Response):
     """Here's those classic purchases ya asked for boss."""
 
-    purchases: Annotated[set[str], IOAttrs('p')]
+    purchases: Annotated[set[str], IOAttrs("p")]
 
 
 class ClassicChestAppearance(Enum):
     """Appearances bombsquad classic chests can have."""
 
-    UNKNOWN = 'u'
-    DEFAULT = 'd'
-    L1 = 'l1'
-    L2 = 'l2'
-    L3 = 'l3'
-    L4 = 'l4'
-    L5 = 'l5'
-    L6 = 'l6'
+    UNKNOWN = "u"
+    DEFAULT = "d"
+    L1 = "l1"
+    L2 = "l2"
+    L3 = "l3"
+    L4 = "l4"
+    L5 = "l5"
+    L6 = "l6"
 
     @property
     def pretty_name(self) -> str:
@@ -83,21 +83,21 @@ class ClassicChestAppearance(Enum):
         cls = type(self)
 
         if self is cls.UNKNOWN:
-            return 'Unknown Chest'
+            return "Unknown Chest"
         if self is cls.DEFAULT:
-            return 'Chest'
+            return "Chest"
         if self is cls.L1:
-            return 'L1 Chest'
+            return "L1 Chest"
         if self is cls.L2:
-            return 'L2 Chest'
+            return "L2 Chest"
         if self is cls.L3:
-            return 'L3 Chest'
+            return "L3 Chest"
         if self is cls.L4:
-            return 'L4 Chest'
+            return "L4 Chest"
         if self is cls.L5:
-            return 'L5 Chest'
+            return "L5 Chest"
         if self is cls.L6:
-            return 'L6 Chest'
+            return "L6 Chest"
 
         assert_never(self)
 
@@ -113,56 +113,56 @@ class ClassicAccountLiveData:
 
         appearance: Annotated[
             ClassicChestAppearance,
-            IOAttrs('a', enum_fallback=ClassicChestAppearance.UNKNOWN),
+            IOAttrs("a", enum_fallback=ClassicChestAppearance.UNKNOWN),
         ]
-        create_time: Annotated[datetime.datetime, IOAttrs('c')]
-        unlock_time: Annotated[datetime.datetime, IOAttrs('t')]
-        unlock_tokens: Annotated[int, IOAttrs('k')]
-        ad_allow_time: Annotated[datetime.datetime | None, IOAttrs('at')]
+        create_time: Annotated[datetime.datetime, IOAttrs("c")]
+        unlock_time: Annotated[datetime.datetime, IOAttrs("t")]
+        unlock_tokens: Annotated[int, IOAttrs("k")]
+        ad_allow_time: Annotated[datetime.datetime | None, IOAttrs("at")]
 
     class LeagueType(Enum):
         """Type of league we are in."""
 
-        BRONZE = 'b'
-        SILVER = 's'
-        GOLD = 'g'
-        DIAMOND = 'd'
+        BRONZE = "b"
+        SILVER = "s"
+        GOLD = "g"
+        DIAMOND = "d"
 
-    tickets: Annotated[int, IOAttrs('ti')]
+    tickets: Annotated[int, IOAttrs("ti")]
 
-    tokens: Annotated[int, IOAttrs('to')]
-    gold_pass: Annotated[bool, IOAttrs('g')]
-    remove_ads: Annotated[bool, IOAttrs('r')]
+    tokens: Annotated[int, IOAttrs("to")]
+    gold_pass: Annotated[bool, IOAttrs("g")]
+    remove_ads: Annotated[bool, IOAttrs("r")]
 
-    achievements: Annotated[int, IOAttrs('a')]
-    achievements_total: Annotated[int, IOAttrs('at')]
+    achievements: Annotated[int, IOAttrs("a")]
+    achievements_total: Annotated[int, IOAttrs("at")]
 
-    league_type: Annotated[LeagueType | None, IOAttrs('lt')]
-    league_num: Annotated[int | None, IOAttrs('ln')]
-    league_rank: Annotated[int | None, IOAttrs('lr')]
+    league_type: Annotated[LeagueType | None, IOAttrs("lt")]
+    league_num: Annotated[int | None, IOAttrs("ln")]
+    league_rank: Annotated[int | None, IOAttrs("lr")]
 
-    level: Annotated[int, IOAttrs('lv')]
-    xp: Annotated[int, IOAttrs('xp')]
-    xpmax: Annotated[int, IOAttrs('xpm')]
+    level: Annotated[int, IOAttrs("lv")]
+    xp: Annotated[int, IOAttrs("xp")]
+    xpmax: Annotated[int, IOAttrs("xpm")]
 
-    inbox_count: Annotated[int, IOAttrs('ibc')]
-    inbox_count_is_max: Annotated[bool, IOAttrs('ibcm')]
-    inbox_contains_prize: Annotated[bool, IOAttrs('icp')]
+    inbox_count: Annotated[int, IOAttrs("ibc")]
+    inbox_count_is_max: Annotated[bool, IOAttrs("ibcm")]
+    inbox_contains_prize: Annotated[bool, IOAttrs("icp")]
 
-    chests: Annotated[dict[str, Chest], IOAttrs('c')]
+    chests: Annotated[dict[str, Chest], IOAttrs("c")]
 
     # State id of our purchases for builds 22459+.
-    purchases_state: Annotated[str | None, IOAttrs('p')]
+    purchases_state: Annotated[str | None, IOAttrs("p")]
 
 
 class DisplayItemTypeID(Enum):
     """Type ID for each of our subclasses."""
 
-    UNKNOWN = 'u'
-    TICKETS = 't'
-    TOKENS = 'k'
-    TEST = 's'
-    CHEST = 'c'
+    UNKNOWN = "u"
+    TICKETS = "t"
+    TOKENS = "k"
+    TEST = "s"
+    CHEST = "c"
 
 
 class DisplayItem(IOMultiType[DisplayItemTypeID]):
@@ -235,10 +235,10 @@ class UnknownDisplayItem(DisplayItem):
 
         # Make noise but don't break.
         logging.exception(
-            'UnknownDisplayItem.get_description() should never be called.'
-            ' Always access descriptions on the DisplayItemWrapper.'
+            "UnknownDisplayItem.get_description() should never be called."
+            " Always access descriptions on the DisplayItemWrapper."
         )
-        return 'Unknown', []
+        return "Unknown", []
 
 
 @ioprepped
@@ -246,7 +246,7 @@ class UnknownDisplayItem(DisplayItem):
 class TicketsDisplayItem(DisplayItem):
     """Some amount of tickets."""
 
-    count: Annotated[int, IOAttrs('c')]
+    count: Annotated[int, IOAttrs("c")]
 
     @override
     @classmethod
@@ -255,7 +255,7 @@ class TicketsDisplayItem(DisplayItem):
 
     @override
     def get_description(self) -> tuple[str, list[tuple[str, str]]]:
-        return '${C} Tickets', [('${C}', str(self.count))]
+        return "${C} Tickets", [("${C}", str(self.count))]
 
 
 @ioprepped
@@ -263,7 +263,7 @@ class TicketsDisplayItem(DisplayItem):
 class TokensDisplayItem(DisplayItem):
     """Some amount of tokens."""
 
-    count: Annotated[int, IOAttrs('c')]
+    count: Annotated[int, IOAttrs("c")]
 
     @override
     @classmethod
@@ -272,7 +272,7 @@ class TokensDisplayItem(DisplayItem):
 
     @override
     def get_description(self) -> tuple[str, list[tuple[str, str]]]:
-        return '${C} Tokens', [('${C}', str(self.count))]
+        return "${C} Tokens", [("${C}", str(self.count))]
 
 
 @ioprepped
@@ -287,7 +287,7 @@ class TestDisplayItem(DisplayItem):
 
     @override
     def get_description(self) -> tuple[str, list[tuple[str, str]]]:
-        return 'Test Display Item Here', []
+        return "Test Display Item Here", []
 
 
 @ioprepped
@@ -295,7 +295,7 @@ class TestDisplayItem(DisplayItem):
 class ChestDisplayItem(DisplayItem):
     """Display a chest."""
 
-    appearance: Annotated[ClassicChestAppearance, IOAttrs('a')]
+    appearance: Annotated[ClassicChestAppearance, IOAttrs("a")]
 
     @override
     @classmethod
@@ -312,9 +312,9 @@ class ChestDisplayItem(DisplayItem):
 class DisplayItemWrapper:
     """Wraps a DisplayItem and common info."""
 
-    item: Annotated[DisplayItem, IOAttrs('i')]
-    description: Annotated[str, IOAttrs('d')]
-    description_subs: Annotated[list[str] | None, IOAttrs('s')]
+    item: Annotated[DisplayItem, IOAttrs("i")]
+    description: Annotated[str, IOAttrs("d")]
+    description_subs: Annotated[list[str] | None, IOAttrs("s")]
 
     @classmethod
     def for_display_item(cls, item: DisplayItem) -> DisplayItemWrapper:
@@ -328,7 +328,7 @@ class DisplayItemWrapper:
 class ChestInfoMessage(Message):
     """Request info about a chest."""
 
-    chest_id: Annotated[str, IOAttrs('i')]
+    chest_id: Annotated[str, IOAttrs("i")]
 
     @override
     @classmethod
@@ -349,35 +349,35 @@ class ChestInfoResponse(Response):
         class PrizeSet:
             """A possible set of prizes for this chest."""
 
-            weight: Annotated[float, IOAttrs('w')]
-            contents: Annotated[list[DisplayItemWrapper], IOAttrs('c')]
+            weight: Annotated[float, IOAttrs("w")]
+            contents: Annotated[list[DisplayItemWrapper], IOAttrs("c")]
 
         appearance: Annotated[
             ClassicChestAppearance,
-            IOAttrs('a', enum_fallback=ClassicChestAppearance.UNKNOWN),
+            IOAttrs("a", enum_fallback=ClassicChestAppearance.UNKNOWN),
         ]
 
         # How much it costs to unlock *now*.
-        unlock_tokens: Annotated[int, IOAttrs('tk')]
+        unlock_tokens: Annotated[int, IOAttrs("tk")]
 
         # When it unlocks on its own.
-        unlock_time: Annotated[datetime.datetime, IOAttrs('t')]
+        unlock_time: Annotated[datetime.datetime, IOAttrs("t")]
 
         # Possible prizes we contain.
-        prizesets: Annotated[list[PrizeSet], IOAttrs('p')]
+        prizesets: Annotated[list[PrizeSet], IOAttrs("p")]
 
         # Are ads allowed now?
-        ad_allow: Annotated[bool, IOAttrs('aa')]
+        ad_allow: Annotated[bool, IOAttrs("aa")]
 
-    chest: Annotated[Chest | None, IOAttrs('c')]
-    user_tokens: Annotated[int | None, IOAttrs('t')]
+    chest: Annotated[Chest | None, IOAttrs("c")]
+    user_tokens: Annotated[int | None, IOAttrs("t")]
 
 
 class ClientUITypeID(Enum):
     """Type ID for each of our subclasses."""
 
-    UNKNOWN = 'u'
-    BASIC = 'b'
+    UNKNOWN = "u"
+    BASIC = "b"
 
 
 class ClientUI(IOMultiType[ClientUITypeID]):
@@ -430,12 +430,12 @@ class UnknownClientUI(ClientUI):
 class BasicClientUIComponentTypeID(Enum):
     """Type ID for each of our subclasses."""
 
-    UNKNOWN = 'u'
-    TEXT = 't'
-    LINK = 'l'
-    BS_CLASSIC_TOURNEY_RESULT = 'ct'
-    DISPLAY_ITEMS = 'di'
-    EXPIRE_TIME = 'd'
+    UNKNOWN = "u"
+    TEXT = "t"
+    LINK = "l"
+    BS_CLASSIC_TOURNEY_RESULT = "ct"
+    DISPLAY_ITEMS = "di"
+    EXPIRE_TIME = "d"
 
 
 class BasicClientUIComponent(IOMultiType[BasicClientUIComponentTypeID]):
@@ -503,16 +503,16 @@ class BasicClientUIComponentUnknown(BasicClientUIComponent):
 class BasicClientUIComponentText(BasicClientUIComponent):
     """Show some text in the inbox message."""
 
-    text: Annotated[str, IOAttrs('t')]
-    subs: Annotated[list[str], IOAttrs('s', store_default=False)] = field(
+    text: Annotated[str, IOAttrs("t")]
+    subs: Annotated[list[str], IOAttrs("s", store_default=False)] = field(
         default_factory=list
     )
-    scale: Annotated[float, IOAttrs('sc', store_default=False)] = 1.0
+    scale: Annotated[float, IOAttrs("sc", store_default=False)] = 1.0
     color: Annotated[
-        tuple[float, float, float, float], IOAttrs('c', store_default=False)
+        tuple[float, float, float, float], IOAttrs("c", store_default=False)
     ] = (1.0, 1.0, 1.0, 1.0)
-    spacing_top: Annotated[float, IOAttrs('st', store_default=False)] = 0.0
-    spacing_bottom: Annotated[float, IOAttrs('sb', store_default=False)] = 0.0
+    spacing_top: Annotated[float, IOAttrs("st", store_default=False)] = 0.0
+    spacing_bottom: Annotated[float, IOAttrs("sb", store_default=False)] = 0.0
 
     @override
     @classmethod
@@ -525,13 +525,13 @@ class BasicClientUIComponentText(BasicClientUIComponent):
 class BasicClientUIComponentLink(BasicClientUIComponent):
     """Show a link in the inbox message."""
 
-    url: Annotated[str, IOAttrs('u')]
-    label: Annotated[str, IOAttrs('l')]
-    subs: Annotated[list[str], IOAttrs('s', store_default=False)] = field(
+    url: Annotated[str, IOAttrs("u")]
+    label: Annotated[str, IOAttrs("l")]
+    subs: Annotated[list[str], IOAttrs("s", store_default=False)] = field(
         default_factory=list
     )
-    spacing_top: Annotated[float, IOAttrs('st', store_default=False)] = 0.0
-    spacing_bottom: Annotated[float, IOAttrs('sb', store_default=False)] = 0.0
+    spacing_top: Annotated[float, IOAttrs("st", store_default=False)] = 0.0
+    spacing_bottom: Annotated[float, IOAttrs("sb", store_default=False)] = 0.0
 
     @override
     @classmethod
@@ -544,12 +544,12 @@ class BasicClientUIComponentLink(BasicClientUIComponent):
 class BasicClientUIBsClassicTourneyResult(BasicClientUIComponent):
     """Show info about a classic tourney."""
 
-    tournament_id: Annotated[str, IOAttrs('t')]
-    game: Annotated[str, IOAttrs('g')]
-    players: Annotated[int, IOAttrs('p')]
-    rank: Annotated[int, IOAttrs('r')]
-    trophy: Annotated[str | None, IOAttrs('tr')]
-    prizes: Annotated[list[DisplayItemWrapper], IOAttrs('pr')]
+    tournament_id: Annotated[str, IOAttrs("t")]
+    game: Annotated[str, IOAttrs("g")]
+    players: Annotated[int, IOAttrs("p")]
+    rank: Annotated[int, IOAttrs("r")]
+    trophy: Annotated[str | None, IOAttrs("tr")]
+    prizes: Annotated[list[DisplayItemWrapper], IOAttrs("pr")]
 
     @override
     @classmethod
@@ -562,10 +562,10 @@ class BasicClientUIBsClassicTourneyResult(BasicClientUIComponent):
 class BasicClientUIDisplayItems(BasicClientUIComponent):
     """Show some display-items."""
 
-    items: Annotated[list[DisplayItemWrapper], IOAttrs('d')]
-    width: Annotated[float, IOAttrs('w')] = 100.0
-    spacing_top: Annotated[float, IOAttrs('st', store_default=False)] = 0.0
-    spacing_bottom: Annotated[float, IOAttrs('sb', store_default=False)] = 0.0
+    items: Annotated[list[DisplayItemWrapper], IOAttrs("d")]
+    width: Annotated[float, IOAttrs("w")] = 100.0
+    spacing_top: Annotated[float, IOAttrs("st", store_default=False)] = 0.0
+    spacing_bottom: Annotated[float, IOAttrs("sb", store_default=False)] = 0.0
 
     @override
     @classmethod
@@ -578,9 +578,9 @@ class BasicClientUIDisplayItems(BasicClientUIComponent):
 class BasicClientUIExpireTime(BasicClientUIComponent):
     """Show expire-time."""
 
-    time: Annotated[datetime.datetime, IOAttrs('d')]
-    spacing_top: Annotated[float, IOAttrs('st', store_default=False)] = 0.0
-    spacing_bottom: Annotated[float, IOAttrs('sb', store_default=False)] = 0.0
+    time: Annotated[datetime.datetime, IOAttrs("d")]
+    spacing_top: Annotated[float, IOAttrs("st", store_default=False)] = 0.0
+    spacing_bottom: Annotated[float, IOAttrs("sb", store_default=False)] = 0.0
 
     @override
     @classmethod
@@ -596,35 +596,35 @@ class BasicClientUI(ClientUI):
     class ButtonLabel(Enum):
         """Distinct button labels we support."""
 
-        UNKNOWN = 'u'
-        OK = 'o'
-        APPLY = 'a'
-        CANCEL = 'c'
-        ACCEPT = 'ac'
-        DECLINE = 'dn'
-        IGNORE = 'ig'
-        CLAIM = 'cl'
-        DISCARD = 'd'
+        UNKNOWN = "u"
+        OK = "o"
+        APPLY = "a"
+        CANCEL = "c"
+        ACCEPT = "ac"
+        DECLINE = "dn"
+        IGNORE = "ig"
+        CLAIM = "cl"
+        DISCARD = "d"
 
     class InteractionStyle(Enum):
         """Overall interaction styles we support."""
 
-        UNKNOWN = 'u'
-        BUTTON_POSITIVE = 'p'
-        BUTTON_POSITIVE_NEGATIVE = 'pn'
+        UNKNOWN = "u"
+        BUTTON_POSITIVE = "p"
+        BUTTON_POSITIVE_NEGATIVE = "pn"
 
-    components: Annotated[list[BasicClientUIComponent], IOAttrs('s')]
+    components: Annotated[list[BasicClientUIComponent], IOAttrs("s")]
 
     interaction_style: Annotated[
-        InteractionStyle, IOAttrs('i', enum_fallback=InteractionStyle.UNKNOWN)
+        InteractionStyle, IOAttrs("i", enum_fallback=InteractionStyle.UNKNOWN)
     ] = InteractionStyle.BUTTON_POSITIVE
 
     button_label_positive: Annotated[
-        ButtonLabel, IOAttrs('p', enum_fallback=ButtonLabel.UNKNOWN)
+        ButtonLabel, IOAttrs("p", enum_fallback=ButtonLabel.UNKNOWN)
     ] = ButtonLabel.OK
 
     button_label_negative: Annotated[
-        ButtonLabel, IOAttrs('n', enum_fallback=ButtonLabel.UNKNOWN)
+        ButtonLabel, IOAttrs("n", enum_fallback=ButtonLabel.UNKNOWN)
     ] = ButtonLabel.CANCEL
 
     @override
@@ -650,9 +650,9 @@ class BasicClientUI(ClientUI):
 class ClientUIWrapper:
     """Wrapper for a ClientUI and its common data."""
 
-    id: Annotated[str, IOAttrs('i')]
-    createtime: Annotated[datetime.datetime, IOAttrs('c')]
-    ui: Annotated[ClientUI, IOAttrs('e')]
+    id: Annotated[str, IOAttrs("i")]
+    createtime: Annotated[datetime.datetime, IOAttrs("c")]
+    ui: Annotated[ClientUI, IOAttrs("e")]
 
 
 @ioprepped
@@ -671,29 +671,29 @@ class InboxRequestMessage(Message):
 class InboxRequestResponse(Response):
     """Here's that inbox contents you asked for, boss."""
 
-    wrappers: Annotated[list[ClientUIWrapper], IOAttrs('w')]
+    wrappers: Annotated[list[ClientUIWrapper], IOAttrs("w")]
 
     # Printable error if something goes wrong.
-    error: Annotated[str | None, IOAttrs('e')] = None
+    error: Annotated[str | None, IOAttrs("e")] = None
 
 
 class ClientUIAction(Enum):
     """Types of actions we can run."""
 
-    BUTTON_PRESS_POSITIVE = 'p'
-    BUTTON_PRESS_NEGATIVE = 'n'
+    BUTTON_PRESS_POSITIVE = "p"
+    BUTTON_PRESS_NEGATIVE = "n"
 
 
 class ClientEffectTypeID(Enum):
     """Type ID for each of our subclasses."""
 
-    UNKNOWN = 'u'
-    SCREEN_MESSAGE = 'm'
-    SOUND = 's'
-    DELAY = 'd'
-    CHEST_WAIT_TIME_ANIMATION = 't'
-    TICKETS_ANIMATION = 'ta'
-    TOKENS_ANIMATION = 'toa'
+    UNKNOWN = "u"
+    SCREEN_MESSAGE = "m"
+    SOUND = "s"
+    DELAY = "d"
+    CHEST_WAIT_TIME_ANIMATION = "t"
+    TICKETS_ANIMATION = "ta"
+    TOKENS_ANIMATION = "toa"
 
 
 class ClientEffect(IOMultiType[ClientEffectTypeID]):
@@ -760,9 +760,9 @@ class ClientEffectUnknown(ClientEffect):
 class ClientEffectScreenMessage(ClientEffect):
     """Display a screen-message."""
 
-    message: Annotated[str, IOAttrs('m')]
-    subs: Annotated[list[str], IOAttrs('s')]
-    color: Annotated[tuple[float, float, float], IOAttrs('c')] = (1.0, 1.0, 1.0)
+    message: Annotated[str, IOAttrs("m")]
+    subs: Annotated[list[str], IOAttrs("s")]
+    color: Annotated[tuple[float, float, float], IOAttrs("c")] = (1.0, 1.0, 1.0)
 
     @override
     @classmethod
@@ -778,14 +778,14 @@ class ClientEffectSound(ClientEffect):
     class Sound(Enum):
         """Sounds that can be made alongside the message."""
 
-        UNKNOWN = 'u'
-        CASH_REGISTER = 'c'
-        ERROR = 'e'
-        POWER_DOWN = 'p'
-        GUN_COCKING = 'g'
+        UNKNOWN = "u"
+        CASH_REGISTER = "c"
+        ERROR = "e"
+        POWER_DOWN = "p"
+        GUN_COCKING = "g"
 
-    sound: Annotated[Sound, IOAttrs('s', enum_fallback=Sound.UNKNOWN)]
-    volume: Annotated[float, IOAttrs('v')] = 1.0
+    sound: Annotated[Sound, IOAttrs("s", enum_fallback=Sound.UNKNOWN)]
+    volume: Annotated[float, IOAttrs("v")] = 1.0
 
     @override
     @classmethod
@@ -798,10 +798,10 @@ class ClientEffectSound(ClientEffect):
 class ClientEffectChestWaitTimeAnimation(ClientEffect):
     """Animate chest wait time changing."""
 
-    chestid: Annotated[str, IOAttrs('c')]
-    duration: Annotated[float, IOAttrs('u')]
-    startvalue: Annotated[datetime.datetime, IOAttrs('o')]
-    endvalue: Annotated[datetime.datetime, IOAttrs('n')]
+    chestid: Annotated[str, IOAttrs("c")]
+    duration: Annotated[float, IOAttrs("u")]
+    startvalue: Annotated[datetime.datetime, IOAttrs("o")]
+    endvalue: Annotated[datetime.datetime, IOAttrs("n")]
 
     @override
     @classmethod
@@ -814,9 +814,9 @@ class ClientEffectChestWaitTimeAnimation(ClientEffect):
 class ClientEffectTicketsAnimation(ClientEffect):
     """Animate tickets count."""
 
-    duration: Annotated[float, IOAttrs('u')]
-    startvalue: Annotated[int, IOAttrs('s')]
-    endvalue: Annotated[int, IOAttrs('e')]
+    duration: Annotated[float, IOAttrs("u")]
+    startvalue: Annotated[int, IOAttrs("s")]
+    endvalue: Annotated[int, IOAttrs("e")]
 
     @override
     @classmethod
@@ -829,9 +829,9 @@ class ClientEffectTicketsAnimation(ClientEffect):
 class ClientEffectTokensAnimation(ClientEffect):
     """Animate tokens count."""
 
-    duration: Annotated[float, IOAttrs('u')]
-    startvalue: Annotated[int, IOAttrs('s')]
-    endvalue: Annotated[int, IOAttrs('e')]
+    duration: Annotated[float, IOAttrs("u")]
+    startvalue: Annotated[int, IOAttrs("s")]
+    endvalue: Annotated[int, IOAttrs("e")]
 
     @override
     @classmethod
@@ -844,7 +844,7 @@ class ClientEffectTokensAnimation(ClientEffect):
 class ClientEffectDelay(ClientEffect):
     """Delay effect processing."""
 
-    seconds: Annotated[float, IOAttrs('s')]
+    seconds: Annotated[float, IOAttrs("s")]
 
     @override
     @classmethod
@@ -857,8 +857,8 @@ class ClientEffectDelay(ClientEffect):
 class ClientUIActionMessage(Message):
     """Do something to a client ui."""
 
-    id: Annotated[str, IOAttrs('i')]
-    action: Annotated[ClientUIAction, IOAttrs('a')]
+    id: Annotated[str, IOAttrs("i")]
+    action: Annotated[ClientUIAction, IOAttrs("a")]
 
     @override
     @classmethod
@@ -875,24 +875,24 @@ class ClientUIActionResponse(Response):
         """Types of errors that may have occurred."""
 
         # Probably a future error type we don't recognize.
-        UNKNOWN = 'u'
+        UNKNOWN = "u"
 
         # Something went wrong on the server, but specifics are not
         # relevant.
-        INTERNAL = 'i'
+        INTERNAL = "i"
 
         # The entry expired on the server. In various cases such as 'ok'
         # buttons this can generally be ignored.
-        EXPIRED = 'e'
+        EXPIRED = "e"
 
     error_type: Annotated[
-        ErrorType | None, IOAttrs('et', enum_fallback=ErrorType.UNKNOWN)
+        ErrorType | None, IOAttrs("et", enum_fallback=ErrorType.UNKNOWN)
     ]
 
     # User facing error message in the case of errors.
-    error_message: Annotated[str | None, IOAttrs('em')]
+    error_message: Annotated[str | None, IOAttrs("em")]
 
-    effects: Annotated[list[ClientEffect], IOAttrs('fx')]
+    effects: Annotated[list[ClientEffect], IOAttrs("fx")]
 
 
 @ioprepped
@@ -900,7 +900,7 @@ class ClientUIActionResponse(Response):
 class ScoreSubmitMessage(Message):
     """Let the server know we got some score in something."""
 
-    score_token: Annotated[str, IOAttrs('t')]
+    score_token: Annotated[str, IOAttrs("t")]
 
     @override
     @classmethod
@@ -914,7 +914,7 @@ class ScoreSubmitResponse(Response):
     """Did something to that inbox entry, boss."""
 
     # Things we should show on our end.
-    effects: Annotated[list[ClientEffect], IOAttrs('fx')]
+    effects: Annotated[list[ClientEffect], IOAttrs("fx")]
 
 
 @ioprepped
@@ -926,17 +926,17 @@ class ChestActionMessage(Message):
         """Types of actions we can request."""
 
         # Unlocking (for free or with tokens).
-        UNLOCK = 'u'
+        UNLOCK = "u"
 
         # Watched an ad to reduce wait.
-        AD = 'ad'
+        AD = "ad"
 
-    action: Annotated[Action, IOAttrs('a')]
+    action: Annotated[Action, IOAttrs("a")]
 
     # Tokens we are paying (only applies to unlock).
-    token_payment: Annotated[int, IOAttrs('t')]
+    token_payment: Annotated[int, IOAttrs("t")]
 
-    chest_id: Annotated[str, IOAttrs('i')]
+    chest_id: Annotated[str, IOAttrs("i")]
 
     @override
     @classmethod
@@ -950,36 +950,36 @@ class ChestActionResponse(Response):
     """Here's the results of that action you asked for, boss."""
 
     # Tokens that were actually charged.
-    tokens_charged: Annotated[int, IOAttrs('t')] = 0
+    tokens_charged: Annotated[int, IOAttrs("t")] = 0
 
     # If present, signifies the chest has been opened and we should show
     # the user this stuff that was in it.
-    contents: Annotated[list[DisplayItemWrapper] | None, IOAttrs('c')] = None
+    contents: Annotated[list[DisplayItemWrapper] | None, IOAttrs("c")] = None
 
     # If contents are present, which of the chest's prize-sets they
     # represent.
-    prizeindex: Annotated[int, IOAttrs('i')] = 0
+    prizeindex: Annotated[int, IOAttrs("i")] = 0
 
     # Printable error if something goes wrong.
-    error: Annotated[str | None, IOAttrs('e')] = None
+    error: Annotated[str | None, IOAttrs("e")] = None
 
     # Printable warning. Shown in orange with an error sound. Does not
     # mean the action failed; only that there's something to tell the
     # users such as 'It looks like you are faking ad views; stop it or
     # you won't have ad options anymore.'
-    warning: Annotated[str | None, IOAttrs('w', store_default=False)] = None
+    warning: Annotated[str | None, IOAttrs("w", store_default=False)] = None
 
     # Printable success message. Shown in green with a cash-register
     # sound. Can be used for things like successful wait reductions via
     # ad views. Used in builds earlier than 22311; can remove once
     # 22311+ is ubiquitous.
-    success_msg: Annotated[str | None, IOAttrs('s', store_default=False)] = None
+    success_msg: Annotated[str | None, IOAttrs("s", store_default=False)] = None
 
     # Effects to show on the client. Replaces warning and success_msg in
     # build 22311 or newer.
-    effects: Annotated[
-        list[ClientEffect], IOAttrs('fx', store_default=False)
-    ] = field(default_factory=list)
+    effects: Annotated[list[ClientEffect], IOAttrs("fx", store_default=False)] = field(
+        default_factory=list
+    )
 
 
 @ioprepped
@@ -987,7 +987,7 @@ class ChestActionResponse(Response):
 class GlobalProfileCheckMessage(Message):
     """Is this global profile name available?"""
 
-    name: Annotated[str, IOAttrs('n')]
+    name: Annotated[str, IOAttrs("n")]
 
     @override
     @classmethod
@@ -1000,5 +1000,5 @@ class GlobalProfileCheckMessage(Message):
 class GlobalProfileCheckResponse(Response):
     """Here's that profile check ya asked for boss."""
 
-    available: Annotated[bool, IOAttrs('a')]
-    ticket_cost: Annotated[int, IOAttrs('tc')]
+    available: Annotated[bool, IOAttrs("a")]
+    ticket_cost: Annotated[int, IOAttrs("tc")]

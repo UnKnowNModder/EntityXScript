@@ -38,12 +38,12 @@ class OutOfBoundsMessage:
 class DeathType(Enum):
     """A reason for a death."""
 
-    GENERIC = 'generic'
-    OUT_OF_BOUNDS = 'out_of_bounds'
-    IMPACT = 'impact'
-    FALL = 'fall'
-    REACHED_GOAL = 'reached_goal'
-    LEFT_GAME = 'left_game'
+    GENERIC = "generic"
+    OUT_OF_BOUNDS = "out_of_bounds"
+    IMPACT = "impact"
+    FALL = "fall"
+    REACHED_GOAL = "reached_goal"
+    LEFT_GAME = "left_game"
 
 
 @dataclass
@@ -218,9 +218,9 @@ class HitMessage:
         source_player: bascenev1.Player | None = None,
         kick_back: float = 1.0,
         flat_damage: float | None = None,
-        hit_type: str = 'generic',
+        hit_type: str = "generic",
         force_direction: Sequence[float] | None = None,
-        hit_subtype: str = 'default',
+        hit_subtype: str = "default",
     ):
         """Instantiate a message with given values."""
 

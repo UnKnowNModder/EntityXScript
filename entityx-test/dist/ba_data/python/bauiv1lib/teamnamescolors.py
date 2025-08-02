@@ -38,25 +38,21 @@ class TeamNamesColorsWindow(PopupWindow):
         )
 
         appconfig = bui.app.config
-        self._names = list(
-            appconfig.get('Custom Team Names', DEFAULT_TEAM_NAMES)
-        )
+        self._names = list(appconfig.get("Custom Team Names", DEFAULT_TEAM_NAMES))
 
         # We need to flatten the translation since it will be an
         # editable string.
         self._names = [
-            bui.Lstr(translate=('teamNames', n)).evaluate() for n in self._names
+            bui.Lstr(translate=("teamNames", n)).evaluate() for n in self._names
         ]
-        self._colors = list(
-            appconfig.get('Custom Team Colors', DEFAULT_TEAM_COLORS)
-        )
+        self._colors = list(appconfig.get("Custom Team Colors", DEFAULT_TEAM_COLORS))
 
         self._color_buttons: list[bui.Widget] = []
         self._color_text_fields: list[bui.Widget] = []
 
         resetbtn = bui.buttonwidget(
             parent=self.root_widget,
-            label=bui.Lstr(resource='settingsWindowAdvanced.resetText'),
+            label=bui.Lstr(resource="settingsWindowAdvanced.resetText"),
             autoselect=True,
             scale=0.7,
             on_activate_call=self._reset,
@@ -73,8 +69,8 @@ class TeamNamesColorsWindow(PopupWindow):
                     on_activate_call=bui.Call(self._color_click, i),
                     size=(70, 70),
                     color=self._colors[i],
-                    label='',
-                    button_type='square',
+                    label="",
+                    button_type="square",
                 )
             )
             self._color_text_fields.append(
@@ -83,11 +79,11 @@ class TeamNamesColorsWindow(PopupWindow):
                     position=(135, 0 + 201 - 90 * i),
                     size=(280, 46),
                     text=self._names[i],
-                    h_align='left',
-                    v_align='center',
+                    h_align="left",
+                    v_align="center",
                     max_chars=self._max_name_length,
                     color=self._colors[i],
-                    description=bui.Lstr(resource='nameText'),
+                    description=bui.Lstr(resource="nameText"),
                     editable=True,
                     padding=4,
                 )
@@ -104,7 +100,7 @@ class TeamNamesColorsWindow(PopupWindow):
 
         cancelbtn = bui.buttonwidget(
             parent=self.root_widget,
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             autoselect=True,
             on_activate_call=self._on_cancel_press,
             size=(150, 50),
@@ -112,7 +108,7 @@ class TeamNamesColorsWindow(PopupWindow):
         )
         okbtn = bui.buttonwidget(
             parent=self.root_widget,
-            label=bui.Lstr(resource='okText'),
+            label=bui.Lstr(resource="okText"),
             autoselect=True,
             on_activate_call=self._ok,
             size=(150, 50),
@@ -149,20 +145,16 @@ class TeamNamesColorsWindow(PopupWindow):
 
         for i in range(2):
             self._colors[i] = DEFAULT_TEAM_COLORS[i]
-            name = bui.Lstr(
-                translate=('teamNames', DEFAULT_TEAM_NAMES[i])
-            ).evaluate()
+            name = bui.Lstr(translate=("teamNames", DEFAULT_TEAM_NAMES[i])).evaluate()
             if len(name) > self._max_name_length:
-                print('GOT DEFAULT TEAM NAME LONGER THAN MAX LENGTH')
+                print("GOT DEFAULT TEAM NAME LONGER THAN MAX LENGTH")
             bui.textwidget(edit=self._color_text_fields[i], text=name)
         self._update()
 
     def _update(self) -> None:
         for i in range(2):
             bui.buttonwidget(edit=self._color_buttons[i], color=self._colors[i])
-            bui.textwidget(
-                edit=self._color_text_fields[i], color=self._colors[i]
-            )
+            bui.textwidget(edit=self._color_text_fields[i], color=self._colors[i])
 
     def _ok(self) -> None:
         from bascenev1 import DEFAULT_TEAM_COLORS, DEFAULT_TEAM_NAMES
@@ -180,9 +172,9 @@ class TeamNamesColorsWindow(PopupWindow):
             name = cast(str, bui.textwidget(query=self._color_text_fields[i]))
             if not name:
                 bui.screenmessage(
-                    bui.Lstr(resource='nameNotEmptyText'), color=(1, 0, 0)
+                    bui.Lstr(resource="nameNotEmptyText"), color=(1, 0, 0)
                 )
-                bui.getsound('error').play()
+                bui.getsound("error").play()
                 return
             new_names.append(name)
 
@@ -191,7 +183,7 @@ class TeamNamesColorsWindow(PopupWindow):
                 is_default = False
             default_team_name = DEFAULT_TEAM_NAMES[i]
             default_team_name_translated = bui.Lstr(
-                translate=('teamNames', default_team_name)
+                translate=("teamNames", default_team_name)
             ).evaluate()
             if (
                 new_names[i] != default_team_name
@@ -200,24 +192,24 @@ class TeamNamesColorsWindow(PopupWindow):
                 is_default = False
 
         if is_default:
-            for key in ('Custom Team Names', 'Custom Team Colors'):
+            for key in ("Custom Team Names", "Custom Team Colors"):
                 if key in cfg:
                     del cfg[key]
         else:
-            cfg['Custom Team Names'] = list(new_names)
-            cfg['Custom Team Colors'] = list(self._colors)
+            cfg["Custom Team Names"] = list(new_names)
+            cfg["Custom Team Colors"] = list(self._colors)
 
         cfg.commit()
         self._transition_out()
 
-    def _transition_out(self, transition: str = 'out_scale') -> None:
+    def _transition_out(self, transition: str = "out_scale") -> None:
         if not self._transitioning_out:
             self._transitioning_out = True
             bui.containerwidget(edit=self.root_widget, transition=transition)
 
     @override
     def on_popup_cancel(self) -> None:
-        bui.getsound('swish').play()
+        bui.getsound("swish").play()
         self._transition_out()
 
     def _on_cancel_press(self) -> None:

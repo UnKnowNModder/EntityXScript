@@ -29,17 +29,15 @@ class _PathCapture:
         if not self._is_dataclass:
             raise TypeError(
                 f"Field path cannot include attribute '{name}' "
-                f'under parent {self._cls}; parent types must be dataclasses.'
+                f"under parent {self._cls}; parent types must be dataclasses."
             )
 
-        prep = PrepSession(explicit=False).prep_dataclass(
-            self._cls, recursion_level=0
-        )
+        prep = PrepSession(explicit=False).prep_dataclass(self._cls, recursion_level=0)
         assert prep is not None
         try:
             anntype = prep.annotations[name]
         except KeyError as exc:
-            raise AttributeError(f'{type(self)} has no {name} field.') from exc
+            raise AttributeError(f"{type(self)} has no {name} field.") from exc
         anntype, ioattrs = parse_annotated(anntype)
         storagename = (
             name
@@ -52,7 +50,7 @@ class _PathCapture:
     @property
     def path(self) -> str:
         """The final output path."""
-        return '.'.join(self._pathparts)
+        return ".".join(self._pathparts)
 
 
 class DataclassFieldLookup[T]:
@@ -84,11 +82,11 @@ class DataclassFieldLookup[T]:
             out = callback(_PathCapture(self.cls))
             if not isinstance(out, _PathCapture):
                 raise TypeError(
-                    f'Expected a valid path under'
-                    f' the provided object; got a {type(out)}.'
+                    f"Expected a valid path under"
+                    f" the provided object; got a {type(out)}."
                 )
             return out.path
-        return ''
+        return ""
 
     def paths(self, callback: Callable[[T], list[Any]]) -> list[str]:
         """Look up multiple paths on child dataclass fields.
@@ -105,8 +103,8 @@ class DataclassFieldLookup[T]:
             for out in outs:
                 if not isinstance(out, _PathCapture):
                     raise TypeError(
-                        f'Expected a valid path under'
-                        f' the provided object; got a {type(out)}.'
+                        f"Expected a valid path under"
+                        f" the provided object; got a {type(out)}."
                     )
                 outvals.append(out.path)
         return outvals

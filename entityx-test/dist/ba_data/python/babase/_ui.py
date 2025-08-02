@@ -16,13 +16,11 @@ class DevConsoleStringEditAdapter(StringEditAdapter):
     """Allows editing dev-console text."""
 
     def __init__(self) -> None:
-        description = 'Dev Console Input'
+        description = "Dev Console Input"
         initial_text = _babase.get_dev_console_input_text()
         max_length = None
         screen_space_center = None
-        super().__init__(
-            description, initial_text, max_length, screen_space_center
-        )
+        super().__init__(description, initial_text, max_length, screen_space_center)
 
     @override
     def _do_apply(self, new_text: str) -> None:

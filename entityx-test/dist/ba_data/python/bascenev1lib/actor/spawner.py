@@ -59,17 +59,17 @@ class Spawner:
         """
         self._spawn_callback = spawn_callback
         self._send_spawn_message = send_spawn_message
-        self._spawner_sound = bs.getsound('swip2')
+        self._spawner_sound = bs.getsound("swip2")
         self._data = data
         self._pt = pt
         # create a light where the spawn will happen
         self._light = bs.newnode(
-            'light',
+            "light",
             attrs={
-                'position': tuple(pt),
-                'radius': 0.1,
-                'color': (1.0, 0.1, 0.1),
-                'lights_volumes': False,
+                "position": tuple(pt),
+                "radius": 0.1,
+                "color": (1.0, 0.1, 0.1),
+                "lights_volumes": False,
             },
         )
         scl = float(spawn_time) / 3.75
@@ -78,7 +78,7 @@ class Spawner:
         self._spawner_sound.play(position=self._light.position)
         bs.animate(
             self._light,
-            'intensity',
+            "intensity",
             {
                 0.0: 0.0,
                 0.25 * scl: max_val,
@@ -109,6 +109,4 @@ class Spawner:
             # only run if our activity still exists
             activity = bs.getactivity()
             if activity is not None:
-                activity.handlemessage(
-                    self.SpawnMessage(self, self._data, self._pt)
-                )
+                activity.handlemessage(self.SpawnMessage(self, self._data, self._pt))

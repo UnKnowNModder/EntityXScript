@@ -36,7 +36,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
         advb = parent_window.get_advanced_button()
         super().__init__(
             root_widget=bui.containerwidget(
-                transition='in_scale',
+                transition="in_scale",
                 size=(self._width, self._height),
                 scale=1.06
                 * (
@@ -44,9 +44,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
                     if uiscale is bui.UIScale.SMALL
                     else 1.35 if uiscale is bui.UIScale.MEDIUM else 1.0
                 ),
-                stack_offset=(
-                    (0, -25) if uiscale is bui.UIScale.SMALL else (0, 0)
-                ),
+                stack_offset=((0, -25) if uiscale is bui.UIScale.SMALL else (0, 0)),
                 scale_origin_stack_offset=(advb.get_screen_space_center()),
             )
         )
@@ -58,11 +56,11 @@ class GamepadAdvancedSettingsWindow(bui.Window):
                 self._height - (40 if uiscale is bui.UIScale.SMALL else 34),
             ),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.advancedTitleText'),
+            text=bui.Lstr(resource=f"{self._r}.advancedTitleText"),
             maxwidth=320,
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         back_button = btn = bui.buttonwidget(
@@ -74,7 +72,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             ),
             size=(120, 48),
             text_scale=0.8,
-            label=bui.Lstr(resource='doneText'),
+            label=bui.Lstr(resource="doneText"),
             on_activate_call=self._done,
         )
         bui.containerwidget(
@@ -86,9 +84,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
         self._scroll_width = self._width - (100 + 2 * x_inset)
         self._scroll_height = self._height - 110
         self._sub_width = self._scroll_width - 20
-        self._sub_height = (
-            940 if self._parent_window.get_is_secondary() else 1040
-        )
+        self._sub_height = 940 if self._parent_window.get_is_secondary() else 1040
         if app.env.vr:
             self._sub_height += 50
         self._scrollwidget = bui.scrollwidget(
@@ -108,9 +104,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             claims_left_right=True,
             selection_loops_to_parent=True,
         )
-        bui.containerwidget(
-            edit=self._root_widget, selected_child=self._scrollwidget
-        )
+        bui.containerwidget(edit=self._root_widget, selected_child=self._scrollwidget)
 
         h = 30
         v = self._sub_height - 10
@@ -124,7 +118,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
                 parent=self._subcontainer,
                 position=(h + 70, v),
                 size=(500, 30),
-                text=bui.Lstr(resource=f'{self._r}.unassignedButtonsRunText'),
+                text=bui.Lstr(resource=f"{self._r}.unassignedButtonsRunText"),
                 textcolor=(0.8, 0.8, 0.8),
                 maxwidth=330,
                 scale=1.0,
@@ -138,8 +132,8 @@ class GamepadAdvancedSettingsWindow(bui.Window):
         v -= 60
         capb = self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.runButton1Text'),
-            control='buttonRun1' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.runButton1Text"),
+            control="buttonRun1" + self._parent_window.get_ext(),
         )
         if self._parent_window.get_is_secondary():
             for widget in capb:
@@ -147,35 +141,35 @@ class GamepadAdvancedSettingsWindow(bui.Window):
         v -= 42
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.runButton2Text'),
-            control='buttonRun2' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.runButton2Text"),
+            control="buttonRun2" + self._parent_window.get_ext(),
         )
         bui.textwidget(
             parent=self._subcontainer,
             position=(self._sub_width * 0.5, v - 24),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.runTriggerDescriptionText'),
+            text=bui.Lstr(resource=f"{self._r}.runTriggerDescriptionText"),
             color=(0.7, 1, 0.7, 0.6),
             maxwidth=self._sub_width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         v -= 85
 
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.runTrigger1Text'),
-            control='triggerRun1' + self._parent_window.get_ext(),
-            message=bui.Lstr(resource=f'{self._r}.pressAnyAnalogTriggerText'),
+            name=bui.Lstr(resource=f"{self._r}.runTrigger1Text"),
+            control="triggerRun1" + self._parent_window.get_ext(),
+            message=bui.Lstr(resource=f"{self._r}.pressAnyAnalogTriggerText"),
         )
         v -= 42
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.runTrigger2Text'),
-            control='triggerRun2' + self._parent_window.get_ext(),
-            message=bui.Lstr(resource=f'{self._r}.pressAnyAnalogTriggerText'),
+            name=bui.Lstr(resource=f"{self._r}.runTrigger2Text"),
+            control="triggerRun2" + self._parent_window.get_ext(),
+            message=bui.Lstr(resource=f"{self._r}.pressAnyAnalogTriggerText"),
         )
 
         # in vr mode, allow assigning a reset-view button
@@ -183,50 +177,50 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             v -= 50
             self._capture_button(
                 pos=(h2, v),
-                name=bui.Lstr(resource=f'{self._r}.vrReorientButtonText'),
-                control='buttonVRReorient' + self._parent_window.get_ext(),
+                name=bui.Lstr(resource=f"{self._r}.vrReorientButtonText"),
+                control="buttonVRReorient" + self._parent_window.get_ext(),
             )
 
         v -= 60
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.extraStartButtonText'),
-            control='buttonStart2' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.extraStartButtonText"),
+            control="buttonStart2" + self._parent_window.get_ext(),
         )
         v -= 60
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.ignoredButton1Text'),
-            control='buttonIgnored' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.ignoredButton1Text"),
+            control="buttonIgnored" + self._parent_window.get_ext(),
         )
         v -= 42
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.ignoredButton2Text'),
-            control='buttonIgnored2' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.ignoredButton2Text"),
+            control="buttonIgnored2" + self._parent_window.get_ext(),
         )
         v -= 42
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.ignoredButton3Text'),
-            control='buttonIgnored3' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.ignoredButton3Text"),
+            control="buttonIgnored3" + self._parent_window.get_ext(),
         )
         v -= 42
         self._capture_button(
             pos=(h2, v),
-            name=bui.Lstr(resource=f'{self._r}.ignoredButton4Text'),
-            control='buttonIgnored4' + self._parent_window.get_ext(),
+            name=bui.Lstr(resource=f"{self._r}.ignoredButton4Text"),
+            control="buttonIgnored4" + self._parent_window.get_ext(),
         )
         bui.textwidget(
             parent=self._subcontainer,
             position=(self._sub_width * 0.5, v - 14),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.ignoredButtonDescriptionText'),
+            text=bui.Lstr(resource=f"{self._r}.ignoredButtonDescriptionText"),
             color=(0.7, 1, 0.7, 0.6),
             scale=0.8,
             maxwidth=self._sub_width * 0.8,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         v -= 80
@@ -236,15 +230,11 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             autoselect=True,
             position=(h + 50, v),
             size=(400, 30),
-            text=bui.Lstr(
-                resource=f'{self._r}.startButtonActivatesDefaultText'
-            ),
+            text=bui.Lstr(resource=f"{self._r}.startButtonActivatesDefaultText"),
             textcolor=(0.8, 0.8, 0.8),
             maxwidth=450,
             scale=0.9,
-            on_value_change_call=(
-                pwin.set_start_button_activates_default_widget_value
-            ),
+            on_value_change_call=(pwin.set_start_button_activates_default_widget_value),
             value=pwin.get_start_button_activates_default_widget_value(),
         )
         bui.textwidget(
@@ -252,13 +242,13 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             position=(self._sub_width * 0.5, v - 12),
             size=(0, 0),
             text=bui.Lstr(
-                resource=f'{self._r}.startButtonActivatesDefaultDescriptionText'
+                resource=f"{self._r}.startButtonActivatesDefaultDescriptionText"
             ),
             color=(0.7, 1, 0.7, 0.6),
             maxwidth=self._sub_width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         v -= 80
@@ -267,7 +257,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             autoselect=True,
             position=(h + 50, v),
             size=(400, 30),
-            text=bui.Lstr(resource=f'{self._r}.uiOnlyText'),
+            text=bui.Lstr(resource=f"{self._r}.uiOnlyText"),
             textcolor=(0.8, 0.8, 0.8),
             maxwidth=450,
             scale=0.9,
@@ -278,12 +268,12 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             parent=self._subcontainer,
             position=(self._sub_width * 0.5, v - 12),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.uiOnlyDescriptionText'),
+            text=bui.Lstr(resource=f"{self._r}.uiOnlyDescriptionText"),
             color=(0.7, 1, 0.7, 0.6),
             maxwidth=self._sub_width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         v -= 80
@@ -292,7 +282,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             autoselect=True,
             position=(h + 50, v),
             size=(400, 30),
-            text=bui.Lstr(resource=f'{self._r}.ignoreCompletelyText'),
+            text=bui.Lstr(resource=f"{self._r}.ignoreCompletelyText"),
             textcolor=(0.8, 0.8, 0.8),
             maxwidth=450,
             scale=0.9,
@@ -303,14 +293,12 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             parent=self._subcontainer,
             position=(self._sub_width * 0.5, v - 12),
             size=(0, 0),
-            text=bui.Lstr(
-                resource=f'{self._r}.ignoreCompletelyDescriptionText'
-            ),
+            text=bui.Lstr(resource=f"{self._r}.ignoreCompletelyDescriptionText"),
             color=(0.7, 1, 0.7, 0.6),
             maxwidth=self._sub_width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         v -= 80
@@ -320,7 +308,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             autoselect=True,
             position=(h + 50, v),
             size=(400, 30),
-            text=bui.Lstr(resource=f'{self._r}.autoRecalibrateText'),
+            text=bui.Lstr(resource=f"{self._r}.autoRecalibrateText"),
             textcolor=(0.8, 0.8, 0.8),
             maxwidth=450,
             scale=0.9,
@@ -331,18 +319,18 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             parent=self._subcontainer,
             position=(self._sub_width * 0.5, v - 12),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.autoRecalibrateDescriptionText'),
+            text=bui.Lstr(resource=f"{self._r}.autoRecalibrateDescriptionText"),
             color=(0.7, 1, 0.7, 0.6),
             maxwidth=self._sub_width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         v -= 80
 
         buttons = self._config_value_editor(
-            bui.Lstr(resource=f'{self._r}.analogStickDeadZoneText'),
-            control=('analogStickDeadZone' + self._parent_window.get_ext()),
+            bui.Lstr(resource=f"{self._r}.analogStickDeadZoneText"),
+            control=("analogStickDeadZone" + self._parent_window.get_ext()),
             position=(h + 40, v),
             min_val=0,
             max_val=10.0,
@@ -356,14 +344,12 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             parent=self._subcontainer,
             position=(self._sub_width * 0.5, v - 12),
             size=(0, 0),
-            text=bui.Lstr(
-                resource=f'{self._r}.analogStickDeadZoneDescriptionText'
-            ),
+            text=bui.Lstr(resource=f"{self._r}.analogStickDeadZoneDescriptionText"),
             color=(0.7, 1, 0.7, 0.6),
             maxwidth=self._sub_width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         v -= 100
 
@@ -373,7 +359,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             bui.buttonwidget(
                 parent=self._subcontainer,
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.twoInOneSetupText'),
+                label=bui.Lstr(resource=f"{self._r}.twoInOneSetupText"),
                 position=(40, v),
                 size=(self._sub_width - 80, 50),
                 on_activate_call=self._parent_window.show_secondary_editor,
@@ -395,7 +381,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
     ) -> tuple[bui.Widget, bui.Widget]:
         if message is None:
             message = bui.Lstr(
-                resource=self._parent_window.get_r() + '.pressAnyButtonText'
+                resource=self._parent_window.get_r() + ".pressAnyButtonText"
             )
         btn = bui.buttonwidget(
             parent=self._subcontainer,
@@ -412,7 +398,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             left_widget=btn,
             color=(0.45, 0.4, 0.5),
             textcolor=(0.65, 0.6, 0.7),
-            label=bui.Lstr(resource=f'{self._r}.clearText'),
+            label=bui.Lstr(resource=f"{self._r}.clearText"),
             size=(110, 50),
             scale=0.7,
             on_activate_call=bui.Call(self._clear_control, control),
@@ -430,8 +416,8 @@ class GamepadAdvancedSettingsWindow(bui.Window):
                 position=(pos[0] + 285, pos[1] + 20),
                 color=(1, 1, 1, 0.3),
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 scale=0.7,
                 text=self._parent_window.get_control_value_name(control),
                 maxwidth=200,
@@ -451,9 +437,7 @@ class GamepadAdvancedSettingsWindow(bui.Window):
         bui.pushcall(doit)
         return btn, btn2
 
-    def _inc(
-        self, control: str, min_val: float, max_val: float, inc: float
-    ) -> None:
+    def _inc(self, control: str, min_val: float, max_val: float, inc: float) -> None:
         val = self._parent_window.get_settings().get(control, 1.0)
         val = min(max_val, max(min_val, val + inc))
         if abs(1.0 - val) < 0.001:
@@ -487,8 +471,8 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             size=(100, 30),
             text=displayname,
             color=(0.8, 0.8, 0.8, 1.0),
-            h_align='left',
-            v_align='center',
+            h_align="left",
+            v_align="center",
             scale=1.0,
             maxwidth=280,
         )
@@ -498,8 +482,8 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             size=(60, 28),
             editable=False,
             color=(0.3, 1.0, 0.3, 1.0),
-            h_align='right',
-            v_align='center',
+            h_align="right",
+            v_align="center",
             text=self._parent_window.get_control_value_name(control),
             padding=2,
         )
@@ -508,10 +492,8 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             autoselect=True,
             position=(330 + x_offset, position[1] + 4),
             size=(28, 28),
-            label='-',
-            on_activate_call=bui.Call(
-                self._inc, control, min_val, max_val, -increment
-            ),
+            label="-",
+            on_activate_call=bui.Call(self._inc, control, min_val, max_val, -increment),
             repeat=True,
             enable_sound=(change_sound is True),
         )
@@ -520,10 +502,8 @@ class GamepadAdvancedSettingsWindow(bui.Window):
             autoselect=True,
             position=(380 + x_offset, position[1] + 4),
             size=(28, 28),
-            label='+',
-            on_activate_call=bui.Call(
-                self._inc, control, min_val, max_val, increment
-            ),
+            label="+",
+            on_activate_call=bui.Call(self._inc, control, min_val, max_val, increment),
             repeat=True,
             enable_sound=(change_sound is True),
         )
@@ -544,36 +524,32 @@ class GamepadAdvancedSettingsWindow(bui.Window):
         dialog: AwaitGamepadInputWindow,
     ) -> None:
         ext = self._parent_window.get_ext()
-        if control in ['triggerRun1' + ext, 'triggerRun2' + ext]:
-            if event['type'] == 'AXISMOTION':
+        if control in ["triggerRun1" + ext, "triggerRun2" + ext]:
+            if event["type"] == "AXISMOTION":
                 # ignore small values or else we might get triggered
                 # by noise
-                if abs(event['value']) > 0.5:
-                    self._parent_window.get_settings()[control] = event['axis']
+                if abs(event["value"]) > 0.5:
+                    self._parent_window.get_settings()[control] = event["axis"]
                     # update the button's text widget
                     if self._textwidgets[control]:
                         bui.textwidget(
                             edit=self._textwidgets[control],
-                            text=self._parent_window.get_control_value_name(
-                                control
-                            ),
+                            text=self._parent_window.get_control_value_name(control),
                         )
-                    bui.getsound('gunCocking').play()
+                    bui.getsound("gunCocking").play()
                     dialog.die()
         else:
-            if event['type'] == 'BUTTONDOWN':
-                value = event['button']
+            if event["type"] == "BUTTONDOWN":
+                value = event["button"]
                 self._parent_window.get_settings()[control] = value
                 # update the button's text widget
                 if self._textwidgets[control]:
                     bui.textwidget(
                         edit=self._textwidgets[control],
-                        text=self._parent_window.get_control_value_name(
-                            control
-                        ),
+                        text=self._parent_window.get_control_value_name(control),
                     )
-                bui.getsound('gunCocking').play()
+                bui.getsound("gunCocking").play()
                 dialog.die()
 
     def _done(self) -> None:
-        bui.containerwidget(edit=self._root_widget, transition='out_scale')
+        bui.containerwidget(edit=self._root_widget, transition="out_scale")

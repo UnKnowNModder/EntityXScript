@@ -14,10 +14,10 @@ class RemoteAppSettingsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ) -> None:
-        self._r = 'connectMobileDevicesWindow'
+        self._r = "connectMobileDevicesWindow"
         app = bui.app
         uiscale = app.ui_v1.uiscale
         width = 1200 if uiscale is bui.UIScale.SMALL else 700
@@ -48,9 +48,7 @@ class RemoteAppSettingsWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(width, height),
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
                 scale=scale,
             ),
@@ -71,7 +69,7 @@ class RemoteAppSettingsWindow(bui.MainWindow):
                 size=(60, 60),
                 scale=0.8,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 text_scale=1.1,
                 autoselect=True,
                 on_activate_call=self.main_window_back,
@@ -85,12 +83,12 @@ class RemoteAppSettingsWindow(bui.MainWindow):
                 yoffs - (62 if uiscale is bui.UIScale.SMALL else 42),
             ),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.titleText'),
+            text=bui.Lstr(resource=f"{self._r}.titleText"),
             maxwidth=370,
             color=bui.app.ui_v1.title_color,
             scale=0.8,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         # Generally center the rest of our contents vertically.
@@ -104,15 +102,15 @@ class RemoteAppSettingsWindow(bui.MainWindow):
             color=(0.7, 0.9, 0.7, 1.0),
             scale=0.8,
             text=bui.Lstr(
-                resource=f'{self._r}.explanationText',
+                resource=f"{self._r}.explanationText",
                 subs=[
-                    ('${APP_NAME}', bui.Lstr(resource='titleText')),
-                    ('${REMOTE_APP_NAME}', bui.get_remote_app_name()),
+                    ("${APP_NAME}", bui.Lstr(resource="titleText")),
+                    ("${REMOTE_APP_NAME}", bui.get_remote_app_name()),
                 ],
             ),
             max_height=100,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         v -= 90
 
@@ -123,11 +121,11 @@ class RemoteAppSettingsWindow(bui.MainWindow):
             size=(0, 0),
             color=(0.7, 0.9, 0.7, 1.0),
             scale=1.4,
-            text='bombsquadgame.com/remote',
+            text="bombsquadgame.com/remote",
             maxwidth=width * 0.95,
             max_height=60,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
         v -= 30
 
@@ -137,11 +135,11 @@ class RemoteAppSettingsWindow(bui.MainWindow):
             size=(0, 0),
             color=(0.7, 0.9, 0.7, 0.8),
             scale=0.65,
-            text=bui.Lstr(resource=f'{self._r}.bestResultsText'),
+            text=bui.Lstr(resource=f"{self._r}.bestResultsText"),
             maxwidth=width * 0.95,
             max_height=100,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         bui.checkboxwidget(
@@ -150,9 +148,9 @@ class RemoteAppSettingsWindow(bui.MainWindow):
             size=(300, 30),
             maxwidth=300,
             scale=0.8,
-            value=not bui.app.config.resolve('Enable Remote App'),
+            value=not bui.app.config.resolve("Enable Remote App"),
             autoselect=True,
-            text=bui.Lstr(resource='disableRemoteAppConnectionsText'),
+            text=bui.Lstr(resource="disableRemoteAppConnectionsText"),
             on_value_change_call=self._on_check_changed,
         )
 
@@ -168,5 +166,5 @@ class RemoteAppSettingsWindow(bui.MainWindow):
 
     def _on_check_changed(self, value: bool) -> None:
         cfg = bui.app.config
-        cfg['Enable Remote App'] = not value
+        cfg["Enable Remote App"] = not value
         cfg.apply_and_commit()

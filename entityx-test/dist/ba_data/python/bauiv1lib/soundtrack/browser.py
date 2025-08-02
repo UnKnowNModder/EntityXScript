@@ -21,13 +21,13 @@ class SoundtrackBrowserWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
 
-        self._r = 'editSoundtrackWindow'
+        self._r = "editSoundtrackWindow"
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
         self._width = 1200 if uiscale is bui.UIScale.SMALL else 650
@@ -55,9 +55,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
                 scale=scale,
             ),
@@ -77,7 +75,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
                 size=(60, 60),
                 scale=0.8,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 autoselect=True,
             )
         bui.textwidget(
@@ -88,10 +86,10 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             ),
             size=(0, 0),
             maxwidth=300,
-            text=bui.Lstr(resource=f'{self._r}.titleText'),
+            text=bui.Lstr(resource=f"{self._r}.titleText"),
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         # Generally center all other content
@@ -101,7 +99,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         h = 43 + x_inset
         b_color = (0.6, 0.53, 0.63)
         b_textcolor = (0.75, 0.7, 0.8)
-        lock_tex = bui.gettexture('lock')
+        lock_tex = bui.gettexture("lock")
         self._lock_images: list[bui.Widget] = []
 
         scl = 1.2
@@ -112,11 +110,11 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             size=(100, 55.0 * scl),
             on_activate_call=self._new_soundtrack,
             color=b_color,
-            button_type='square',
+            button_type="square",
             autoselect=True,
             textcolor=b_textcolor,
             text_scale=0.7,
-            label=bui.Lstr(resource=f'{self._r}.newText'),
+            label=bui.Lstr(resource=f"{self._r}.newText"),
         )
         self._lock_images.append(
             bui.imagewidget(
@@ -131,7 +129,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         if self._back_button is None:
             bui.widget(
                 edit=btn,
-                left_widget=bui.get_special_widget('back_button'),
+                left_widget=bui.get_special_widget("back_button"),
             )
         v -= 60.0 * scl
 
@@ -141,11 +139,11 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             size=(100, 55.0 * scl),
             on_activate_call=self._edit_soundtrack,
             color=b_color,
-            button_type='square',
+            button_type="square",
             autoselect=True,
             textcolor=b_textcolor,
             text_scale=0.7,
-            label=bui.Lstr(resource=f'{self._r}.editText'),
+            label=bui.Lstr(resource=f"{self._r}.editText"),
         )
         self._lock_images.append(
             bui.imagewidget(
@@ -159,7 +157,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         if self._back_button is None:
             bui.widget(
                 edit=btn,
-                left_widget=bui.get_special_widget('back_button'),
+                left_widget=bui.get_special_widget("back_button"),
             )
         v -= 60.0 * scl
 
@@ -168,12 +166,12 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             position=(h, v),
             size=(100, 55.0 * scl),
             on_activate_call=self._duplicate_soundtrack,
-            button_type='square',
+            button_type="square",
             autoselect=True,
             color=b_color,
             textcolor=b_textcolor,
             text_scale=0.7,
-            label=bui.Lstr(resource=f'{self._r}.duplicateText'),
+            label=bui.Lstr(resource=f"{self._r}.duplicateText"),
         )
         self._lock_images.append(
             bui.imagewidget(
@@ -187,7 +185,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         if self._back_button is None:
             bui.widget(
                 edit=btn,
-                left_widget=bui.get_special_widget('back_button'),
+                left_widget=bui.get_special_widget("back_button"),
             )
         v -= 60.0 * scl
 
@@ -197,11 +195,11 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             size=(100, 55.0 * scl),
             on_activate_call=self._delete_soundtrack,
             color=b_color,
-            button_type='square',
+            button_type="square",
             autoselect=True,
             textcolor=b_textcolor,
             text_scale=0.7,
-            label=bui.Lstr(resource=f'{self._r}.deleteText'),
+            label=bui.Lstr(resource=f"{self._r}.deleteText"),
         )
         self._lock_images.append(
             bui.imagewidget(
@@ -215,13 +213,11 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         if self._back_button is None:
             bui.widget(
                 edit=btn,
-                left_widget=bui.get_special_widget('back_button'),
+                left_widget=bui.get_special_widget("back_button"),
             )
 
         # Keep our lock images up to date/etc.
-        self._update_timer = bui.AppTimer(
-            1.0, bui.WeakCall(self._update), repeat=True
-        )
+        self._update_timer = bui.AppTimer(1.0, bui.WeakCall(self._update), repeat=True)
         self._update()
 
         v = vbase - 6
@@ -237,7 +233,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         bui.widget(
             edit=self._scrollwidget,
             left_widget=self._new_button,
-            right_widget=bui.get_special_widget('squad_button'),
+            right_widget=bui.get_special_widget("squad_button"),
         )
         self._col = bui.columnwidget(parent=scrollwidget, border=2, margin=0)
 
@@ -251,9 +247,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             bui.buttonwidget(
                 edit=self._back_button, on_activate_call=self.main_window_back
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
         else:
             bui.containerwidget(
                 edit=self._root_widget, on_cancel_call=self.main_window_back
@@ -275,8 +269,7 @@ class SoundtrackBrowserWindow(bui.MainWindow):
 
     def _update(self) -> None:
         have_pro = (
-            bui.app.classic is None
-            or bui.app.classic.accounts.have_pro_options()
+            bui.app.classic is None or bui.app.classic.accounts.have_pro_options()
         )
         for lock in self._lock_images:
             bui.imagewidget(
@@ -285,11 +278,11 @@ class SoundtrackBrowserWindow(bui.MainWindow):
 
     def _do_delete_soundtrack(self) -> None:
         cfg = bui.app.config
-        soundtracks = cfg.setdefault('Soundtracks', {})
+        soundtracks = cfg.setdefault("Soundtracks", {})
         if self._selected_soundtrack in soundtracks:
             del soundtracks[self._selected_soundtrack]
         cfg.commit()
-        bui.getsound('shieldDown').play()
+        bui.getsound("shieldDown").play()
         assert self._selected_soundtrack_index is not None
         assert self._soundtracks is not None
         self._selected_soundtrack_index = min(
@@ -306,21 +299,21 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             bui.app.classic is not None
             and not bui.app.classic.accounts.have_pro_options()
         ):
-            PurchaseWindow(items=['pro'])
+            PurchaseWindow(items=["pro"])
             return
         if self._selected_soundtrack is None:
             return
-        if self._selected_soundtrack == '__default__':
-            bui.getsound('error').play()
+        if self._selected_soundtrack == "__default__":
+            bui.getsound("error").play()
             bui.screenmessage(
-                bui.Lstr(resource=f'{self._r}.cantDeleteDefaultText'),
+                bui.Lstr(resource=f"{self._r}.cantDeleteDefaultText"),
                 color=(1, 0, 0),
             )
         else:
             ConfirmWindow(
                 bui.Lstr(
-                    resource=f'{self._r}.deleteConfirmText',
-                    subs=[('${NAME}', self._selected_soundtrack)],
+                    resource=f"{self._r}.deleteConfirmText",
+                    subs=[("${NAME}", self._selected_soundtrack)],
                 ),
                 self._do_delete_soundtrack,
                 450,
@@ -335,24 +328,24 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             bui.app.classic is not None
             and not bui.app.classic.accounts.have_pro_options()
         ):
-            PurchaseWindow(items=['pro'])
+            PurchaseWindow(items=["pro"])
             return
         cfg = bui.app.config
-        cfg.setdefault('Soundtracks', {})
+        cfg.setdefault("Soundtracks", {})
 
         if self._selected_soundtrack is None:
             return
         sdtk: dict[str, Any]
-        if self._selected_soundtrack == '__default__':
+        if self._selected_soundtrack == "__default__":
             sdtk = {}
         else:
-            sdtk = cfg['Soundtracks'][self._selected_soundtrack]
+            sdtk = cfg["Soundtracks"][self._selected_soundtrack]
 
         # Find a valid dup name that doesn't exist.
         test_index = 1
-        copy_text = bui.Lstr(resource='copyOfText').evaluate()
+        copy_text = bui.Lstr(resource="copyOfText").evaluate()
         # Get just 'Copy' or whatnot.
-        copy_word = copy_text.replace('${NAME}', '').strip()
+        copy_word = copy_text.replace("${NAME}", "").strip()
         base_name = self._get_soundtrack_display_name(
             self._selected_soundtrack
         ).evaluate()
@@ -360,20 +353,20 @@ class SoundtrackBrowserWindow(bui.MainWindow):
 
         # If it looks like a copy, strip digits and spaces off the end.
         if copy_word in base_name:
-            while base_name[-1].isdigit() or base_name[-1] == ' ':
+            while base_name[-1].isdigit() or base_name[-1] == " ":
                 base_name = base_name[:-1]
         while True:
             if copy_word in base_name:
                 test_name = base_name
             else:
-                test_name = copy_text.replace('${NAME}', base_name)
+                test_name = copy_text.replace("${NAME}", base_name)
             if test_index > 1:
-                test_name += ' ' + str(test_index)
-            if test_name not in cfg['Soundtracks']:
+                test_name += " " + str(test_index)
+            if test_name not in cfg["Soundtracks"]:
                 break
             test_index += 1
 
-        cfg['Soundtracks'][test_name] = copy.deepcopy(sdtk)
+        cfg["Soundtracks"][test_name] = copy.deepcopy(sdtk)
         cfg.commit()
         self._refresh(select_soundtrack=test_name)
 
@@ -383,12 +376,12 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         self._selected_soundtrack_index = index
         self._selected_soundtrack = name
         cfg = bui.app.config
-        current_soundtrack = cfg.setdefault('Soundtrack', '__default__')
+        current_soundtrack = cfg.setdefault("Soundtrack", "__default__")
 
         # If it varies from current, commit and play.
         if current_soundtrack != name and self._allow_changing_soundtracks:
-            bui.getsound('gunCocking').play()
-            cfg['Soundtrack'] = self._selected_soundtrack
+            bui.getsound("gunCocking").play()
+            cfg["Soundtrack"] = self._selected_soundtrack
             cfg.commit()
 
             # Just play whats already playing.. this'll grab it from the
@@ -405,9 +398,9 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             bui.app.classic is not None
             and not bui.app.classic.accounts.have_pro_options()
         ):
-            PurchaseWindow(items=['pro'])
+            PurchaseWindow(items=["pro"])
             return
-        bui.getsound('swish').play()
+        bui.getsound("swish").play()
         self._edit_soundtrack()
 
     def _edit_soundtrack(self) -> None:
@@ -423,16 +416,16 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             bui.app.classic is not None
             and not bui.app.classic.accounts.have_pro_options()
         ):
-            PurchaseWindow(items=['pro'])
+            PurchaseWindow(items=["pro"])
             return
 
         if self._selected_soundtrack is None:
             return
 
-        if self._selected_soundtrack == '__default__':
-            bui.getsound('error').play()
+        if self._selected_soundtrack == "__default__":
+            bui.getsound("error").play()
             bui.screenmessage(
-                bui.Lstr(resource=f'{self._r}.cantEditDefaultText'),
+                bui.Lstr(resource=f"{self._r}.cantEditDefaultText"),
                 color=(1, 0, 0),
             )
             return
@@ -442,8 +435,8 @@ class SoundtrackBrowserWindow(bui.MainWindow):
         )
 
     def _get_soundtrack_display_name(self, soundtrack: str) -> bui.Lstr:
-        if soundtrack == '__default__':
-            return bui.Lstr(resource=f'{self._r}.defaultSoundtrackNameText')
+        if soundtrack == "__default__":
+            return bui.Lstr(resource=f"{self._r}.defaultSoundtrackNameText")
         return bui.Lstr(value=soundtrack)
 
     def _refresh(self, select_soundtrack: str | None = None) -> None:
@@ -454,18 +447,18 @@ class SoundtrackBrowserWindow(bui.MainWindow):
 
         # If there was no prev selection, look in prefs.
         if old_selection is None:
-            old_selection = bui.app.config.get('Soundtrack')
+            old_selection = bui.app.config.get("Soundtrack")
         old_selection_index = self._selected_soundtrack_index
 
         # Delete old.
         while self._soundtrack_widgets:
             self._soundtrack_widgets.pop().delete()
 
-        self._soundtracks = bui.app.config.get('Soundtracks', {})
+        self._soundtracks = bui.app.config.get("Soundtracks", {})
         assert self._soundtracks is not None
         items = list(self._soundtracks.items())
         items.sort(key=lambda x: asserttype(x[0], str).lower())
-        items = [('__default__', None)] + items  # default is always first
+        items = [("__default__", None)] + items  # default is always first
         index = 0
         for pname, _pval in items:
             assert pname is not None
@@ -473,8 +466,8 @@ class SoundtrackBrowserWindow(bui.MainWindow):
                 parent=self._col,
                 size=(self._width - 40, 24),
                 text=self._get_soundtrack_display_name(pname),
-                h_align='left',
-                v_align='center',
+                h_align="left",
+                v_align="center",
                 maxwidth=self._width - 110,
                 always_highlight=True,
                 on_select_call=bui.WeakCall(self._select, pname, index),
@@ -537,54 +530,54 @@ class SoundtrackBrowserWindow(bui.MainWindow):
             bui.app.classic is not None
             and not bui.app.classic.accounts.have_pro_options()
         ):
-            PurchaseWindow(items=['pro'])
+            PurchaseWindow(items=["pro"])
             return
 
         self.main_window_replace(SoundtrackEditWindow(existing_soundtrack=None))
 
     def _create_done(self, new_soundtrack: str) -> None:
         if new_soundtrack is not None:
-            bui.getsound('gunCocking').play()
+            bui.getsound("gunCocking").play()
             self._refresh(select_soundtrack=new_soundtrack)
 
     def _save_state(self) -> None:
         try:
             sel = self._root_widget.get_selected_child()
             if sel == self._scrollwidget:
-                sel_name = 'Scroll'
+                sel_name = "Scroll"
             elif sel == self._new_button:
-                sel_name = 'New'
+                sel_name = "New"
             elif sel == self._edit_button:
-                sel_name = 'Edit'
+                sel_name = "Edit"
             elif sel == self._duplicate_button:
-                sel_name = 'Duplicate'
+                sel_name = "Duplicate"
             elif sel == self._delete_button:
-                sel_name = 'Delete'
+                sel_name = "Delete"
             elif sel == self._back_button:
-                sel_name = 'Back'
+                sel_name = "Back"
             else:
-                raise ValueError(f'unrecognized selection \'{sel}\'')
+                raise ValueError(f"unrecognized selection '{sel}'")
             assert bui.app.classic is not None
             bui.app.ui_v1.window_states[type(self)] = sel_name
         except Exception:
-            logging.exception('Error saving state for %s.', self)
+            logging.exception("Error saving state for %s.", self)
 
     def _restore_state(self) -> None:
         try:
             assert bui.app.classic is not None
             sel_name = bui.app.ui_v1.window_states.get(type(self))
-            if sel_name == 'Scroll':
+            if sel_name == "Scroll":
                 sel = self._scrollwidget
-            elif sel_name == 'New':
+            elif sel_name == "New":
                 sel = self._new_button
-            elif sel_name == 'Edit':
+            elif sel_name == "Edit":
                 sel = self._edit_button
-            elif sel_name == 'Duplicate':
+            elif sel_name == "Duplicate":
                 sel = self._duplicate_button
-            elif sel_name == 'Delete':
+            elif sel_name == "Delete":
                 sel = self._delete_button
             else:
                 sel = self._scrollwidget
             bui.containerwidget(edit=self._root_widget, selected_child=sel)
         except Exception:
-            logging.exception('Error restoring state for %s.', self)
+            logging.exception("Error restoring state for %s.", self)

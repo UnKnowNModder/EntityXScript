@@ -53,16 +53,16 @@ def print_live_object_warnings(
         if session is ignore_session:
             continue
         babase.app.classic.printed_live_object_warning = True
-        print(f'ERROR: Session found {when}: {session}')
+        print(f"ERROR: Session found {when}: {session}")
 
     # Complain about any remaining activities.
     for activity in activities:
         if activity is ignore_activity:
             continue
         babase.app.classic.printed_live_object_warning = True
-        print(f'ERROR: Activity found {when}: {activity}')
+        print(f"ERROR: Activity found {when}: {activity}")
 
     # Complain about any remaining actors.
     for actor in actors:
         babase.app.classic.printed_live_object_warning = True
-        print(f'ERROR: Actor found {when}: {actor}')
+        print(f"ERROR: Actor found {when}: {actor}")

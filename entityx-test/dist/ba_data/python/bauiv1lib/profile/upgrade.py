@@ -24,7 +24,7 @@ class ProfileUpgradeWindow(bui.Window):
     def __init__(
         self,
         edit_profile_window: EditProfileWindow,
-        transition: str = 'in_right',
+        transition: str = "in_right",
     ):
         # if bui.app.classic is None:
         #     raise RuntimeError('This requires classic.')
@@ -32,7 +32,7 @@ class ProfileUpgradeWindow(bui.Window):
         plus = bui.app.plus
         assert plus is not None
 
-        self._r = 'editProfileWindow'
+        self._r = "editProfileWindow"
 
         self._cost: int | None = None
 
@@ -53,12 +53,10 @@ class ProfileUpgradeWindow(bui.Window):
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height + top_extra),
-                toolbar_visibility='menu_store_no_back',
+                toolbar_visibility="menu_store_no_back",
                 transition=transition,
                 scale=self._base_scale,
-                stack_offset=(
-                    (0, 0) if uiscale is bui.UIScale.SMALL else (0, 0)
-                ),
+                stack_offset=((0, 0) if uiscale is bui.UIScale.SMALL else (0, 0)),
             )
         )
         cancel_button = bui.buttonwidget(
@@ -67,7 +65,7 @@ class ProfileUpgradeWindow(bui.Window):
             size=(155, 60),
             scale=0.8,
             autoselect=True,
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             on_activate_call=self._cancel,
         )
         self._upgrade_button = bui.buttonwidget(
@@ -76,7 +74,7 @@ class ProfileUpgradeWindow(bui.Window):
             size=(155, 60),
             scale=0.8,
             autoselect=True,
-            label=bui.Lstr(resource='upgradeText'),
+            label=bui.Lstr(resource="upgradeText"),
             on_activate_call=self._on_upgrade_press,
         )
         bui.containerwidget(
@@ -91,12 +89,12 @@ class ProfileUpgradeWindow(bui.Window):
             parent=self._root_widget,
             position=(self._width * 0.5, self._height - 38 + yoffs),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.upgradeToGlobalProfileText'),
+            text=bui.Lstr(resource=f"{self._r}.upgradeToGlobalProfileText"),
             color=bui.app.ui_v1.title_color,
             maxwidth=self._width * 0.45,
             scale=1.0,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         # assert bui.app.classic is not None
@@ -104,12 +102,12 @@ class ProfileUpgradeWindow(bui.Window):
             parent=self._root_widget,
             position=(self._width * 0.5, self._height - 100 + yoffs),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.upgradeProfileInfoText'),
+            text=bui.Lstr(resource=f"{self._r}.upgradeProfileInfoText"),
             color=bui.app.ui_v1.infotextcolor,
             maxwidth=self._width * 0.8,
             scale=0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         self._status_text = bui.textwidget(
@@ -117,38 +115,36 @@ class ProfileUpgradeWindow(bui.Window):
             position=(self._width * 0.5, self._height - 160 + yoffs),
             size=(0, 0),
             text=bui.Lstr(
-                resource=f'{self._r}.checkingAvailabilityText',
-                subs=[('${NAME}', self._name)],
+                resource=f"{self._r}.checkingAvailabilityText",
+                subs=[("${NAME}", self._name)],
             ),
             color=(0.8, 0.4, 0.0),
             maxwidth=self._width * 0.8,
             scale=0.65,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         self._price_text = bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height - 230 + yoffs),
             size=(0, 0),
-            text='',
+            text="",
             color=(0.2, 1, 0.2),
             maxwidth=self._width * 0.8,
             scale=1.5,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         assert plus.accounts.primary is not None
         with plus.accounts.primary:
             plus.cloud.send_message_cb(
                 bacommon.bs.GlobalProfileCheckMessage(self._name),
-                on_response=bui.WeakCall(
-                    self._on_global_profile_check_response
-                ),
+                on_response=bui.WeakCall(self._on_global_profile_check_response),
             )
 
-        self._status: str | None = 'waiting'
+        self._status: str | None = "waiting"
         self._update_timer = bui.AppTimer(
             1.023, bui.WeakCall(self._update), repeat=True
         )
@@ -160,10 +156,10 @@ class ProfileUpgradeWindow(bui.Window):
         if isinstance(response, Exception):
             bui.textwidget(
                 edit=self._status_text,
-                text=bui.Lstr(resource='internal.unavailableNoConnectionText'),
+                text=bui.Lstr(resource="internal.unavailableNoConnectionText"),
                 color=(1, 0, 0),
             )
-            self._status = 'error'
+            self._status = "error"
             bui.buttonwidget(
                 edit=self._upgrade_button,
                 color=(0.4, 0.4, 0.4),
@@ -175,8 +171,8 @@ class ProfileUpgradeWindow(bui.Window):
                 bui.textwidget(
                     edit=self._status_text,
                     text=bui.Lstr(
-                        resource=f'{self._r}.availableText',
-                        subs=[('${NAME}', self._name)],
+                        resource=f"{self._r}.availableText",
+                        subs=[("${NAME}", self._name)],
                     ),
                     color=(0, 1, 0),
                 )
@@ -189,12 +185,12 @@ class ProfileUpgradeWindow(bui.Window):
                 bui.textwidget(
                     edit=self._status_text,
                     text=bui.Lstr(
-                        resource=f'{self._r}.unavailableText',
-                        subs=[('${NAME}', self._name)],
+                        resource=f"{self._r}.unavailableText",
+                        subs=[("${NAME}", self._name)],
                     ),
                     color=(1, 0, 0),
                 )
-                self._status = 'unavailable'
+                self._status = "unavailable"
                 bui.buttonwidget(
                     edit=self._upgrade_button,
                     color=(0.4, 0.4, 0.4),
@@ -213,41 +209,37 @@ class ProfileUpgradeWindow(bui.Window):
             # tickets = plus.get_v1_account_ticket_count()
             tickets = classic.tickets
             if tickets < self._cost:
-                bui.getsound('error').play()
+                bui.getsound("error").play()
                 bui.screenmessage(
-                    bui.Lstr(resource='notEnoughTicketsText'),
+                    bui.Lstr(resource="notEnoughTicketsText"),
                     color=(1, 0, 0),
                 )
                 return
 
-            bui.screenmessage(
-                bui.Lstr(resource='purchasingText'), color=(0, 1, 0)
-            )
-            self._status = 'pre_upgrading'
+            bui.screenmessage(bui.Lstr(resource="purchasingText"), color=(0, 1, 0))
+            self._status = "pre_upgrading"
 
             # Now we tell the original editor to save the profile, add
             # an upgrade transaction, and then sit and wait for
             # everything to go through.
             edit_profile_window = self._edit_profile_window()
             if edit_profile_window is None:
-                print('profile upgrade: original edit window gone')
+                print("profile upgrade: original edit window gone")
                 return
             success = edit_profile_window.save(transition_out=False)
             if not success:
-                print('profile upgrade: error occurred saving profile')
-                bui.screenmessage(
-                    bui.Lstr(resource='errorText'), color=(1, 0, 0)
-                )
-                bui.getsound('error').play()
+                print("profile upgrade: error occurred saving profile")
+                bui.screenmessage(bui.Lstr(resource="errorText"), color=(1, 0, 0))
+                bui.getsound("error").play()
                 return
             plus.add_v1_account_transaction(
-                {'type': 'UPGRADE_PROFILE', 'name': self._name}
+                {"type": "UPGRADE_PROFILE", "name": self._name}
             )
             plus.run_v1_account_transactions()
-            self._status = 'upgrading'
+            self._status = "upgrading"
             self._upgrade_start_time = time.time()
         else:
-            bui.getsound('error').play()
+            bui.getsound("error").play()
 
     def _update(self) -> None:
         plus = bui.app.plus
@@ -262,19 +254,16 @@ class ProfileUpgradeWindow(bui.Window):
         # Once we've kicked off an upgrade attempt and all transactions
         # go through, we're done.
         if (
-            self._status == 'upgrading'
+            self._status == "upgrading"
             and not plus.have_outstanding_v1_account_transactions()
         ):
-            self._status = 'exiting'
-            bui.containerwidget(edit=self._root_widget, transition='out_right')
+            self._status = "exiting"
+            bui.containerwidget(edit=self._root_widget, transition="out_right")
             edit_profile_window = self._edit_profile_window()
             if edit_profile_window is None:
-                print(
-                    'profile upgrade transition out:'
-                    ' original edit window gone'
-                )
+                print("profile upgrade transition out:" " original edit window gone")
                 return
-            bui.getsound('gunCocking').play()
+            bui.getsound("gunCocking").play()
             edit_profile_window.reload_window()
 
     def _cancel(self) -> None:
@@ -284,6 +273,6 @@ class ProfileUpgradeWindow(bui.Window):
             self._upgrade_start_time is not None
             and time.time() - self._upgrade_start_time < 10.0
         ):
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
-        bui.containerwidget(edit=self._root_widget, transition='out_right')
+        bui.containerwidget(edit=self._root_widget, transition="out_right")

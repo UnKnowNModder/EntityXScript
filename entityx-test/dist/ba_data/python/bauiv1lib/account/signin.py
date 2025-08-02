@@ -12,9 +12,9 @@ def show_sign_in_prompt() -> None:
     from bauiv1lib.confirm import ConfirmWindow
 
     ConfirmWindow(
-        bui.Lstr(resource='notSignedInErrorText'),
+        bui.Lstr(resource="notSignedInErrorText"),
         _show_account_settings,
-        ok_text=bui.Lstr(resource='accountSettingsWindow.signInText'),
+        ok_text=bui.Lstr(resource="accountSettingsWindow.signInText"),
         width=460,
         height=130,
     )
@@ -39,7 +39,7 @@ def _show_account_settings() -> None:
     bui.app.ui_v1.set_main_window(
         AccountSettingsWindow(
             close_once_signed_in=True,
-            origin_widget=bui.get_special_widget('account_button'),
+            origin_widget=bui.get_special_widget("account_button"),
         ),
         from_window=False,
         is_auxiliary=True,

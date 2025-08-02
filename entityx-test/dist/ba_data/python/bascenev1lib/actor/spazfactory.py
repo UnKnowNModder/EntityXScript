@@ -98,30 +98,30 @@ class SpazFactory:
 
         shared = SharedObjects.get()
         self.impact_sounds_medium = (
-            bs.getsound('impactMedium'),
-            bs.getsound('impactMedium2'),
+            bs.getsound("impactMedium"),
+            bs.getsound("impactMedium2"),
         )
         self.impact_sounds_hard = (
-            bs.getsound('impactHard'),
-            bs.getsound('impactHard2'),
-            bs.getsound('impactHard3'),
+            bs.getsound("impactHard"),
+            bs.getsound("impactHard2"),
+            bs.getsound("impactHard3"),
         )
         self.impact_sounds_harder = (
-            bs.getsound('bigImpact'),
-            bs.getsound('bigImpact2'),
+            bs.getsound("bigImpact"),
+            bs.getsound("bigImpact2"),
         )
-        self.single_player_death_sound = bs.getsound('playerDeath')
-        self.punch_sound_weak = bs.getsound('punchWeak01')
-        self.punch_sound = bs.getsound('punch01')
+        self.single_player_death_sound = bs.getsound("playerDeath")
+        self.punch_sound_weak = bs.getsound("punchWeak01")
+        self.punch_sound = bs.getsound("punch01")
         self.punch_sound_strong = (
-            bs.getsound('punchStrong01'),
-            bs.getsound('punchStrong02'),
+            bs.getsound("punchStrong01"),
+            bs.getsound("punchStrong02"),
         )
-        self.punch_sound_stronger = bs.getsound('superPunch')
-        self.swish_sound = bs.getsound('punchSwish')
-        self.block_sound = bs.getsound('block')
-        self.shatter_sound = bs.getsound('shatter')
-        self.splatter_sound = bs.getsound('splatter')
+        self.punch_sound_stronger = bs.getsound("superPunch")
+        self.swish_sound = bs.getsound("punchSwish")
+        self.block_sound = bs.getsound("block")
+        self.shatter_sound = bs.getsound("shatter")
+        self.splatter_sound = bs.getsound("splatter")
         self.spaz_material = bs.Material()
         self.roller_material = bs.Material()
         self.punch_material = bs.Material()
@@ -137,123 +137,119 @@ class SpazFactory:
         # solid ground.
         # Eww; this probably should just be built into the spaz node.
         self.roller_material.add_actions(
-            conditions=('they_have_material', footing_material),
+            conditions=("they_have_material", footing_material),
             actions=(
-                ('message', 'our_node', 'at_connect', 'footing', 1),
-                ('message', 'our_node', 'at_disconnect', 'footing', -1),
+                ("message", "our_node", "at_connect", "footing", 1),
+                ("message", "our_node", "at_disconnect", "footing", -1),
             ),
         )
 
         self.spaz_material.add_actions(
-            conditions=('they_have_material', footing_material),
+            conditions=("they_have_material", footing_material),
             actions=(
-                ('message', 'our_node', 'at_connect', 'footing', 1),
-                ('message', 'our_node', 'at_disconnect', 'footing', -1),
+                ("message", "our_node", "at_connect", "footing", 1),
+                ("message", "our_node", "at_disconnect", "footing", -1),
             ),
         )
 
         # Punches.
         self.punch_material.add_actions(
-            conditions=('they_are_different_node_than_us',),
+            conditions=("they_are_different_node_than_us",),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('modify_part_collision', 'physical', False),
-                ('message', 'our_node', 'at_connect', PunchHitMessage()),
+                ("modify_part_collision", "collide", True),
+                ("modify_part_collision", "physical", False),
+                ("message", "our_node", "at_connect", PunchHitMessage()),
             ),
         )
 
         # Pickups.
         self.pickup_material.add_actions(
             conditions=(
-                ('they_are_different_node_than_us',),
-                'and',
-                ('they_have_material', object_material),
+                ("they_are_different_node_than_us",),
+                "and",
+                ("they_have_material", object_material),
             ),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('modify_part_collision', 'physical', False),
-                ('message', 'our_node', 'at_connect', PickupMessage()),
+                ("modify_part_collision", "collide", True),
+                ("modify_part_collision", "physical", False),
+                ("message", "our_node", "at_connect", PickupMessage()),
             ),
         )
 
         # Curse.
         self.curse_material.add_actions(
             conditions=(
-                ('they_are_different_node_than_us',),
-                'and',
-                ('they_have_material', player_material),
+                ("they_are_different_node_than_us",),
+                "and",
+                ("they_have_material", player_material),
             ),
             actions=(
-                'message',
-                'our_node',
-                'at_connect',
+                "message",
+                "our_node",
+                "at_connect",
                 CurseExplodeMessage(),
             ),
         )
 
         self.foot_impact_sounds = (
-            bs.getsound('footImpact01'),
-            bs.getsound('footImpact02'),
-            bs.getsound('footImpact03'),
+            bs.getsound("footImpact01"),
+            bs.getsound("footImpact02"),
+            bs.getsound("footImpact03"),
         )
 
-        self.foot_skid_sound = bs.getsound('skid01')
-        self.foot_roll_sound = bs.getsound('scamper01')
+        self.foot_skid_sound = bs.getsound("skid01")
+        self.foot_roll_sound = bs.getsound("scamper01")
 
         self.roller_material.add_actions(
-            conditions=('they_have_material', footing_material),
+            conditions=("they_have_material", footing_material),
             actions=(
-                ('impact_sound', self.foot_impact_sounds, 1, 0.2),
-                ('skid_sound', self.foot_skid_sound, 20, 0.3),
-                ('roll_sound', self.foot_roll_sound, 20, 3.0),
+                ("impact_sound", self.foot_impact_sounds, 1, 0.2),
+                ("skid_sound", self.foot_skid_sound, 20, 0.3),
+                ("roll_sound", self.foot_roll_sound, 20, 3.0),
             ),
         )
 
-        self.skid_sound = bs.getsound('gravelSkid')
+        self.skid_sound = bs.getsound("gravelSkid")
 
         self.spaz_material.add_actions(
-            conditions=('they_have_material', footing_material),
+            conditions=("they_have_material", footing_material),
             actions=(
-                ('impact_sound', self.foot_impact_sounds, 20, 6),
-                ('skid_sound', self.skid_sound, 2.0, 1),
-                ('roll_sound', self.skid_sound, 2.0, 1),
+                ("impact_sound", self.foot_impact_sounds, 20, 6),
+                ("skid_sound", self.skid_sound, 2.0, 1),
+                ("roll_sound", self.skid_sound, 2.0, 1),
             ),
         )
 
-        self.shield_up_sound = bs.getsound('shieldUp')
-        self.shield_down_sound = bs.getsound('shieldDown')
-        self.shield_hit_sound = bs.getsound('shieldHit')
+        self.shield_up_sound = bs.getsound("shieldUp")
+        self.shield_down_sound = bs.getsound("shieldDown")
+        self.shield_hit_sound = bs.getsound("shieldHit")
 
         # We don't want to collide with stuff we're initially overlapping
         # (unless its marked with a special region material).
         self.spaz_material.add_actions(
             conditions=(
                 (
-                    ('we_are_younger_than', 51),
-                    'and',
-                    ('they_are_different_node_than_us',),
+                    ("we_are_younger_than", 51),
+                    "and",
+                    ("they_are_different_node_than_us",),
                 ),
-                'and',
-                ('they_dont_have_material', region_material),
+                "and",
+                ("they_dont_have_material", region_material),
             ),
-            actions=('modify_node_collision', 'collide', False),
+            actions=("modify_node_collision", "collide", False),
         )
 
         self.spaz_media: dict[str, Any] = {}
 
         # Lets load some basic rules.
         # (allows them to be tweaked from the master server)
-        self.shield_decay_rate = plus.get_v1_account_misc_read_val('rsdr', 10.0)
-        self.punch_cooldown = plus.get_v1_account_misc_read_val('rpc', 400)
-        self.punch_cooldown_gloves = plus.get_v1_account_misc_read_val(
-            'rpcg', 300
-        )
-        self.punch_power_scale = plus.get_v1_account_misc_read_val('rpp', 1.2)
-        self.punch_power_scale_gloves = plus.get_v1_account_misc_read_val(
-            'rppg', 1.4
-        )
+        self.shield_decay_rate = plus.get_v1_account_misc_read_val("rsdr", 10.0)
+        self.punch_cooldown = plus.get_v1_account_misc_read_val("rpc", 400)
+        self.punch_cooldown_gloves = plus.get_v1_account_misc_read_val("rpcg", 300)
+        self.punch_power_scale = plus.get_v1_account_misc_read_val("rpp", 1.2)
+        self.punch_power_scale_gloves = plus.get_v1_account_misc_read_val("rppg", 1.4)
         self.max_shield_spillover_damage = plus.get_v1_account_misc_read_val(
-            'rsms', 500
+            "rsms", 500
         )
 
     def get_style(self, character: str) -> str:
@@ -270,23 +266,23 @@ class SpazFactory:
         char = bs.app.classic.spaz_appearances[character]
         if character not in self.spaz_media:
             media = self.spaz_media[character] = {
-                'jump_sounds': [bs.getsound(s) for s in char.jump_sounds],
-                'attack_sounds': [bs.getsound(s) for s in char.attack_sounds],
-                'impact_sounds': [bs.getsound(s) for s in char.impact_sounds],
-                'death_sounds': [bs.getsound(s) for s in char.death_sounds],
-                'pickup_sounds': [bs.getsound(s) for s in char.pickup_sounds],
-                'fall_sounds': [bs.getsound(s) for s in char.fall_sounds],
-                'color_texture': bs.gettexture(char.color_texture),
-                'color_mask_texture': bs.gettexture(char.color_mask_texture),
-                'head_mesh': bs.getmesh(char.head_mesh),
-                'torso_mesh': bs.getmesh(char.torso_mesh),
-                'pelvis_mesh': bs.getmesh(char.pelvis_mesh),
-                'upper_arm_mesh': bs.getmesh(char.upper_arm_mesh),
-                'forearm_mesh': bs.getmesh(char.forearm_mesh),
-                'hand_mesh': bs.getmesh(char.hand_mesh),
-                'upper_leg_mesh': bs.getmesh(char.upper_leg_mesh),
-                'lower_leg_mesh': bs.getmesh(char.lower_leg_mesh),
-                'toes_mesh': bs.getmesh(char.toes_mesh),
+                "jump_sounds": [bs.getsound(s) for s in char.jump_sounds],
+                "attack_sounds": [bs.getsound(s) for s in char.attack_sounds],
+                "impact_sounds": [bs.getsound(s) for s in char.impact_sounds],
+                "death_sounds": [bs.getsound(s) for s in char.death_sounds],
+                "pickup_sounds": [bs.getsound(s) for s in char.pickup_sounds],
+                "fall_sounds": [bs.getsound(s) for s in char.fall_sounds],
+                "color_texture": bs.gettexture(char.color_texture),
+                "color_mask_texture": bs.gettexture(char.color_mask_texture),
+                "head_mesh": bs.getmesh(char.head_mesh),
+                "torso_mesh": bs.getmesh(char.torso_mesh),
+                "pelvis_mesh": bs.getmesh(char.pelvis_mesh),
+                "upper_arm_mesh": bs.getmesh(char.upper_arm_mesh),
+                "forearm_mesh": bs.getmesh(char.forearm_mesh),
+                "hand_mesh": bs.getmesh(char.hand_mesh),
+                "upper_leg_mesh": bs.getmesh(char.upper_leg_mesh),
+                "lower_leg_mesh": bs.getmesh(char.lower_leg_mesh),
+                "toes_mesh": bs.getmesh(char.toes_mesh),
             }
         else:
             media = self.spaz_media[character]

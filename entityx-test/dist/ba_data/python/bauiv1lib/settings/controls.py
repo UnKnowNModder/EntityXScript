@@ -15,7 +15,7 @@ class ControlsSettingsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # FIXME: should tidy up here.
@@ -26,7 +26,7 @@ class ControlsSettingsWindow(bui.MainWindow):
 
         self._have_selected_child = False
 
-        self._r = 'configControllersWindow'
+        self._r = "configControllersWindow"
         uiscale = bui.app.ui_v1.uiscale
         app = bui.app
         assert app.classic is not None
@@ -48,10 +48,10 @@ class ControlsSettingsWindow(bui.MainWindow):
         show_gamepads = False
         platform = app.classic.platform
         subplatform = app.classic.subplatform
-        non_vr_windows = platform == 'windows' and (
-            subplatform != 'oculus' or not app.env.vr
+        non_vr_windows = platform == "windows" and (
+            subplatform != "oculus" or not app.env.vr
         )
-        if platform in ('linux', 'android', 'mac') or non_vr_windows:
+        if platform in ("linux", "android", "mac") or non_vr_windows:
             show_gamepads = True
             buttons_height += spacing
 
@@ -66,7 +66,7 @@ class ControlsSettingsWindow(bui.MainWindow):
             buttons_height += space_height
 
         show_keyboard = False
-        if bs.getinputdevice('Keyboard', '#1', doraise=False) is not None:
+        if bs.getinputdevice("Keyboard", "#1", doraise=False) is not None:
             show_keyboard = True
             buttons_height += spacing
         show_keyboard_p2 = False if app.env.vr else show_keyboard
@@ -87,7 +87,7 @@ class ControlsSettingsWindow(bui.MainWindow):
         # On windows (outside of oculus/vr), show an option to disable
         # xinput.
         show_xinput_toggle = False
-        if platform == 'windows' and not app.env.vr:
+        if platform == "windows" and not app.env.vr:
             show_xinput_toggle = True
 
         if show_xinput_toggle:
@@ -118,9 +118,7 @@ class ControlsSettingsWindow(bui.MainWindow):
                 size=(width, height),
                 scale=scale,
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
             ),
             transition=transition,
@@ -144,7 +142,7 @@ class ControlsSettingsWindow(bui.MainWindow):
                 text_scale=1.2,
                 autoselect=True,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
             )
             bui.containerwidget(edit=self._root_widget, cancel_button=btn)
@@ -164,10 +162,10 @@ class ControlsSettingsWindow(bui.MainWindow):
             ),
             maxwidth=260,
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.titleText'),
+            text=bui.Lstr(resource=f"{self._r}.titleText"),
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         # Roughly center the rest of our stuff.
@@ -180,21 +178,19 @@ class ControlsSettingsWindow(bui.MainWindow):
                 position=((width - button_width) / 2, v),
                 size=(button_width, 43),
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.configureTouchText'),
+                label=bui.Lstr(resource=f"{self._r}.configureTouchText"),
                 on_activate_call=self._do_touchscreen,
             )
             bui.widget(
                 edit=btn,
-                right_widget=bui.get_special_widget('squad_button'),
+                right_widget=bui.get_special_widget("squad_button"),
             )
             if not self._have_selected_child:
                 bui.containerwidget(
                     edit=self._root_widget, selected_child=self._touch_button
                 )
                 if self._back_button is not None:
-                    bui.widget(
-                        edit=self._back_button, down_widget=self._touch_button
-                    )
+                    bui.widget(edit=self._back_button, down_widget=self._touch_button)
                 self._have_selected_child = True
             v -= spacing
 
@@ -204,12 +200,12 @@ class ControlsSettingsWindow(bui.MainWindow):
                 position=((width - button_width) / 2 - 7, v),
                 size=(button_width, 43),
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.configureControllersText'),
+                label=bui.Lstr(resource=f"{self._r}.configureControllersText"),
                 on_activate_call=self._do_gamepads,
             )
             bui.widget(
                 edit=btn,
-                right_widget=bui.get_special_widget('squad_button'),
+                right_widget=bui.get_special_widget("squad_button"),
             )
             if not self._have_selected_child:
                 bui.containerwidget(
@@ -234,15 +230,13 @@ class ControlsSettingsWindow(bui.MainWindow):
                 position=((width - button_width) / 2 - 5, v),
                 size=(button_width, 43),
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.configureKeyboardText'),
+                label=bui.Lstr(resource=f"{self._r}.configureKeyboardText"),
                 on_activate_call=self._config_keyboard,
             )
-            bui.widget(
-                edit=self._keyboard_button, left_widget=self._keyboard_button
-            )
+            bui.widget(edit=self._keyboard_button, left_widget=self._keyboard_button)
             bui.widget(
                 edit=btn,
-                right_widget=bui.get_special_widget('squad_button'),
+                right_widget=bui.get_special_widget("squad_button"),
             )
             if not self._have_selected_child:
                 bui.containerwidget(
@@ -261,7 +255,7 @@ class ControlsSettingsWindow(bui.MainWindow):
                 position=((width - button_width) / 2 - 3, v),
                 size=(button_width, 43),
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.configureKeyboard2Text'),
+                label=bui.Lstr(resource=f"{self._r}.configureKeyboard2Text"),
                 on_activate_call=self._config_keyboard2,
             )
             v -= spacing
@@ -277,15 +271,13 @@ class ControlsSettingsWindow(bui.MainWindow):
                 position=((width - button_width) / 2 - 5, v),
                 size=(button_width, 43),
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.configureMobileText'),
+                label=bui.Lstr(resource=f"{self._r}.configureMobileText"),
                 on_activate_call=self._do_mobile_devices,
             )
-            bui.widget(
-                edit=self._idevices_button, left_widget=self._idevices_button
-            )
+            bui.widget(edit=self._idevices_button, left_widget=self._idevices_button)
             bui.widget(
                 edit=btn,
-                right_widget=bui.get_special_widget('squad_button'),
+                right_widget=bui.get_special_widget("squad_button"),
             )
             if not self._have_selected_child:
                 bui.containerwidget(
@@ -303,11 +295,11 @@ class ControlsSettingsWindow(bui.MainWindow):
 
             def do_toggle(value: bool) -> None:
                 bui.screenmessage(
-                    bui.Lstr(resource='settingsWindowAdvanced.mustRestartText'),
+                    bui.Lstr(resource="settingsWindowAdvanced.mustRestartText"),
                     color=(1, 1, 0),
                 )
-                bui.getsound('gunCocking').play()
-                bui.set_low_level_config_value('enablexinput', not value)
+                bui.getsound("gunCocking").play()
+                bui.set_low_level_config_value("enablexinput", not value)
 
             xinput_checkbox = bui.checkboxwidget(
                 parent=self._root_widget,
@@ -316,20 +308,20 @@ class ControlsSettingsWindow(bui.MainWindow):
                     v + 3,
                 ),
                 size=(120, 30),
-                value=(not bui.get_low_level_config_value('enablexinput', 1)),
+                value=(not bui.get_low_level_config_value("enablexinput", 1)),
                 maxwidth=200,
                 on_value_change_call=do_toggle,
-                text=bui.Lstr(resource='disableXInputText'),
+                text=bui.Lstr(resource="disableXInputText"),
                 autoselect=True,
             )
             bui.textwidget(
                 parent=self._root_widget,
                 position=(width * 0.5, v - 5),
                 size=(0, 0),
-                text=bui.Lstr(resource='disableXInputDescriptionText'),
+                text=bui.Lstr(resource="disableXInputDescriptionText"),
                 scale=0.5,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 color=bui.app.ui_v1.infotextcolor,
                 maxwidth=width * 0.8,
             )
@@ -358,7 +350,7 @@ class ControlsSettingsWindow(bui.MainWindow):
 
     def _set_mac_controller_subsystem(self, val: str) -> None:
         cfg = bui.app.config
-        cfg['Mac Controller Subsystem'] = val
+        cfg["Mac Controller Subsystem"] = val
         cfg.apply_and_commit()
 
     def _config_keyboard(self) -> None:
@@ -370,7 +362,7 @@ class ControlsSettingsWindow(bui.MainWindow):
             return
 
         self.main_window_replace(
-            ConfigKeyboardWindow(bs.getinputdevice('Keyboard', '#1'))
+            ConfigKeyboardWindow(bs.getinputdevice("Keyboard", "#1"))
         )
 
     def _config_keyboard2(self) -> None:
@@ -382,7 +374,7 @@ class ControlsSettingsWindow(bui.MainWindow):
             return
 
         self.main_window_replace(
-            ConfigKeyboardWindow(bs.getinputdevice('Keyboard', '#2'))
+            ConfigKeyboardWindow(bs.getinputdevice("Keyboard", "#2"))
         )
 
     def _do_mobile_devices(self) -> None:
@@ -418,34 +410,34 @@ class ControlsSettingsWindow(bui.MainWindow):
     def _save_state(self) -> None:
         sel = self._root_widget.get_selected_child()
         if sel == self._gamepads_button:
-            sel_name = 'GamePads'
+            sel_name = "GamePads"
         elif sel == self._touch_button:
-            sel_name = 'Touch'
+            sel_name = "Touch"
         elif sel == self._keyboard_button:
-            sel_name = 'Keyboard'
+            sel_name = "Keyboard"
         elif sel == self._keyboard_2_button:
-            sel_name = 'Keyboard2'
+            sel_name = "Keyboard2"
         elif sel == self._idevices_button:
-            sel_name = 'iDevices'
+            sel_name = "iDevices"
         else:
-            sel_name = 'Back'
+            sel_name = "Back"
         assert bui.app.classic is not None
         bui.app.ui_v1.window_states[type(self)] = sel_name
 
     def _restore_state(self) -> None:
         assert bui.app.classic is not None
         sel_name = bui.app.ui_v1.window_states.get(type(self))
-        if sel_name == 'GamePads':
+        if sel_name == "GamePads":
             sel = self._gamepads_button
-        elif sel_name == 'Touch':
+        elif sel_name == "Touch":
             sel = self._touch_button
-        elif sel_name == 'Keyboard':
+        elif sel_name == "Keyboard":
             sel = self._keyboard_button
-        elif sel_name == 'Keyboard2':
+        elif sel_name == "Keyboard2":
             sel = self._keyboard_2_button
-        elif sel_name == 'iDevices':
+        elif sel_name == "iDevices":
             sel = self._idevices_button
-        elif sel_name == 'Back':
+        elif sel_name == "Back":
             sel = self._back_button
         else:
             sel = (

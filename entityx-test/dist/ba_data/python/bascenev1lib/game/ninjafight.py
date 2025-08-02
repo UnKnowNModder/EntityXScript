@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from typing import Any
 
 
-class Player(bs.Player['Team']):
+class Player(bs.Player["Team"]):
     """Our player type for this game."""
 
 
@@ -38,10 +38,10 @@ class NinjaFightGame(bs.TeamGameActivity[Player, Team]):
     of Ninjas as fast as possible
     """
 
-    name = 'Ninja Fight'
-    description = 'How fast can you defeat the ninjas?'
+    name = "Ninja Fight"
+    description = "How fast can you defeat the ninjas?"
     scoreconfig = bs.ScoreConfig(
-        label='Time', scoretype=bs.ScoreType.MILLISECONDS, lower_is_better=True
+        label="Time", scoretype=bs.ScoreType.MILLISECONDS, lower_is_better=True
     )
     default_music = bs.MusicType.TO_THE_DEATH
 
@@ -51,7 +51,7 @@ class NinjaFightGame(bs.TeamGameActivity[Player, Team]):
         # For now we're hard-coding spawn positions and whatnot
         # so we need to be sure to specify that we only support
         # a specific map.
-        return ['Courtyard']
+        return ["Courtyard"]
 
     @override
     @classmethod
@@ -63,17 +63,17 @@ class NinjaFightGame(bs.TeamGameActivity[Player, Team]):
     # ...but not actually create anything yet.
     def __init__(self, settings: dict):
         super().__init__(settings)
-        self._winsound = bs.getsound('score')
+        self._winsound = bs.getsound("score")
         self._won = False
         self._timer: OnScreenTimer | None = None
         self._bots = SpazBotSet()
-        self._preset = str(settings['preset'])
+        self._preset = str(settings["preset"])
 
     # Called when our game actually begins.
     @override
     def on_begin(self) -> None:
         super().on_begin()
-        is_pro = self._preset == 'pro'
+        is_pro = self._preset == "pro"
 
         # In pro mode there's no powerups.
         if not is_pro:
@@ -86,27 +86,19 @@ class NinjaFightGame(bs.TeamGameActivity[Player, Team]):
         # Spawn some baddies.
         bs.timer(
             1.0,
-            lambda: self._bots.spawn_bot(
-                ChargerBot, pos=(3, 3, -2), spawn_time=3.0
-            ),
+            lambda: self._bots.spawn_bot(ChargerBot, pos=(3, 3, -2), spawn_time=3.0),
         )
         bs.timer(
             2.0,
-            lambda: self._bots.spawn_bot(
-                ChargerBot, pos=(-3, 3, -2), spawn_time=3.0
-            ),
+            lambda: self._bots.spawn_bot(ChargerBot, pos=(-3, 3, -2), spawn_time=3.0),
         )
         bs.timer(
             3.0,
-            lambda: self._bots.spawn_bot(
-                ChargerBot, pos=(5, 3, -2), spawn_time=3.0
-            ),
+            lambda: self._bots.spawn_bot(ChargerBot, pos=(5, 3, -2), spawn_time=3.0),
         )
         bs.timer(
             4.0,
-            lambda: self._bots.spawn_bot(
-                ChargerBot, pos=(-5, 3, -2), spawn_time=3.0
-            ),
+            lambda: self._bots.spawn_bot(ChargerBot, pos=(-5, 3, -2), spawn_time=3.0),
         )
 
         # Add some extras for multiplayer or pro mode.
@@ -121,9 +113,7 @@ class NinjaFightGame(bs.TeamGameActivity[Player, Team]):
         if len(self.initialplayerinfos) > 3 or is_pro:
             bs.timer(
                 6.0,
-                lambda: self._bots.spawn_bot(
-                    ChargerBot, pos=(0, 3, 1), spawn_time=3.0
-                ),
+                lambda: self._bots.spawn_bot(ChargerBot, pos=(0, 3, 1), spawn_time=3.0),
             )
 
     # Called for each spawning player.

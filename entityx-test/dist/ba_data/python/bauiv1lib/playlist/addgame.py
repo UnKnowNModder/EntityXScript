@@ -19,11 +19,11 @@ class PlaylistAddGameWindow(bui.MainWindow):
     def __init__(
         self,
         editcontroller: PlaylistEditController,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         self._editcontroller = editcontroller
-        self._r = 'addGameWindow'
+        self._r = "addGameWindow"
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
         self._width = 900 if uiscale is bui.UIScale.SMALL else 650
@@ -58,7 +58,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 scale=scale,
-                toolbar_visibility='menu_minimal',
+                toolbar_visibility="menu_minimal",
             ),
             transition=transition,
             origin_widget=origin_widget,
@@ -67,7 +67,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
         )
 
         if uiscale is bui.UIScale.SMALL:
-            self._back_button = bui.get_special_widget('back_button')
+            self._back_button = bui.get_special_widget("back_button")
         else:
             self._back_button = bui.buttonwidget(
                 parent=self._root_widget,
@@ -75,7 +75,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
                 size=(60, 48),
                 label=bui.charstr(bui.SpecialChar.BACK),
                 autoselect=True,
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
             )
 
@@ -89,13 +89,13 @@ class PlaylistAddGameWindow(bui.MainWindow):
             size=(160, 60),
             scale=0.75,
             text_scale=1.2,
-            label=bui.Lstr(resource='selectText'),
+            label=bui.Lstr(resource="selectText"),
             on_activate_call=self._add,
         )
 
         bui.widget(
             edit=select_button,
-            right_widget=bui.get_special_widget('squad_button'),
+            right_widget=bui.get_special_widget("squad_button"),
         )
 
         bui.textwidget(
@@ -103,11 +103,11 @@ class PlaylistAddGameWindow(bui.MainWindow):
             position=(self._width * 0.5, yoffs - 28),
             size=(0, 0),
             scale=1.0,
-            text=bui.Lstr(resource=f'{self._r}.titleText'),
-            h_align='center',
+            text=bui.Lstr(resource=f"{self._r}.titleText"),
+            h_align="center",
             color=bui.app.ui_v1.title_color,
             maxwidth=250,
-            v_align='center',
+            v_align="center",
         )
         v = yoffs - 64
 
@@ -118,8 +118,8 @@ class PlaylistAddGameWindow(bui.MainWindow):
             scale=1.0,
             color=(0.7, 1.0, 0.7, 1.0),
             maxwidth=self._width - self._scroll_width - 150 - x_inset * 2,
-            h_align='left',
-            v_align='center',
+            h_align="left",
+            v_align="center",
         )
         v -= 30
 
@@ -130,7 +130,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
             scale=0.7,
             color=(0.5, 0.8, 0.5, 1.0),
             maxwidth=self._width - self._scroll_width - 150 - x_inset * 2,
-            h_align='left',
+            h_align="left",
         )
 
         scroll_height = target_height - 60
@@ -167,15 +167,13 @@ class PlaylistAddGameWindow(bui.MainWindow):
 
         self._selected_game_type: type[bs.GameActivity] | None = None
 
-        bui.containerwidget(
-            edit=self._root_widget, selected_child=self._scrollwidget
-        )
+        bui.containerwidget(edit=self._root_widget, selected_child=self._scrollwidget)
 
         self._game_types: list[type[bs.GameActivity]] = []
 
         # Get actual games loading in the bg.
         bui.app.meta.load_exported_classes(
-            'bascenev1.GameActivity',
+            "bascenev1.GameActivity",
             bs.GameActivity,
             self._on_game_types_loaded,
             completion_cb_in_bg_thread=True,
@@ -202,9 +200,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
             )
         )
 
-    def _on_game_types_loaded(
-        self, gametypes: list[type[bs.GameActivity]]
-    ) -> None:
+    def _on_game_types_loaded(self, gametypes: list[type[bs.GameActivity]]) -> None:
         assert bui.app.classic is not None
         store = bui.app.classic.store
 
@@ -229,9 +225,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
         if self._column is not None:
             self._column.delete()
 
-        self._column = bui.columnwidget(
-            parent=self._scrollwidget, border=2, margin=0
-        )
+        self._column = bui.columnwidget(parent=self._scrollwidget, border=2, margin=0)
 
         for i, gametype in enumerate(self._game_types):
 
@@ -244,8 +238,8 @@ class PlaylistAddGameWindow(bui.MainWindow):
                 position=(0, 0),
                 size=(self._scroll_width * 1.1, 24),
                 text=gametype.get_display_string(),
-                h_align='left',
-                v_align='center',
+                h_align="left",
+                v_align="center",
                 color=(0.8, 0.8, 0.8, 1.0),
                 maxwidth=self._scroll_width * 0.8,
                 on_select_call=bui.Call(self._set_selected_game_type, gametype),
@@ -259,7 +253,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
         self._get_more_games_button = bui.buttonwidget(
             parent=self._column,
             autoselect=True,
-            label=bui.Lstr(resource=f'{self._r}.getMoreGamesText'),
+            label=bui.Lstr(resource=f"{self._r}.getMoreGamesText"),
             color=(0.54, 0.52, 0.67),
             textcolor=(0.7, 0.65, 0.7),
             on_activate_call=self._on_get_more_games_press,
@@ -283,7 +277,7 @@ class PlaylistAddGameWindow(bui.MainWindow):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() != 'signed_in':
+        if plus.get_v1_account_state() != "signed_in":
             show_sign_in_prompt()
             return
 

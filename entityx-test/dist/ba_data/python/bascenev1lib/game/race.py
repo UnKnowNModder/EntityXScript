@@ -43,18 +43,18 @@ class RaceRegion(bs.Actor):
         self.pos = pt
         self.index = index
         self.node = bs.newnode(
-            'region',
+            "region",
             delegate=self,
             attrs={
-                'position': pt[:3],
-                'scale': (pt[3] * 2.0, pt[4] * 2.0, pt[5] * 2.0),
-                'type': 'box',
-                'materials': [activity.race_region_material],
+                "position": pt[:3],
+                "scale": (pt[3] * 2.0, pt[4] * 2.0, pt[5] * 2.0),
+                "type": "box",
+                "materials": [activity.race_region_material],
             },
         )
 
 
-class Player(bs.Player['Team']):
+class Player(bs.Player["Team"]):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -79,60 +79,56 @@ class Team(bs.Team[Player]):
 class RaceGame(bs.TeamGameActivity[Player, Team]):
     """Game of racing around a track."""
 
-    name = 'Race'
-    description = 'Run real fast!'
+    name = "Race"
+    description = "Run real fast!"
     scoreconfig = bs.ScoreConfig(
-        label='Time', lower_is_better=True, scoretype=bs.ScoreType.MILLISECONDS
+        label="Time", lower_is_better=True, scoretype=bs.ScoreType.MILLISECONDS
     )
 
     @override
     @classmethod
-    def get_available_settings(
-        cls, sessiontype: type[bs.Session]
-    ) -> list[bs.Setting]:
+    def get_available_settings(cls, sessiontype: type[bs.Session]) -> list[bs.Setting]:
         settings = [
-            bs.IntSetting('Laps', min_value=1, default=3, increment=1),
+            bs.IntSetting("Laps", min_value=1, default=3, increment=1),
             bs.IntChoiceSetting(
-                'Time Limit',
+                "Time Limit",
                 default=0,
                 choices=[
-                    ('None', 0),
-                    ('1 Minute', 60),
-                    ('2 Minutes', 120),
-                    ('5 Minutes', 300),
-                    ('10 Minutes', 600),
-                    ('20 Minutes', 1200),
+                    ("None", 0),
+                    ("1 Minute", 60),
+                    ("2 Minutes", 120),
+                    ("5 Minutes", 300),
+                    ("10 Minutes", 600),
+                    ("20 Minutes", 1200),
                 ],
             ),
             bs.IntChoiceSetting(
-                'Mine Spawning',
+                "Mine Spawning",
                 default=4000,
                 choices=[
-                    ('No Mines', 0),
-                    ('8 Seconds', 8000),
-                    ('4 Seconds', 4000),
-                    ('2 Seconds', 2000),
+                    ("No Mines", 0),
+                    ("8 Seconds", 8000),
+                    ("4 Seconds", 4000),
+                    ("2 Seconds", 2000),
                 ],
             ),
             bs.IntChoiceSetting(
-                'Bomb Spawning',
+                "Bomb Spawning",
                 choices=[
-                    ('None', 0),
-                    ('8 Seconds', 8000),
-                    ('4 Seconds', 4000),
-                    ('2 Seconds', 2000),
-                    ('1 Second', 1000),
+                    ("None", 0),
+                    ("8 Seconds", 8000),
+                    ("4 Seconds", 4000),
+                    ("2 Seconds", 2000),
+                    ("1 Second", 1000),
                 ],
                 default=2000,
             ),
-            bs.BoolSetting('Epic Mode', default=False),
+            bs.BoolSetting("Epic Mode", default=False),
         ]
 
         # We have some specific settings in teams mode.
         if issubclass(sessiontype, bs.DualTeamSession):
-            settings.append(
-                bs.BoolSetting('Entire Team Must Finish', default=False)
-            )
+            settings.append(bs.BoolSetting("Entire Team Must Finish", default=False))
         return settings
 
     @override
@@ -148,19 +144,19 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
         assert bs.app.classic is not None
-        return bs.app.classic.getmaps('race')
+        return bs.app.classic.getmaps("race")
 
     def __init__(self, settings: dict):
         self._race_started = False
         super().__init__(settings)
         self._scoreboard = Scoreboard()
-        self._score_sound = bs.getsound('score')
-        self._swipsound = bs.getsound('swip')
+        self._score_sound = bs.getsound("score")
+        self._swipsound = bs.getsound("swip")
         self._last_team_time: float | None = None
         self._front_race_region: int | None = None
-        self._nub_tex = bs.gettexture('nub')
-        self._beep_1_sound = bs.getsound('raceBeep1')
-        self._beep_2_sound = bs.getsound('raceBeep2')
+        self._nub_tex = bs.gettexture("nub")
+        self._beep_1_sound = bs.getsound("raceBeep1")
+        self._beep_2_sound = bs.getsound("raceBeep2")
         self.race_region_material: bs.Material | None = None
         self._regions: list[RaceRegion] = []
         self._team_finish_pts: int | None = None
@@ -172,14 +168,14 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
         self._player_order_update_timer: bs.Timer | None = None
         self._start_lights: list[bs.Node] | None = None
         self._bomb_spawn_timer: bs.Timer | None = None
-        self._laps = int(settings['Laps'])
+        self._laps = int(settings["Laps"])
         self._entire_team_must_finish = bool(
-            settings.get('Entire Team Must Finish', False)
+            settings.get("Entire Team Must Finish", False)
         )
-        self._time_limit = float(settings['Time Limit'])
-        self._mine_spawning = int(settings['Mine Spawning'])
-        self._bomb_spawning = int(settings['Bomb Spawning'])
-        self._epic_mode = bool(settings['Epic Mode'])
+        self._time_limit = float(settings["Time Limit"])
+        self._mine_spawning = int(settings["Mine Spawning"])
+        self._bomb_spawning = int(settings["Bomb Spawning"])
+        self._epic_mode = bool(settings["Epic Mode"])
 
         # Base class overrides.
         self.slow_motion = self._epic_mode
@@ -195,34 +191,34 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
             isinstance(self.session, bs.DualTeamSession)
             and self._entire_team_must_finish
         ):
-            t_str = ' Your entire team has to finish.'
+            t_str = " Your entire team has to finish."
         else:
-            t_str = ''
+            t_str = ""
 
         if self._laps > 1:
-            return 'Run ${ARG1} laps.' + t_str, self._laps
-        return 'Run 1 lap.' + t_str
+            return "Run ${ARG1} laps." + t_str, self._laps
+        return "Run 1 lap." + t_str
 
     @override
     def get_instance_description_short(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
         if self._laps > 1:
-            return 'run ${ARG1} laps', self._laps
-        return 'run 1 lap'
+            return "run ${ARG1} laps", self._laps
+        return "run 1 lap"
 
     @override
     def on_transition_in(self) -> None:
         super().on_transition_in()
         shared = SharedObjects.get()
-        pts = self.map.get_def_points('race_point')
+        pts = self.map.get_def_points("race_point")
         mat = self.race_region_material = bs.Material()
         mat.add_actions(
-            conditions=('they_have_material', shared.player_material),
+            conditions=("they_have_material", shared.player_material),
             actions=(
-                ('modify_part_collision', 'collide', True),
-                ('modify_part_collision', 'physical', False),
-                ('call', 'at_connect', self._handle_race_point_collide),
+                ("modify_part_collision", "collide", True),
+                ("modify_part_collision", "physical", False),
+                ("call", "at_connect", self._handle_race_point_collide),
             ),
         )
         for rpt in pts:
@@ -233,16 +229,16 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
         assert player.actor.node
         pos = player.actor.node.position
         light = bs.newnode(
-            'light',
+            "light",
             attrs={
-                'position': pos,
-                'color': (1, 1, 0),
-                'height_attenuated': False,
-                'radius': 0.4,
+                "position": pos,
+                "color": (1, 1, 0),
+                "height_attenuated": False,
+                "radius": 0.4,
             },
         )
         bs.timer(0.5, light.delete)
-        bs.animate(light, 'intensity', {0: 0, 0.1: 1.0 * scale, 0.5: 0})
+        bs.animate(light, "intensity", {0: 0, 0.1: 1.0 * scale, 0.5: 0})
 
     def _handle_race_point_collide(self) -> None:
         # FIXME: Tidy this up.
@@ -278,11 +274,10 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
                     bs.broadcastmessage(
                         bs.Lstr(
                             translate=(
-                                'statements',
-                                'Killing ${NAME} for'
-                                ' skipping part of the track!',
+                                "statements",
+                                "Killing ${NAME} for" " skipping part of the track!",
                             ),
-                            subs=[('${NAME}', player.getname(full=True))],
+                            subs=[("${NAME}", player.getname(full=True))],
                         ),
                         color=(1, 0, 0),
                     )
@@ -326,9 +321,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
                         self._flash_player(player, 1.0)
                         player.finished = True
                         assert player.actor
-                        player.actor.handlemessage(
-                            bs.DieMessage(immediate=True)
-                        )
+                        player.actor.handlemessage(bs.DieMessage(immediate=True))
 
                         # Makes sure noone behind them passes them in rank
                         # while finishing.
@@ -356,43 +349,43 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
                         try:
                             assert isinstance(player.actor, PlayerSpaz)
                             mathnode = bs.newnode(
-                                'math',
+                                "math",
                                 owner=player.actor.node,
                                 attrs={
-                                    'input1': (0, 1.9, 0),
-                                    'operation': 'add',
+                                    "input1": (0, 1.9, 0),
+                                    "operation": "add",
                                 },
                             )
                             player.actor.node.connectattr(
-                                'torso_position', mathnode, 'input2'
+                                "torso_position", mathnode, "input2"
                             )
                             tstr = bs.Lstr(
-                                resource='lapNumberText',
+                                resource="lapNumberText",
                                 subs=[
-                                    ('${CURRENT}', str(player.lap + 1)),
-                                    ('${TOTAL}', str(self._laps)),
+                                    ("${CURRENT}", str(player.lap + 1)),
+                                    ("${TOTAL}", str(self._laps)),
                                 ],
                             )
                             txtnode = bs.newnode(
-                                'text',
+                                "text",
                                 owner=mathnode,
                                 attrs={
-                                    'text': tstr,
-                                    'in_world': True,
-                                    'color': (1, 1, 0, 1),
-                                    'scale': 0.015,
-                                    'h_align': 'center',
+                                    "text": tstr,
+                                    "in_world": True,
+                                    "color": (1, 1, 0, 1),
+                                    "scale": 0.015,
+                                    "h_align": "center",
                                 },
                             )
-                            mathnode.connectattr('output', txtnode, 'position')
+                            mathnode.connectattr("output", txtnode, "position")
                             bs.animate(
                                 txtnode,
-                                'scale',
+                                "scale",
                                 {0.0: 0, 0.2: 0.019, 2.0: 0.019, 2.2: 0},
                             )
                             bs.timer(2.3, mathnode.delete)
                         except Exception:
-                            logging.exception('Error printing lap.')
+                            logging.exception("Error printing lap.")
 
     @override
     def on_team_join(self, team: Team) -> None:
@@ -416,12 +409,12 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
             bs.broadcastmessage(
                 bs.Lstr(
                     translate=(
-                        'statements',
-                        '${TEAM} is disqualified because ${PLAYER} left',
+                        "statements",
+                        "${TEAM} is disqualified because ${PLAYER} left",
                     ),
                     subs=[
-                        ('${TEAM}', player.team.name),
-                        ('${PLAYER}', player.getname(full=True)),
+                        ("${TEAM}", player.team.name),
+                        ("${PLAYER}", player.getname(full=True)),
                     ],
                 ),
                 color=(1, 1, 0),
@@ -429,7 +422,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
             player.team.finished = True
             player.team.time = None
             player.team.lap = 0
-            bs.getsound('boo').play()
+            bs.getsound("boo").play()
             for otherplayer in player.team.players:
                 otherplayer.lap = 0
                 otherplayer.finished = True
@@ -437,7 +430,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
                     if otherplayer.actor is not None:
                         otherplayer.actor.handlemessage(bs.DieMessage())
                 except Exception:
-                    logging.exception('Error sending DieMessage.')
+                    logging.exception("Error sending DieMessage.")
 
         # Defer so team/player lists will be updated.
         bs.pushcall(self._check_end_game)
@@ -475,17 +468,17 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
         # Throw a timer up on-screen.
         self._time_text = bs.NodeActor(
             bs.newnode(
-                'text',
+                "text",
                 attrs={
-                    'v_attach': 'top',
-                    'h_attach': 'center',
-                    'h_align': 'center',
-                    'color': (1, 1, 0.5, 1),
-                    'flatness': 0.5,
-                    'shadow': 0.5,
-                    'position': (0, -50),
-                    'scale': 1.4,
-                    'text': '',
+                    "v_attach": "top",
+                    "h_attach": "center",
+                    "h_align": "center",
+                    "color": (1, 1, 0.5, 1),
+                    "flatness": 0.5,
+                    "shadow": 0.5,
+                    "position": (0, -50),
+                    "scale": 1.4,
+                    "text": "",
                 },
             )
         )
@@ -494,7 +487,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
         if self._mine_spawning != 0:
             self._race_mines = [
                 RaceMine(point=p, mine=None)
-                for p in self.map.get_def_points('race_mine')
+                for p in self.map.get_def_points("race_mine")
             ]
             if self._race_mines:
                 self._race_mine_timer = bs.Timer(
@@ -503,9 +496,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
                     repeat=True,
                 )
 
-        self._scoreboard_timer = bs.Timer(
-            0.25, self._update_scoreboard, repeat=True
-        )
+        self._scoreboard_timer = bs.Timer(0.25, self._update_scoreboard, repeat=True)
         self._player_order_update_timer = bs.Timer(
             0.25, self._update_player_order, repeat=True
         )
@@ -527,19 +518,19 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
         self._start_lights = []
         for i in range(4):
             lnub = bs.newnode(
-                'image',
+                "image",
                 attrs={
-                    'texture': bs.gettexture('nub'),
-                    'opacity': 1.0,
-                    'absolute_scale': True,
-                    'position': (-75 + i * 50, light_y),
-                    'scale': (50, 50),
-                    'attach': 'center',
+                    "texture": bs.gettexture("nub"),
+                    "opacity": 1.0,
+                    "absolute_scale": True,
+                    "position": (-75 + i * 50, light_y),
+                    "scale": (50, 50),
+                    "attach": "center",
                 },
             )
             bs.animate(
                 lnub,
-                'opacity',
+                "opacity",
                 {
                     4.0 * t_scale: 0,
                     5.0 * t_scale: 1.0,
@@ -580,7 +571,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
                     assert isinstance(player.actor, PlayerSpaz)
                     player.actor.connect_controls_to_player()
                 except Exception:
-                    logging.exception('Error in race player connects.')
+                    logging.exception("Error in race player connects.")
         assert self._timer is not None
         self._timer.start()
 
@@ -623,7 +614,7 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
             if plr[1].actor:
                 node = plr[1].distance_txt
                 if node:
-                    node.text = str(i + 1) if plr[1].is_alive() else ''
+                    node.text = str(i + 1) if plr[1].is_alive() else ""
 
     def _spawn_bomb(self) -> None:
         if self._front_race_region is None:
@@ -648,34 +639,32 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
             pos[1] + 1.0,
             pos[2] + random.uniform(*z_range),
         )
-        bs.timer(
-            random.uniform(0.0, 2.0), bs.WeakCall(self._spawn_bomb_at_pos, pos)
-        )
+        bs.timer(random.uniform(0.0, 2.0), bs.WeakCall(self._spawn_bomb_at_pos, pos))
 
     def _spawn_bomb_at_pos(self, pos: Sequence[float]) -> None:
         if self.has_ended():
             return
-        Bomb(position=pos, bomb_type='normal').autoretain()
+        Bomb(position=pos, bomb_type="normal").autoretain()
 
     def _make_mine(self, i: int) -> None:
         assert self._race_mines is not None
         rmine = self._race_mines[i]
-        rmine.mine = Bomb(position=rmine.point[:3], bomb_type='land_mine')
+        rmine.mine = Bomb(position=rmine.point[:3], bomb_type="land_mine")
         rmine.mine.arm()
 
     def _flash_mine(self, i: int) -> None:
         assert self._race_mines is not None
         rmine = self._race_mines[i]
         light = bs.newnode(
-            'light',
+            "light",
             attrs={
-                'position': rmine.point[:3],
-                'color': (1, 0.2, 0.2),
-                'radius': 0.1,
-                'height_attenuated': False,
+                "position": rmine.point[:3],
+                "color": (1, 0.2, 0.2),
+                "radius": 0.1,
+                "height_attenuated": False,
             },
         )
-        bs.animate(light, 'intensity', {0.0: 0, 0.1: 1.0, 0.2: 0}, loop=True)
+        bs.animate(light, "intensity", {0.0: 0, 0.1: 1.0, 0.2: 0}, loop=True)
         bs.timer(1.0, light.delete)
 
     def _update_race_mine(self) -> None:
@@ -731,25 +720,25 @@ class RaceGame(bs.TeamGameActivity[Player, Team]):
             spaz.disconnect_controls_from_player()
 
         mathnode = bs.newnode(
-            'math',
+            "math",
             owner=spaz.node,
-            attrs={'input1': (0, 1.4, 0), 'operation': 'add'},
+            attrs={"input1": (0, 1.4, 0), "operation": "add"},
         )
-        spaz.node.connectattr('torso_position', mathnode, 'input2')
+        spaz.node.connectattr("torso_position", mathnode, "input2")
 
         distance_txt = bs.newnode(
-            'text',
+            "text",
             owner=spaz.node,
             attrs={
-                'text': '',
-                'in_world': True,
-                'color': (1, 1, 0.4),
-                'scale': 0.02,
-                'h_align': 'center',
+                "text": "",
+                "in_world": True,
+                "color": (1, 1, 0.4),
+                "scale": 0.02,
+                "h_align": "center",
             },
         )
         player.distance_txt = distance_txt
-        mathnode.connectattr('output', distance_txt, 'position')
+        mathnode.connectattr("output", distance_txt, "position")
         return spaz
 
     def _check_end_game(self) -> None:

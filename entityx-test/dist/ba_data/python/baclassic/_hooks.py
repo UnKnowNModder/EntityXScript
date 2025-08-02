@@ -18,9 +18,7 @@ def on_engine_will_reset() -> None:
     if isinstance(appmode, ClassicAppMode):
         appmode.on_engine_will_reset()
     else:
-        logging.error(
-            'on_engine_will_reset called without ClassicAppMode active.'
-        )
+        logging.error("on_engine_will_reset called without ClassicAppMode active.")
 
 
 def on_engine_did_reset() -> None:
@@ -33,16 +31,14 @@ def on_engine_did_reset() -> None:
     if isinstance(appmode, ClassicAppMode):
         appmode.on_engine_did_reset()
     else:
-        logging.error(
-            'on_engine_did_reset called without ClassicAppMode active.'
-        )
+        logging.error("on_engine_did_reset called without ClassicAppMode active.")
 
 
 def request_main_ui() -> None:
     """Called to bring up in-game menu."""
 
     if babase.app.classic is None:
-        logging.exception('Classic not present.')
+        logging.exception("Classic not present.")
         return
 
     babase.app.classic.request_main_ui()

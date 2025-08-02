@@ -46,17 +46,17 @@ class _PacketType(Enum):
     RESPONSE_BIG = 5
 
 
-_BYTE_ORDER: Literal['big'] = 'big'
+_BYTE_ORDER: Literal["big"] = "big"
 
 
 @ioprepped
 @dataclass
 class _PeerInfo:
     # So we can gracefully evolve how we communicate in the future.
-    protocol: Annotated[int, IOAttrs('p')]
+    protocol: Annotated[int, IOAttrs("p")]
 
     # How often we'll be sending out keepalives (in seconds).
-    keepalive_interval: Annotated[float, IOAttrs('k')]
+    keepalive_interval: Annotated[float, IOAttrs("k")]
 
 
 # Note: we are expected to be forward and backward compatible; we can
@@ -74,14 +74,14 @@ def ssl_stream_writer_underlying_transport_info(
     """For debugging SSL Stream connections; returns raw transport info."""
     # Note: accessing internals here so just returning info and not
     # actual objs to reduce potential for breakage.
-    transport = getattr(writer, '_transport', None)
+    transport = getattr(writer, "_transport", None)
     if transport is not None:
-        sslproto = getattr(transport, '_ssl_protocol', None)
+        sslproto = getattr(transport, "_ssl_protocol", None)
         if sslproto is not None:
-            raw_transport = getattr(sslproto, '_transport', None)
+            raw_transport = getattr(sslproto, "_transport", None)
             if raw_transport is not None:
                 return str(raw_transport)
-    return '(not found)'
+    return "(not found)"
 
 
 # def ssl_stream_writer_force_close_check(writer: asyncio.StreamWriter) -> None:
@@ -133,7 +133,7 @@ class _InFlightMessage:
         self._response: bytes | None = None
         self._got_response = asyncio.Event()
         self.wait_task = asyncio.create_task(
-            self._wait(), name='rpc in flight msg wait'
+            self._wait(), name="rpc in flight msg wait"
         )
 
     async def _wait(self) -> bytes:
@@ -227,24 +227,24 @@ class RPCEndpoint:
         self._in_flight_messages: dict[int, _InFlightMessage] = {}
 
         if self.debug_print:
-            peername = self._writer.get_extra_info('peername')
+            peername = self._writer.get_extra_info("peername")
             self.debug_print_call(
-                f'{self._label}: connected to {peername} at {self._tm()}.'
+                f"{self._label}: connected to {peername} at {self._tm()}."
             )
 
     def __del__(self) -> None:
         if self._run_called:
             if not self._did_close_writer:
                 logger.warning(
-                    'RPCEndpoint %d dying with run'
-                    ' called but writer not closed (transport=%s).',
+                    "RPCEndpoint %d dying with run"
+                    " called but writer not closed (transport=%s).",
                     id(self),
                     ssl_stream_writer_underlying_transport_info(self._writer),
                 )
             elif not self._did_wait_closed_writer:
                 logger.warning(
-                    'RPCEndpoint %d dying with run called'
-                    ' but writer not wait-closed (transport=%s).',
+                    "RPCEndpoint %d dying with run called"
+                    " but writer not wait-closed (transport=%s).",
                     id(self),
                     ssl_stream_writer_underlying_transport_info(self._writer),
                 )
@@ -264,8 +264,7 @@ class RPCEndpoint:
             # We aren't really designed to be cancelled so let's warn
             # if it happens.
             logger.warning(
-                'RPCEndpoint.run got CancelledError;'
-                ' want to try and avoid this.'
+                "RPCEndpoint.run got CancelledError;" " want to try and avoid this."
             )
             raise
 
@@ -273,21 +272,21 @@ class RPCEndpoint:
         self._check_env()
 
         if self._run_called:
-            raise RuntimeError('Run can be called only once per endpoint.')
+            raise RuntimeError("Run can be called only once per endpoint.")
         self._run_called = True
 
         core_tasks = [
             asyncio.create_task(
-                self._run_core_task('keepalive', self._run_keepalive_task()),
-                name='rpc keepalive',
+                self._run_core_task("keepalive", self._run_keepalive_task()),
+                name="rpc keepalive",
             ),
             asyncio.create_task(
-                self._run_core_task('read', self._run_read_task()),
-                name='rpc read',
+                self._run_core_task("read", self._run_read_task()),
+                name="rpc read",
             ),
             asyncio.create_task(
-                self._run_core_task('write', self._run_write_task()),
-                name='rpc write',
+                self._run_core_task("write", self._run_write_task()),
+                name="rpc write",
             ),
         ]
         self._tasks += core_tasks
@@ -302,7 +301,7 @@ class RPCEndpoint:
             # CancelledError (which are BaseExceptions, not Exception).
             if isinstance(result, Exception):
                 logger.warning(
-                    'Got unexpected error from %s core task: %s',
+                    "Got unexpected error from %s core task: %s",
                     self._label,
                     result,
                 )
@@ -313,7 +312,7 @@ class RPCEndpoint:
 
         if not all(task.done() for task in core_tasks):
             logger.warning(
-                'RPCEndpoint %d: not all core tasks marked done after gather.',
+                "RPCEndpoint %d: not all core tasks marked done after gather.",
                 id(self),
             )
 
@@ -322,10 +321,10 @@ class RPCEndpoint:
             self.close()
             await self.wait_closed()
         except Exception:
-            logger.exception('Error closing %s.', self._label)
+            logger.exception("Error closing %s.", self._label)
 
         if self.debug_print:
-            self.debug_print_call(f'{self._label}: finished.')
+            self.debug_print_call(f"{self._label}: finished.")
 
     def send_message(
         self,
@@ -351,18 +350,18 @@ class RPCEndpoint:
 
         if self.debug_print_io:
             self.debug_print_call(
-                f'{self._label}: sending message of size {len(message)}'
-                f' at {self._tm()}.'
+                f"{self._label}: sending message of size {len(message)}"
+                f" at {self._tm()}."
             )
 
         self._check_env()
 
         if self._closing:
-            raise CommunicationError('Endpoint is closed.')
+            raise CommunicationError("Endpoint is closed.")
 
         if self.debug_print_io:
             self.debug_print_call(
-                f'{self._label}: have peerinfo? {self._peer_info is not None}.'
+                f"{self._label}: have peerinfo? {self._peer_info is not None}."
             )
 
         # message_id is a 16 bit looping value.
@@ -370,9 +369,7 @@ class RPCEndpoint:
         self._next_message_id = (self._next_message_id + 1) % 65536
 
         if self.debug_print_io:
-            self.debug_print_call(
-                f'{self._label}: will enqueue at {self._tm()}.'
-            )
+            self.debug_print_call(f"{self._label}: will enqueue at {self._tm()}.")
 
         # FIXME - should handle backpressure (waiting here if there are
         # enough packets already enqueued).
@@ -398,8 +395,8 @@ class RPCEndpoint:
 
         if self.debug_print_io:
             self.debug_print_call(
-                f'{self._label}: enqueued message of size {len(message)}'
-                f' at {self._tm()}.'
+                f"{self._label}: enqueued message of size {len(message)}"
+                f" at {self._tm()}."
             )
 
         # Make an entry so we know this message is out there.
@@ -442,7 +439,7 @@ class RPCEndpoint:
 
         if self._peer_info.protocol == 1:
             if len(message) > 65535:
-                raise RuntimeError('Message cannot be larger than 65535 bytes')
+                raise RuntimeError("Message cannot be larger than 65535 bytes")
 
         try:
             return await asyncio.wait_for(bytes_awaitable, timeout=timeout)
@@ -452,7 +449,7 @@ class RPCEndpoint:
             # cancelled though?
             if self.debug_print:
                 self.debug_print_call(
-                    f'{self._label}: message {message_id} was cancelled.'
+                    f"{self._label}: message {message_id} was cancelled."
                 )
             if close_on_error:
                 self.close()
@@ -466,8 +463,8 @@ class RPCEndpoint:
             ) or is_asyncio_streams_communication_error(exc):
                 if self.debug_print:
                     self.debug_print_call(
-                        f'{self._label}: got {type(exc)} sending message'
-                        f' {message_id}; raising CommunicationError.'
+                        f"{self._label}: got {type(exc)} sending message"
+                        f" {message_id}; raising CommunicationError."
                     )
 
                 # Stop waiting on the response.
@@ -493,13 +490,13 @@ class RPCEndpoint:
             return
 
         if self.debug_print:
-            self.debug_print_call(f'{self._label}: closing...')
+            self.debug_print_call(f"{self._label}: closing...")
 
         self._closing = True
 
         # Kill all of our in-flight tasks.
         if self.debug_print:
-            self.debug_print_call(f'{self._label}: cancelling tasks...')
+            self.debug_print_call(f"{self._label}: cancelling tasks...")
 
         for task in self._get_live_tasks():
             task.cancel()
@@ -507,7 +504,7 @@ class RPCEndpoint:
         # Close our writer.
         assert not self._did_close_writer
         if self.debug_print:
-            self.debug_print_call(f'{self._label}: closing writer...')
+            self.debug_print_call(f"{self._label}: closing writer...")
         self._writer.close()
         self._did_close_writer = True
 
@@ -534,12 +531,12 @@ class RPCEndpoint:
         self._did_wait_closed = True
 
         if not self._closing:
-            raise RuntimeError('Must be called after close()')
+            raise RuntimeError("Must be called after close()")
 
         if not self._did_close_writer:
             logger.warning(
-                'RPCEndpoint wait_closed() called but never'
-                ' explicitly closed writer.'
+                "RPCEndpoint wait_closed() called but never"
+                " explicitly closed writer."
             )
 
         live_tasks = self._get_live_tasks()
@@ -550,8 +547,7 @@ class RPCEndpoint:
 
         if self.debug_print:
             self.debug_print_call(
-                f'{self._label}: waiting for tasks to finish: '
-                f' ({live_tasks=})...'
+                f"{self._label}: waiting for tasks to finish: " f" ({live_tasks=})..."
             )
 
         # Wait for all of our in-flight tasks to wrap up.
@@ -561,20 +557,20 @@ class RPCEndpoint:
             # (which are BaseExceptions, not Exception).
             if isinstance(result, Exception):
                 logger.warning(
-                    'Got unexpected error cleaning up %s task: %s',
+                    "Got unexpected error cleaning up %s task: %s",
                     self._label,
                     result,
                 )
 
         if not all(task.done() for task in live_tasks):
             logger.warning(
-                'RPCEndpoint %d: not all live tasks marked done after gather.',
+                "RPCEndpoint %d: not all live tasks marked done after gather.",
                 id(self),
             )
 
         if self.debug_print:
             self.debug_print_call(
-                f'{self._label}: tasks finished; waiting for writer close...'
+                f"{self._label}: tasks finished; waiting for writer close..."
             )
 
         # Now wait for our writer to finish going down.
@@ -596,26 +592,26 @@ class RPCEndpoint:
             )
         except asyncio.TimeoutError as exc:
             logger.info(
-                'Timeout on _writer.wait_closed() for %s rpc (transport=%s).',
+                "Timeout on _writer.wait_closed() for %s rpc (transport=%s).",
                 self._label,
                 ssl_stream_writer_underlying_transport_info(self._writer),
             )
             if self.debug_print:
                 self.debug_print_call(
-                    f'{self._label}: got timeout in _writer.wait_closed();'
-                    ' This should be fixed in future Python versions.'
+                    f"{self._label}: got timeout in _writer.wait_closed();"
+                    " This should be fixed in future Python versions."
                 )
             # We're done with these exceptions, so strip their
             # tracebacks to avoid reference cycles.
             strip_exception_tracebacks(exc)
         except Exception as exc:
             if not self._is_expected_connection_error(exc):
-                logger.exception('Error closing _writer for %s.', self._label)
+                logger.exception("Error closing _writer for %s.", self._label)
             else:
                 if self.debug_print:
                     self.debug_print_call(
-                        f'{self._label}: silently ignoring error in'
-                        f' _writer.wait_closed(): {exc}.'
+                        f"{self._label}: silently ignoring error in"
+                        f" _writer.wait_closed(): {exc}."
                     )
             # We're done with the exception, so strip its tracebacks to
             # avoid reference cycles.
@@ -623,8 +619,7 @@ class RPCEndpoint:
 
         except asyncio.CancelledError:
             logger.warning(
-                'RPCEndpoint.wait_closed()'
-                ' got asyncio.CancelledError; not expected.'
+                "RPCEndpoint.wait_closed()" " got asyncio.CancelledError; not expected."
             )
             raise
         assert not self._did_wait_closed_writer
@@ -633,7 +628,7 @@ class RPCEndpoint:
     def _tm(self) -> str:
         """Simple readable time value for debugging."""
         tval = time.monotonic() % 100.0
-        return f'{tval:.2f}'
+        return f"{tval:.2f}"
 
     async def _run_read_task(self) -> None:
         """Read from the peer."""
@@ -652,9 +647,7 @@ class RPCEndpoint:
         self._peer_info = dataclass_from_json(_PeerInfo, message.decode())
         self._last_keepalive_receive_time = time.monotonic()
         if self.debug_print:
-            self.debug_print_call(
-                f'{self._label}: received handshake at {self._tm()}.'
-            )
+            self.debug_print_call(f"{self._label}: received handshake at {self._tm()}.")
 
         # Now just sit and handle stuff as it comes in.
         while True:
@@ -664,13 +657,12 @@ class RPCEndpoint:
             # Read message type.
             mtype = _PacketType(await self._read_int_8())
             if mtype is _PacketType.HANDSHAKE:
-                raise RuntimeError('Got multiple handshakes')
+                raise RuntimeError("Got multiple handshakes")
 
             if mtype is _PacketType.KEEPALIVE:
                 if self.debug_print_io:
                     self.debug_print_call(
-                        f'{self._label}: received keepalive'
-                        f' at {self._tm()}.'
+                        f"{self._label}: received keepalive" f" at {self._tm()}."
                     )
                 self._last_keepalive_receive_time = time.monotonic()
 
@@ -700,8 +692,8 @@ class RPCEndpoint:
         self._total_bytes_read += msglen
         if self.debug_print_io:
             self.debug_print_call(
-                f'{self._label}: received message {msgid}'
-                f' of size {msglen} at {self._tm()}.'
+                f"{self._label}: received message {msgid}"
+                f" of size {msglen} at {self._tm()}."
             )
 
         # Create a message-task to handle this message and return
@@ -711,12 +703,12 @@ class RPCEndpoint:
         self._tasks.append(
             asyncio.create_task(
                 self._handle_raw_message(message_id=msgid, message=msg),
-                name='efro rpc message handle',
+                name="efro rpc message handle",
             )
         )
         if self.debug_print:
             self.debug_print_call(
-                f'{self._label}: done handling message at {self._tm()}.'
+                f"{self._label}: done handling message at {self._tm()}."
             )
 
     async def _handle_response_packet(self, big: bool) -> None:
@@ -729,8 +721,8 @@ class RPCEndpoint:
             rsplen = await self._read_int_16()
         if self.debug_print_io:
             self.debug_print_call(
-                f'{self._label}: received response {msgid}'
-                f' of size {rsplen} at {self._tm()}.'
+                f"{self._label}: received response {msgid}"
+                f" of size {rsplen} at {self._tm()}."
             )
         rsp = await self._reader.readexactly(rsplen)
         self._total_bytes_read += rsplen
@@ -741,8 +733,8 @@ class RPCEndpoint:
             # record of it.
             if self.debug_print:
                 self.debug_print_call(
-                    f'{self._label}: got response for nonexistent'
-                    f' message id {msgid}; perhaps it timed out?'
+                    f"{self._label}: got response for nonexistent"
+                    f" message id {msgid}; perhaps it timed out?"
                 )
         else:
             msgobj.set_response(rsp)
@@ -786,8 +778,7 @@ class RPCEndpoint:
             if len(self._out_packets) > 200:
                 if not self._did_out_packets_buildup_warning:
                     logger.warning(
-                        '_out_packets building up too'
-                        ' much on RPCEndpoint %s.',
+                        "_out_packets building up too" " much on RPCEndpoint %s.",
                         id(self),
                     )
                     self._did_out_packets_buildup_warning = True
@@ -818,14 +809,12 @@ class RPCEndpoint:
             now = time.monotonic()
             if (
                 self._last_keepalive_receive_time is not None
-                and now - self._last_keepalive_receive_time
-                > self._keepalive_timeout
+                and now - self._last_keepalive_receive_time > self._keepalive_timeout
             ):
                 if self.debug_print:
                     since = now - self._last_keepalive_receive_time
                     self.debug_print_call(
-                        f'{self._label}: reached keepalive time-out'
-                        f' ({since:.1f}s).'
+                        f"{self._label}: reached keepalive time-out" f" ({since:.1f}s)."
                     )
                 raise _KeepaliveTimeoutError()
 
@@ -837,8 +826,8 @@ class RPCEndpoint:
             # if something else does.
             if not self._is_expected_connection_error(exc):
                 logger.exception(
-                    'Unexpected error in rpc %s %s task'
-                    ' (age=%.1f, total_bytes_read=%d).',
+                    "Unexpected error in rpc %s %s task"
+                    " (age=%.1f, total_bytes_read=%d).",
                     self._label,
                     tasklabel,
                     time.monotonic() - self._create_time,
@@ -847,8 +836,8 @@ class RPCEndpoint:
             else:
                 if self.debug_print:
                     self.debug_print_call(
-                        f'{self._label}: {tasklabel} task will exit cleanly'
-                        f' due to {exc!r}.'
+                        f"{self._label}: {tasklabel} task will exit cleanly"
+                        f" due to {exc!r}."
                     )
             # We're done with the exception, so strip its tracebacks to
             # avoid reference cycles.
@@ -857,14 +846,10 @@ class RPCEndpoint:
         finally:
             # Any core task exiting triggers shutdown.
             if self.debug_print:
-                self.debug_print_call(
-                    f'{self._label}: {tasklabel} task exiting...'
-                )
+                self.debug_print_call(f"{self._label}: {tasklabel} task exiting...")
             self.close()
 
-    async def _handle_raw_message(
-        self, message_id: int, message: bytes
-    ) -> None:
+    async def _handle_raw_message(self, message_id: int, message: bytes) -> None:
         try:
             response = await self._handle_raw_message_call(message)
         except Exception as exc:
@@ -872,7 +857,7 @@ class RPCEndpoint:
             # If that doesn't happen, make a fuss so we know to fix it.
             # The other end will simply never get a response to this
             # message.
-            logger.exception('Error handling raw rpc message')
+            logger.exception("Error handling raw rpc message")
             # We're done with the exception, so strip its tracebacks to
             # avoid reference cycles.
             strip_exception_tracebacks(exc)
@@ -882,7 +867,7 @@ class RPCEndpoint:
 
         if self._peer_info.protocol == 1:
             if len(response) > 65535:
-                raise RuntimeError('Response cannot be larger than 65535 bytes')
+                raise RuntimeError("Response cannot be larger than 65535 bytes")
 
         # Now send back our response.
         # Payload consists of type (1b), msgid (2b), len (2b), and data.
@@ -932,8 +917,8 @@ class RPCEndpoint:
         # thread for all use of an instance.
         if current_thread() is not self._thread:
             raise RuntimeError(
-                'This must be called from the same thread'
-                ' that the endpoint was created in.'
+                "This must be called from the same thread"
+                " that the endpoint was created in."
             )
 
         # This should always be the case if thread is the same.
@@ -945,8 +930,8 @@ class RPCEndpoint:
 
         if self.debug_print_io:
             self.debug_print_call(
-                f'{self._label}: enqueueing outgoing packet'
-                f' {data[:50]!r} at {self._tm()}.'
+                f"{self._label}: enqueueing outgoing packet"
+                f" {data[:50]!r} at {self._tm()}."
             )
 
         # Add the data and let our write task know about it.

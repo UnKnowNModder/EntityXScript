@@ -30,7 +30,7 @@ class ColorPicker(PopupWindow):
         delegate: Any = None,
         scale: float | None = None,
         offset: tuple[float, float] = (0.0, 0.0),
-        tag: Any = '',
+        tag: Any = "",
     ):
         # pylint: disable=too-many-locals
         assert bui.app.classic is not None
@@ -85,8 +85,8 @@ class ColorPicker(PopupWindow):
                     parent=self.root_widget,
                     position=(22 + 45 * x, 185 - 45 * y),
                     size=(35, 40),
-                    label='',
-                    button_type='square',
+                    label="",
+                    button_type="square",
                     on_activate_call=bui.WeakCall(self._select, x, y),
                     autoselect=True,
                     color=color,
@@ -101,8 +101,8 @@ class ColorPicker(PopupWindow):
             textcolor=(0.8, 0.8, 0.8),
             size=(120, 30),
             label=bui.Lstr(
-                resource='otherText',
-                fallback_resource='coopSelectWindow.customText',
+                resource="otherText",
+                fallback_resource="coopSelectWindow.customText",
             ),
             autoselect=True,
             on_activate_call=bui.WeakCall(self._select_other),
@@ -114,7 +114,7 @@ class ColorPicker(PopupWindow):
                 parent=self.root_widget,
                 position=(50, 12),
                 size=(30, 30),
-                texture=bui.gettexture('lock'),
+                texture=bui.gettexture("lock"),
                 draw_controller=other_button,
             )
 
@@ -126,9 +126,7 @@ class ColorPicker(PopupWindow):
                 selected_child=rows[closest[1]][closest[0]],
             )
         else:
-            bui.containerwidget(
-                edit=self.root_widget, selected_child=other_button
-            )
+            bui.containerwidget(edit=self.root_widget, selected_child=other_button)
 
     def get_tag(self) -> Any:
         """Return this popup's tag."""
@@ -140,7 +138,7 @@ class ColorPicker(PopupWindow):
         # Requires pro.
         assert bui.app.classic is not None
         if REQUIRE_PRO and not bui.app.classic.accounts.have_pro():
-            purchase.PurchaseWindow(items=['pro'])
+            purchase.PurchaseWindow(items=["pro"])
             self._transition_out()
             return
         ColorPickerExact(
@@ -168,12 +166,12 @@ class ColorPicker(PopupWindow):
             self._transitioning_out = True
             if self._delegate is not None:
                 self._delegate.color_picker_closing(self)
-            bui.containerwidget(edit=self.root_widget, transition='out_scale')
+            bui.containerwidget(edit=self.root_widget, transition="out_scale")
 
     @override
     def on_popup_cancel(self) -> None:
         if not self._transitioning_out:
-            bui.getsound('swish').play()
+            bui.getsound("swish").play()
         self._transition_out()
 
 
@@ -190,7 +188,7 @@ class ColorPickerExact(PopupWindow):
         delegate: Any = None,
         scale: float | None = None,
         offset: tuple[float, float] = (0.0, 0.0),
-        tag: Any = '',
+        tag: Any = "",
     ):
         # pylint: disable=too-many-locals
         del parent  # Unused var.
@@ -215,7 +213,7 @@ class ColorPickerExact(PopupWindow):
         self._last_press_color_name: str | None = None
         self._last_press_increasing: bool | None = None
         self._hex_timer: bui.AppTimer | None = None
-        self._hex_prev_text: str = '#FFFFFF'
+        self._hex_prev_text: str = "#FFFFFF"
         self._change_speed = 1.0
         width = 180.0
         height = 240.0
@@ -234,21 +232,21 @@ class ColorPickerExact(PopupWindow):
             parent=self.root_widget,
             position=(width * 0.5 - 65 + 5, height - 95),
             size=(130, 115),
-            texture=bui.gettexture('clayStroke'),
+            texture=bui.gettexture("clayStroke"),
             color=(1, 0, 0),
         )
         self._hex_textbox = bui.textwidget(
             parent=self.root_widget,
             position=(width * 0.5 - 37.5 + 3, height - 51),
             max_chars=9,
-            text='#FFFFFF',
+            text="#FFFFFF",
             autoselect=True,
             size=(75, 30),
-            v_align='center',
+            v_align="center",
             editable=True,
             maxwidth=70,
             allow_clear_button=False,
-            glow_type='uniform',
+            glow_type="uniform",
         )
 
         x = 50
@@ -257,21 +255,21 @@ class ColorPickerExact(PopupWindow):
         self._label_g: bui.Widget
         self._label_b: bui.Widget
         for color_name, color_val in [
-            ('r', (1, 0.15, 0.15)),
-            ('g', (0.15, 1, 0.15)),
-            ('b', (0.15, 0.15, 1)),
+            ("r", (1, 0.15, 0.15)),
+            ("g", (0.15, 1, 0.15)),
+            ("b", (0.15, 0.15, 1)),
         ]:
             txt = bui.textwidget(
                 parent=self.root_widget,
                 position=(x - 10, y),
                 size=(0, 0),
-                h_align='center',
+                h_align="center",
                 color=color_val,
-                v_align='center',
-                text='0.12',
+                v_align="center",
+                text="0.12",
             )
-            setattr(self, '_label_' + color_name, txt)
-            for b_label, bhval, binc in [('-', 30, False), ('+', 75, True)]:
+            setattr(self, "_label_" + color_name, txt)
+            for b_label, bhval, binc in [("-", 30, False), ("+", 75, True)]:
                 bui.buttonwidget(
                     parent=self.root_widget,
                     position=(x + bhval, y - 15),
@@ -295,7 +293,7 @@ class ColorPickerExact(PopupWindow):
             text_scale=0.6,
             color=(0.6, 0.6, 0.6),
             textcolor=(0.7, 0.7, 0.7),
-            label=bui.Lstr(resource='doneText'),
+            label=bui.Lstr(resource="doneText"),
             on_activate_call=bui.WeakCall(self._transition_out),
             autoselect=True,
         )
@@ -345,9 +343,9 @@ class ColorPickerExact(PopupWindow):
         # We generate these procedurally, so pylint misses them.
         # FIXME: create static attrs instead.
         # pylint: disable=consider-using-f-string
-        bui.textwidget(edit=self._label_r, text='%.2f' % self._color[0])
-        bui.textwidget(edit=self._label_g, text='%.2f' % self._color[1])
-        bui.textwidget(edit=self._label_b, text='%.2f' % self._color[2])
+        bui.textwidget(edit=self._label_r, text="%.2f" % self._color[0])
+        bui.textwidget(edit=self._label_g, text="%.2f" % self._color[1])
+        bui.textwidget(edit=self._label_b, text="%.2f" % self._color[2])
         if self._delegate is not None:
             self._delegate.color_picker_selected_color(self, self._color)
 
@@ -377,11 +375,9 @@ class ColorPickerExact(PopupWindow):
         self._last_press_color_name = color_name
         self._last_press_increasing = increasing
 
-        color_index = ('r', 'g', 'b').index(color_name)
+        color_index = ("r", "g", "b").index(color_name)
         offs = int(self._change_speed) * (0.01 if increasing else -0.01)
-        self._color[color_index] = max(
-            0.0, min(1.0, self._color[color_index] + offs)
-        )
+        self._color[color_index] = max(0.0, min(1.0, self._color[color_index] + offs))
         self._update_for_color()
 
     def get_tag(self) -> Any:
@@ -395,12 +391,12 @@ class ColorPickerExact(PopupWindow):
             self._transitioning_out = True
             if self._delegate is not None:
                 self._delegate.color_picker_closing(self)
-            bui.containerwidget(edit=self.root_widget, transition='out_scale')
+            bui.containerwidget(edit=self.root_widget, transition="out_scale")
 
     @override
     def on_popup_cancel(self) -> None:
         if not self._transitioning_out:
-            bui.getsound('swish').play()
+            bui.getsound("swish").play()
         self._transition_out()
 
 
@@ -415,8 +411,8 @@ def hex_to_color(hex_color: str) -> tuple:
         tuple: The color tuple divided by 255.
     """
     # Remove the '#' from the string if provided.
-    if hex_color.startswith('#'):
-        hex_color = hex_color.lstrip('#')
+    if hex_color.startswith("#"):
+        hex_color = hex_color.lstrip("#")
     # Check if this has a valid length.
     hexlength = len(hex_color)
     if not hexlength in [6, 8]:
@@ -427,16 +423,10 @@ def hex_to_color(hex_color: str) -> tuple:
         (int.from_bytes(bytes.fromhex(hex_color[0:2]))),
         (int.from_bytes(bytes.fromhex(hex_color[2:4]))),
         (int.from_bytes(bytes.fromhex(hex_color[4:6]))),
-        (
-            (int.from_bytes(bytes.fromhex(hex_color[6:8])))
-            if hexlength == 8
-            else None
-        ),
+        ((int.from_bytes(bytes.fromhex(hex_color[6:8]))) if hexlength == 8 else None),
     )
     # Divide all numbers by 255 and return.
-    nr, ng, nb, na = (
-        x / 255 if x is not None else None for x in (ar, ag, ab, aa)
-    )
+    nr, ng, nb, na = (x / 255 if x is not None else None for x in (ar, ag, ab, aa))
     return (nr, ng, nb, na) if aa is not None else (nr, ng, nb)
 
 
@@ -458,9 +448,9 @@ def color_to_hex(r: float, g: float, b: float, a: float | None = 1.0) -> str:
     ]
     # Merge all values into their HEX representation.
     hex_code = (
-        f'#{nr:02x}{ng:02x}{nb:02x}{na:02x}'
+        f"#{nr:02x}{ng:02x}{nb:02x}{na:02x}"
         if na is not None
-        else f'#{nr:02x}{ng:02x}{nb:02x}'
+        else f"#{nr:02x}{ng:02x}{nb:02x}"
     )
     return hex_code
 

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     import bascenev1
 
 TEAM_COLORS = [(0.2, 0.4, 1.6)]
-TEAM_NAMES = ['Good Guys']
+TEAM_NAMES = ["Good Guys"]
 
 
 class CoopSession(Session):
@@ -42,23 +42,23 @@ class CoopSession(Session):
         # pylint: disable=cyclic-import
         from bascenev1lib.activity.coopjoin import CoopJoinActivity
 
-        babase.increment_analytics_count('Co-op session start')
+        babase.increment_analytics_count("Co-op session start")
         app = babase.app
         classic = app.classic
         assert classic is not None
 
         # If they passed in explicit min/max, honor that.
         # Otherwise defer to user overrides or defaults.
-        if 'min_players' in classic.coop_session_args:
-            min_players = classic.coop_session_args['min_players']
+        if "min_players" in classic.coop_session_args:
+            min_players = classic.coop_session_args["min_players"]
         else:
             min_players = 1
-        if 'max_players' in classic.coop_session_args:
-            max_players = classic.coop_session_args['max_players']
+        if "max_players" in classic.coop_session_args:
+            max_players = classic.coop_session_args["max_players"]
         else:
-            max_players = app.config.get('Coop Game Max Players', 4)
-        if 'submit_score' in classic.coop_session_args:
-            submit_score = classic.coop_session_args['submit_score']
+            max_players = app.config.get("Coop Game Max Players", 4)
+        if "submit_score" in classic.coop_session_args:
+            submit_score = classic.coop_session_args["submit_score"]
         else:
             submit_score = True
 
@@ -75,14 +75,10 @@ class CoopSession(Session):
         )
 
         # Tournament-ID if we correspond to a co-op tournament (otherwise None)
-        self.tournament_id: str | None = classic.coop_session_args.get(
-            'tournament_id'
-        )
+        self.tournament_id: str | None = classic.coop_session_args.get("tournament_id")
 
-        self.campaign = classic.getcampaign(
-            classic.coop_session_args['campaign']
-        )
-        self.campaign_level_name: str = classic.coop_session_args['level']
+        self.campaign = classic.getcampaign(classic.coop_session_args["campaign"])
+        self.campaign_level_name: str = classic.coop_session_args["level"]
 
         self._ran_tutorial_activity = False
         self._tutorial_activity: bascenev1.Activity | None = None
@@ -100,9 +96,7 @@ class CoopSession(Session):
         return self._current_game_instance
 
     @override
-    def should_allow_mid_activity_joins(
-        self, activity: bascenev1.Activity
-    ) -> bool:
+    def should_allow_mid_activity_joins(self, activity: bascenev1.Activity) -> bool:
         # pylint: disable=cyclic-import
         from bascenev1._gameactivity import GameActivity
 
@@ -169,7 +163,7 @@ class CoopSession(Session):
         # If our current level is 'onslaught training', instantiate
         # our tutorial so its ready to go. (if we haven't run it yet).
         if (
-            self.campaign_level_name == 'Onslaught Training'
+            self.campaign_level_name == "Onslaught Training"
             and self._tutorial_activity is None
             and not self._ran_tutorial_activity
         ):
@@ -258,13 +252,11 @@ class CoopSession(Session):
         if activity is not None and not activity.expired:
             activity.can_show_ad_on_death = True
             with activity.context:
-                activity.end(results={'outcome': 'restart'}, force=True)
+                activity.end(results={"outcome": "restart"}, force=True)
 
     # noinspection PyUnresolvedReferences
     @override
-    def on_activity_end(
-        self, activity: bascenev1.Activity, results: Any
-    ) -> None:
+    def on_activity_end(self, activity: bascenev1.Activity, results: Any) -> None:
         """Method override for co-op sessions.
 
         Jumps between co-op games and score screens.
@@ -291,9 +283,9 @@ class CoopSession(Session):
         # as results. Otherwise its an old CoopGameActivity so its giving
         # us a dict of random stuff.
         if isinstance(results, GameResults):
-            outcome = 'defeat'  # This can't be 'beaten'.
+            outcome = "defeat"  # This can't be 'beaten'.
         else:
-            outcome = '' if results is None else results.get('outcome', '')
+            outcome = "" if results is None else results.get("outcome", "")
 
         # If we're running with a gui and at any point we have no
         # in-game players, quit out of the session (this can happen if
@@ -306,10 +298,8 @@ class CoopSession(Session):
 
         # If we're in a between-round activity or a restart-activity,
         # hop into a round.
-        if isinstance(
-            activity, (JoinActivity, CoopScoreScreen, TransitionActivity)
-        ):
-            if outcome == 'next_level':
+        if isinstance(activity, (JoinActivity, CoopScoreScreen, TransitionActivity)):
+            if outcome == "next_level":
                 if self._next_game_instance is None:
                     raise RuntimeError()
                 assert self._next_game_level_name is not None
@@ -327,11 +317,11 @@ class CoopSession(Session):
             # tutorial first.
             if (
                 isinstance(activity, JoinActivity)
-                and self.campaign_level_name == 'Onslaught Training'
+                and self.campaign_level_name == "Onslaught Training"
                 and not arcade_or_demo
             ):
                 if self._tutorial_activity is None:
-                    raise RuntimeError('Tutorial not preloaded properly.')
+                    raise RuntimeError("Tutorial not preloaded properly.")
                 self.setactivity(self._tutorial_activity)
                 self._tutorial_activity = None
                 self._ran_tutorial_activity = True
@@ -353,13 +343,13 @@ class CoopSession(Session):
                 if not arcade_or_demo:
                     if (
                         self.tournament_id is not None
-                        and classic.coop_session_args['submit_score']
+                        and classic.coop_session_args["submit_score"]
                     ):
                         self._custom_menu_ui = [
                             {
-                                'label': babase.Lstr(resource='restartText'),
-                                'resume_on_call': False,
-                                'call': babase.WeakCall(
+                                "label": babase.Lstr(resource="restartText"),
+                                "resume_on_call": False,
+                                "call": babase.WeakCall(
                                     self._on_tournament_restart_menu_press
                                 ),
                             }
@@ -367,8 +357,8 @@ class CoopSession(Session):
                     else:
                         self._custom_menu_ui = [
                             {
-                                'label': babase.Lstr(resource='restartText'),
-                                'call': babase.WeakCall(self.restart),
+                                "label": babase.Lstr(resource="restartText"),
+                                "call": babase.WeakCall(self.restart),
                             }
                         ]
 
@@ -384,14 +374,12 @@ class CoopSession(Session):
                 playerinfos = results.playerinfos
                 score = results.get_sessionteam_score(results.sessionteams[0])
                 fail_message = None
-                score_order = (
-                    'decreasing' if results.lower_is_better else 'increasing'
-                )
+                score_order = "decreasing" if results.lower_is_better else "increasing"
                 if results.scoretype in (
                     ScoreType.SECONDS,
                     ScoreType.MILLISECONDS,
                 ):
-                    scoretype = 'time'
+                    scoretype = "time"
 
                     # ScoreScreen wants hundredths of a second.
                     if score is not None:
@@ -400,25 +388,21 @@ class CoopSession(Session):
                         elif results.scoretype is ScoreType.MILLISECONDS:
                             score //= 10
                         else:
-                            raise RuntimeError('FIXME')
+                            raise RuntimeError("FIXME")
                 else:
                     if results.scoretype is not ScoreType.POINTS:
-                        print(f'Unknown ScoreType:' f' "{results.scoretype}"')
-                    scoretype = 'points'
+                        print(f"Unknown ScoreType:" f' "{results.scoretype}"')
+                    scoretype = "points"
 
             # Old coop-game-specific results; should migrate away from these.
             else:
-                playerinfos = results.get('playerinfos')
-                score = results['score'] if 'score' in results else None
+                playerinfos = results.get("playerinfos")
+                score = results["score"] if "score" in results else None
                 fail_message = (
-                    results['fail_message']
-                    if 'fail_message' in results
-                    else None
+                    results["fail_message"] if "fail_message" in results else None
                 )
                 score_order = (
-                    results['score_order']
-                    if 'score_order' in results
-                    else 'increasing'
+                    results["score_order"] if "score_order" in results else "increasing"
                 )
                 activity_score_type = (
                     activity.get_score_type()
@@ -435,7 +419,7 @@ class CoopSession(Session):
 
             # Looks like we were in a round - check the outcome and
             # go from there.
-            if outcome == 'restart':
+            if outcome == "restart":
                 # This will pop up back in the same round.
                 self.setactivity(_bascenev1.newactivity(TransitionActivity))
             else:
@@ -443,14 +427,14 @@ class CoopSession(Session):
                     _bascenev1.newactivity(
                         CoopScoreScreen,
                         {
-                            'playerinfos': playerinfos,
-                            'score': score,
-                            'fail_message': fail_message,
-                            'score_order': score_order,
-                            'score_type': scoretype,
-                            'outcome': outcome,
-                            'campaign': self.campaign,
-                            'level': self.campaign_level_name,
+                            "playerinfos": playerinfos,
+                            "score": score,
+                            "fail_message": fail_message,
+                            "score_order": score_order,
+                            "score_type": scoretype,
+                            "outcome": outcome,
+                            "campaign": self.campaign,
+                            "level": self.campaign_level_name,
                         },
                     )
                 )

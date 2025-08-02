@@ -38,7 +38,7 @@ class TabRow[T]:
         on_select_call: Callable[[T], None] | None = None,
     ) -> None:
         if not tabdefs:
-            raise ValueError('At least one tab def is required')
+            raise ValueError("At least one tab def is required")
         self.tabs: dict[T, Tab] = {}
         tab_pos_v = pos[1]
         tab_button_width = float(size[0]) / len(tabdefs)
@@ -51,13 +51,11 @@ class TabRow[T]:
                 parent=parent,
                 position=pos,
                 autoselect=True,
-                button_type='tab',
+                button_type="tab",
                 size=size,
                 label=tab_label,
                 enable_sound=False,
-                on_activate_call=bui.Call(
-                    self._tick_and_call, on_select_call, tab_id
-                ),
+                on_activate_call=bui.Call(self._tick_and_call, on_select_call, tab_id),
             )
             h += tab_button_width
             self.tabs[tab_id] = Tab(button=btn, position=pos, size=size)
@@ -78,9 +76,7 @@ class TabRow[T]:
                     textcolor=(0.65, 0.6, 0.7),
                 )  # unlit
 
-    def _tick_and_call(
-        self, call: Callable[[Any], None] | None, arg: Any
-    ) -> None:
-        bui.getsound('click01').play()
+    def _tick_and_call(self, call: Callable[[Any], None] | None, arg: Any) -> None:
+        bui.getsound("click01").play()
         if call is not None:
             call(arg)

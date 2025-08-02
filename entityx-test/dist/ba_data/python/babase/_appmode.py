@@ -20,11 +20,11 @@ class AppMode:
     @classmethod
     def can_handle_intent(cls, intent: AppIntent) -> bool:
         """Override this to define indent handling for an app-mode."""
-        raise NotImplementedError('AppMode subclasses must override this.')
+        raise NotImplementedError("AppMode subclasses must override this.")
 
     def handle_intent(self, intent: AppIntent) -> None:
         """Handle an intent."""
-        raise NotImplementedError('AppMode subclasses must override this.')
+        raise NotImplementedError("AppMode subclasses must override this.")
 
     def on_activate(self) -> None:
         """Called when the mode is becoming the active one fro the app."""
@@ -60,9 +60,7 @@ class AppMode:
         (when active is False).
         """
 
-    def on_purchase_process_begin(
-        self, item_id: str, user_initiated: bool
-    ) -> None:
+    def on_purchase_process_begin(self, item_id: str, user_initiated: bool) -> None:
         """Called when in-app-purchase processing is beginning.
 
         This call happens after a purchase has been completed locally
@@ -81,13 +79,13 @@ class AppMode:
             return
 
         babase.screenmessage(
-            babase.Lstr(resource='updatingAccountText'),
+            babase.Lstr(resource="updatingAccountText"),
             color=(0, 1, 0),
         )
         # Ick; we can be called early in the bootstrapping process
         # before we're allowed to load assets. Guard against that.
         if babase.asset_loads_allowed():
-            babase.getsimplesound('click01').play()
+            babase.getsimplesound("click01").play()
 
     def on_purchase_process_end(
         self, item_id: str, user_initiated: bool, applied: bool
@@ -118,10 +116,10 @@ class AppMode:
         # probably want to do something more specific based on item-id.
         babase.screenmessage(
             babase.Lstr(
-                translate=('serverResponses', 'You got a ${ITEM}!'),
-                subs=[('${ITEM}', item_id)],
+                translate=("serverResponses", "You got a ${ITEM}!"),
+                subs=[("${ITEM}", item_id)],
             ),
             color=(0, 1, 0),
         )
         if babase.asset_loads_allowed():
-            babase.getsimplesound('cashRegister').play()
+            babase.getsimplesound("cashRegister").play()

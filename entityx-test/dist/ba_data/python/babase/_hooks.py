@@ -30,7 +30,7 @@ def reset_to_main_menu() -> None:
     if _babase.app.classic is not None:
         _babase.app.classic.return_to_main_menu_session_gracefully()
     else:
-        logging.warning('reset_to_main_menu: no-op due to classic not present.')
+        logging.warning("reset_to_main_menu: no-op due to classic not present.")
 
 
 def get_v2_account_id() -> str | None:
@@ -46,38 +46,38 @@ def get_v2_account_id() -> str | None:
                 return accountid
         return None
     except Exception:
-        logging.exception('Error fetching v2 account id.')
+        logging.exception("Error fetching v2 account id.")
         return None
 
 
 def store_config_fullscreen_on() -> None:
     """The OS has changed our fullscreen state and we should take note."""
-    _babase.app.config['Fullscreen'] = True
+    _babase.app.config["Fullscreen"] = True
     _babase.app.config.commit()
 
 
 def store_config_fullscreen_off() -> None:
     """The OS has changed our fullscreen state and we should take note."""
-    _babase.app.config['Fullscreen'] = False
+    _babase.app.config["Fullscreen"] = False
     _babase.app.config.commit()
 
 
 def set_config_fullscreen_on() -> None:
     """Set and store fullscreen state"""
-    _babase.app.config['Fullscreen'] = True
+    _babase.app.config["Fullscreen"] = True
     _babase.app.config.apply_and_commit()
 
 
 def set_config_fullscreen_off() -> None:
     """The OS has changed our fullscreen state and we should take note."""
-    _babase.app.config['Fullscreen'] = False
+    _babase.app.config["Fullscreen"] = False
     _babase.app.config.apply_and_commit()
 
 
 def not_signed_in_screen_message() -> None:
     from babase._language import Lstr
 
-    _babase.screenmessage(Lstr(resource='notSignedInErrorText'))
+    _babase.screenmessage(Lstr(resource="notSignedInErrorText"))
 
 
 def open_url_with_webbrowser_module(url: str) -> None:
@@ -90,15 +90,15 @@ def open_url_with_webbrowser_module(url: str) -> None:
         webbrowser.open(url)
     except Exception:
         logging.exception("Error displaying url '%s'.", url)
-        _babase.getsimplesound('error').play()
-        _babase.screenmessage(Lstr(resource='errorText'), color=(1, 0, 0))
+        _babase.getsimplesound("error").play()
+        _babase.screenmessage(Lstr(resource="errorText"), color=(1, 0, 0))
 
 
 def rejecting_invite_already_in_party_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='internal.rejectingInviteAlreadyInPartyText'),
+        Lstr(resource="internal.rejectingInviteAlreadyInPartyText"),
         color=(1, 0.5, 0),
     )
 
@@ -107,7 +107,7 @@ def connection_failed_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='internal.connectionFailedText'), color=(1, 0.5, 0)
+        Lstr(resource="internal.connectionFailedText"), color=(1, 0.5, 0)
     )
 
 
@@ -115,9 +115,9 @@ def temporarily_unavailable_message() -> None:
     from babase._language import Lstr
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
         _babase.screenmessage(
-            Lstr(resource='getTicketsWindow.unavailableTemporarilyText'),
+            Lstr(resource="getTicketsWindow.unavailableTemporarilyText"),
             color=(1, 0, 0),
         )
 
@@ -126,9 +126,9 @@ def in_progress_message() -> None:
     from babase._language import Lstr
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
         _babase.screenmessage(
-            Lstr(resource='getTicketsWindow.inProgressText'),
+            Lstr(resource="getTicketsWindow.inProgressText"),
             color=(1, 0, 0),
         )
 
@@ -137,27 +137,27 @@ def error_message() -> None:
     from babase._language import Lstr
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('error').play()
-        _babase.screenmessage(Lstr(resource='errorText'), color=(1, 0, 0))
+        _babase.getsimplesound("error").play()
+        _babase.screenmessage(Lstr(resource="errorText"), color=(1, 0, 0))
 
 
 def success_message() -> None:
     from babase._language import Lstr
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('dingSmall').play()
-        _babase.screenmessage(Lstr(resource='successText'), color=(0, 1, 0))
+        _babase.getsimplesound("dingSmall").play()
+        _babase.screenmessage(Lstr(resource="successText"), color=(0, 1, 0))
 
 
 def purchase_not_valid_error() -> None:
     from babase._language import Lstr
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
         _babase.screenmessage(
             Lstr(
-                resource='store.purchaseNotValidError',
-                subs=[('${EMAIL}', 'support@froemling.net')],
+                resource="store.purchaseNotValidError",
+                subs=[("${EMAIL}", "support@froemling.net")],
             ),
             color=(1, 0, 0),
         )
@@ -167,9 +167,9 @@ def purchase_already_in_progress_error() -> None:
     from babase._language import Lstr
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
         _babase.screenmessage(
-            Lstr(resource='store.purchaseAlreadyInProgressText'),
+            Lstr(resource="store.purchaseAlreadyInProgressText"),
             color=(1, 0, 0),
         )
 
@@ -178,7 +178,7 @@ def orientation_reset_cb_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='internal.vrOrientationResetCardboardText'),
+        Lstr(resource="internal.vrOrientationResetCardboardText"),
         color=(0, 1, 0),
     )
 
@@ -187,7 +187,7 @@ def orientation_reset_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='internal.vrOrientationResetText'), color=(0, 1, 0)
+        Lstr(resource="internal.vrOrientationResetText"), color=(0, 1, 0)
     )
 
 
@@ -198,29 +198,27 @@ def show_post_purchase_message() -> None:
 
 def language_test_toggle() -> None:
     _babase.app.lang.setlanguage(
-        'Gibberish' if _babase.app.lang.language == 'English' else 'English'
+        "Gibberish" if _babase.app.lang.language == "English" else "English"
     )
 
 
 def award_in_control_achievement() -> None:
     if _babase.app.classic is not None:
-        _babase.app.classic.ach.award_local_achievement('In Control')
+        _babase.app.classic.ach.award_local_achievement("In Control")
     else:
-        logging.warning('award_in_control_achievement is no-op without classic')
+        logging.warning("award_in_control_achievement is no-op without classic")
 
 
 def award_dual_wielding_achievement() -> None:
     if _babase.app.classic is not None:
-        _babase.app.classic.ach.award_local_achievement('Dual Wielding')
+        _babase.app.classic.ach.award_local_achievement("Dual Wielding")
     else:
-        logging.warning(
-            'award_dual_wielding_achievement is no-op without classic'
-        )
+        logging.warning("award_dual_wielding_achievement is no-op without classic")
 
 
 def play_gong_sound() -> None:
     if _babase.app.env.gui:
-        _babase.getsimplesound('gong').play()
+        _babase.getsimplesound("gong").play()
 
 
 def launch_coop_game(name: str) -> None:
@@ -232,7 +230,7 @@ def purchases_restored_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='getTicketsWindow.purchasesRestoredText'), color=(0, 1, 0)
+        Lstr(resource="getTicketsWindow.purchasesRestoredText"), color=(0, 1, 0)
     )
 
 
@@ -240,7 +238,7 @@ def unavailable_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='getTicketsWindow.unavailableText'), color=(1, 0, 0)
+        Lstr(resource="getTicketsWindow.unavailableText"), color=(1, 0, 0)
     )
 
 
@@ -254,7 +252,7 @@ def google_play_purchases_not_available_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='googlePlayPurchasesNotAvailableText'), color=(1, 0, 0)
+        Lstr(resource="googlePlayPurchasesNotAvailableText"), color=(1, 0, 0)
     )
 
 
@@ -262,7 +260,7 @@ def google_play_services_not_available_message() -> None:
     from babase._language import Lstr
 
     _babase.screenmessage(
-        Lstr(resource='googlePlayServicesNotAvailableText'), color=(1, 0, 0)
+        Lstr(resource="googlePlayServicesNotAvailableText"), color=(1, 0, 0)
     )
 
 
@@ -273,13 +271,13 @@ def empty_call() -> None:
 def print_trace() -> None:
     import traceback
 
-    print('Python Traceback (most recent call last):')
+    print("Python Traceback (most recent call last):")
     traceback.print_stack()
 
 
 def toggle_fullscreen() -> None:
     cfg = _babase.app.config
-    cfg['Fullscreen'] = not cfg.resolve('Fullscreen')
+    cfg["Fullscreen"] = not cfg.resolve("Fullscreen")
     cfg.apply_and_commit()
 
 
@@ -292,10 +290,10 @@ def ui_remote_press() -> None:
 
     # Can be called without a context; need a context for getsound.
     _babase.screenmessage(
-        Lstr(resource='internal.controllerForMenusOnlyText'),
+        Lstr(resource="internal.controllerForMenusOnlyText"),
         color=(1, 0, 0),
     )
-    _babase.getsimplesound('error').play()
+    _babase.getsimplesound("error").play()
 
 
 def remove_in_game_ads_message() -> None:
@@ -325,9 +323,7 @@ def have_account_v2_credentials() -> bool:
     return have
 
 
-def implicit_sign_in(
-    login_type_str: str, login_id: str, display_name: str
-) -> None:
+def implicit_sign_in(login_type_str: str, login_id: str, display_name: str) -> None:
     """An implicit login happened."""
     from bacommon.login import LoginType
 
@@ -345,9 +341,7 @@ def implicit_sign_out(login_type_str: str) -> None:
     from bacommon.login import LoginType
 
     assert _babase.app.plus is not None
-    _babase.app.plus.accounts.on_implicit_sign_out(
-        login_type=LoginType(login_type_str)
-    )
+    _babase.app.plus.accounts.on_implicit_sign_out(login_type=LoginType(login_type_str))
 
 
 def login_adapter_get_sign_in_token_response(
@@ -359,7 +353,7 @@ def login_adapter_get_sign_in_token_response(
 
     login_type = LoginType(login_type_str)
     attempt_id = int(attempt_id_str)
-    result = None if result_str == '' else result_str
+    result = None if result_str == "" else result_str
 
     assert _babase.app.plus is not None
     adapter = _babase.app.plus.accounts.login_adapters[login_type]
@@ -378,21 +372,21 @@ def show_client_too_old_error() -> None:
     # Note that you will have to do that again later if you update to
     # a newer build.
     if (
-        _babase.app.config.get('SuppressClientTooOldErrorForBuild')
+        _babase.app.config.get("SuppressClientTooOldErrorForBuild")
         == _babase.app.env.engine_build_number
     ):
         return
 
     if _babase.app.env.gui:
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
 
     _babase.screenmessage(
         Lstr(
             translate=(
-                'serverResponses',
-                'Server functionality is no longer supported'
-                ' in this version of the game;\n'
-                'Please update to a newer version.',
+                "serverResponses",
+                "Server functionality is no longer supported"
+                " in this version of the game;\n"
+                "Please update to a newer version.",
             )
         ),
         color=(1, 0, 0),
@@ -419,9 +413,9 @@ def unsupported_controller_message(name: str) -> None:
     # Ick; this can get called early in the bootstrapping process
     # before we're allowed to load assets. Guard against that.
     if _babase.asset_loads_allowed():
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
     _babase.screenmessage(
-        Lstr(resource='unsupportedControllerText', subs=[('${NAME}', name)]),
+        Lstr(resource="unsupportedControllerText", subs=[("${NAME}", name)]),
         color=(1, 0, 0),
     )
 
@@ -432,9 +426,9 @@ def copy_dev_console_history() -> None:
     from babase._language import Lstr
 
     if not _babase.clipboard_is_supported():
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
         _babase.screenmessage(
-            'Clipboard not supported on this build.',
+            "Clipboard not supported on this build.",
             color=(1, 0, 0),
         )
         return
@@ -442,9 +436,9 @@ def copy_dev_console_history() -> None:
     # This requires us to be running with a log-handler set up.
     envconfig = baenv.get_env_config()
     if envconfig.log_handler is None:
-        _babase.getsimplesound('error').play()
+        _babase.getsimplesound("error").play()
         _babase.screenmessage(
-            'Not available; standard engine logging is not enabled.',
+            "Not available; standard engine logging is not enabled.",
             color=(1, 0, 0),
         )
         return
@@ -452,12 +446,12 @@ def copy_dev_console_history() -> None:
     # Just dump everything that's in the log-handler's cache.
     archive = envconfig.log_handler.get_cached()
     lines: list[str] = []
-    stdnames = ('stdout', 'stderr')
+    stdnames = ("stdout", "stderr")
     for entry in archive.entries:
         reltime = entry.time.timestamp() - envconfig.launch_time
-        level_ex = '' if entry.name in stdnames else f' {entry.level.name}'
-        lines.append(f'{reltime:.3f}{level_ex} {entry.name}: {entry.message}')
+        level_ex = "" if entry.name in stdnames else f" {entry.level.name}"
+        lines.append(f"{reltime:.3f}{level_ex} {entry.name}: {entry.message}")
 
-    _babase.clipboard_set_text('\n'.join(lines))
-    _babase.screenmessage(Lstr(resource='copyConfirmText'), color=(0, 1, 0))
-    _babase.getsimplesound('gunCocking').play()
+    _babase.clipboard_set_text("\n".join(lines))
+    _babase.screenmessage(Lstr(resource="copyConfirmText"), color=(0, 1, 0))
+    _babase.getsimplesound("gunCocking").play()

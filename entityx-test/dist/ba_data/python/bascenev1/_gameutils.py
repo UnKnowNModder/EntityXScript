@@ -16,16 +16,16 @@ if TYPE_CHECKING:
 
     import bascenev1
 
-Time = NewType('Time', float)
-BaseTime = NewType('BaseTime', float)
+Time = NewType("Time", float)
+BaseTime = NewType("BaseTime", float)
 
 TROPHY_CHARS = {
-    '1': babase.SpecialChar.TROPHY1,
-    '2': babase.SpecialChar.TROPHY2,
-    '3': babase.SpecialChar.TROPHY3,
-    '0a': babase.SpecialChar.TROPHY0A,
-    '0b': babase.SpecialChar.TROPHY0B,
-    '4': babase.SpecialChar.TROPHY4,
+    "1": babase.SpecialChar.TROPHY1,
+    "2": babase.SpecialChar.TROPHY2,
+    "3": babase.SpecialChar.TROPHY3,
+    "0a": babase.SpecialChar.TROPHY0A,
+    "0b": babase.SpecialChar.TROPHY0B,
+    "4": babase.SpecialChar.TROPHY4,
 }
 
 
@@ -42,7 +42,7 @@ def get_trophy_string(trophy_id: str) -> str:
     """Given a trophy id, returns a string to visualize it."""
     if trophy_id in TROPHY_CHARS:
         return babase.charstr(TROPHY_CHARS[trophy_id])
-    return '?'
+    return "?"
 
 
 def animate(
@@ -65,9 +65,9 @@ def animate(
     items.sort()
 
     curve = _bascenev1.newnode(
-        'animcurve',
+        "animcurve",
         owner=node,
-        name='Driving ' + str(node) + ' \'' + attr + '\'',
+        name="Driving " + str(node) + " '" + attr + "'",
     )
 
     # We take seconds but operate on milliseconds internally.
@@ -84,9 +84,7 @@ def animate(
     #  get disconnected.
     if not loop:
         # noinspection PyUnresolvedReferences
-        _bascenev1.timer(
-            (int(mult * items[-1][0]) + 1000) / 1000.0, curve.delete
-        )
+        _bascenev1.timer((int(mult * items[-1][0]) + 1000) / 1000.0, curve.delete)
 
     # Do the connects last so all our attrs are in place when we push initial
     # values through.
@@ -97,8 +95,8 @@ def animate(
     except babase.ActivityNotFoundError:
         globalsnode = _bascenev1.getsession().sessionglobalsnode
 
-    globalsnode.connectattr('time', curve, 'in')
-    curve.connectattr('out', node, attr)
+    globalsnode.connectattr("time", curve, "in")
+    curve.connectattr("out", node, attr)
     return curve
 
 
@@ -115,7 +113,7 @@ def animate_array(
 
     Like bs.animate, but operates on array attributes.
     """
-    combine = _bascenev1.newnode('combine', owner=node, attrs={'size': size})
+    combine = _bascenev1.newnode("combine", owner=node, attrs={"size": size})
     items = list(keys.items())
     items.sort()
 
@@ -130,18 +128,16 @@ def animate_array(
 
     for i in range(size):
         curve = _bascenev1.newnode(
-            'animcurve',
+            "animcurve",
             owner=node,
-            name=(
-                'Driving ' + str(node) + ' \'' + attr + '\' member ' + str(i)
-            ),
+            name=("Driving " + str(node) + " '" + attr + "' member " + str(i)),
         )
-        globalsnode.connectattr('time', curve, 'in')
+        globalsnode.connectattr("time", curve, "in")
         curve.times = [int(mult * time) for time, val in items]
         curve.values = [val[i] for time, val in items]
         curve.offset = int(_bascenev1.time() * 1000.0) + int(mult * offset)
         curve.loop = loop
-        curve.connectattr('out', combine, 'input' + str(i))
+        curve.connectattr("out", combine, "input" + str(i))
 
         # If we're not looping, set a timer to kill this
         # curve after its done its job.
@@ -152,7 +148,7 @@ def animate_array(
                 (int(mult * items[-1][0]) + 1000) / 1000.0,
                 curve.delete,
             )
-    combine.connectattr('output', node, attr)
+    combine.connectattr("output", node, attr)
 
     # If we're not looping, set a timer to kill the combine once
     # the job is done.
@@ -161,9 +157,7 @@ def animate_array(
     if not loop:
         # (PyCharm seems to think item is a float, not a tuple)
         # noinspection PyUnresolvedReferences
-        _bascenev1.timer(
-            (int(mult * items[-1][0]) + 1000) / 1000.0, combine.delete
-        )
+        _bascenev1.timer((int(mult * items[-1][0]) + 1000) / 1000.0, combine.delete)
 
 
 def show_damage_count(
@@ -183,20 +177,20 @@ def show_damage_count(
     assert app.classic is not None
     do_big = app.ui_v1.uiscale is babase.UIScale.SMALL or app.env.vr
     txtnode = _bascenev1.newnode(
-        'text',
+        "text",
         attrs={
-            'text': damage,
-            'in_world': True,
-            'h_align': 'center',
-            'flatness': 1.0,
-            'shadow': 1.0 if do_big else 0.7,
-            'color': (0.2, 0.2, 0.2, 1) if dead else (1, 0.25, 0.25, 1),
-            'scale': 0.015 if do_big else 0.01,
+            "text": damage,
+            "in_world": True,
+            "h_align": "center",
+            "flatness": 1.0,
+            "shadow": 1.0 if do_big else 0.7,
+            "color": (0.2, 0.2, 0.2, 1) if dead else (1, 0.25, 0.25, 1),
+            "scale": 0.015 if do_big else 0.01,
         },
     )
     # Translate upward.
-    tcombine = _bascenev1.newnode('combine', owner=txtnode, attrs={'size': 3})
-    tcombine.connectattr('output', txtnode, 'position')
+    tcombine = _bascenev1.newnode("combine", owner=txtnode, attrs={"size": 3})
+    tcombine.connectattr("output", txtnode, "position")
     v_vals = []
     pval = 0.0
     vval = 0.07
@@ -209,24 +203,24 @@ def show_damage_count(
     p_dir = direction[0]
     animate(
         tcombine,
-        'input0',
+        "input0",
         {i[0] * lifespan: p_start + p_dir * i[1] for i in v_vals},
     )
     p_start = position[1]
     p_dir = direction[1]
     animate(
         tcombine,
-        'input1',
+        "input1",
         {i[0] * lifespan: p_start + p_dir * i[1] for i in v_vals},
     )
     p_start = position[2]
     p_dir = direction[2]
     animate(
         tcombine,
-        'input2',
+        "input2",
         {i[0] * lifespan: p_start + p_dir * i[1] for i in v_vals},
     )
-    animate(txtnode, 'opacity', {0.7 * lifespan: 1.0, lifespan: 0.0})
+    animate(txtnode, "opacity", {0.7 * lifespan: 1.0, lifespan: 0.0})
     _bascenev1.timer(lifespan, txtnode.delete)
 
 
@@ -258,37 +252,37 @@ def cameraflash(duration: float = 999.0) -> None:
     for i in range(6):
         light = NodeActor(
             _bascenev1.newnode(
-                'light',
+                "light",
                 attrs={
-                    'position': (positions[i][0], 0, positions[i][1]),
-                    'radius': 1.0,
-                    'lights_volumes': False,
-                    'height_attenuated': False,
-                    'color': (0.2, 0.2, 0.8),
+                    "position": (positions[i][0], 0, positions[i][1]),
+                    "radius": 1.0,
+                    "lights_volumes": False,
+                    "height_attenuated": False,
+                    "color": (0.2, 0.2, 0.8),
                 },
             )
         )
         sval = 1.87
         iscale = 1.3
         tcombine = _bascenev1.newnode(
-            'combine',
+            "combine",
             owner=light.node,
             attrs={
-                'size': 3,
-                'input0': positions[i][0],
-                'input1': 0,
-                'input2': positions[i][1],
+                "size": 3,
+                "input0": positions[i][0],
+                "input1": 0,
+                "input2": positions[i][1],
             },
         )
         assert light.node
-        tcombine.connectattr('output', light.node, 'position')
+        tcombine.connectattr("output", light.node, "position")
         xval = positions[i][0]
         yval = positions[i][1]
         spd = 0.5 + random.random()
         spd2 = 0.5 + random.random()
         animate(
             tcombine,
-            'input0',
+            "input0",
             {
                 0.0: xval + 0,
                 0.069 * spd: xval + 10.0,
@@ -299,7 +293,7 @@ def cameraflash(duration: float = 999.0) -> None:
         )
         animate(
             tcombine,
-            'input2',
+            "input2",
             {
                 0.0: yval + 0,
                 0.15 * spd2: yval + 10.0,
@@ -310,7 +304,7 @@ def cameraflash(duration: float = 999.0) -> None:
         )
         animate(
             light.node,
-            'intensity',
+            "intensity",
             {
                 0.0: 0,
                 0.02 * sval: 0,

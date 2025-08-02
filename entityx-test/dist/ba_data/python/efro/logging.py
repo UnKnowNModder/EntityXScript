@@ -70,7 +70,7 @@ LEVELNO_LOG_LEVELS = {
 
 LEVELNO_COLOR_CODES: dict[int, tuple[str, str]] = {
     logging.DEBUG: (Clr.CYN, Clr.RST),
-    logging.INFO: ('', ''),
+    logging.INFO: ("", ""),
     logging.WARNING: (Clr.YLW, Clr.RST),
     logging.ERROR: (Clr.RED, Clr.RST),
     logging.CRITICAL: (Clr.SMAG + Clr.BLD + Clr.BLK, Clr.RST),
@@ -82,17 +82,17 @@ LEVELNO_COLOR_CODES: dict[int, tuple[str, str]] = {
 class LogEntry:
     """Single logged message."""
 
-    name: Annotated[str, IOAttrs('n', soft_default='root', store_default=False)]
-    message: Annotated[str, IOAttrs('m')]
-    level: Annotated[LogLevel, IOAttrs('l')]
-    time: Annotated[datetime.datetime, IOAttrs('t')]
+    name: Annotated[str, IOAttrs("n", soft_default="root", store_default=False)]
+    message: Annotated[str, IOAttrs("m")]
+    level: Annotated[LogLevel, IOAttrs("l")]
+    time: Annotated[datetime.datetime, IOAttrs("t")]
 
     # We support arbitrary string labels per log entry which can be
     # incorporated into custom log processing. To populate this, our
     # LogHandler class looks for a 'labels' dict passed in the optional
     # 'extra' dict arg to standard Python log calls.
-    labels: Annotated[dict[str, str], IOAttrs('la', store_default=False)] = (
-        field(default_factory=dict)
+    labels: Annotated[dict[str, str], IOAttrs("la", store_default=False)] = field(
+        default_factory=dict
     )
 
 
@@ -102,13 +102,13 @@ class LogArchive:
     """Info and data for a log."""
 
     # Total number of entries submitted to the log.
-    log_size: Annotated[int, IOAttrs('t')]
+    log_size: Annotated[int, IOAttrs("t")]
 
     # Offset for the entries contained here.
     # (10 means our first entry is the 10th in the log, etc.)
-    start_index: Annotated[int, IOAttrs('c')]
+    start_index: Annotated[int, IOAttrs("c")]
 
-    entries: Annotated[list[LogEntry], IOAttrs('e')]
+    entries: Annotated[list[LogEntry], IOAttrs("e")]
 
 
 class LogHandler(logging.Handler):
@@ -131,20 +131,20 @@ class LogHandler(logging.Handler):
         echofile: TextIO | None,
         cache_size_limit: int,
         cache_time_limit: datetime.timedelta | None,
-        echofile_timestamp_format: Literal['default', 'relative'] = 'default',
+        echofile_timestamp_format: Literal["default", "relative"] = "default",
         launch_time: float | None = None,
         strict_threads: bool = False,
     ):
         super().__init__()
         # pylint: disable=consider-using-with
-        self._file = None if path is None else open(path, 'w', encoding='utf-8')
+        self._file = None if path is None else open(path, "w", encoding="utf-8")
         self._echofile = echofile
         self._echofile_timestamp_format = echofile_timestamp_format
         self._callbacks: list[Callable[[LogEntry], None]] = []
-        self._file_chunks: dict[str, list[str]] = {'stdout': [], 'stderr': []}
+        self._file_chunks: dict[str, list[str]] = {"stdout": [], "stderr": []}
         self._file_chunk_ship_task: dict[str, asyncio.Task | None] = {
-            'stdout': None,
-            'stderr': None,
+            "stdout": None,
+            "stderr": None,
         }
         self._launch_time = time.time() if launch_time is None else launch_time
         self._cache_size = 0
@@ -162,9 +162,7 @@ class LogHandler(logging.Handler):
         # it is up to the user to explicitly call shutdown() to get our
         # background thread to exit.
         self._thread_bootstrapped = False
-        self._thread = Thread(
-            target=self._log_thread_main, daemon=not strict_threads
-        )
+        self._thread = Thread(target=self._log_thread_main, daemon=not strict_threads)
         self._thread.start()
 
         # Spin until our thread is up and running; otherwise we could
@@ -225,15 +223,13 @@ class LogHandler(logging.Handler):
         self._thread_bootstrapped = True
         try:
             if self._cache_time_limit is not None:
-                _prunetask = self._event_loop.create_task(
-                    self._time_prune_cache()
-                )
+                _prunetask = self._event_loop.create_task(self._time_prune_cache())
             self._event_loop.run_forever()
         except BaseException:
             # If this ever goes down we're in trouble; we won't be able
             # to log about it though. Try to make some noise however we
             # can.
-            print('LogHandler died!!!', file=sys.stderr)
+            print("LogHandler died!!!", file=sys.stderr)
             import traceback
 
             traceback.print_exc()
@@ -275,9 +271,7 @@ class LogHandler(logging.Handler):
             start_index -= self._cache_index_offset
             # Calc end-index in our present cache space.
             end_index = (
-                len(self._cache)
-                if max_entries is None
-                else start_index + max_entries
+                len(self._cache) if max_entries is None else start_index + max_entries
             )
 
             # Clamp both indexes to both ends of our present space.
@@ -290,9 +284,7 @@ class LogHandler(logging.Handler):
                 entries=self._cache_slice(start_index, end_index),
             )
 
-    def _cache_slice(
-        self, start: int, end: int, step: int = 1
-    ) -> list[LogEntry]:
+    def _cache_slice(self, start: int, end: int, step: int = 1) -> list[LogEntry]:
         # Deque doesn't natively support slicing but we can do it
         # manually. It sounds like rotating the deque and pulling from
         # the beginning is the most efficient way to do this. The
@@ -333,13 +325,11 @@ class LogHandler(logging.Handler):
         # and thus could possibly change between now and then or if we
         # want to do immediate file echoing then we need to bite the
         # bullet and do that stuff here at the call site.
-        fast_path = self._echofile is None and self._is_immutable_log_data(
-            record.args
-        )
+        fast_path = self._echofile is None and self._is_immutable_log_data(record.args)
 
         # Note: just assuming types are correct here, but they'll be
         # checked properly when the resulting LogEntry gets exported.
-        labels: dict[str, str] | None = getattr(record, 'labels', None)
+        labels: dict[str, str] | None = getattr(record, "labels", None)
         if labels is None:
             labels = {}
 
@@ -369,33 +359,30 @@ class LogHandler(logging.Handler):
             # in our bg thread because the delay can throw off command
             # line prompts or make tight debugging harder.
             if self._echofile is not None:
-                if self._echofile_timestamp_format == 'relative':
-                    timestamp = f'{record.created - self._launch_time:.3f}'
+                if self._echofile_timestamp_format == "relative":
+                    timestamp = f"{record.created - self._launch_time:.3f}"
                 else:
                     timestamp = (
                         datetime.datetime.fromtimestamp(
                             record.created, tz=datetime.UTC
-                        ).strftime('%H:%M:%S')
-                        + f'.{int(record.msecs):03d}'
+                        ).strftime("%H:%M:%S")
+                        + f".{int(record.msecs):03d}"
                     )
 
                 # If color printing is disabled, show level through text
                 # instead of color.
                 lvlnameex = (
-                    ''
-                    if color_enabled
-                    else f' {logging.getLevelName(record.levelno)}'
+                    "" if color_enabled else f" {logging.getLevelName(record.levelno)}"
                 )
 
                 preinfo = (
-                    f'{Clr.WHT}{timestamp}{lvlnameex} {record.name}:'
-                    f'{Clr.RST} '
+                    f"{Clr.WHT}{timestamp}{lvlnameex} {record.name}:" f"{Clr.RST} "
                 )
                 ends = LEVELNO_COLOR_CODES.get(record.levelno)
                 if ends is not None:
-                    self._echofile.write(f'{preinfo}{ends[0]}{msg}{ends[1]}\n')
+                    self._echofile.write(f"{preinfo}{ends[0]}{msg}{ends[1]}\n")
                 else:
-                    self._echofile.write(f'{preinfo}{msg}\n')
+                    self._echofile.write(f"{preinfo}{msg}\n")
                 self._echofile.flush()
 
             if __debug__:
@@ -435,9 +422,9 @@ class LogHandler(logging.Handler):
                 self._event_loop.call_soon_threadsafe(
                     partial(
                         logging.warning,
-                        'efro.logging.LogHandler emit took too long'
-                        ' (%.3fs total; %.3fs format, %.3fs echo,'
-                        ' fast_path=%s).',
+                        "efro.logging.LogHandler emit took too long"
+                        " (%.3fs total; %.3fs format, %.3fs echo,"
+                        " fast_path=%s).",
                         duration,
                         format_duration,
                         echo_duration,
@@ -489,7 +476,7 @@ class LogHandler(logging.Handler):
 
     def _file_write_in_thread(self, name: str, output: str) -> None:
         try:
-            assert name in ('stdout', 'stderr')
+            assert name in ("stdout", "stderr")
 
             # Here we try to be somewhat smart about breaking arbitrary
             # print output into discrete log entries.
@@ -500,7 +487,7 @@ class LogHandler(logging.Handler):
             # writes, and the end of a print will be a standalone '\n'
             # by default. Let's use that as a hint that we're likely at
             # the end of a full print statement and ship what we've got.
-            if output == '\n':
+            if output == "\n":
                 self._ship_file_chunks(name, cancel_ship_task=True)
             else:
                 # By default just keep adding chunks. However we keep a
@@ -509,11 +496,9 @@ class LogHandler(logging.Handler):
                 # we never get a newline.
                 ship_task = self._file_chunk_ship_task[name]
                 if ship_task is None:
-                    self._file_chunk_ship_task[name] = (
-                        self._event_loop.create_task(
-                            self._ship_chunks_task(name),
-                            name='log ship file chunks',
-                        )
+                    self._file_chunk_ship_task[name] = self._event_loop.create_task(
+                        self._ship_chunks_task(name),
+                        name="log ship file chunks",
                     )
 
         except Exception:
@@ -526,8 +511,8 @@ class LogHandler(logging.Handler):
         assert current_thread() is not self._thread
 
         # done = False
-        self.file_flush('stdout')
-        self.file_flush('stderr')
+        self.file_flush("stdout")
+        self.file_flush("stderr")
 
         # Push a message to our thread to break out of its loop, and
         # then wait for the thread to exit. This will effectively flush
@@ -553,13 +538,11 @@ class LogHandler(logging.Handler):
     def file_flush(self, name: str) -> None:
         """Send raw stdout/stderr flush to the logger to be collated."""
 
-        self._event_loop.call_soon_threadsafe(
-            partial(self._file_flush_in_thread, name)
-        )
+        self._event_loop.call_soon_threadsafe(partial(self._file_flush_in_thread, name))
 
     def _file_flush_in_thread(self, name: str) -> None:
         try:
-            assert name in ('stdout', 'stderr')
+            assert name in ("stdout", "stderr")
 
             # Immediately ship whatever chunks we've got.
             if self._file_chunks[name]:
@@ -583,12 +566,10 @@ class LogHandler(logging.Handler):
         # redundant when we break things into log entries and results in
         # extra empty lines. So strip off a single trailing newline if
         # one is present.
-        text = ''.join(self._file_chunks[name]).removesuffix('\n')
+        text = "".join(self._file_chunks[name]).removesuffix("\n")
 
         self._emit_entry(
-            LogEntry(
-                name=name, message=text, level=LogLevel.INFO, time=utc_now()
-            )
+            LogEntry(name=name, message=text, level=LogLevel.INFO, time=utc_now())
         )
         self._file_chunks[name] = []
         ship_task = self._file_chunk_ship_task[name]
@@ -631,7 +612,7 @@ class LogHandler(logging.Handler):
         # TODO: should set a timer for flushing; don't flush every line.
         if self._file is not None:
             entry_s = dataclass_to_json(entry)
-            assert '\n' not in entry_s  # Make sure its a single line.
+            assert "\n" not in entry_s  # Make sure its a single line.
             print(entry_s, file=self._file, flush=True)
 
     def _run_callback_on_entry(
@@ -652,10 +633,8 @@ class LogHandler(logging.Handler):
 class FileLogEcho:
     """A file-like object for forwarding stdout/stderr to a LogHandler."""
 
-    def __init__(
-        self, original: TextIO, name: str, handler: LogHandler
-    ) -> None:
-        assert name in ('stdout', 'stderr')
+    def __init__(self, original: TextIO, name: str, handler: LogHandler) -> None:
+        assert name in ("stdout", "stderr")
         self._original = original
         self._name = name
         self._handler = handler
@@ -720,7 +699,7 @@ def setup_logging(
     loghandler = LogHandler(
         path=log_path,
         echofile=sys.stderr if echo_to_stderr else None,
-        echofile_timestamp_format='relative',
+        echofile_timestamp_format="relative",
         cache_size_limit=cache_size_limit,
         cache_time_limit=cache_time_limit,
         launch_time=launch_time,
@@ -736,10 +715,7 @@ def setup_logging(
 
             @override
             def filter(self, record: logging.LogRecord) -> bool:
-                if (
-                    record.levelno == logging.WARNING
-                    and 'Retrying (' in record.msg
-                ):
+                if record.levelno == logging.WARNING and "Retrying (" in record.msg:
                     newlevel = logging.INFO
 
                     record.levelno = newlevel
@@ -750,14 +726,12 @@ def setup_logging(
                     # if we change level to something that's not being
                     # displayed. So let's manually check level and
                     # discard if this new level shouldn't be shown.
-                    if not logging.getLogger(record.name).isEnabledFor(
-                        newlevel
-                    ):
+                    if not logging.getLogger(record.name).isEnabledFor(newlevel):
                         return False
 
                 return True
 
-        logging.getLogger('urllib3.connectionpool').addFilter(
+        logging.getLogger("urllib3.connectionpool").addFilter(
             _DowngradeURLLib3RetryWarningFilter()
         )
 
@@ -769,20 +743,20 @@ def setup_logging(
         level=lmap[level],
         # We dump *only* the message here. We pass various log record
         # bits around so we can write rich logs or format things later.
-        format='%(message)s',
+        format="%(message)s",
         handlers=[loghandler],
         force=True,
     )
     if had_previous_handlers:
         logging.warning(
-            'setup_logging: Replacing existing handlers.'
-            ' Something may have logged before expected.'
+            "setup_logging: Replacing existing handlers."
+            " Something may have logged before expected."
         )
 
     # Optionally intercept Python's stdout/stderr output and generate
     # log entries from it.
     if log_stdout_stderr:
-        sys.stdout = FileLogEcho(sys.stdout, 'stdout', loghandler)
-        sys.stderr = FileLogEcho(sys.stderr, 'stderr', loghandler)
+        sys.stdout = FileLogEcho(sys.stdout, "stdout", loghandler)
+        sys.stderr = FileLogEcho(sys.stderr, "stderr", loghandler)
 
     return loghandler

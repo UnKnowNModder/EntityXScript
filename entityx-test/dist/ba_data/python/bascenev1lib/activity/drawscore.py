@@ -19,10 +19,10 @@ class DrawScoreScreenActivity(MultiTeamScoreScreenActivity):
 
     @override
     def on_begin(self) -> None:
-        bs.set_analytics_screen('Draw Score Screen')
+        bs.set_analytics_screen("Draw Score Screen")
         super().on_begin()
         ZoomText(
-            bs.Lstr(resource='drawText'),
+            bs.Lstr(resource="drawText"),
             position=(0, 0),
             maxwidth=400,
             shiftposition=(-220, 0),
@@ -32,4 +32,4 @@ class DrawScoreScreenActivity(MultiTeamScoreScreenActivity):
             jitter=1.0,
         ).autoretain()
         bs.timer(0.35, self._score_display_sound.play)
-        self.show_player_scores(results=self.settings_raw.get('results', None))
+        self.show_player_scores(results=self.settings_raw.get("results", None))

@@ -30,18 +30,18 @@ if TYPE_CHECKING:
     from efro.dataclassio._base import IOAttrs
 
 # Use a single logger for all dataclassio stuff.
-logger = logging.getLogger('efro.dataclassio')
+logger = logging.getLogger("efro.dataclassio")
 
 # How deep we go when prepping nested types (basically for detecting
 # recursive types)
 MAX_RECURSION = 10
 
 # Attr name for data we store on dataclass types that have been prepped.
-PREP_ATTR = '_DCIOPREP'
+PREP_ATTR = "_DCIOPREP"
 
 # We also store the prep-session while the prep is in progress.
 # (necessary to support recursive types).
-PREP_SESSION_ATTR = '_DCIOPREPSESSION'
+PREP_SESSION_ATTR = "_DCIOPREPSESSION"
 
 
 def ioprep(cls: type, globalns: dict | None = None) -> None:
@@ -64,9 +64,7 @@ def ioprep(cls: type, globalns: dict | None = None) -> None:
     prepping happens as part of an execed string instead of within a
     module.
     """
-    PrepSession(explicit=True, globalns=globalns).prep_dataclass(
-        cls, recursion_level=0
-    )
+    PrepSession(explicit=True, globalns=globalns).prep_dataclass(cls, recursion_level=0)
 
 
 def ioprepped[T](cls: type[T]) -> type[T]:
@@ -127,9 +125,7 @@ class PrepSession:
         self.explicit = explicit
         self.globalns = globalns
 
-    def prep_dataclass(
-        self, cls: type, recursion_level: int
-    ) -> PrepData | None:
+    def prep_dataclass(self, cls: type, recursion_level: int) -> PrepData | None:
         """Run prep on a dataclass if necessary and return its prep data.
 
         The only case where this will return None is for recursive types
@@ -150,12 +146,12 @@ class PrepSession:
         # PREP_SESSION_ATTR, so we theoretically shouldn't run into this
         # this.
         if recursion_level > MAX_RECURSION:
-            raise RuntimeError('Max recursion exceeded.')
+            raise RuntimeError("Max recursion exceeded.")
 
         # We should only be passed classes which are dataclasses.
         cls_any: Any = cls
         if not isinstance(cls_any, type) or not dataclasses.is_dataclass(cls):
-            raise TypeError(f'Passed arg {cls} is not a dataclass type.')
+            raise TypeError(f"Passed arg {cls} is not a dataclass type.")
 
         # Add a pointer to the prep-session while doing the prep. This
         # way we can ignore types that we're already in the process of
@@ -166,7 +162,7 @@ class PrepSession:
                 return None
             # We shouldn't need to support failed preps or preps from
             # multiple threads at once.
-            raise RuntimeError('Found existing in-progress prep.')
+            raise RuntimeError("Found existing in-progress prep.")
         setattr(cls, PREP_SESSION_ATTR, self)
 
         # Generate a warning on non-explicit preps; we prefer prep to
@@ -174,11 +170,11 @@ class PrepSession:
         # on.
         if not self.explicit:
             logger.warning(
-                'Implicitly prepping dataclass: %s.'
-                ' It is highly recommended to explicitly prep dataclasses'
-                ' as soon as possible after definition (via'
-                ' efro.dataclassio.ioprep() or the'
-                ' @efro.dataclassio.ioprepped decorator).',
+                "Implicitly prepping dataclass: %s."
+                " It is highly recommended to explicitly prep dataclasses"
+                " as soon as possible after definition (via"
+                " efro.dataclassio.ioprep() or the"
+                " @efro.dataclassio.ioprepped decorator).",
                 cls,
             )
 
@@ -194,10 +190,10 @@ class PrepSession:
             # pylint: enable=unexpected-keyword-arg
         except Exception as exc:
             raise TypeError(
-                f'dataclassio prep for {cls} failed with error: {exc}.'
-                f' Make sure all types used in annotations are defined'
-                f' at the module or class level or add them as part of an'
-                f' explicit prep call.'
+                f"dataclassio prep for {cls} failed with error: {exc}."
+                f" Make sure all types used in annotations are defined"
+                f" at the module or class level or add them as part of an"
+                f" explicit prep call."
             ) from exc
 
         # noinspection PyDataclass
@@ -228,8 +224,8 @@ class PrepSession:
             # Make sure we don't have any clashes in our storage names.
             if storagename in all_storage_names:
                 raise TypeError(
-                    f'Multiple attrs on {cls} are using'
-                    f' storage-name \'{storagename}\''
+                    f"Multiple attrs on {cls} are using"
+                    f" storage-name '{storagename}'"
                 )
             all_storage_names.add(storagename)
 
@@ -269,7 +265,7 @@ class PrepSession:
         # pylint: disable=too-many-statements
 
         if recursion_level > MAX_RECURSION:
-            raise RuntimeError('Max recursion exceeded.')
+            raise RuntimeError("Max recursion exceeded.")
 
         origin = _get_origin(anntype)
 
@@ -282,9 +278,7 @@ class PrepSession:
 
         # noinspection PyPep8
         if origin is typing.Union or origin is types.UnionType:
-            self.prep_union(
-                cls, attrname, anntype, recursion_level=recursion_level + 1
-            )
+            self.prep_union(cls, attrname, anntype, recursion_level=recursion_level + 1)
             return
 
         if anntype is typing.Any:
@@ -294,8 +288,7 @@ class PrepSession:
         # resolves to a concrete type.
         if not isinstance(origin, type):
             raise TypeError(
-                f'Unsupported type found for \'{attrname}\' on {cls}:'
-                f' {anntype}'
+                f"Unsupported type found for '{attrname}' on {cls}:" f" {anntype}"
             )
 
         # If a soft_default value/factory was passed, we do some basic
@@ -320,8 +313,8 @@ class PrepSession:
             if have_soft_default:
                 if not isinstance(soft_default, origin):
                     raise TypeError(
-                        f'{cls} attr {attrname} has type {origin}'
-                        f' but soft_default value is type {type(soft_default)}'
+                        f"{cls} attr {attrname} has type {origin}"
+                        f" but soft_default value is type {type(soft_default)}"
                     )
 
         if origin in SIMPLE_TYPES:
@@ -337,7 +330,7 @@ class PrepSession:
                 return
             if len(childtypes) > 1:
                 raise TypeError(
-                    f'Unrecognized typing arg count {len(childtypes)}'
+                    f"Unrecognized typing arg count {len(childtypes)}"
                     f" for {anntype} attr '{attrname}' on {cls}"
                 )
             self.prep_type(
@@ -367,8 +360,8 @@ class PrepSession:
                 self.prep_enum(childtypes[0], ioattrs=None)
             else:
                 raise TypeError(
-                    f'Dict key type {childtypes[0]} for \'{attrname}\''
-                    f' on {cls.__name__} is not supported by dataclassio.'
+                    f"Dict key type {childtypes[0]} for '{attrname}'"
+                    f" on {cls.__name__} is not supported by dataclassio."
                 )
 
             # For value types we support any of our normal types.
@@ -393,15 +386,15 @@ class PrepSession:
             childtypes = typing.get_args(anntype)
             if not childtypes:
                 raise TypeError(
-                    f'Tuple at \'{attrname}\''
-                    f' has no type args; dataclassio requires type args.'
+                    f"Tuple at '{attrname}'"
+                    f" has no type args; dataclassio requires type args."
                 )
             if childtypes[-1] is ...:
                 raise TypeError(
-                    f'Found ellipsis as part of type for'
-                    f' \'{attrname}\' on {cls.__name__};'
-                    f' these are not'
-                    f' supported by dataclassio.'
+                    f"Found ellipsis as part of type for"
+                    f" '{attrname}' on {cls.__name__};"
+                    f" these are not"
+                    f" supported by dataclassio."
                 )
             for childtype in childtypes:
                 self.prep_type(
@@ -437,7 +430,7 @@ class PrepSession:
         raise TypeError(
             f"Attr '{attrname}' on {cls.__name__} contains"
             f" type '{anntype}'"
-            f' which is not supported by dataclassio.'
+            f" which is not supported by dataclassio."
         )
 
     def prep_union(
@@ -446,14 +439,13 @@ class PrepSession:
         """Run prep on a Union type."""
         typeargs = typing.get_args(anntype)
         if (
-            len(typeargs) != 2
-            or len([c for c in typeargs if c is type(None)]) != 1
+            len(typeargs) != 2 or len([c for c in typeargs if c is type(None)]) != 1
         ):  # noqa
             raise TypeError(
-                f'Union {anntype} for attr \'{attrname}\' on'
-                f' {cls.__name__} is not supported by dataclassio;'
-                f' only 2 member Unions with one type being None'
-                f' are supported.'
+                f"Union {anntype} for attr '{attrname}' on"
+                f" {cls.__name__} is not supported by dataclassio;"
+                f" only 2 member Unions with one type being None"
+                f" are supported."
             )
         for childtype in typeargs:
             self.prep_type(
@@ -478,18 +470,18 @@ class PrepSession:
         for enumval in enumtype:
             if not isinstance(enumval.value, (str, int)):
                 raise TypeError(
-                    f'Enum value {enumval} has value type'
-                    f' {type(enumval.value)}; only str and int is'
-                    f' supported by dataclassio.'
+                    f"Enum value {enumval} has value type"
+                    f" {type(enumval.value)}; only str and int is"
+                    f" supported by dataclassio."
                 )
             if valtype is None:
                 valtype = type(enumval.value)
             else:
                 if type(enumval.value) is not valtype:
                     raise TypeError(
-                        f'Enum type {enumtype} has multiple'
-                        f' value types; dataclassio requires'
-                        f' them to be uniform.'
+                        f"Enum type {enumtype} has multiple"
+                        f" value types; dataclassio requires"
+                        f" them to be uniform."
                     )
 
         if ioattrs is not None:
@@ -498,6 +490,6 @@ class PrepSession:
             if ioattrs.enum_fallback is not None:
                 if type(ioattrs.enum_fallback) is not enumtype:
                     raise TypeError(
-                        f'enum_fallback {ioattrs.enum_fallback} does not'
-                        f' match the field type ({enumtype}.'
+                        f"enum_fallback {ioattrs.enum_fallback} does not"
+                        f" match the field type ({enumtype}."
                     )

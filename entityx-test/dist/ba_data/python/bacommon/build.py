@@ -23,13 +23,11 @@ class BuildInfoSet:
     class Entry:
         """Info about a particular app build."""
 
-        filename: Annotated[str, IOAttrs('fname')]
-        size: Annotated[int, IOAttrs('size')]
-        version: Annotated[str, IOAttrs('version')]
-        build_number: Annotated[int, IOAttrs('build')]
-        checksum: Annotated[str, IOAttrs('checksum')]
-        createtime: Annotated[datetime.datetime, IOAttrs('createtime')]
+        filename: Annotated[str, IOAttrs("fname")]
+        size: Annotated[int, IOAttrs("size")]
+        version: Annotated[str, IOAttrs("version")]
+        build_number: Annotated[int, IOAttrs("build")]
+        checksum: Annotated[str, IOAttrs("checksum")]
+        createtime: Annotated[datetime.datetime, IOAttrs("createtime")]
 
-    builds: Annotated[list[Entry], IOAttrs('builds')] = field(
-        default_factory=list
-    )
+    builds: Annotated[list[Entry], IOAttrs("builds")] = field(default_factory=list)

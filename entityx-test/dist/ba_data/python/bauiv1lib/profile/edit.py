@@ -14,9 +14,7 @@ import bauiv1 as bui
 import bascenev1 as bs
 
 
-class EditProfileWindow(
-    bui.MainWindow, CharacterPickerDelegate, IconPickerDelegate
-):
+class EditProfileWindow(bui.MainWindow, CharacterPickerDelegate, IconPickerDelegate):
     """Window for editing a player profile."""
 
     def reload_window(self) -> None:
@@ -39,7 +37,7 @@ class EditProfileWindow(
     def __init__(
         self,
         existing_profile: str | None,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # FIXME: Tidy this up a bit.
@@ -54,7 +52,7 @@ class EditProfileWindow(
         assert plus is not None
 
         self._existing_profile = existing_profile
-        self._r = 'editProfileWindow'
+        self._r = "editProfileWindow"
         self._spazzes: list[str] = []
         self._icon_textures: list[bui.Texture] = []
         self._icon_tint_textures: list[bui.Texture] = []
@@ -96,7 +94,7 @@ class EditProfileWindow(
             size=(155, 60),
             scale=0.8,
             autoselect=True,
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             on_activate_call=self._cancel,
         )
         bui.containerwidget(edit=self._root_widget, cancel_button=btn)
@@ -106,7 +104,7 @@ class EditProfileWindow(
             size=(155, 60),
             autoselect=True,
             scale=0.8,
-            label=bui.Lstr(resource='saveText'),
+            label=bui.Lstr(resource="saveText"),
         )
         bui.widget(edit=save_button, left_widget=cancel_button)
         bui.widget(edit=cancel_button, right_widget=save_button)
@@ -116,30 +114,30 @@ class EditProfileWindow(
             position=(self._width * 0.5, height - 38 + yoffs),
             size=(0, 0),
             text=(
-                bui.Lstr(resource=f'{self._r}.titleNewText')
+                bui.Lstr(resource=f"{self._r}.titleNewText")
                 if existing_profile is None
-                else bui.Lstr(resource=f'{self._r}.titleEditText')
+                else bui.Lstr(resource=f"{self._r}.titleEditText")
             ),
             color=bui.app.ui_v1.title_color,
             maxwidth=290,
             scale=1.0,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         # Make a list of spaz icons.
         self.refresh_characters()
-        profile = bui.app.config.get('Player Profiles', {}).get(
+        profile = bui.app.config.get("Player Profiles", {}).get(
             self._existing_profile, {}
         )
 
-        if 'global' in profile:
-            self._global = profile['global']
+        if "global" in profile:
+            self._global = profile["global"]
         else:
             self._global = False
 
-        if 'icon' in profile:
-            self._icon = profile['icon']
+        if "icon" in profile:
+            self._icon = profile["icon"]
         else:
             self._icon = bui.charstr(bui.SpecialChar.LOGO)
 
@@ -147,7 +145,7 @@ class EditProfileWindow(
 
         # Look for existing character choice or pick random one otherwise.
         try:
-            icon_index = self._spazzes.index(profile['character'])
+            icon_index = self._spazzes.index(profile["character"])
         except Exception:
             # Let's set the default icon to spaz for our first profile; after
             # that we go random.
@@ -164,10 +162,8 @@ class EditProfileWindow(
         bui.buttonwidget(edit=save_button, on_activate_call=self.save)
 
         v = height - 115.0 + yoffs
-        self._name = (
-            '' if self._existing_profile is None else self._existing_profile
-        )
-        self._is_account_profile = self._name == '__account__'
+        self._name = "" if self._existing_profile is None else self._existing_profile
+        self._is_account_profile = self._name == "__account__"
 
         # If we just picked a random character, see if it has specific
         # colors/highlights associated with it and assign them if so.
@@ -185,42 +181,42 @@ class EditProfileWindow(
                 self._highlight = highlight
 
         # Assign a random name if they had none.
-        if self._name == '':
+        if self._name == "":
             names = bs.get_random_names()
             self._name = names[random.randrange(len(names))]
 
         self._clipped_name_text = bui.textwidget(
             parent=self._root_widget,
-            text='',
+            text="",
             position=(580 + x_inset, v - 8),
             flatness=1.0,
             shadow=0.0,
             scale=0.55,
             size=(0, 0),
             maxwidth=100,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             color=(1, 1, 0, 0.5),
         )
 
         if not self._is_account_profile and not self._global:
             bui.textwidget(
                 parent=self._root_widget,
-                text=bui.Lstr(resource=f'{self._r}.nameText'),
+                text=bui.Lstr(resource=f"{self._r}.nameText"),
                 position=(200 + x_inset, v - 6),
                 size=(0, 0),
-                h_align='right',
-                v_align='center',
+                h_align="right",
+                v_align="center",
                 color=(1, 1, 1, 0.5),
                 scale=0.9,
             )
 
         self._upgrade_button = None
         if self._is_account_profile:
-            if plus.get_v1_account_state() == 'signed_in':
+            if plus.get_v1_account_state() == "signed_in":
                 sval = plus.get_v1_account_display_string()
             else:
-                sval = '??'
+                sval = "??"
             bui.textwidget(
                 parent=self._root_widget,
                 position=(self._width * 0.5, v - 7),
@@ -228,12 +224,10 @@ class EditProfileWindow(
                 scale=1.2,
                 text=sval,
                 maxwidth=270,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
-            txtl = bui.Lstr(
-                resource='editProfileWindow.accountProfileText'
-            ).evaluate()
+            txtl = bui.Lstr(resource="editProfileWindow.accountProfileText").evaluate()
             b_width = min(
                 270.0,
                 bui.get_string_width(txtl, suppress_warning=True) * 0.6,
@@ -246,16 +240,16 @@ class EditProfileWindow(
                 color=bui.app.ui_v1.infotextcolor,
                 text=txtl,
                 maxwidth=270,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             self._account_type_info_button = bui.buttonwidget(
                 parent=self._root_widget,
-                label='?',
+                label="?",
                 size=(15, 15),
                 text_scale=0.6,
                 position=(self._width * 0.5 + b_width * 0.5 + 13, v - 47),
-                button_type='square',
+                button_type="square",
                 color=(0.6, 0.5, 0.65),
                 autoselect=True,
                 on_activate_call=self.show_account_profile_info,
@@ -268,8 +262,8 @@ class EditProfileWindow(
                 position=(self._width * 0.5 - 160 - b_size * 0.5, v - 38 - 15),
                 size=(b_size, b_size),
                 color=(0.6, 0.5, 0.6),
-                label='',
-                button_type='square',
+                label="",
+                button_type="square",
                 text_scale=1.2,
                 on_activate_call=self._on_icon_press,
             )
@@ -277,22 +271,22 @@ class EditProfileWindow(
                 parent=self._root_widget,
                 position=(self._width * 0.5 - 160, v - 35),
                 draw_controller=btn,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 size=(0, 0),
                 color=(1, 1, 1),
-                text='',
+                text="",
                 scale=2.0,
             )
 
             bui.textwidget(
                 parent=self._root_widget,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 position=(self._width * 0.5 - 160, v - 55 - 15),
                 size=(0, 0),
                 draw_controller=btn,
-                text=bui.Lstr(resource=f'{self._r}.iconText'),
+                text=bui.Lstr(resource=f"{self._r}.iconText"),
                 scale=0.7,
                 color=bui.app.ui_v1.title_color,
                 maxwidth=120,
@@ -307,13 +301,11 @@ class EditProfileWindow(
                 scale=1.2,
                 text=self._name,
                 maxwidth=240,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             # FIXME hard coded strings are bad
-            txtl = bui.Lstr(
-                resource='editProfileWindow.globalProfileText'
-            ).evaluate()
+            txtl = bui.Lstr(resource="editProfileWindow.globalProfileText").evaluate()
             b_width = min(
                 240.0,
                 bui.get_string_width(txtl, suppress_warning=True) * 0.6,
@@ -326,16 +318,16 @@ class EditProfileWindow(
                 color=bui.app.ui_v1.infotextcolor,
                 text=txtl,
                 maxwidth=240,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             self._account_type_info_button = bui.buttonwidget(
                 parent=self._root_widget,
-                label='?',
+                label="?",
                 size=(15, 15),
                 text_scale=0.6,
                 position=(self._width * 0.5 + b_width * 0.5 + 13, v - 47),
-                button_type='square',
+                button_type="square",
                 color=(0.6, 0.5, 0.65),
                 autoselect=True,
                 on_activate_call=self.show_global_profile_info,
@@ -346,10 +338,10 @@ class EditProfileWindow(
                 position=(220 + x_inset, v - 30),
                 size=(265, 40),
                 text=self._name,
-                h_align='left',
-                v_align='center',
+                h_align="left",
+                v_align="center",
                 max_chars=16,
-                description=bui.Lstr(resource=f'{self._r}.nameDescriptionText'),
+                description=bui.Lstr(resource=f"{self._r}.nameDescriptionText"),
                 autoselect=True,
                 editable=True,
                 padding=4,
@@ -358,9 +350,7 @@ class EditProfileWindow(
             )
 
             # FIXME hard coded strings are bad
-            txtl = bui.Lstr(
-                resource='editProfileWindow.localProfileText'
-            ).evaluate()
+            txtl = bui.Lstr(resource="editProfileWindow.localProfileText").evaluate()
             b_width = min(
                 270.0,
                 bui.get_string_width(txtl, suppress_warning=True) * 0.6,
@@ -373,26 +363,26 @@ class EditProfileWindow(
                 color=bui.app.ui_v1.infotextcolor,
                 text=txtl,
                 maxwidth=270,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             self._account_type_info_button = bui.buttonwidget(
                 parent=self._root_widget,
-                label='?',
+                label="?",
                 size=(15, 15),
                 text_scale=0.6,
                 position=(self._width * 0.5 + b_width * 0.5 + 13, v - 50),
-                button_type='square',
+                button_type="square",
                 color=(0.6, 0.5, 0.65),
                 autoselect=True,
                 on_activate_call=self.show_local_profile_info,
             )
             self._upgrade_button = bui.buttonwidget(
                 parent=self._root_widget,
-                label=bui.Lstr(resource='upgradeText'),
+                label=bui.Lstr(resource="upgradeText"),
                 size=(40, 17),
                 text_scale=1.0,
-                button_type='square',
+                button_type="square",
                 position=(self._width * 0.5 + b_width * 0.5 + 13 + 43, v - 51),
                 color=(0.6, 0.5, 0.65),
                 autoselect=True,
@@ -400,10 +390,10 @@ class EditProfileWindow(
             )
             self._random_name_button = bui.buttonwidget(
                 parent=self._root_widget,
-                label=bui.Lstr(resource='randomText'),
+                label=bui.Lstr(resource="randomText"),
                 size=(30, 20),
                 position=(495 + x_inset, v - 20),
-                button_type='square',
+                button_type="square",
                 color=(0.6, 0.5, 0.65),
                 autoselect=True,
                 on_activate_call=self.assign_random_name,
@@ -424,22 +414,22 @@ class EditProfileWindow(
             position=(self._width * 0.5 - b_offs - b_size * 0.5, v - 50),
             size=(b_size, b_size),
             color=self._color,
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
         )
         origin = self._color_button.get_screen_space_center()
         bui.buttonwidget(
             edit=self._color_button,
-            on_activate_call=bui.WeakCall(self._make_picker, 'color', origin),
+            on_activate_call=bui.WeakCall(self._make_picker, "color", origin),
         )
         bui.textwidget(
             parent=self._root_widget,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             position=(self._width * 0.5 - b_offs, v - 65),
             size=(0, 0),
             draw_controller=btn,
-            text=bui.Lstr(resource=f'{self._r}.colorText'),
+            text=bui.Lstr(resource=f"{self._r}.colorText"),
             scale=0.7,
             color=bui.app.ui_v1.title_color,
             maxwidth=120,
@@ -452,22 +442,20 @@ class EditProfileWindow(
             up_widget=self._account_type_info_button,
             on_activate_call=self._on_character_press,
             size=(b_size_2, b_size_2),
-            label='',
+            label="",
             color=(1, 1, 1),
-            mask_texture=bui.gettexture('characterIconMask'),
+            mask_texture=bui.gettexture("characterIconMask"),
         )
         if not self._is_account_profile and not self._global:
-            bui.containerwidget(
-                edit=self._root_widget, selected_child=self._text_field
-            )
+            bui.containerwidget(edit=self._root_widget, selected_child=self._text_field)
         bui.textwidget(
             parent=self._root_widget,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             position=(self._width * 0.5, v - 80),
             size=(0, 0),
             draw_controller=btn,
-            text=bui.Lstr(resource=f'{self._r}.characterText'),
+            text=bui.Lstr(resource=f"{self._r}.characterText"),
             scale=0.7,
             color=bui.app.ui_v1.title_color,
             maxwidth=130,
@@ -484,8 +472,8 @@ class EditProfileWindow(
             ),
             size=(b_size, b_size),
             color=self._highlight,
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
         )
 
         if not self._is_account_profile and not self._global:
@@ -500,18 +488,16 @@ class EditProfileWindow(
         origin = self._highlight_button.get_screen_space_center()
         bui.buttonwidget(
             edit=self._highlight_button,
-            on_activate_call=bui.WeakCall(
-                self._make_picker, 'highlight', origin
-            ),
+            on_activate_call=bui.WeakCall(self._make_picker, "highlight", origin),
         )
         bui.textwidget(
             parent=self._root_widget,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             position=(self._width * 0.5 + b_offs, v - 65),
             size=(0, 0),
             draw_controller=btn,
-            text=bui.Lstr(resource=f'{self._r}.highlightText'),
+            text=bui.Lstr(resource=f"{self._r}.highlightText"),
             scale=0.7,
             color=bui.app.ui_v1.title_color,
             maxwidth=120,
@@ -553,9 +539,9 @@ class EditProfileWindow(
 
         if self._existing_profile and self._existing_profile != new_name:
             bui.screenmessage(
-                'Unsaved changes found; you must save first.', color=(1, 0, 0)
+                "Unsaved changes found; you must save first.", color=(1, 0, 0)
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
 
         plus = bui.app.plus
@@ -571,7 +557,7 @@ class EditProfileWindow(
         """Show an explanation of account profiles."""
         from bauiv1lib.confirm import ConfirmWindow
 
-        icons_str = ' '.join(
+        icons_str = " ".join(
             [
                 bui.charstr(n)
                 for n in [
@@ -585,8 +571,8 @@ class EditProfileWindow(
             ]
         )
         txtl = bui.Lstr(
-            resource='editProfileWindow.accountProfileInfoText',
-            subs=[('${ICONS}', icons_str)],
+            resource="editProfileWindow.accountProfileInfoText",
+            subs=[("${ICONS}", icons_str)],
         )
         ConfirmWindow(
             txtl,
@@ -600,7 +586,7 @@ class EditProfileWindow(
         """Show an explanation of local profiles."""
         from bauiv1lib.confirm import ConfirmWindow
 
-        txtl = bui.Lstr(resource='editProfileWindow.localProfileInfoText')
+        txtl = bui.Lstr(resource="editProfileWindow.localProfileInfoText")
         ConfirmWindow(
             txtl,
             cancel_button=False,
@@ -613,7 +599,7 @@ class EditProfileWindow(
         """Show an explanation of global profiles."""
         from bauiv1lib.confirm import ConfirmWindow
 
-        txtl = bui.Lstr(resource='editProfileWindow.globalProfileInfoText')
+        txtl = bui.Lstr(resource="editProfileWindow.globalProfileInfoText")
         ConfirmWindow(
             txtl,
             cancel_button=False,
@@ -635,9 +621,7 @@ class EditProfileWindow(
             for s in self._spazzes
         ]
         self._icon_tint_textures = [
-            bui.gettexture(
-                bui.app.classic.spaz_appearances[s].icon_mask_texture
-            )
+            bui.gettexture(bui.app.classic.spaz_appearances[s].icon_mask_texture)
             for s in self._spazzes
         ]
 
@@ -714,20 +698,18 @@ class EditProfileWindow(
             tint2_color=self._highlight,
         )
 
-    def _make_picker(
-        self, picker_type: str, origin: tuple[float, float]
-    ) -> None:
-        if picker_type == 'color':
+    def _make_picker(self, picker_type: str, origin: tuple[float, float]) -> None:
+        if picker_type == "color":
             initial_color = self._color
-        elif picker_type == 'highlight':
+        elif picker_type == "highlight":
             initial_color = self._highlight
         else:
-            raise ValueError('invalid picker_type: ' + picker_type)
+            raise ValueError("invalid picker_type: " + picker_type)
         ColorPicker(
             parent=self._root_widget,
             position=origin,
             offset=(
-                self._base_scale * (-100 if picker_type == 'color' else 100),
+                self._base_scale * (-100 if picker_type == "color" else 100),
                 0,
             ),
             initial_color=initial_color,
@@ -753,16 +735,16 @@ class EditProfileWindow(
         if not self._root_widget:
             return
         tag = picker.get_tag()
-        if tag == 'color':
+        if tag == "color":
             bui.containerwidget(
                 edit=self._root_widget, selected_child=self._color_button
             )
-        elif tag == 'highlight':
+        elif tag == "highlight":
             bui.containerwidget(
                 edit=self._root_widget, selected_child=self._highlight_button
             )
         else:
-            print('color_picker_closing got unknown tag ' + str(tag))
+            print("color_picker_closing got unknown tag " + str(tag))
 
     def color_picker_selected_color(
         self, picker: ColorPicker, color: tuple[float, float, float]
@@ -771,12 +753,12 @@ class EditProfileWindow(
         if not self._root_widget:
             return
         tag = picker.get_tag()
-        if tag == 'color':
+        if tag == "color":
             self._set_color(color)
-        elif tag == 'highlight':
+        elif tag == "highlight":
             self._set_highlight(color)
         else:
-            print('color_picker_selected_color got unknown tag ' + str(tag))
+            print("color_picker_selected_color got unknown tag " + str(tag))
         self._update_character()
 
     def _update_clipped_name(self) -> None:
@@ -786,24 +768,24 @@ class EditProfileWindow(
         if not self._clipped_name_text:
             return
         name = self.getname()
-        if name == '__account__':
+        if name == "__account__":
             name = (
                 plus.get_v1_account_name()
-                if plus.get_v1_account_state() == 'signed_in'
-                else '???'
+                if plus.get_v1_account_state() == "signed_in"
+                else "???"
             )
         if len(name) > 10 and not (self._global or self._is_account_profile):
             name = name.strip()
-            display_name = (name[:10] + '...') if len(name) > 10 else name
+            display_name = (name[:10] + "...") if len(name) > 10 else name
             bui.textwidget(
                 edit=self._clipped_name_text,
                 text=bui.Lstr(
-                    resource='inGameClippedNameText',
-                    subs=[('${NAME}', display_name)],
+                    resource="inGameClippedNameText",
+                    subs=[("${NAME}", display_name)],
                 ),
             )
         else:
-            bui.textwidget(edit=self._clipped_name_text, text='')
+            bui.textwidget(edit=self._clipped_name_text, text="")
 
     def _update_character(self, change: int = 0) -> None:
         self._icon_index = (self._icon_index + change) % len(self._spazzes)
@@ -823,7 +805,7 @@ class EditProfileWindow(
     def getname(self) -> str:
         """Return the current profile name value."""
         if self._is_account_profile:
-            new_name = '__account__'
+            new_name = "__account__"
         elif self._global:
             new_name = self._name
         else:
@@ -843,28 +825,28 @@ class EditProfileWindow(
         new_name = self.getname().strip()
 
         if not new_name:
-            bui.screenmessage(bui.Lstr(resource='nameNotEmptyText'))
-            bui.getsound('error').play()
+            bui.screenmessage(bui.Lstr(resource="nameNotEmptyText"))
+            bui.getsound("error").play()
             return False
 
         # Make sure we're not renaming to another existing profile.
-        profiles: dict = bui.app.config.get('Player Profiles', {})
+        profiles: dict = bui.app.config.get("Player Profiles", {})
         if self._existing_profile != new_name and new_name in profiles.keys():
             bui.screenmessage(
-                bui.Lstr(resource='editProfileWindow.profileAlreadyExistsText')
+                bui.Lstr(resource="editProfileWindow.profileAlreadyExistsText")
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return False
 
         if transition_out:
-            bui.getsound('gunCocking').play()
+            bui.getsound("gunCocking").play()
 
         # Delete old in case we're renaming.
         if self._existing_profile and self._existing_profile != new_name:
             plus.add_v1_account_transaction(
                 {
-                    'type': 'REMOVE_PLAYER_PROFILE',
-                    'name': self._existing_profile,
+                    "type": "REMOVE_PLAYER_PROFILE",
+                    "name": self._existing_profile,
                 }
             )
 
@@ -874,14 +856,14 @@ class EditProfileWindow(
 
         plus.add_v1_account_transaction(
             {
-                'type': 'ADD_PLAYER_PROFILE',
-                'name': new_name,
-                'profile': {
-                    'character': self._spazzes[self._icon_index],
-                    'color': list(self._color),
-                    'global': self._global,
-                    'icon': self._icon,
-                    'highlight': list(self._highlight),
+                "type": "ADD_PLAYER_PROFILE",
+                "name": new_name,
+                "profile": {
+                    "character": self._spazzes[self._icon_index],
+                    "color": list(self._color),
+                    "global": self._global,
+                    "icon": self._icon,
+                    "highlight": list(self._highlight),
                 },
             }
         )

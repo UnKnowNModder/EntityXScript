@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from efro.message._protocol import MessageProtocol
 
 # Use a single logger for all message stuff.
-logger = logging.getLogger('efro.message')
+logger = logging.getLogger("efro.message")
 
 
 class MessageSender:
@@ -54,26 +54,20 @@ class MessageSender:
     def __init__(self, protocol: MessageProtocol) -> None:
         self.protocol = protocol
         self._send_raw_message_call: Callable[[Any, str], str] | None = None
-        self._send_raw_message_ex_call: (
-            Callable[[Any, str, Message], str] | None
-        ) = None
+        self._send_raw_message_ex_call: Callable[[Any, str, Message], str] | None = None
         self._send_async_raw_message_call: (
             Callable[[Any, str], Awaitable[str]] | None
         ) = None
         self._send_async_raw_message_ex_call: (
             Callable[[Any, str, Message], Awaitable[str]] | None
         ) = None
-        self._encode_filter_call: (
-            Callable[[Any, Message, dict], None] | None
-        ) = None
+        self._encode_filter_call: Callable[[Any, Message, dict], None] | None = None
         self._decode_filter_call: (
             Callable[[Any, Message, dict, Response | SysResponse], None] | None
         ) = None
         self._peer_desc_call: Callable[[Any], str] | None = None
 
-    def send_method(
-        self, call: Callable[[Any, str], str]
-    ) -> Callable[[Any, str], str]:
+    def send_method(self, call: Callable[[Any, str], str]) -> Callable[[Any, str], str]:
         """Function decorator for setting raw send method.
 
         Send methods take strings and should return strings.
@@ -157,9 +151,7 @@ class MessageSender:
         self._decode_filter_call = call
         return call
 
-    def peer_desc_method(
-        self, call: Callable[[Any], str]
-    ) -> Callable[[Any], str]:
+    def peer_desc_method(self, call: Callable[[Any], str]) -> Callable[[Any], str]:
         """Function decorator for defining peer descriptions.
 
         These are included in error messages or other diagnostics.
@@ -193,9 +185,7 @@ class MessageSender:
             message=message,
         )
         # Now return an awaitable that will finish the send.
-        return self._send_async_awaitable(
-            bound_obj, message, raw_response_awaitable
-        )
+        return self._send_async_awaitable(bound_obj, message, raw_response_awaitable)
 
     async def _send_async_awaitable(
         self,
@@ -222,7 +212,7 @@ class MessageSender:
             self._send_raw_message_call is None
             and self._send_raw_message_ex_call is None
         ):
-            raise RuntimeError('send() is unimplemented for this type.')
+            raise RuntimeError("send() is unimplemented for this type.")
 
         msg_encoded = self._encode_message(bound_obj, message)
         try:
@@ -232,12 +222,10 @@ class MessageSender:
                 )
             else:
                 assert self._send_raw_message_call is not None
-                response_encoded = self._send_raw_message_call(
-                    bound_obj, msg_encoded
-                )
+                response_encoded = self._send_raw_message_call(bound_obj, msg_encoded)
         except Exception as exc:
             response = ErrorSysResponse(
-                error_message='Error in MessageSender @send_method.',
+                error_message="Error in MessageSender @send_method.",
                 error_type=(
                     ErrorSysResponse.ErrorType.COMMUNICATION
                     if isinstance(exc, CommunicationError)
@@ -272,7 +260,7 @@ class MessageSender:
             self._send_async_raw_message_call is None
             and self._send_async_raw_message_ex_call is None
         ):
-            raise RuntimeError('send_async() is unimplemented for this type.')
+            raise RuntimeError("send_async() is unimplemented for this type.")
 
         msg_encoded = self._encode_message(bound_obj, message)
         try:
@@ -289,13 +277,11 @@ class MessageSender:
             return self._error_awaitable(exc)
 
         # Now return an awaitable to finish the job.
-        return self._fetch_raw_response_awaitable(
-            bound_obj, message, send_awaitable
-        )
+        return self._fetch_raw_response_awaitable(bound_obj, message, send_awaitable)
 
     async def _error_awaitable(self, exc: Exception) -> SysResponse:
         response = ErrorSysResponse(
-            error_message='Error in MessageSender @send_async_method.',
+            error_message="Error in MessageSender @send_async_method.",
             error_type=(
                 ErrorSysResponse.ErrorType.COMMUNICATION
                 if isinstance(exc, CommunicationError)
@@ -314,7 +300,7 @@ class MessageSender:
             response_encoded = await send_awaitable
         except Exception as exc:
             response = ErrorSysResponse(
-                error_message='Error in MessageSender @send_async_method.',
+                error_message="Error in MessageSender @send_async_method.",
                 error_type=(
                     ErrorSysResponse.ErrorType.COMMUNICATION
                     if isinstance(exc, CommunicationError)
@@ -340,10 +326,7 @@ class MessageSender:
         to happen in different contexts/threads.
         """
         response = self._unpack_raw_response(bound_obj, raw_response)
-        assert (
-            response is None
-            or type(response) in type(message).get_response_types()
-        )
+        assert response is None or type(response) in type(message).get_response_types()
         return response
 
     def _encode_message(self, bound_obj: Any, message: Message) -> str:
@@ -368,9 +351,7 @@ class MessageSender:
             response_dict = self.protocol.decode_dict(response_encoded)
             response = self.protocol.response_from_dict(response_dict)
             if self._decode_filter_call is not None:
-                self._decode_filter_call(
-                    bound_obj, message, response_dict, response
-                )
+                self._decode_filter_call(bound_obj, message, response_dict, response)
         except Exception as exc:
 
             # We pragmatically log by default if decoding fails. This
@@ -381,12 +362,11 @@ class MessageSender:
             # unnoticed.
             if self.protocol.log_response_decode_errors:
                 logger.exception(
-                    'Error decoding message response;'
-                    ' protocol might be broken.',
+                    "Error decoding message response;" " protocol might be broken.",
                 )
 
             response = ErrorSysResponse(
-                error_message='Error decoding raw response.',
+                error_message="Error decoding raw response.",
                 error_type=ErrorSysResponse.ErrorType.LOCAL,
             )
             # Since we'll be looking at this locally, we can include
@@ -415,10 +395,7 @@ class MessageSender:
             # here for extra logging goodness.
             local_exception = raw_response.get_local_exception()
 
-            if (
-                raw_response.error_type
-                is ErrorSysResponse.ErrorType.COMMUNICATION
-            ):
+            if raw_response.error_type is ErrorSysResponse.ErrorType.COMMUNICATION:
                 raise CommunicationError(
                     raw_response.error_message
                 ) from local_exception
@@ -426,19 +403,14 @@ class MessageSender:
             # If something went wrong on *our* end of the connection,
             # don't say it was a remote error.
             if raw_response.error_type is ErrorSysResponse.ErrorType.LOCAL:
-                raise RuntimeError(
-                    raw_response.error_message
-                ) from local_exception
+                raise RuntimeError(raw_response.error_message) from local_exception
 
             # If they want to support clean errors, do those.
             if (
                 self.protocol.forward_clean_errors
-                and raw_response.error_type
-                is ErrorSysResponse.ErrorType.REMOTE_CLEAN
+                and raw_response.error_type is ErrorSysResponse.ErrorType.REMOTE_CLEAN
             ):
-                raise CleanError(
-                    raw_response.error_message
-                ) from local_exception
+                raise CleanError(raw_response.error_message) from local_exception
 
             if (
                 self.protocol.forward_communication_errors
@@ -453,7 +425,7 @@ class MessageSender:
             raise RemoteError(
                 raw_response.error_message,
                 peer_desc=(
-                    'peer'
+                    "peer"
                     if self._peer_desc_call is None
                     else self._peer_desc_call(bound_obj)
                 ),
@@ -486,9 +458,7 @@ class BoundMessageSender:
         assert self._obj is not None
         return self._sender.send(bound_obj=self._obj, message=message)
 
-    def send_async_untyped(
-        self, message: Message
-    ) -> Awaitable[Response | None]:
+    def send_async_untyped(self, message: Message) -> Awaitable[Response | None]:
         """Send a message asynchronously.
 
         Whenever possible, use the send_async() call provided by generated

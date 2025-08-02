@@ -18,7 +18,7 @@ class DevToolsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
 
@@ -63,9 +63,7 @@ class DevToolsWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
                 scale=scale,
             ),
@@ -75,7 +73,7 @@ class DevToolsWindow(bui.MainWindow):
             refresh_on_screen_size_changes=uiscale is bui.UIScale.SMALL,
         )
 
-        self._r = 'settingsDevTools'
+        self._r = "settingsDevTools"
 
         if uiscale is bui.UIScale.SMALL:
             bui.containerwidget(
@@ -89,13 +87,11 @@ class DevToolsWindow(bui.MainWindow):
                 size=(140, 60),
                 scale=0.8,
                 autoselect=True,
-                label=bui.Lstr(resource='backText'),
-                button_type='back',
+                label=bui.Lstr(resource="backText"),
+                button_type="back",
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
 
         self._title_text = bui.textwidget(
             parent=self._root_widget,
@@ -106,16 +102,16 @@ class DevToolsWindow(bui.MainWindow):
             size=(0, 25),
             scale=(0.8 if uiscale is bui.UIScale.SMALL else 1.0),
             maxwidth=self._width - 200,
-            text=bui.Lstr(resource='settingsWindowAdvanced.devToolsText'),
+            text=bui.Lstr(resource="settingsWindowAdvanced.devToolsText"),
             color=app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         if self._back_button is not None:
             bui.buttonwidget(
                 edit=self._back_button,
-                button_type='backSmall',
+                button_type="backSmall",
                 size=(60, 60),
                 label=bui.charstr(bui.SpecialChar.BACK),
             )
@@ -148,9 +144,9 @@ class DevToolsWindow(bui.MainWindow):
             parent=self._subcontainer,
             position=(90, v + 40),
             size=(self._sub_width - 100, 30),
-            configkey='Show Dev Console Button',
+            configkey="Show Dev Console Button",
             displayname=bui.Lstr(
-                resource='settingsWindowAdvanced.showDevConsoleButtonText'
+                resource="settingsWindowAdvanced.showDevConsoleButtonText"
             ),
             scale=1.0,
             maxwidth=400,
@@ -167,7 +163,7 @@ class DevToolsWindow(bui.MainWindow):
             position=(self._sub_width / 2 - this_button_width / 2, v - 10),
             size=(this_button_width, 60),
             autoselect=True,
-            label=bui.Lstr(resource='userSystemScriptsCreateText'),
+            label=bui.Lstr(resource="userSystemScriptsCreateText"),
             text_scale=1.0,
             on_activate_call=babase.modutils.create_user_system_scripts,
         )
@@ -178,7 +174,7 @@ class DevToolsWindow(bui.MainWindow):
             position=(self._sub_width / 2 - this_button_width / 2, v - 10),
             size=(this_button_width, 60),
             autoselect=True,
-            label=bui.Lstr(resource='userSystemScriptsDeleteText'),
+            label=bui.Lstr(resource="userSystemScriptsDeleteText"),
             text_scale=1.0,
             on_activate_call=lambda: ConfirmWindow(
                 action=babase.modutils.delete_user_system_scripts,
@@ -194,10 +190,10 @@ class DevToolsWindow(bui.MainWindow):
                 parent=self._subcontainer,
                 position=(170, v + 10),
                 size=(0, 0),
-                text=bui.Lstr(resource='uiScaleText'),
+                text=bui.Lstr(resource="uiScaleText"),
                 color=app.ui_v1.title_color,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
 
             PopupMenu(
@@ -206,18 +202,18 @@ class DevToolsWindow(bui.MainWindow):
                 button_size=(200.0, 60.0),
                 width=100.0,
                 choices=[
-                    'auto',
-                    'small',
-                    'medium',
-                    'large',
+                    "auto",
+                    "small",
+                    "medium",
+                    "large",
                 ],
                 choices_display=[
-                    bui.Lstr(resource='autoText'),
-                    bui.Lstr(resource='sizeSmallText'),
-                    bui.Lstr(resource='sizeMediumText'),
-                    bui.Lstr(resource='sizeLargeText'),
+                    bui.Lstr(resource="autoText"),
+                    bui.Lstr(resource="sizeSmallText"),
+                    bui.Lstr(resource="sizeMediumText"),
+                    bui.Lstr(resource="sizeLargeText"),
                 ],
-                current_choice=app.config.get('UI Scale', 'auto'),
+                current_choice=app.config.get("UI Scale", "auto"),
                 on_value_change_call=self._set_uiscale,
             )
 
@@ -233,10 +229,10 @@ class DevToolsWindow(bui.MainWindow):
 
     def _set_uiscale(self, val: str) -> None:
         cfg = bui.app.config
-        cfg['UI Scale'] = val
+        cfg["UI Scale"] = val
         cfg.apply_and_commit()
         if bui.app.ui_v1.uiscale.name != val.upper():
             bui.screenmessage(
-                bui.Lstr(resource='settingsWindowAdvanced.mustRestartText'),
+                bui.Lstr(resource="settingsWindowAdvanced.mustRestartText"),
                 color=(1.0, 0.5, 0.0),
             )

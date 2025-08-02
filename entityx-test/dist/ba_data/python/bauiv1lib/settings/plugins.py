@@ -18,14 +18,14 @@ if TYPE_CHECKING:
 class Category(Enum):
     """Categories we can display."""
 
-    ALL = 'all'
-    ENABLED = 'enabled'
-    DISABLED = 'disabled'
+    ALL = "all"
+    ENABLED = "enabled"
+    DISABLED = "disabled"
 
     @property
     def resource(self) -> str:
         """Resource name for us."""
-        return f'{self.value}Text'
+        return f"{self.value}Text"
 
 
 class PluginWindow(bui.MainWindow):
@@ -33,7 +33,7 @@ class PluginWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
@@ -76,9 +76,7 @@ class PluginWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
                 scale=scale,
             ),
@@ -105,12 +103,10 @@ class PluginWindow(bui.MainWindow):
                 scale=0.8,
                 autoselect=True,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
 
         self._title_text = bui.textwidget(
             parent=self._root_widget,
@@ -119,11 +115,11 @@ class PluginWindow(bui.MainWindow):
                 yoffs - (42 if uiscale is bui.UIScale.SMALL else 30),
             ),
             size=(0, 0),
-            text=bui.Lstr(resource='pluginsText'),
+            text=bui.Lstr(resource="pluginsText"),
             color=app.ui_v1.title_color,
             maxwidth=170,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         settings_button_x = (
@@ -137,9 +133,9 @@ class PluginWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(settings_button_x - 130, button_row_yoffs - 41),
             size=(0, 0),
-            text='',
-            h_align='center',
-            v_align='center',
+            text="",
+            h_align="center",
+            v_align="center",
         )
 
         self._category_button = bui.buttonwidget(
@@ -147,7 +143,7 @@ class PluginWindow(bui.MainWindow):
             scale=0.7,
             position=(settings_button_x - 105, button_row_yoffs - 60),
             size=(130, 60),
-            label=bui.Lstr(resource='allText'),
+            label=bui.Lstr(resource="allText"),
             autoselect=True,
             on_activate_call=bui.WeakCall(self._show_category_options),
             color=(0.55, 0.73, 0.25),
@@ -158,7 +154,7 @@ class PluginWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(settings_button_x, button_row_yoffs - 58),
             size=(40, 40),
-            label='',
+            label="",
             on_activate_call=self._open_settings,
         )
 
@@ -167,7 +163,7 @@ class PluginWindow(bui.MainWindow):
             position=(settings_button_x + 3, button_row_yoffs - 57),
             draw_controller=self._settings_button,
             size=(35, 35),
-            texture=bui.gettexture('settingsIcon'),
+            texture=bui.gettexture("settingsIcon"),
         )
 
         bui.widget(
@@ -195,20 +191,20 @@ class PluginWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.5),
             size=(0, 0),
-            text='',
+            text="",
             color=(0.6, 0.6, 0.6),
             scale=0.8,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         if bui.app.meta.scanresults is None:
             bui.screenmessage(
-                'Still scanning plugins; please try again.', color=(1, 0, 0)
+                "Still scanning plugins; please try again.", color=(1, 0, 0)
             )
-            bui.getsound('error').play()
+            bui.getsound("error").play()
         plugspecs = bui.app.plugins.plugin_specs
-        plugstates: dict[str, dict] = bui.app.config.get('Plugins', {})
+        plugstates: dict[str, dict] = bui.app.config.get("Plugins", {})
         assert isinstance(plugstates, dict)
 
         plug_line_height = 50
@@ -220,9 +216,7 @@ class PluginWindow(bui.MainWindow):
             background=False,
         )
         self._show_plugins()
-        bui.containerwidget(
-            edit=self._root_widget, selected_child=self._scrollwidget
-        )
+        bui.containerwidget(edit=self._root_widget, selected_child=self._scrollwidget)
         self._restore_state()
 
     @override
@@ -241,13 +235,13 @@ class PluginWindow(bui.MainWindow):
 
     def _check_value_changed(self, plug: bui.PluginSpec, value: bool) -> None:
         bui.screenmessage(
-            bui.Lstr(resource='settingsWindowAdvanced.mustRestartText'),
+            bui.Lstr(resource="settingsWindowAdvanced.mustRestartText"),
             color=(1.0, 0.5, 0.0),
         )
-        plugstates: dict[str, dict] = bui.app.config.setdefault('Plugins', {})
+        plugstates: dict[str, dict] = bui.app.config.setdefault("Plugins", {})
         assert isinstance(plugstates, dict)
         plugstate = plugstates.setdefault(plug.class_path, {})
-        plugstate['enabled'] = value
+        plugstate["enabled"] = value
         bui.app.config.commit()
 
     def _open_settings(self) -> None:
@@ -258,7 +252,7 @@ class PluginWindow(bui.MainWindow):
         if not self.main_window_has_control():
             return
 
-        self.main_window_replace(PluginSettingsWindow(transition='in_right'))
+        self.main_window_replace(PluginSettingsWindow(transition="in_right"))
 
     def _show_category_options(self) -> None:
         uiscale = bui.app.ui_v1.uiscale
@@ -304,7 +298,7 @@ class PluginWindow(bui.MainWindow):
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
         plugspecs = bui.app.plugins.plugin_specs
-        plugstates: dict[str, dict] = bui.app.config.setdefault('Plugins', {})
+        plugstates: dict[str, dict] = bui.app.config.setdefault("Plugins", {})
         assert isinstance(plugstates, dict)
 
         plug_line_height = 50
@@ -316,7 +310,7 @@ class PluginWindow(bui.MainWindow):
 
         bui.textwidget(
             edit=self._no_plugins_installed_text,
-            text='',
+            text="",
         )
 
         for _classpath, plugspec in plugspecs_sorted:
@@ -370,31 +364,21 @@ class PluginWindow(bui.MainWindow):
                 autoselect=True,
                 value=enabled,
                 maxwidth=self._scroll_width
-                - (
-                    200
-                    if plugin is not None and plugin.has_settings_ui()
-                    else 80
-                ),
+                - (200 if plugin is not None and plugin.has_settings_ui() else 80),
                 position=(10, item_y),
                 size=(self._scroll_width - 40, 50),
-                on_value_change_call=bui.Call(
-                    self._check_value_changed, plugspec
-                ),
+                on_value_change_call=bui.Call(self._check_value_changed, plugspec),
                 textcolor=(
                     (0.8, 0.3, 0.3)
                     if (plugspec.attempted_load and plugspec.plugin is None)
-                    else (
-                        (0.6, 0.6, 0.6)
-                        if plugspec.plugin is None
-                        else (0, 1, 0)
-                    )
+                    else ((0.6, 0.6, 0.6) if plugspec.plugin is None else (0, 1, 0))
                 ),
             )
             # noinspection PyUnresolvedReferences
             if plugin is not None and plugin.has_settings_ui():
                 button = bui.buttonwidget(
                     parent=self._subcontainer,
-                    label=bui.Lstr(resource='mainMenu.settingsText'),
+                    label=bui.Lstr(resource="mainMenu.settingsText"),
                     autoselect=True,
                     size=(100, 40),
                     position=(sub_width - 130, item_y + 6),
@@ -413,9 +397,7 @@ class PluginWindow(bui.MainWindow):
                     edit=check,
                     up_widget=self._back_button,
                     left_widget=self._back_button,
-                    right_widget=(
-                        self._settings_button if button is None else button
-                    ),
+                    right_widget=(self._settings_button if button is None else button),
                 )
                 if button is not None:
                     bui.widget(edit=button, up_widget=self._back_button)
@@ -433,41 +415,41 @@ class PluginWindow(bui.MainWindow):
         if num_shown == 0:
             bui.textwidget(
                 edit=self._no_plugins_installed_text,
-                text=bui.Lstr(resource='noPluginsInstalledText'),
+                text=bui.Lstr(resource="noPluginsInstalledText"),
             )
 
     def _save_state(self) -> None:
         try:
             sel = self._root_widget.get_selected_child()
             if sel == self._category_button:
-                sel_name = 'Category'
+                sel_name = "Category"
             elif sel == self._settings_button:
-                sel_name = 'Settings'
+                sel_name = "Settings"
             elif sel == self._back_button:
-                sel_name = 'Back'
+                sel_name = "Back"
             elif sel == self._scrollwidget:
-                sel_name = 'Scroll'
+                sel_name = "Scroll"
             else:
-                raise ValueError(f'unrecognized selection \'{sel}\'')
+                raise ValueError(f"unrecognized selection '{sel}'")
             assert bui.app.classic is not None
             bui.app.ui_v1.window_states[type(self)] = sel_name
         except Exception:
-            logging.exception('Error saving state for %s.', self)
+            logging.exception("Error saving state for %s.", self)
 
     def _restore_state(self) -> None:
         try:
             assert bui.app.classic is not None
             sel_name = bui.app.ui_v1.window_states.get(type(self))
             sel: bui.Widget | None
-            if sel_name == 'Category':
+            if sel_name == "Category":
                 sel = self._category_button
-            elif sel_name == 'Settings':
+            elif sel_name == "Settings":
                 sel = self._settings_button
-            elif sel_name == 'Back':
+            elif sel_name == "Back":
                 sel = self._back_button
             else:
                 sel = self._scrollwidget
             if sel:
                 bui.containerwidget(edit=self._root_widget, selected_child=sel)
         except Exception:
-            logging.exception('Error restoring state for %s.', self)
+            logging.exception("Error restoring state for %s.", self)

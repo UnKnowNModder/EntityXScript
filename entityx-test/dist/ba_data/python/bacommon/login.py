@@ -21,13 +21,13 @@ class LoginType(Enum):
     """Types of logins available."""
 
     #: Email/password
-    EMAIL = 'email'
+    EMAIL = "email"
 
     #: Google Play Game Services
-    GPGS = 'gpgs'
+    GPGS = "gpgs"
 
     #: Apple's Game Center
-    GAME_CENTER = 'game_center'
+    GAME_CENTER = "game_center"
 
     @property
     def displayname(self) -> str:
@@ -35,11 +35,11 @@ class LoginType(Enum):
         cls = type(self)
         match self:
             case cls.EMAIL:
-                return 'Email/Password'
+                return "Email/Password"
             case cls.GPGS:
-                return 'Google Play Games'
+                return "Google Play Games"
             case cls.GAME_CENTER:
-                return 'Game Center'
+                return "Game Center"
 
     @property
     def displaynameshort(self) -> str:
@@ -47,8 +47,8 @@ class LoginType(Enum):
         cls = type(self)
         match self:
             case cls.EMAIL:
-                return 'Email'
+                return "Email"
             case cls.GPGS:
-                return 'GPGS'
+                return "GPGS"
             case cls.GAME_CENTER:
-                return 'Game Center'
+                return "Game Center"

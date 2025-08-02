@@ -29,7 +29,7 @@ class NetTestingWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         uiscale = bui.app.ui_v1.uiscale
@@ -71,9 +71,7 @@ class NetTestingWindow(bui.MainWindow):
                 size=(self._width, self._height),
                 scale=scale,
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
             ),
             transition=transition,
@@ -94,13 +92,11 @@ class NetTestingWindow(bui.MainWindow):
                 size=(60, 60),
                 scale=0.9,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 autoselect=True,
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
 
         # Avoid squads button on small mode.
         # xinset = -50 if uiscale is bui.UIScale.SMALL else 0
@@ -115,7 +111,7 @@ class NetTestingWindow(bui.MainWindow):
             size=(100, 60),
             scale=0.8,
             autoselect=True,
-            label=bui.Lstr(resource='copyText'),
+            label=bui.Lstr(resource="copyText"),
             on_activate_call=self._copy,
         )
 
@@ -128,7 +124,7 @@ class NetTestingWindow(bui.MainWindow):
             size=(60, 60),
             scale=0.8,
             autoselect=True,
-            label=bui.Lstr(value='...'),
+            label=bui.Lstr(value="..."),
             on_activate_call=self._show_val_testing,
         )
 
@@ -136,10 +132,10 @@ class NetTestingWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(self._width * 0.5, yoffs - 55),
             size=(0, 0),
-            text=bui.Lstr(resource='settingsWindowAdvanced.netTestingText'),
+            text=bui.Lstr(resource="settingsWindowAdvanced.netTestingText"),
             color=(0.8, 0.8, 0.8, 1.0),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             maxwidth=250,
         )
 
@@ -187,11 +183,11 @@ class NetTestingWindow(bui.MainWindow):
     def _copy(self) -> None:
         if not bui.clipboard_is_supported():
             bui.screenmessage(
-                'Clipboard not supported on this platform.', color=(1, 0, 0)
+                "Clipboard not supported on this platform.", color=(1, 0, 0)
             )
             return
-        bui.clipboard_set_text('\n'.join(self._printed_lines))
-        bui.screenmessage(f'{len(self._printed_lines)} lines copied.')
+        bui.clipboard_set_text("\n".join(self._printed_lines))
+        bui.screenmessage(f"{len(self._printed_lines)} lines copied.")
 
     def _show_val_testing(self) -> None:
         assert bui.app.classic is not None
@@ -214,9 +210,7 @@ def _run_diagnostics(weakwin: weakref.ref[NetTestingWindow]) -> None:
 
     # We're running in a background thread but UI stuff needs to run
     # in the logic thread; give ourself a way to pass stuff to it.
-    def _print(
-        text: str, color: tuple[float, float, float] | None = None
-    ) -> None:
+    def _print(text: str, color: tuple[float, float, float] | None = None) -> None:
         def _print_in_logic_thread() -> None:
             win = weakwin()
             if win is not None:
@@ -230,19 +224,15 @@ def _run_diagnostics(weakwin: weakref.ref[NetTestingWindow]) -> None:
         try:
             call()
             duration = time.monotonic() - starttime
-            _print(f'Succeeded in {duration:.2f}s.', color=(0, 1, 0))
+            _print(f"Succeeded in {duration:.2f}s.", color=(0, 1, 0))
             return True
         except Exception as exc:
             import traceback
 
             duration = time.monotonic() - starttime
-            msg = (
-                str(exc)
-                if isinstance(exc, CleanError)
-                else traceback.format_exc()
-            )
+            msg = str(exc) if isinstance(exc, CleanError) else traceback.format_exc()
             _print(msg, color=(1.0, 1.0, 0.3))
-            _print(f'Failed in {duration:.2f}s.', color=(1, 0, 0))
+            _print(f"Failed in {duration:.2f}s.", color=(1, 0, 0))
             have_error[0] = True
 
             # We're done with the exception, so strip its tracebacks to
@@ -258,58 +248,58 @@ def _run_diagnostics(weakwin: weakref.ref[NetTestingWindow]) -> None:
         assert bui.app.classic is not None
 
         _print(
-            f'Running network diagnostics...\n'
-            f'ua: {bui.app.classic.legacy_user_agent_string}\n'
-            f'time: {utc_now()}.'
+            f"Running network diagnostics...\n"
+            f"ua: {bui.app.classic.legacy_user_agent_string}\n"
+            f"time: {utc_now()}."
         )
 
         if bool(False):
-            _print('\nRunning dummy success test...')
+            _print("\nRunning dummy success test...")
             _print_test_results(_dummy_success)
 
-            _print('\nRunning dummy fail test...')
+            _print("\nRunning dummy fail test...")
             _print_test_results(_dummy_fail)
 
         # V1 ping
         baseaddr = plus.get_master_server_address(source=0, version=1)
-        _print(f'\nContacting V1 master-server src0 ({baseaddr})...')
+        _print(f"\nContacting V1 master-server src0 ({baseaddr})...")
         v1worked = _print_test_results(lambda: _test_fetch(baseaddr))
 
         # V1 alternate ping (only if primary fails since this often fails).
         if v1worked:
-            _print('\nSkipping V1 master-server src1 test since src0 worked.')
+            _print("\nSkipping V1 master-server src1 test since src0 worked.")
         else:
             baseaddr = plus.get_master_server_address(source=1, version=1)
-            _print(f'\nContacting V1 master-server src1 ({baseaddr})...')
+            _print(f"\nContacting V1 master-server src1 ({baseaddr})...")
             _print_test_results(lambda: _test_fetch(baseaddr))
 
-        if 'none succeeded' in bui.app.net.v1_test_log:
+        if "none succeeded" in bui.app.net.v1_test_log:
             _print(
-                f'\nV1-test-log failed: {bui.app.net.v1_test_log}',
+                f"\nV1-test-log failed: {bui.app.net.v1_test_log}",
                 color=(1, 0, 0),
             )
             have_error[0] = True
         else:
-            _print(f'\nV1-test-log ok: {bui.app.net.v1_test_log}')
+            _print(f"\nV1-test-log ok: {bui.app.net.v1_test_log}")
 
         for srcid, result in sorted(bui.app.net.v1_ctest_results.items()):
-            _print(f'\nV1 src{srcid} result: {result}')
+            _print(f"\nV1 src{srcid} result: {result}")
 
         curv1addr = plus.get_master_server_address(version=1)
-        _print(f'\nUsing V1 address: {curv1addr}')
+        _print(f"\nUsing V1 address: {curv1addr}")
 
-        if plus.get_v1_account_state() == 'signed_in':
-            _print('\nRunning V1 transaction...')
+        if plus.get_v1_account_state() == "signed_in":
+            _print("\nRunning V1 transaction...")
             _print_test_results(_test_v1_transaction)
         else:
-            _print('\nSkipping V1 transaction (Not signed into V1).')
+            _print("\nSkipping V1 transaction (Not signed into V1).")
 
         # V2 ping
         baseaddr = plus.get_master_server_address(version=2)
-        _print(f'\nContacting V2 master-server ({baseaddr})...')
+        _print(f"\nContacting V2 master-server ({baseaddr})...")
         _print_test_results(lambda: _test_fetch(baseaddr))
 
-        _print('\nComparing local time to V2 server...')
+        _print("\nComparing local time to V2 server...")
         _print_test_results(_test_v2_time)
 
         # Get V2 nearby zone
@@ -322,32 +312,32 @@ def _run_diagnostics(weakwin: weakref.ref[NetTestingWindow]) -> None:
         )
 
         if nearest_zone is not None:
-            nearstr = f'{nearest_zone[0]}: {nearest_zone[1]:.0f}ms'
+            nearstr = f"{nearest_zone[0]}: {nearest_zone[1]:.0f}ms"
         else:
-            nearstr = '-'
-        _print(f'\nChecking nearest V2 zone ping ({nearstr})...')
+            nearstr = "-"
+        _print(f"\nChecking nearest V2 zone ping ({nearstr})...")
         _print_test_results(lambda: _test_nearby_zone_ping(nearest_zone))
 
-        _print('\nSending V2 cloud message...')
+        _print("\nSending V2 cloud message...")
         _print_test_results(_test_v2_cloud_message)
 
         if have_error[0]:
             _print(
-                '\nDiagnostics complete. Some diagnostics failed.',
+                "\nDiagnostics complete. Some diagnostics failed.",
                 color=(10, 0, 0),
             )
         else:
             _print(
-                '\nDiagnostics complete. Everything looks good!',
+                "\nDiagnostics complete. Everything looks good!",
                 color=(0, 1, 0),
             )
     except Exception as exc:
         import traceback
 
         _print(
-            f'An unexpected error occurred during testing;'
-            f' please report this.\n'
-            f'{traceback.format_exc()}',
+            f"An unexpected error occurred during testing;"
+            f" please report this.\n"
+            f"{traceback.format_exc()}",
             color=(1, 0, 0),
         )
         # We're done with the exception, so strip its tracebacks to
@@ -362,7 +352,7 @@ def _dummy_success() -> None:
 
 def _dummy_fail() -> None:
     """Dummy fail test case."""
-    raise RuntimeError('fail-test')
+    raise RuntimeError("fail-test")
 
 
 def _test_v1_transaction() -> None:
@@ -370,8 +360,8 @@ def _test_v1_transaction() -> None:
     plus = bui.app.plus
     assert plus is not None
 
-    if plus.get_v1_account_state() != 'signed_in':
-        raise RuntimeError('Not signed in.')
+    if plus.get_v1_account_state() != "signed_in":
+        raise RuntimeError("Not signed in.")
 
     starttime = time.monotonic()
 
@@ -380,8 +370,8 @@ def _test_v1_transaction() -> None:
 
     def _cb(cbresults: Any) -> None:
         # Simply set results here; our other thread acts on them.
-        if not isinstance(cbresults, dict) or 'party_code' not in cbresults:
-            results[0] = 'Unexpected transaction response'
+        if not isinstance(cbresults, dict) or "party_code" not in cbresults:
+            results[0] = "Unexpected transaction response"
             return
         results[0] = True  # Success!
 
@@ -390,8 +380,8 @@ def _test_v1_transaction() -> None:
         # Fire off a transaction with a callback.
         plus.add_v1_account_transaction(
             {
-                'type': 'PRIVATE_PARTY_QUERY',
-                'expire_time': time.time() + 20,
+                "type": "PRIVATE_PARTY_QUERY",
+                "expire_time": time.time() + 20,
             },
             callback=_cb,
         )
@@ -402,9 +392,7 @@ def _test_v1_transaction() -> None:
     while results[0] is False:
         time.sleep(0.01)
         if time.monotonic() - starttime > MAX_TEST_SECONDS:
-            raise RuntimeError(
-                f'test timed out after {MAX_TEST_SECONDS} seconds'
-            )
+            raise RuntimeError(f"test timed out after {MAX_TEST_SECONDS} seconds")
 
     # If we got left a string, its an error.
     if isinstance(results[0], str):
@@ -429,7 +417,7 @@ def _test_v2_cloud_message() -> None:
         if isinstance(response, Exception):
             results.errstr = str(response)
         if not isinstance(response, bacommon.cloud.PingResponse):
-            results.errstr = f'invalid response type: {type(response)}.'
+            results.errstr = f"invalid response type: {type(response)}."
 
     def _send() -> None:
         # Note: this runs in another thread so need to avoid exceptions.
@@ -447,8 +435,8 @@ def _test_v2_cloud_message() -> None:
         time.sleep(0.01)
         if time.monotonic() - wait_start_time > MAX_TEST_SECONDS:
             raise RuntimeError(
-                f'Timeout ({MAX_TEST_SECONDS} seconds)'
-                f' waiting for cloud message response'
+                f"Timeout ({MAX_TEST_SECONDS} seconds)"
+                f" waiting for cloud message response"
             )
     if results.errstr is not None:
         raise RuntimeError(results.errstr)
@@ -458,55 +446,54 @@ def _test_v2_time() -> None:
     offset = bui.app.net.server_time_offset_hours
     if offset is None:
         raise RuntimeError(
-            'no time offset found;'
-            ' perhaps unable to communicate with v2 server?'
+            "no time offset found;" " perhaps unable to communicate with v2 server?"
         )
     if abs(offset) >= 2.0:
         raise CleanError(
-            f'Your device time is off from world time by {offset:.1f} hours.\n'
-            'This may cause network operations to fail due to your device\n'
-            ' incorrectly treating SSL certificates as not-yet-valid, etc.\n'
-            'Check your device time and time-zone settings to fix this.\n'
+            f"Your device time is off from world time by {offset:.1f} hours.\n"
+            "This may cause network operations to fail due to your device\n"
+            " incorrectly treating SSL certificates as not-yet-valid, etc.\n"
+            "Check your device time and time-zone settings to fix this.\n"
         )
 
 
 def _test_fetch(baseaddr: str) -> None:
 
     upool = bui.app.net.urllib3pool
-    response = upool.request('GET', f'{baseaddr}/ping')
+    response = upool.request("GET", f"{baseaddr}/ping")
     if response.status != 200:
-        raise RuntimeError(f'Got unexpected response code {response.status}.')
+        raise RuntimeError(f"Got unexpected response code {response.status}.")
     data = response.data
-    if data != b'pong':
-        raise RuntimeError('Got unexpected response data.')
+    if data != b"pong":
+        raise RuntimeError("Got unexpected response data.")
 
 
 def _test_nearby_zone_ping(nearest_zone: tuple[str, float] | None) -> None:
     """Try to ping nearest v2 zone."""
     if nearest_zone is None:
-        raise RuntimeError('No nearest zone.')
+        raise RuntimeError("No nearest zone.")
     if nearest_zone[1] > 500:
-        raise RuntimeError('Ping too high.')
+        raise RuntimeError("Ping too high.")
 
 
 def get_net_val_testing_window() -> TestingWindow:
     """Create a window for testing net values."""
     entries = [
-        {'name': 'bufferTime', 'label': 'Buffer Time', 'increment': 1.0},
+        {"name": "bufferTime", "label": "Buffer Time", "increment": 1.0},
         {
-            'name': 'delaySampling',
-            'label': 'Delay Sampling',
-            'increment': 1.0,
+            "name": "delaySampling",
+            "label": "Delay Sampling",
+            "increment": 1.0,
         },
         {
-            'name': 'dynamicsSyncTime',
-            'label': 'Dynamics Sync Time',
-            'increment': 10,
+            "name": "dynamicsSyncTime",
+            "label": "Dynamics Sync Time",
+            "increment": 10,
         },
-        {'name': 'showNetInfo', 'label': 'Show Net Info', 'increment': 1},
+        {"name": "showNetInfo", "label": "Show Net Info", "increment": 1},
     ]
     return TestingWindow(
-        title=bui.Lstr(resource='settingsWindowAdvanced.netTestingText'),
+        title=bui.Lstr(resource="settingsWindowAdvanced.netTestingText"),
         entries=entries,
     )
 

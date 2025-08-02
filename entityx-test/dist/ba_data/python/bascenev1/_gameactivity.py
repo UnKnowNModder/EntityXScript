@@ -80,7 +80,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
         This default implementation simply returns the 'name' class attr.
         """
-        return cls.name if cls.name is not None else 'Untitled Game'
+        return cls.name if cls.name is not None else "Untitled Game"
 
     @classmethod
     def get_display_string(cls, settings: dict | None = None) -> babase.Lstr:
@@ -88,19 +88,19 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
         Subclasses should override getname(); not this.
         """
-        name = babase.Lstr(translate=('gameNames', cls.getname()))
+        name = babase.Lstr(translate=("gameNames", cls.getname()))
 
         # A few substitutions for 'Epic', 'Solo' etc. modes.
         # FIXME: Should provide a way for game types to define filters of
         #  their own and should not rely on hard-coded settings names.
         if settings is not None:
-            if 'Solo Mode' in settings and settings['Solo Mode']:
+            if "Solo Mode" in settings and settings["Solo Mode"]:
                 name = babase.Lstr(
-                    resource='soloNameFilterText', subs=[('${NAME}', name)]
+                    resource="soloNameFilterText", subs=[("${NAME}", name)]
                 )
-            if 'Epic Mode' in settings and settings['Epic Mode']:
+            if "Epic Mode" in settings and settings["Epic Mode"]:
                 name = babase.Lstr(
-                    resource='epicNameFilterText', subs=[('${NAME}', name)]
+                    resource="epicNameFilterText", subs=[("${NAME}", name)]
                 )
 
         return name
@@ -108,7 +108,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
     @classmethod
     def get_team_display_string(cls, name: str) -> babase.Lstr:
         """Given a team name, returns a localized version of it."""
-        return babase.Lstr(translate=('teamNames', name))
+        return babase.Lstr(translate=("teamNames", name))
 
     @classmethod
     def get_description(cls, sessiontype: type[bascenev1.Session]) -> str:
@@ -119,7 +119,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         can override this method.
         """
         del sessiontype  # Unused arg.
-        return cls.description if cls.description is not None else ''
+        return cls.description if cls.description is not None else ""
 
     @classmethod
     def get_description_display_string(
@@ -130,7 +130,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         Sub-classes should override get_description(); not this.
         """
         description = cls.get_description(sessiontype)
-        return babase.Lstr(translate=('gameDescriptions', description))
+        return babase.Lstr(translate=("gameDescriptions", description))
 
     @classmethod
     def get_available_settings(
@@ -143,9 +143,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         return [] if cls.available_settings is None else cls.available_settings
 
     @classmethod
-    def get_supported_maps(
-        cls, sessiontype: type[bascenev1.Session]
-    ) -> list[str]:
+    def get_supported_maps(cls, sessiontype: type[bascenev1.Session]) -> list[str]:
         """
         Called by the default bascenev1.GameActivity.create_settings_ui()
         implementation; should return a list of map names valid
@@ -153,7 +151,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         """
         del sessiontype  # Unused arg.
         assert babase.app.classic is not None
-        return babase.app.classic.getmaps('melee')
+        return babase.app.classic.getmaps("melee")
 
     @classmethod
     def get_settings_display_string(cls, config: dict[str, Any]) -> babase.Lstr:
@@ -162,47 +160,43 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         This is used when viewing game-lists or showing what game
         is up next in a series.
         """
-        name = cls.get_display_string(config['settings'])
+        name = cls.get_display_string(config["settings"])
 
         # In newer configs, map is in settings; it used to be in the
         # config root.
-        if 'map' in config['settings']:
+        if "map" in config["settings"]:
             sval = babase.Lstr(
-                value='${NAME} @ ${MAP}',
+                value="${NAME} @ ${MAP}",
                 subs=[
-                    ('${NAME}', name),
+                    ("${NAME}", name),
                     (
-                        '${MAP}',
+                        "${MAP}",
                         _map.get_map_display_string(
-                            _map.get_filtered_map_name(
-                                config['settings']['map']
-                            )
+                            _map.get_filtered_map_name(config["settings"]["map"])
                         ),
                     ),
                 ],
             )
-        elif 'map' in config:
+        elif "map" in config:
             sval = babase.Lstr(
-                value='${NAME} @ ${MAP}',
+                value="${NAME} @ ${MAP}",
                 subs=[
-                    ('${NAME}', name),
+                    ("${NAME}", name),
                     (
-                        '${MAP}',
+                        "${MAP}",
                         _map.get_map_display_string(
-                            _map.get_filtered_map_name(config['map'])
+                            _map.get_filtered_map_name(config["map"])
                         ),
                     ),
                 ],
             )
         else:
-            print('invalid game config - expected map entry under settings')
-            sval = babase.Lstr(value='???')
+            print("invalid game config - expected map entry under settings")
+            sval = babase.Lstr(value="???")
         return sval
 
     @classmethod
-    def supports_session_type(
-        cls, sessiontype: type[bascenev1.Session]
-    ) -> bool:
+    def supports_session_type(cls, sessiontype: type[bascenev1.Session]) -> bool:
         """Return whether this game supports the provided session type."""
         from bascenev1._multiteamsession import MultiTeamSession
 
@@ -220,7 +214,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         # Go ahead and get our map loading.
         self._map_type = _map.get_map_class(self._calc_map_name(settings))
 
-        self._spawn_sound = _bascenev1.getsound('spawn')
+        self._spawn_sound = _bascenev1.getsound("spawn")
         self._map_type.preload()
         self._map: bascenev1.Map | None = None
         self._powerup_drop_timer: bascenev1.Timer | None = None
@@ -234,13 +228,9 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         self._standard_time_limit_text_input: bascenev1.NodeActor | None = None
         self._tournament_time_limit: int | None = None
         self._tournament_time_limit_timer: bascenev1.BaseTimer | None = None
-        self._tournament_time_limit_title_text: bascenev1.NodeActor | None = (
-            None
-        )
+        self._tournament_time_limit_title_text: bascenev1.NodeActor | None = None
         self._tournament_time_limit_text: bascenev1.NodeActor | None = None
-        self._tournament_time_limit_text_input: bascenev1.NodeActor | None = (
-            None
-        )
+        self._tournament_time_limit_text_input: bascenev1.NodeActor | None = None
         self._zoom_message_times: dict[int, float] = {}
 
     @property
@@ -273,11 +263,9 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             if isinstance(self.session, CoopSession):
                 campaign = self.session.campaign
                 assert campaign is not None
-                return campaign.getlevel(
-                    self.session.campaign_level_name
-                ).displayname
+                return campaign.getlevel(self.session.campaign_level_name).displayname
         except Exception:
-            logging.exception('Error getting campaign level name.')
+            logging.exception("Error getting campaign level name.")
         return self.get_instance_display_string()
 
     def get_instance_description(self) -> str | Sequence:
@@ -331,7 +319,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         with the first value, ${ARG2} with the second, etc.
 
         """
-        return ''
+        return ""
 
     @override
     def on_transition_in(self) -> None:
@@ -341,11 +329,11 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         self._map = self._map_type()
 
         # Add default activities for our map.
-        mapname = getattr(self._map_type, 'name', None)
-        map_preview = getattr(self._map_type, 'get_preview_texture_name', None)
+        mapname = getattr(self._map_type, "name", None)
+        map_preview = getattr(self._map_type, "get_preview_texture_name", None)
 
         if babase.app.discord.is_ready and mapname and map_preview:
-            preview = map_preview().lower().removesuffix('preview')
+            preview = map_preview().lower().removesuffix("preview")
             babase.app.discord.set_presence(
                 state=self.getname(),
                 details=f"Playing on {mapname}",
@@ -403,24 +391,20 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             assert babase.app.plus is not None
             babase.app.plus.tournament_query(
                 args={
-                    'tournamentIDs': [tournament_id],
-                    'source': 'in-game time remaining query',
+                    "tournamentIDs": [tournament_id],
+                    "source": "in-game time remaining query",
                 },
                 callback=babase.WeakCall(self._on_tournament_query_response),
             )
 
-    def _on_tournament_query_response(
-        self, data: dict[str, Any] | None
-    ) -> None:
+    def _on_tournament_query_response(self, data: dict[str, Any] | None) -> None:
         if data is not None:
-            data_t = data['t']  # This used to be the whole payload.
+            data_t = data["t"]  # This used to be the whole payload.
 
             # Keep our cached tourney info up to date
             assert babase.app.classic is not None
             babase.app.classic.accounts.cache_tournament_info(data_t)
-            self._setup_tournament_time_limit(
-                max(5, data_t[0]['timeRemaining'])
-            )
+            self._setup_tournament_time_limit(max(5, data_t[0]["timeRemaining"]))
 
     @override
     def on_player_join(self, player: PlayerT) -> None:
@@ -439,9 +423,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             killer = msg.getkillerplayer(self.playertype)
 
             # Inform our stats of the demise.
-            self.stats.player_was_killed(
-                player, killed=msg.killed, killer=killer
-            )
+            self.stats.player_was_killed(player, killed=msg.killed, killer=killer)
 
             # Award the killer points if he's on a different team.
             # FIXME: This should not be linked to Spaz actors.
@@ -484,47 +466,43 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         else:
             sb_desc_l = sb_desc_in
         if not isinstance(sb_desc_l[0], str):
-            raise TypeError('Invalid format for instance description.')
+            raise TypeError("Invalid format for instance description.")
 
-        is_empty = sb_desc_l[0] == ''
+        is_empty = sb_desc_l[0] == ""
         subs = []
         for i in range(len(sb_desc_l) - 1):
-            subs.append(('${ARG' + str(i + 1) + '}', str(sb_desc_l[i + 1])))
+            subs.append(("${ARG" + str(i + 1) + "}", str(sb_desc_l[i + 1])))
         translation = babase.Lstr(
-            translate=('gameDescriptions', sb_desc_l[0]), subs=subs
+            translate=("gameDescriptions", sb_desc_l[0]), subs=subs
         )
         sb_desc = translation
         vrmode = babase.app.env.vr
         yval = -34 if is_empty else -20
         yval -= 16
         sbpos = (
-            (15, yval)
-            if isinstance(self.session, FreeForAllSession)
-            else (15, yval)
+            (15, yval) if isinstance(self.session, FreeForAllSession) else (15, yval)
         )
         self._game_scoreboard_name_text = NodeActor(
             _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'text': sb_name,
-                    'maxwidth': 300,
-                    'position': sbpos,
-                    'h_attach': 'left',
-                    'vr_depth': 10,
-                    'v_attach': 'top',
-                    'v_align': 'bottom',
-                    'color': (1.0, 1.0, 1.0, 1.0),
-                    'shadow': 1.0 if vrmode else 0.6,
-                    'flatness': 1.0 if vrmode else 0.5,
-                    'scale': 1.1,
+                    "text": sb_name,
+                    "maxwidth": 300,
+                    "position": sbpos,
+                    "h_attach": "left",
+                    "vr_depth": 10,
+                    "v_attach": "top",
+                    "v_align": "bottom",
+                    "color": (1.0, 1.0, 1.0, 1.0),
+                    "shadow": 1.0 if vrmode else 0.6,
+                    "flatness": 1.0 if vrmode else 0.5,
+                    "scale": 1.1,
                 },
             )
         )
 
         assert self._game_scoreboard_name_text.node
-        animate(
-            self._game_scoreboard_name_text.node, 'opacity', {0: 0.0, 1.0: 1.0}
-        )
+        animate(self._game_scoreboard_name_text.node, "opacity", {0: 0.0, 1.0: 1.0})
 
         descpos = (
             (17, -44 + 10)
@@ -533,18 +511,18 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         )
         self._game_scoreboard_description_text = NodeActor(
             _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'text': sb_desc,
-                    'maxwidth': 480,
-                    'position': descpos,
-                    'scale': 0.7,
-                    'h_attach': 'left',
-                    'v_attach': 'top',
-                    'v_align': 'top',
-                    'shadow': 1.0 if vrmode else 0.7,
-                    'flatness': 1.0 if vrmode else 0.8,
-                    'color': (1, 1, 1, 1) if vrmode else (0.9, 0.9, 0.9, 1.0),
+                    "text": sb_desc,
+                    "maxwidth": 480,
+                    "position": descpos,
+                    "scale": 0.7,
+                    "h_attach": "left",
+                    "v_attach": "top",
+                    "v_align": "top",
+                    "shadow": 1.0 if vrmode else 0.7,
+                    "flatness": 1.0 if vrmode else 0.8,
+                    "color": (1, 1, 1, 1) if vrmode else (0.9, 0.9, 0.9, 1.0),
                 },
             )
         )
@@ -552,7 +530,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         assert self._game_scoreboard_description_text.node
         animate(
             self._game_scoreboard_description_text.node,
-            'opacity',
+            "opacity",
             {0: 0.0, 1.0: 1.0},
         )
 
@@ -572,7 +550,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             color=(0.93 * 1.25, 0.9 * 1.25, 1.0 * 1.25),
             trailcolor=(0.15, 0.05, 1.0, 0.0),
         ).autoretain()
-        _bascenev1.timer(0.2, _bascenev1.getsound('gong').play)
+        _bascenev1.timer(0.2, _bascenev1.getsound("gong").play)
         # _bascenev1.timer(
         #     0.2, Call(_bascenev1.playsound, _bascenev1.getsound('gong'))
         # )
@@ -586,45 +564,43 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         else:
             desc_l = desc_in
         if not isinstance(desc_l[0], str):
-            raise TypeError('Invalid format for instance description')
+            raise TypeError("Invalid format for instance description")
         subs = []
         for i in range(len(desc_l) - 1):
-            subs.append(('${ARG' + str(i + 1) + '}', str(desc_l[i + 1])))
-        translation = babase.Lstr(
-            translate=('gameDescriptions', desc_l[0]), subs=subs
-        )
+            subs.append(("${ARG" + str(i + 1) + "}", str(desc_l[i + 1])))
+        translation = babase.Lstr(translate=("gameDescriptions", desc_l[0]), subs=subs)
 
         # Do some standard filters (epic mode, etc).
-        if self.settings_raw.get('Epic Mode', False):
+        if self.settings_raw.get("Epic Mode", False):
             translation = babase.Lstr(
-                resource='epicDescriptionFilterText',
-                subs=[('${DESCRIPTION}', translation)],
+                resource="epicDescriptionFilterText",
+                subs=[("${DESCRIPTION}", translation)],
             )
         vrmode = babase.app.env.vr
         dnode = _bascenev1.newnode(
-            'text',
+            "text",
             attrs={
-                'v_attach': 'center',
-                'h_attach': 'center',
-                'h_align': 'center',
-                'color': (1, 1, 1, 1),
-                'shadow': 1.0 if vrmode else 0.5,
-                'flatness': 1.0 if vrmode else 0.5,
-                'vr_depth': -30,
-                'position': (0, 80),
-                'scale': 1.2,
-                'maxwidth': 700,
-                'text': translation,
+                "v_attach": "center",
+                "h_attach": "center",
+                "h_align": "center",
+                "color": (1, 1, 1, 1),
+                "shadow": 1.0 if vrmode else 0.5,
+                "flatness": 1.0 if vrmode else 0.5,
+                "vr_depth": -30,
+                "position": (0, 80),
+                "scale": 1.2,
+                "maxwidth": 700,
+                "text": translation,
             },
         )
         cnode = _bascenev1.newnode(
-            'combine',
+            "combine",
             owner=dnode,
-            attrs={'input0': 1.0, 'input1': 1.0, 'input2': 1.0, 'size': 4},
+            attrs={"input0": 1.0, "input1": 1.0, "input2": 1.0, "size": 4},
         )
-        cnode.connectattr('output', dnode, 'color')
+        cnode.connectattr("output", dnode, "color")
         keys = {0.5: 0, 1.0: 1.0, 2.5: 1.0, 4.0: 0.0}
-        animate(cnode, 'input3', keys)
+        animate(cnode, "input3", keys)
         _bascenev1.timer(4.0, dnode.delete)
 
     def _show_tip(self) -> None:
@@ -635,7 +611,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         if self.tips:
             tip = self.tips.pop(random.randrange(len(self.tips)))
             tip_title = babase.Lstr(
-                value='${A}:', subs=[('${A}', babase.Lstr(resource='tipText'))]
+                value="${A}:", subs=[("${A}", babase.Lstr(resource="tipText"))]
             )
             icon: bascenev1.Texture | None = None
             sound: bascenev1.Sound | None = None
@@ -647,10 +623,8 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
             # Do a few substitutions.
             tip_lstr = babase.Lstr(
-                translate=('tips', tip),
-                subs=[
-                    ('${PICKUP}', babase.charstr(babase.SpecialChar.TOP_BUTTON))
-                ],
+                translate=("tips", tip),
+                subs=[("${PICKUP}", babase.charstr(babase.SpecialChar.TOP_BUTTON))],
             )
             base_position = (75, 50)
             tip_scale = 0.8
@@ -659,18 +633,18 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
             t_offs = -350.0
             tnode = _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'text': tip_lstr,
-                    'scale': tip_scale,
-                    'maxwidth': 900,
-                    'position': (base_position[0] + t_offs, base_position[1]),
-                    'h_align': 'left',
-                    'vr_depth': 300,
-                    'shadow': 1.0 if vrmode else 0.5,
-                    'flatness': 1.0 if vrmode else 0.5,
-                    'v_align': 'center',
-                    'v_attach': 'bottom',
+                    "text": tip_lstr,
+                    "scale": tip_scale,
+                    "maxwidth": 900,
+                    "position": (base_position[0] + t_offs, base_position[1]),
+                    "h_align": "left",
+                    "vr_depth": 300,
+                    "shadow": 1.0 if vrmode else 0.5,
+                    "flatness": 1.0 if vrmode else 0.5,
+                    "v_align": "center",
+                    "v_attach": "bottom",
                 },
             )
             t2pos = (
@@ -678,55 +652,53 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
                 base_position[1] + 2,
             )
             t2node = _bascenev1.newnode(
-                'text',
+                "text",
                 owner=tnode,
                 attrs={
-                    'text': tip_title,
-                    'scale': tip_title_scale,
-                    'position': t2pos,
-                    'h_align': 'right',
-                    'vr_depth': 300,
-                    'shadow': 1.0 if vrmode else 0.5,
-                    'flatness': 1.0 if vrmode else 0.5,
-                    'maxwidth': 140,
-                    'v_align': 'center',
-                    'v_attach': 'bottom',
+                    "text": tip_title,
+                    "scale": tip_title_scale,
+                    "position": t2pos,
+                    "h_align": "right",
+                    "vr_depth": 300,
+                    "shadow": 1.0 if vrmode else 0.5,
+                    "flatness": 1.0 if vrmode else 0.5,
+                    "maxwidth": 140,
+                    "v_align": "center",
+                    "v_attach": "bottom",
                 },
             )
             if icon is not None:
                 ipos = (base_position[0] + t_offs - 40, base_position[1] + 1)
                 img = _bascenev1.newnode(
-                    'image',
+                    "image",
                     attrs={
-                        'texture': icon,
-                        'position': ipos,
-                        'scale': (50, 50),
-                        'opacity': 1.0,
-                        'vr_depth': 315,
-                        'color': (1, 1, 1),
-                        'absolute_scale': True,
-                        'attach': 'bottomCenter',
+                        "texture": icon,
+                        "position": ipos,
+                        "scale": (50, 50),
+                        "opacity": 1.0,
+                        "vr_depth": 315,
+                        "color": (1, 1, 1),
+                        "absolute_scale": True,
+                        "attach": "bottomCenter",
                     },
                 )
-                animate(img, 'opacity', {0: 0, 1.0: 1, 4.0: 1, 5.0: 0})
+                animate(img, "opacity", {0: 0, 1.0: 1, 4.0: 1, 5.0: 0})
                 _bascenev1.timer(5.0, img.delete)
             if sound is not None:
                 sound.play()
 
             combine = _bascenev1.newnode(
-                'combine',
+                "combine",
                 owner=tnode,
-                attrs={'input0': 1.0, 'input1': 0.8, 'input2': 1.0, 'size': 4},
+                attrs={"input0": 1.0, "input1": 0.8, "input2": 1.0, "size": 4},
             )
-            combine.connectattr('output', tnode, 'color')
-            combine.connectattr('output', t2node, 'color')
-            animate(combine, 'input3', {0: 0, 1.0: 1, 4.0: 1, 5.0: 0})
+            combine.connectattr("output", tnode, "color")
+            combine.connectattr("output", t2node, "color")
+            animate(combine, "input3", {0: 0, 1.0: 1, 4.0: 1, 5.0: 0})
             _bascenev1.timer(5.0, tnode.delete)
 
     @override
-    def end(
-        self, results: Any = None, delay: float = 0.0, force: bool = False
-    ) -> None:
+    def end(self, results: Any = None, delay: float = 0.0, force: bool = False) -> None:
         from bascenev1._gameresults import GameResults
 
         # If results is a standard team-game-results, associate it with us
@@ -744,10 +716,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             self._standard_time_limit_text = None
 
         # Ditto with tournament time limits.
-        if (
-            self._tournament_time_limit is not None
-            and self._tournament_time_limit > 0
-        ):
+        if self._tournament_time_limit is not None and self._tournament_time_limit > 0:
             self._tournament_time_limit_timer = None
             self._tournament_time_limit_text = None
             self._tournament_time_limit_title_text = None
@@ -764,8 +733,8 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         the game.
         """
         print(
-            'WARNING: default end_game() implementation called;'
-            ' your game should override this.'
+            "WARNING: default end_game() implementation called;"
+            " your game should override this."
         )
 
     def respawn_player(
@@ -794,8 +763,8 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
                 respawn_time = 7.0
 
         # If this standard setting is present, factor it in.
-        if 'Respawn Times' in self.settings_raw:
-            respawn_time *= self.settings_raw['Respawn Times']
+        if "Respawn Times" in self.settings_raw:
+            respawn_time *= self.settings_raw["Respawn Times"]
 
         # We want whole seconds.
         assert respawn_time is not None
@@ -804,13 +773,11 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         if player.actor and not self.has_ended():
             from bascenev1lib.actor.respawnicon import RespawnIcon
 
-            player.customdata['respawn_timer'] = _bascenev1.Timer(
+            player.customdata["respawn_timer"] = _bascenev1.Timer(
                 respawn_time,
                 babase.WeakCall(self.spawn_player_if_exists, player),
             )
-            player.customdata['respawn_icon'] = RespawnIcon(
-                player, respawn_time
-            )
+            player.customdata["respawn_icon"] = RespawnIcon(player, respawn_time)
 
     def spawn_player_if_exists(self, player: PlayerT) -> None:
         """
@@ -850,7 +817,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         color = player.color
         highlight = player.highlight
 
-        playerspaztype = getattr(player, 'playerspaztype', PlayerSpaz)
+        playerspaztype = getattr(player, "playerspaztype", PlayerSpaz)
         if not issubclass(playerspaztype, PlayerSpaz):
             playerspaztype = PlayerSpaz
 
@@ -870,10 +837,10 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         # material that allows us to collide with the player-walls.
         # FIXME: Need to generalize this.
         if isinstance(self.session, CoopSession) and self.map.getname() in [
-            'Courtyard',
-            'Tower D',
+            "Courtyard",
+            "Tower D",
         ]:
-            mat = self.map.preloaddata['collide_with_wall_material']
+            mat = self.map.preloaddata["collide_with_wall_material"]
             assert isinstance(spaz.node.materials, tuple)
             assert isinstance(spaz.node.roller_materials, tuple)
             spaz.node.materials += (mat,)
@@ -890,9 +857,9 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             )
         )
         self._spawn_sound.play(1, position=spaz.node.position)
-        light = _bascenev1.newnode('light', attrs={'color': light_color})
-        spaz.node.connectattr('position', light, 'position')
-        animate(light, 'intensity', {0: 0, 0.25: 1, 0.5: 0})
+        light = _bascenev1.newnode("light", attrs={"color": light_color})
+        spaz.node.connectattr("position", light, "position")
+        animate(light, "intensity", {0: 0, 0.25: 1, 0.5: 0})
         _bascenev1.timer(0.5, light.delete)
         return spaz
 
@@ -927,9 +894,7 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         # Drop one powerup per point.
         points = self.map.powerup_spawn_points
         for i in range(len(points)):
-            _bascenev1.timer(
-                i * 0.4, babase.WeakCall(self._standard_drop_powerup, i)
-            )
+            _bascenev1.timer(i * 0.4, babase.WeakCall(self._standard_drop_powerup, i))
 
     def _setup_standard_tnt_drops(self) -> None:
         """Standard tnt drop."""
@@ -958,30 +923,30 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         )
         self._standard_time_limit_text = NodeActor(
             _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'v_attach': 'top',
-                    'h_attach': 'center',
-                    'h_align': 'left',
-                    'color': (1.0, 1.0, 1.0, 0.5),
-                    'position': (-25, -30),
-                    'flatness': 1.0,
-                    'scale': 0.9,
+                    "v_attach": "top",
+                    "h_attach": "center",
+                    "h_align": "left",
+                    "color": (1.0, 1.0, 1.0, 0.5),
+                    "position": (-25, -30),
+                    "flatness": 1.0,
+                    "scale": 0.9,
                 },
             )
         )
         self._standard_time_limit_text_input = NodeActor(
             _bascenev1.newnode(
-                'timedisplay', attrs={'time2': duration * 1000, 'timemin': 0}
+                "timedisplay", attrs={"time2": duration * 1000, "timemin": 0}
             )
         )
         self.globalsnode.connectattr(
-            'time', self._standard_time_limit_text_input.node, 'time1'
+            "time", self._standard_time_limit_text_input.node, "time1"
         )
         assert self._standard_time_limit_text_input.node
         assert self._standard_time_limit_text.node
         self._standard_time_limit_text_input.node.connectattr(
-            'output', self._standard_time_limit_text.node, 'text'
+            "output", self._standard_time_limit_text.node, "text"
         )
 
     def _standard_time_limit_tick(self) -> None:
@@ -996,35 +961,35 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
                 self._standard_time_limit_text.node.scale = 1.3
                 self._standard_time_limit_text.node.position = (-30, -45)
                 cnode = _bascenev1.newnode(
-                    'combine',
+                    "combine",
                     owner=self._standard_time_limit_text.node,
-                    attrs={'size': 4},
+                    attrs={"size": 4},
                 )
                 cnode.connectattr(
-                    'output', self._standard_time_limit_text.node, 'color'
+                    "output", self._standard_time_limit_text.node, "color"
                 )
-                animate(cnode, 'input0', {0: 1, 0.15: 1}, loop=True)
-                animate(cnode, 'input1', {0: 1, 0.15: 0.5}, loop=True)
-                animate(cnode, 'input2', {0: 0.1, 0.15: 0.0}, loop=True)
+                animate(cnode, "input0", {0: 1, 0.15: 1}, loop=True)
+                animate(cnode, "input1", {0: 1, 0.15: 0.5}, loop=True)
+                animate(cnode, "input2", {0: 0.1, 0.15: 0.0}, loop=True)
                 cnode.input3 = 1.0
-            _bascenev1.getsound('tick').play()
+            _bascenev1.getsound("tick").play()
         if self._standard_time_limit_time <= 0:
             self._standard_time_limit_timer = None
             self.end_game()
             node = _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'v_attach': 'top',
-                    'h_attach': 'center',
-                    'h_align': 'center',
-                    'color': (1, 0.7, 0, 1),
-                    'position': (0, -90),
-                    'scale': 1.2,
-                    'text': babase.Lstr(resource='timeExpiredText'),
+                    "v_attach": "top",
+                    "h_attach": "center",
+                    "h_align": "center",
+                    "color": (1, 0.7, 0, 1),
+                    "position": (0, -90),
+                    "scale": 1.2,
+                    "text": babase.Lstr(resource="timeExpiredText"),
                 },
             )
-            _bascenev1.getsound('refWhistle').play()
-            animate(node, 'scale', {0.0: 0.0, 0.1: 1.4, 0.15: 1.2})
+            _bascenev1.getsound("refWhistle").play()
+            animate(node, "scale", {0.0: 0.0, 0.1: 1.4, 0.15: 1.2})
 
     def _setup_tournament_time_limit(self, duration: float) -> None:
         """
@@ -1048,52 +1013,52 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         )
         self._tournament_time_limit_title_text = NodeActor(
             _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'v_attach': 'bottom',
-                    'h_attach': 'right',
-                    'h_align': 'center',
-                    'v_align': 'center',
-                    'vr_depth': 300,
-                    'maxwidth': 100,
-                    'color': (1.0, 1.0, 1.0, 0.5),
-                    'position': (-60, 50),
-                    'flatness': 1.0,
-                    'scale': 0.5,
-                    'text': babase.Lstr(resource='tournamentText'),
+                    "v_attach": "bottom",
+                    "h_attach": "right",
+                    "h_align": "center",
+                    "v_align": "center",
+                    "vr_depth": 300,
+                    "maxwidth": 100,
+                    "color": (1.0, 1.0, 1.0, 0.5),
+                    "position": (-60, 50),
+                    "flatness": 1.0,
+                    "scale": 0.5,
+                    "text": babase.Lstr(resource="tournamentText"),
                 },
             )
         )
         self._tournament_time_limit_text = NodeActor(
             _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'v_attach': 'bottom',
-                    'h_attach': 'right',
-                    'h_align': 'center',
-                    'v_align': 'center',
-                    'vr_depth': 300,
-                    'maxwidth': 100,
-                    'color': (1.0, 1.0, 1.0, 0.5),
-                    'position': (-60, 30),
-                    'flatness': 1.0,
-                    'scale': 0.9,
+                    "v_attach": "bottom",
+                    "h_attach": "right",
+                    "h_align": "center",
+                    "v_align": "center",
+                    "vr_depth": 300,
+                    "maxwidth": 100,
+                    "color": (1.0, 1.0, 1.0, 0.5),
+                    "position": (-60, 30),
+                    "flatness": 1.0,
+                    "scale": 0.9,
                 },
             )
         )
         self._tournament_time_limit_text_input = NodeActor(
             _bascenev1.newnode(
-                'timedisplay',
+                "timedisplay",
                 attrs={
-                    'timemin': 0,
-                    'time2': self._tournament_time_limit * 1000,
+                    "timemin": 0,
+                    "time2": self._tournament_time_limit * 1000,
                 },
             )
         )
         assert self._tournament_time_limit_text.node
         assert self._tournament_time_limit_text_input.node
         self._tournament_time_limit_text_input.node.connectattr(
-            'output', self._tournament_time_limit_text.node, 'text'
+            "output", self._tournament_time_limit_text.node, "text"
         )
 
     def _tournament_time_limit_tick(self) -> None:
@@ -1112,44 +1077,44 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
                 self._tournament_time_limit_title_text.node.position = (80, 85)
                 self._tournament_time_limit_text.node.position = (80, 60)
                 cnode = _bascenev1.newnode(
-                    'combine',
+                    "combine",
                     owner=self._tournament_time_limit_text.node,
-                    attrs={'size': 4},
+                    attrs={"size": 4},
                 )
                 cnode.connectattr(
-                    'output',
+                    "output",
                     self._tournament_time_limit_title_text.node,
-                    'color',
+                    "color",
                 )
                 cnode.connectattr(
-                    'output', self._tournament_time_limit_text.node, 'color'
+                    "output", self._tournament_time_limit_text.node, "color"
                 )
-                animate(cnode, 'input0', {0: 1, 0.15: 1}, loop=True)
-                animate(cnode, 'input1', {0: 1, 0.15: 0.5}, loop=True)
-                animate(cnode, 'input2', {0: 0.1, 0.15: 0.0}, loop=True)
+                animate(cnode, "input0", {0: 1, 0.15: 1}, loop=True)
+                animate(cnode, "input1", {0: 1, 0.15: 0.5}, loop=True)
+                animate(cnode, "input2", {0: 0.1, 0.15: 0.0}, loop=True)
                 cnode.input3 = 1.0
-            _bascenev1.getsound('tick').play()
+            _bascenev1.getsound("tick").play()
         if self._tournament_time_limit <= 0:
             self._tournament_time_limit_timer = None
             self.end_game()
             tval = babase.Lstr(
-                resource='tournamentTimeExpiredText',
-                fallback_resource='timeExpiredText',
+                resource="tournamentTimeExpiredText",
+                fallback_resource="timeExpiredText",
             )
             node = _bascenev1.newnode(
-                'text',
+                "text",
                 attrs={
-                    'v_attach': 'top',
-                    'h_attach': 'center',
-                    'h_align': 'center',
-                    'color': (1, 0.7, 0, 1),
-                    'position': (0, -200),
-                    'scale': 1.6,
-                    'text': tval,
+                    "v_attach": "top",
+                    "h_attach": "center",
+                    "h_align": "center",
+                    "color": (1, 0.7, 0, 1),
+                    "position": (0, -200),
+                    "scale": 1.6,
+                    "text": tval,
                 },
             )
-            _bascenev1.getsound('refWhistle').play()
-            animate(node, 'scale', {0: 0.0, 0.1: 1.4, 0.15: 1.2})
+            _bascenev1.getsound("refWhistle").play()
+            animate(node, "scale", {0: 0.0, 0.1: 1.4, 0.15: 1.2})
 
         # Normally we just connect this to time, but since this is a bit of a
         # funky setup we just update it manually once per second.
@@ -1197,8 +1162,8 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
     def _calc_map_name(self, settings: dict) -> str:
         map_name: str
-        if 'map' in settings:
-            map_name = settings['map']
+        if "map" in settings:
+            map_name = settings["map"]
         else:
             # If settings doesn't specify a map, pick a random one from the
             # list of supported ones.
@@ -1214,8 +1179,8 @@ class GameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             ]
             if not valid_maps:
                 _bascenev1.broadcastmessage(
-                    babase.Lstr(resource='noValidMapsErrorText')
+                    babase.Lstr(resource="noValidMapsErrorText")
                 )
-                raise RuntimeError('No valid maps')
+                raise RuntimeError("No valid maps")
             map_name = valid_maps[random.randrange(len(valid_maps))]
         return map_name

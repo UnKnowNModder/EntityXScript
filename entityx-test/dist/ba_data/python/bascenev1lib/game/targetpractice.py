@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from bascenev1lib.actor.bomb import Blast
 
 
-class Player(bs.Player['Team']):
+class Player(bs.Player["Team"]):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -41,19 +41,19 @@ class Team(bs.Team[Player]):
 class TargetPracticeGame(bs.TeamGameActivity[Player, Team]):
     """Game where players try to hit targets with bombs."""
 
-    name = 'Target Practice'
-    description = 'Bomb as many targets as you can.'
+    name = "Target Practice"
+    description = "Bomb as many targets as you can."
     available_settings = [
-        bs.IntSetting('Target Count', min_value=1, default=3),
-        bs.BoolSetting('Enable Impact Bombs', default=True),
-        bs.BoolSetting('Enable Triple Bombs', default=True),
+        bs.IntSetting("Target Count", min_value=1, default=3),
+        bs.BoolSetting("Enable Impact Bombs", default=True),
+        bs.BoolSetting("Enable Triple Bombs", default=True),
     ]
     default_music = bs.MusicType.FORWARD_MARCH
 
     @override
     @classmethod
     def get_supported_maps(cls, sessiontype: type[bs.Session]) -> list[str]:
-        return ['Doom Shroom']
+        return ["Doom Shroom"]
 
     @override
     @classmethod
@@ -69,9 +69,9 @@ class TargetPracticeGame(bs.TeamGameActivity[Player, Team]):
         self._targets: list[Target] = []
         self._update_timer: bs.Timer | None = None
         self._countdown: OnScreenCountdown | None = None
-        self._target_count = int(settings['Target Count'])
-        self._enable_impact_bombs = bool(settings['Enable Impact Bombs'])
-        self._enable_triple_bombs = bool(settings['Enable Triple Bombs'])
+        self._target_count = int(settings["Target Count"])
+        self._enable_impact_bombs = bool(settings["Enable Impact Bombs"])
+        self._enable_triple_bombs = bool(settings["Enable Triple Bombs"])
 
     @override
     def on_team_join(self, team: Team) -> None:
@@ -109,7 +109,7 @@ class TargetPracticeGame(bs.TeamGameActivity[Player, Team]):
         # Give players permanent triple impact bombs and wire them up
         # to tell us when they drop a bomb.
         if self._enable_impact_bombs:
-            spaz.bomb_type = 'impact'
+            spaz.bomb_type = "impact"
         if self._enable_triple_bombs:
             spaz.set_bomb_count(3)
         spaz.add_dropped_bomb_callback(self._on_spaz_dropped_bomb)
@@ -164,8 +164,7 @@ class TargetPracticeGame(bs.TeamGameActivity[Player, Team]):
             return
 
         bullseye = any(
-            target.do_hit_at_position(pos, player)
-            for target in list(self._targets)
+            target.do_hit_at_position(pos, player) for target in list(self._targets)
         )
         if bullseye:
             player.streak += 1
@@ -227,43 +226,43 @@ class Target(bs.Actor):
         # isn't too far off from the actual object.
         show_in_space = False
         loc1 = bs.newnode(
-            'locator',
+            "locator",
             attrs={
-                'shape': 'circle',
-                'position': position,
-                'color': (0, 1, 0),
-                'opacity': 0.5,
-                'draw_beauty': show_in_space,
-                'additive': True,
+                "shape": "circle",
+                "position": position,
+                "color": (0, 1, 0),
+                "opacity": 0.5,
+                "draw_beauty": show_in_space,
+                "additive": True,
             },
         )
         loc2 = bs.newnode(
-            'locator',
+            "locator",
             attrs={
-                'shape': 'circleOutline',
-                'position': position,
-                'color': (0, 1, 0),
-                'opacity': 0.3,
-                'draw_beauty': False,
-                'additive': True,
+                "shape": "circleOutline",
+                "position": position,
+                "color": (0, 1, 0),
+                "opacity": 0.3,
+                "draw_beauty": False,
+                "additive": True,
             },
         )
         loc3 = bs.newnode(
-            'locator',
+            "locator",
             attrs={
-                'shape': 'circleOutline',
-                'position': position,
-                'color': (0, 1, 0),
-                'opacity': 0.1,
-                'draw_beauty': False,
-                'additive': True,
+                "shape": "circleOutline",
+                "position": position,
+                "color": (0, 1, 0),
+                "opacity": 0.1,
+                "draw_beauty": False,
+                "additive": True,
             },
         )
         self._nodes = [loc1, loc2, loc3]
-        bs.animate_array(loc1, 'size', 1, {0: [0.0], 0.2: [self._r1 * 2.0]})
-        bs.animate_array(loc2, 'size', 1, {0.05: [0.0], 0.25: [self._r2 * 2.0]})
-        bs.animate_array(loc3, 'size', 1, {0.1: [0.0], 0.3: [self._r3 * 2.0]})
-        bs.getsound('laserReverse').play()
+        bs.animate_array(loc1, "size", 1, {0: [0.0], 0.2: [self._r1 * 2.0]})
+        bs.animate_array(loc2, "size", 1, {0.05: [0.0], 0.25: [self._r2 * 2.0]})
+        bs.animate_array(loc3, "size", 1, {0.1: [0.0], 0.3: [self._r3 * 2.0]})
+        bs.getsound("laserReverse").play()
 
     @override
     def exists(self) -> bool:
@@ -315,52 +314,48 @@ class Target(bs.Actor):
                 bullseye = True
                 self._nodes[1].color = cdull
                 self._nodes[2].color = cdull
-                bs.animate_array(self._nodes[0], 'color', 3, keys, loop=True)
+                bs.animate_array(self._nodes[0], "color", 3, keys, loop=True)
                 popupscale = 1.8
                 popupcolor = (1, 1, 0, 1)
                 streak = player.streak
                 points = 10 + min(20, streak * 2)
-                bs.getsound('bellHigh').play()
+                bs.getsound("bellHigh").play()
                 if streak > 0:
                     bs.getsound(
-                        'orchestraHit4'
+                        "orchestraHit4"
                         if streak > 3
                         else (
-                            'orchestraHit3'
+                            "orchestraHit3"
                             if streak > 2
-                            else (
-                                'orchestraHit2'
-                                if streak > 1
-                                else 'orchestraHit'
-                            )
+                            else ("orchestraHit2" if streak > 1 else "orchestraHit")
                         )
                     ).play()
             elif dist <= self._r2 + self._rfudge:
                 self._nodes[0].color = cdull
                 self._nodes[2].color = cdull
-                bs.animate_array(self._nodes[1], 'color', 3, keys, loop=True)
+                bs.animate_array(self._nodes[1], "color", 3, keys, loop=True)
                 popupscale = 1.25
                 popupcolor = (1, 0.5, 0.2, 1)
                 points = 4
-                bs.getsound('bellMed').play()
+                bs.getsound("bellMed").play()
             else:
                 self._nodes[0].color = cdull
                 self._nodes[1].color = cdull
-                bs.animate_array(self._nodes[2], 'color', 3, keys, loop=True)
+                bs.animate_array(self._nodes[2], "color", 3, keys, loop=True)
                 popupscale = 1.0
                 popupcolor = (0.8, 0.3, 0.3, 1)
                 points = 2
-                bs.getsound('bellLow').play()
+                bs.getsound("bellLow").play()
 
             # Award points/etc.. (technically should probably leave this up
             # to the activity).
-            popupstr = '+' + str(points)
+            popupstr = "+" + str(points)
 
             # If there's more than 1 player in the game, include their
             # names and colors so they know who got the hit.
             if len(activity.players) > 1:
                 popupcolor = bs.safecolor(player.color, target_intensity=0.75)
-                popupstr += ' ' + player.getname()
+                popupstr += " " + player.getname()
             PopupText(
                 popupstr,
                 position=self._position,
@@ -382,19 +377,19 @@ class Target(bs.Actor):
 
             bs.animate_array(
                 self._nodes[0],
-                'size',
+                "size",
                 1,
                 {0.8: self._nodes[0].size, 1.0: [0.0]},
             )
             bs.animate_array(
                 self._nodes[1],
-                'size',
+                "size",
                 1,
                 {0.85: self._nodes[1].size, 1.05: [0.0]},
             )
             bs.animate_array(
                 self._nodes[2],
-                'size',
+                "size",
                 1,
                 {0.9: self._nodes[2].size, 1.1: [0.0]},
             )

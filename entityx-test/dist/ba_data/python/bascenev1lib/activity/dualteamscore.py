@@ -17,12 +17,12 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
 
     def __init__(self, settings: dict):
         super().__init__(settings=settings)
-        self._winner: bs.SessionTeam = settings['winner']
+        self._winner: bs.SessionTeam = settings["winner"]
         assert isinstance(self._winner, bs.SessionTeam)
 
     @override
     def on_begin(self) -> None:
-        bs.set_analytics_screen('Teams Score Screen')
+        bs.set_analytics_screen("Teams Score Screen")
         super().on_begin()
 
         height = 130
@@ -35,15 +35,15 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         # 'First to 4'.
         session = self.session
         assert isinstance(session, bs.MultiTeamSession)
-        if bs.app.lang.get_resource('bestOfUseFirstToInstead'):
+        if bs.app.lang.get_resource("bestOfUseFirstToInstead"):
             best_txt = bs.Lstr(
-                resource='firstToSeriesText',
-                subs=[('${COUNT}', str(session.get_series_length() / 2 + 1))],
+                resource="firstToSeriesText",
+                subs=[("${COUNT}", str(session.get_series_length() / 2 + 1))],
             )
         else:
             best_txt = bs.Lstr(
-                resource='bestOfSeriesText',
-                subs=[('${COUNT}', str(session.get_series_length()))],
+                resource="bestOfSeriesText",
+                subs=[("${COUNT}", str(session.get_series_length()))],
             )
 
         ZoomText(
@@ -53,7 +53,7 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             shiftdelay=2.5,
             flash=False,
             trail=False,
-            h_align='center',
+            h_align="center",
             scale=0.25,
             color=(0.5, 0.5, 0.5, 1.0),
             jitter=3.0,
@@ -108,13 +108,13 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
     ) -> None:
         del kill_delay  # Unused arg.
         ZoomText(
-            bs.Lstr(value='${A}:', subs=[('${A}', team.name)]),
+            bs.Lstr(value="${A}:", subs=[("${A}", team.name)]),
             position=(100, pos_v),
             shiftposition=(-150, pos_v),
             shiftdelay=shiftdelay,
             flash=False,
             trail=False,
-            h_align='right',
+            h_align="right",
             maxwidth=300,
             color=team.color,
             jitter=1.0,
@@ -124,7 +124,7 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         self, pos_v: float, sessionteam: bs.SessionTeam, shiftdelay: float
     ) -> None:
         ZoomText(
-            str(sessionteam.customdata['score'] - 1),
+            str(sessionteam.customdata["score"] - 1),
             position=(150, pos_v),
             maxwidth=100,
             color=(0.6, 0.6, 0.7),
@@ -133,7 +133,7 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             flash=False,
             trail=False,
             lifespan=1.0,
-            h_align='left',
+            h_align="left",
             jitter=1.0,
         ).autoretain()
 
@@ -148,7 +148,7 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         # pylint: disable=too-many-positional-arguments
         del kill_delay  # Unused arg.
         ZoomText(
-            str(sessionteam.customdata['score']),
+            str(sessionteam.customdata["score"]),
             position=(150, pos_v),
             maxwidth=100,
             color=(1.0, 0.9, 0.5) if scored else (0.6, 0.6, 0.7),
@@ -156,7 +156,7 @@ class TeamVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             shiftdelay=shiftdelay,
             flash=scored,
             trail=scored,
-            h_align='left',
+            h_align="left",
             jitter=1.0,
             trailcolor=(1, 0.8, 0.0, 0),
         ).autoretain()

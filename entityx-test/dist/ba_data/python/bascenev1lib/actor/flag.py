@@ -45,61 +45,61 @@ class FlagFactory:
         self.flagmaterial = bs.Material()
         self.flagmaterial.add_actions(
             conditions=(
-                ('we_are_younger_than', 100),
-                'and',
-                ('they_have_material', shared.object_material),
+                ("we_are_younger_than", 100),
+                "and",
+                ("they_have_material", shared.object_material),
             ),
-            actions=('modify_node_collision', 'collide', False),
+            actions=("modify_node_collision", "collide", False),
         )
 
         self.flagmaterial.add_actions(
             conditions=(
-                'they_have_material',
+                "they_have_material",
                 shared.footing_material,
             ),
             actions=(
-                ('message', 'our_node', 'at_connect', 'footing', 1),
-                ('message', 'our_node', 'at_disconnect', 'footing', -1),
+                ("message", "our_node", "at_connect", "footing", 1),
+                ("message", "our_node", "at_disconnect", "footing", -1),
             ),
         )
 
-        self.impact_sound = bs.getsound('metalHit')
-        self.skid_sound = bs.getsound('metalSkid')
+        self.impact_sound = bs.getsound("metalHit")
+        self.skid_sound = bs.getsound("metalSkid")
         self.flagmaterial.add_actions(
             conditions=(
-                'they_have_material',
+                "they_have_material",
                 shared.footing_material,
             ),
             actions=(
-                ('impact_sound', self.impact_sound, 2, 5),
-                ('skid_sound', self.skid_sound, 2, 5),
+                ("impact_sound", self.impact_sound, 2, 5),
+                ("skid_sound", self.skid_sound, 2, 5),
             ),
         )
 
         self.no_hit_material = bs.Material()
         self.no_hit_material.add_actions(
             conditions=(
-                ('they_have_material', shared.pickup_material),
-                'or',
-                ('they_have_material', shared.attack_material),
+                ("they_have_material", shared.pickup_material),
+                "or",
+                ("they_have_material", shared.attack_material),
             ),
-            actions=('modify_part_collision', 'collide', False),
+            actions=("modify_part_collision", "collide", False),
         )
 
         # We also don't want anything moving it.
         self.no_hit_material.add_actions(
             conditions=(
-                ('they_have_material', shared.object_material),
-                'or',
-                ('they_dont_have_material', shared.footing_material),
+                ("they_have_material", shared.object_material),
+                "or",
+                ("they_dont_have_material", shared.footing_material),
             ),
             actions=(
-                ('modify_part_collision', 'collide', False),
-                ('modify_part_collision', 'physical', False),
+                ("modify_part_collision", "collide", False),
+                ("modify_part_collision", "physical", False),
             ),
         )
 
-        self.flag_texture = bs.gettexture('flagColor')
+        self.flag_texture = bs.gettexture("flagColor")
 
     @classmethod
     def get(cls) -> FlagFactory:
@@ -194,12 +194,12 @@ class Flag(bs.Actor):
             factory.flagmaterial,
         ] + materials
         self.node = bs.newnode(
-            'flag',
+            "flag",
             attrs={
-                'position': (position[0], position[1] + 0.75, position[2]),
-                'color_texture': factory.flag_texture,
-                'color': color,
-                'materials': finalmaterials,
+                "position": (position[0], position[1] + 0.75, position[2]),
+                "color_texture": factory.flag_texture,
+                "color": color,
+                "materials": finalmaterials,
             },
             delegate=self,
         )
@@ -210,19 +210,17 @@ class Flag(bs.Actor):
         self._counter: bs.Node | None
         if self._dropped_timeout is not None:
             self._count = self._dropped_timeout
-            self._tick_timer = bs.Timer(
-                1.0, call=bs.WeakCall(self._tick), repeat=True
-            )
+            self._tick_timer = bs.Timer(1.0, call=bs.WeakCall(self._tick), repeat=True)
             self._counter = bs.newnode(
-                'text',
+                "text",
                 owner=self.node,
                 attrs={
-                    'in_world': True,
-                    'color': (1, 1, 1, 0.7),
-                    'scale': 0.015,
-                    'shadow': 0.5,
-                    'flatness': 1.0,
-                    'h_align': 'center',
+                    "in_world": True,
+                    "color": (1, 1, 1, 0.7),
+                    "scale": 0.015,
+                    "shadow": 0.5,
+                    "flatness": 1.0,
+                    "h_align": "center",
                 },
             )
         else:
@@ -255,7 +253,7 @@ class Flag(bs.Actor):
                 assert self._dropped_timeout is not None
                 assert self._counter
                 self._count = self._dropped_timeout
-                self._counter.text = ''
+                self._counter.text = ""
             else:
                 self._count -= 1
                 if self._count <= 10:
@@ -268,19 +266,15 @@ class Flag(bs.Actor):
                     )
                     self._counter.text = str(self._count)
                     if self._count < 1:
-                        self.handlemessage(
-                            bs.DieMessage(how=bs.DeathType.LEFT_GAME)
-                        )
+                        self.handlemessage(bs.DieMessage(how=bs.DeathType.LEFT_GAME))
                 else:
                     assert self._counter
-                    self._counter.text = ''
+                    self._counter.text = ""
 
     def _hide_score_text(self) -> None:
         assert self._score_text is not None
         assert isinstance(self._score_text.scale, float)
-        bs.animate(
-            self._score_text, 'scale', {0: self._score_text.scale, 0.2: 0}
-        )
+        bs.animate(self._score_text, "scale", {0: self._score_text.scale, 0.2: 0})
 
     def set_score_text(self, text: str) -> None:
         """Show a message over the flag; handy for scores."""
@@ -289,33 +283,31 @@ class Flag(bs.Actor):
         if not self._score_text:
             start_scale = 0.0
             math = bs.newnode(
-                'math',
+                "math",
                 owner=self.node,
-                attrs={'input1': (0, 1.4, 0), 'operation': 'add'},
+                attrs={"input1": (0, 1.4, 0), "operation": "add"},
             )
-            self.node.connectattr('position', math, 'input2')
+            self.node.connectattr("position", math, "input2")
             self._score_text = bs.newnode(
-                'text',
+                "text",
                 owner=self.node,
                 attrs={
-                    'text': text,
-                    'in_world': True,
-                    'scale': 0.02,
-                    'shadow': 0.5,
-                    'flatness': 1.0,
-                    'h_align': 'center',
+                    "text": text,
+                    "in_world": True,
+                    "scale": 0.02,
+                    "shadow": 0.5,
+                    "flatness": 1.0,
+                    "h_align": "center",
                 },
             )
-            math.connectattr('output', self._score_text, 'position')
+            math.connectattr("output", self._score_text, "position")
         else:
             assert isinstance(self._score_text.scale, float)
             start_scale = self._score_text.scale
             self._score_text.text = text
         self._score_text.color = bs.safecolor(self.node.color)
-        bs.animate(self._score_text, 'scale', {0: start_scale, 0.2: 0.02})
-        self._score_text_hide_timer = bs.Timer(
-            1.0, bs.WeakCall(self._hide_score_text)
-        )
+        bs.animate(self._score_text, "scale", {0: start_scale, 0.2: 0.02})
+        self._score_text_hide_timer = bs.Timer(1.0, bs.WeakCall(self._hide_score_text))
 
     @override
     def handlemessage(self, msg: Any) -> Any:
@@ -325,15 +317,13 @@ class Flag(bs.Actor):
                 self.node.delete()
                 if not msg.immediate:
                     self.activity.handlemessage(
-                        FlagDiedMessage(
-                            self, (msg.how is bs.DeathType.LEFT_GAME)
-                        )
+                        FlagDiedMessage(self, (msg.how is bs.DeathType.LEFT_GAME))
                     )
         elif isinstance(msg, bs.HitMessage):
             assert self.node
             assert msg.force_direction is not None
             self.node.handlemessage(
-                'impulse',
+                "impulse",
                 msg.pos[0],
                 msg.pos[1],
                 msg.pos[2],
@@ -351,12 +341,12 @@ class Flag(bs.Actor):
         elif isinstance(msg, bs.PickedUpMessage):
             self._held_count += 1
             if self._held_count == 1 and self._counter is not None:
-                self._counter.text = ''
+                self._counter.text = ""
             self.activity.handlemessage(FlagPickedUpMessage(self, msg.node))
         elif isinstance(msg, bs.DroppedMessage):
             self._held_count -= 1
             if self._held_count < 0:
-                print('Flag held count < 0.')
+                print("Flag held count < 0.")
                 self._held_count = 0
             self.activity.handlemessage(FlagDroppedMessage(self, msg.node))
         else:
@@ -370,4 +360,4 @@ class Flag(bs.Actor):
         movable flag originated from.
         """
         assert len(pos) == 3
-        bs.emitfx(position=pos, emit_type='flag_stand')
+        bs.emitfx(position=pos, emit_type="flag_stand")

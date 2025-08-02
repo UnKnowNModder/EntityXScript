@@ -22,19 +22,19 @@ class ConfigKeyboardWindow(bui.MainWindow):
     def __init__(
         self,
         c: bs.InputDevice,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
-        self._r = 'configKeyboardWindow'
+        self._r = "configKeyboardWindow"
         self._input = c
         self._name = self._input.name
         self._unique_id = self._input.unique_identifier
         dname_raw = self._name
-        if self._unique_id != '#1':
-            dname_raw += ' ' + self._unique_id.replace('#', 'P')
-        self._displayname = bui.Lstr(translate=('inputDeviceNames', dname_raw))
+        if self._unique_id != "#1":
+            dname_raw += " " + self._unique_id.replace("#", "P")
+        self._displayname = bui.Lstr(translate=("inputDeviceNames", dname_raw))
         self._width = 700
-        if self._unique_id != '#1':
+        if self._unique_id != "#1":
             self._height = 480
         else:
             self._height = 375
@@ -80,22 +80,20 @@ class ConfigKeyboardWindow(bui.MainWindow):
 
     def _get_config_mapping(self, default: bool = False) -> None:
         for button in [
-            'buttonJump',
-            'buttonPunch',
-            'buttonBomb',
-            'buttonPickUp',
-            'buttonStart',
-            'buttonStart2',
-            'buttonUp',
-            'buttonDown',
-            'buttonLeft',
-            'buttonRight',
+            "buttonJump",
+            "buttonPunch",
+            "buttonBomb",
+            "buttonPickUp",
+            "buttonStart",
+            "buttonStart2",
+            "buttonUp",
+            "buttonDown",
+            "buttonLeft",
+            "buttonRight",
         ]:
             assert bui.app.classic is not None
-            self._settings[button] = (
-                bui.app.classic.get_input_device_mapped_value(
-                    self._input, button, default
-                )
+            self._settings[button] = bui.app.classic.get_input_device_mapped_value(
+                self._input, button, default
             )
 
     def _rebuild_ui(self, is_reset: bool = False) -> None:
@@ -110,7 +108,7 @@ class ConfigKeyboardWindow(bui.MainWindow):
             autoselect=True,
             position=(38, self._height - 85),
             size=(170, 60),
-            label=bui.Lstr(resource='cancelText'),
+            label=bui.Lstr(resource="cancelText"),
             scale=0.9,
             on_activate_call=self.main_window_back,
         )
@@ -119,7 +117,7 @@ class ConfigKeyboardWindow(bui.MainWindow):
             autoselect=True,
             position=(self._width - 190, self._height - 85),
             size=(180, 60),
-            label=bui.Lstr(resource='saveText'),
+            label=bui.Lstr(resource="saveText"),
             scale=0.9,
             text_scale=0.9,
             on_activate_call=self._save,
@@ -136,31 +134,31 @@ class ConfigKeyboardWindow(bui.MainWindow):
             position=(self._width * 0.5, v + 15),
             size=(0, 0),
             text=bui.Lstr(
-                resource=f'{self._r}.configuringText',
-                subs=[('${DEVICE}', self._displayname)],
+                resource=f"{self._r}.configuringText",
+                subs=[("${DEVICE}", self._displayname)],
             ),
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             maxwidth=270,
             scale=0.83,
         )
         v -= 20
 
-        if self._unique_id != '#1':
+        if self._unique_id != "#1":
             v -= 20
             v -= self._spacing
             bui.textwidget(
                 parent=self._root_widget,
                 position=(0, v + 19),
                 size=(self._width, 50),
-                text=bui.Lstr(resource=f'{self._r}.keyboard2NoteText'),
+                text=bui.Lstr(resource=f"{self._r}.keyboard2NoteText"),
                 scale=0.7,
                 maxwidth=self._width * 0.75,
                 max_height=110,
                 color=bui.app.ui_v1.infotextcolor,
-                h_align='center',
-                v_align='top',
+                h_align="center",
+                v_align="top",
             )
             v -= 40
         v -= 10
@@ -173,38 +171,38 @@ class ConfigKeyboardWindow(bui.MainWindow):
         self._capture_button(
             pos=(h_offs, v + 0.95 * dist),
             color=d_color,
-            button='buttonUp',
-            texture=bui.gettexture('upButton'),
+            button="buttonUp",
+            texture=bui.gettexture("upButton"),
             scale=1.0,
         )
         self._capture_button(
             pos=(h_offs - 1.2 * dist, v),
             color=d_color,
-            button='buttonLeft',
-            texture=bui.gettexture('leftButton'),
+            button="buttonLeft",
+            texture=bui.gettexture("leftButton"),
             scale=1.0,
         )
         self._capture_button(
             pos=(h_offs + 1.2 * dist, v),
             color=d_color,
-            button='buttonRight',
-            texture=bui.gettexture('rightButton'),
+            button="buttonRight",
+            texture=bui.gettexture("rightButton"),
             scale=1.0,
         )
         self._capture_button(
             pos=(h_offs, v - 0.95 * dist),
             color=d_color,
-            button='buttonDown',
-            texture=bui.gettexture('downButton'),
+            button="buttonDown",
+            texture=bui.gettexture("downButton"),
             scale=1.0,
         )
 
-        if self._unique_id == '#2':
+        if self._unique_id == "#2":
             self._capture_button(
                 pos=(self._width * 0.5, v + 0.1 * dist),
                 color=(0.4, 0.4, 0.6),
-                button='buttonStart',
-                texture=bui.gettexture('startButton'),
+                button="buttonStart",
+                texture=bui.gettexture("startButton"),
                 scale=0.8,
             )
 
@@ -213,36 +211,36 @@ class ConfigKeyboardWindow(bui.MainWindow):
         self._capture_button(
             pos=(h_offs, v + 0.95 * dist),
             color=(0.6, 0.4, 0.8),
-            button='buttonPickUp',
-            texture=bui.gettexture('buttonPickUp'),
+            button="buttonPickUp",
+            texture=bui.gettexture("buttonPickUp"),
             scale=1.0,
         )
         self._capture_button(
             pos=(h_offs - 1.2 * dist, v),
             color=(0.7, 0.5, 0.1),
-            button='buttonPunch',
-            texture=bui.gettexture('buttonPunch'),
+            button="buttonPunch",
+            texture=bui.gettexture("buttonPunch"),
             scale=1.0,
         )
         self._capture_button(
             pos=(h_offs + 1.2 * dist, v),
             color=(0.5, 0.2, 0.1),
-            button='buttonBomb',
-            texture=bui.gettexture('buttonBomb'),
+            button="buttonBomb",
+            texture=bui.gettexture("buttonBomb"),
             scale=1.0,
         )
         self._capture_button(
             pos=(h_offs, v - 0.95 * dist),
             color=(0.2, 0.5, 0.2),
-            button='buttonJump',
-            texture=bui.gettexture('buttonJump'),
+            button="buttonJump",
+            texture=bui.gettexture("buttonJump"),
             scale=1.0,
         )
 
         self._more_button = bui.buttonwidget(
             parent=self._root_widget,
             autoselect=True,
-            label='...',
+            label="...",
             text_scale=0.9,
             color=(0.45, 0.4, 0.5),
             textcolor=(0.65, 0.6, 0.7),
@@ -260,7 +258,7 @@ class ConfigKeyboardWindow(bui.MainWindow):
     def _pretty_button_name(self, button_name: str) -> bui.Lstr:
         button_id = self._settings[button_name]
         if button_id == -1:
-            return bs.Lstr(resource='configGamepadWindow.unsetText')
+            return bs.Lstr(resource="configGamepadWindow.unsetText")
         return self._input.get_button_name(button_id)
 
     def _capture_button(
@@ -282,7 +280,7 @@ class ConfigKeyboardWindow(bui.MainWindow):
             ),
             size=(base_size * scale, base_size * scale),
             texture=texture,
-            label='',
+            label="",
             color=color,
         )
 
@@ -297,8 +295,8 @@ class ConfigKeyboardWindow(bui.MainWindow):
                 position=(pos[0] + 0.0 * scale, pos[1] - (57.0 - 18.0) * scale),
                 color=(1, 1, 1, 0.3),
                 size=(0, 0),
-                h_align='center',
-                v_align='top',
+                h_align="center",
+                v_align="top",
                 scale=uiscale,
                 maxwidth=maxwidth,
                 text=self._pretty_button_name(button),
@@ -324,7 +322,7 @@ class ConfigKeyboardWindow(bui.MainWindow):
         if bool(False):
             ConfirmWindow(
                 # TODO: Implement a translation string for this!
-                'Are you sure you want to reset your button mapping?',
+                "Are you sure you want to reset your button mapping?",
                 self._do_reset,
                 width=480,
                 height=95,
@@ -337,16 +335,16 @@ class ConfigKeyboardWindow(bui.MainWindow):
         self._settings = {}
         self._get_config_mapping(default=True)
         self._rebuild_ui(is_reset=True)
-        bui.getsound('gunCocking').play()
+        bui.getsound("gunCocking").play()
 
     def _do_more(self) -> None:
         """Show a burger menu with extra settings."""
         # pylint: disable=cyclic-import
         choices: list[str] = [
-            'reset',
+            "reset",
         ]
         choices_display: list[bui.Lstr] = [
-            bui.Lstr(resource='settingsWindowAdvanced.resetText'),
+            bui.Lstr(resource="settingsWindowAdvanced.resetText"),
         ]
 
         uiscale = bui.app.ui_v1.uiscale
@@ -360,7 +358,7 @@ class ConfigKeyboardWindow(bui.MainWindow):
             width=150,
             choices=choices,
             choices_display=choices_display,
-            current_choice='reset',
+            current_choice="reset",
             delegate=self,
         )
 
@@ -369,10 +367,10 @@ class ConfigKeyboardWindow(bui.MainWindow):
     ) -> None:
         """Called when a choice is selected in the popup."""
         del popup_window  # unused
-        if choice == 'reset':
+        if choice == "reset":
             self._reset()
         else:
-            print(f'invalid choice: {choice}')
+            print(f"invalid choice: {choice}")
 
     def popup_menu_closing(self, popup_window: PopupWindow) -> None:
         """Called when the popup is closing."""
@@ -384,16 +382,14 @@ class ConfigKeyboardWindow(bui.MainWindow):
             return
 
         assert bui.app.classic is not None
-        bui.getsound('gunCocking').play()
+        bui.getsound("gunCocking").play()
 
         # There's a chance the device disappeared; handle that
         # gracefully.
         if not self._input:
             return
 
-        dst = bui.app.classic.get_input_device_config(
-            self._input, default=False
-        )
+        dst = bui.app.classic.get_input_device_config(self._input, default=False)
         dst2: dict[str, Any] = dst[0][dst[1]]
         dst2.clear()
 
@@ -406,13 +402,13 @@ class ConfigKeyboardWindow(bui.MainWindow):
         # defaults in the future.
         if bui.app.classic is not None:
             bui.app.classic.master_server_v1_post(
-                'controllerConfig',
+                "controllerConfig",
                 {
-                    'ua': bui.app.classic.legacy_user_agent_string,
-                    'name': self._name,
-                    'b': bui.app.env.engine_build_number,
-                    'config': dst2,
-                    'v': 2,
+                    "ua": bui.app.classic.legacy_user_agent_string,
+                    "name": self._name,
+                    "b": bui.app.env.engine_build_number,
+                    "config": dst2,
+                    "v": 2,
                 },
             )
         bui.app.config.apply_and_commit()
@@ -435,7 +431,7 @@ class AwaitKeyboardInputWindow(bui.Window):
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(width, height),
-                transition='in_right',
+                transition="in_right",
                 scale=(
                     2.0
                     if uiscale is bui.UIScale.SMALL
@@ -447,15 +443,15 @@ class AwaitKeyboardInputWindow(bui.Window):
             parent=self._root_widget,
             position=(0, height - 60),
             size=(width, 25),
-            text=bui.Lstr(resource='pressAnyKeyText'),
-            h_align='center',
-            v_align='top',
+            text=bui.Lstr(resource="pressAnyKeyText"),
+            h_align="center",
+            v_align="top",
         )
 
         self._counter = 5
         self._count_down_text = bui.textwidget(
             parent=self._root_widget,
-            h_align='center',
+            h_align="center",
             position=(0, height - 110),
             size=(width, 25),
             color=(1, 1, 1, 0.3),
@@ -473,14 +469,14 @@ class AwaitKeyboardInputWindow(bui.Window):
         # This strong-refs us; killing it allows us to die now.
         self._decrement_timer = None
         if self._root_widget:
-            bui.containerwidget(edit=self._root_widget, transition='out_left')
+            bui.containerwidget(edit=self._root_widget, transition="out_left")
 
     def _button_callback(self, event: dict[str, Any]) -> None:
-        self._settings[self._capture_button] = event['button']
-        if event['type'] == 'BUTTONDOWN':
-            bname = event['input_device'].get_button_name(event['button'])
+        self._settings[self._capture_button] = event["button"]
+        if event["type"] == "BUTTONDOWN":
+            bname = event["input_device"].get_button_name(event["button"])
             bui.textwidget(edit=self._capture_key_ui, text=bname)
-            bui.getsound('gunCocking').play()
+            bui.getsound("gunCocking").play()
             self._die()
 
     def _decrement(self) -> None:

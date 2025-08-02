@@ -26,11 +26,11 @@ if TYPE_CHECKING:
 
 # Our monotonic time measurement that starts at 0 when the app launches
 # and pauses while the app is suspended.
-AppTime = NewType('AppTime', float)
+AppTime = NewType("AppTime", float)
 
 # Like app-time but incremented at frame draw time and in a smooth
 # consistent manner; useful to keep animations smooth and jitter-free.
-DisplayTime = NewType('DisplayTime', float)
+DisplayTime = NewType("DisplayTime", float)
 
 
 class Existable(Protocol):
@@ -60,7 +60,7 @@ def existing[ExistableT: Existable](
     For more info about the concept of 'existables':
     https://ballistica.net/wiki/Coding-Style-Guide
     """
-    assert obj is None or hasattr(obj, 'exists'), f'No "exists" attr on {obj}.'
+    assert obj is None or hasattr(obj, "exists"), f'No "exists" attr on {obj}.'
     return obj if obj is not None and obj.exists() else None
 
 
@@ -75,22 +75,22 @@ def getclass[T](
     """
     import importlib
 
-    splits = name.split('.')
-    modulename = '.'.join(splits[:-1])
+    splits = name.split(".")
+    modulename = ".".join(splits[:-1])
     classname = splits[-1]
     if modulename in sys.stdlib_module_names and check_sdlib_modulename_clash:
-        raise Exception(f'{modulename} is an inbuilt module.')
+        raise Exception(f"{modulename} is an inbuilt module.")
     module = importlib.import_module(modulename)
     cls: type = getattr(module, classname)
 
     if not issubclass(cls, subclassof):
-        raise TypeError(f'{name} is not a subclass of {subclassof}.')
+        raise TypeError(f"{name} is not a subclass of {subclassof}.")
     return cls
 
 
 def get_type_name(cls: type) -> str:
     """Return a fully qualified type name for a class."""
-    return f'{cls.__module__}.{cls.__qualname__}'
+    return f"{cls.__module__}.{cls.__qualname__}"
 
 
 class _WeakCall:
@@ -139,20 +139,20 @@ class _WeakCall:
     """
 
     # Optimize performance a bit; we shouldn't need to be super dynamic.
-    __slots__ = ['_call', '_args', '_keywds']
+    __slots__ = ["_call", "_args", "_keywds"]
 
     _did_invalid_call_warning = False
 
     def __init__(self, *args: Any, **keywds: Any) -> None:
-        if hasattr(args[0], '__func__'):
+        if hasattr(args[0], "__func__"):
             self._call = WeakMethod(args[0])
         else:
             app = _babase.app
             if not self._did_invalid_call_warning:
                 logging.warning(
-                    'Warning: callable passed to babase.WeakCall() is not'
-                    ' weak-referencable (%s); use functools.partial instead'
-                    ' to avoid this warning.',
+                    "Warning: callable passed to babase.WeakCall() is not"
+                    " weak-referencable (%s); use functools.partial instead"
+                    " to avoid this warning.",
                     args[0],
                     stack_info=True,
                 )
@@ -167,13 +167,13 @@ class _WeakCall:
     @override
     def __str__(self) -> str:
         return (
-            '<ba.WeakCall object; _call='
+            "<ba.WeakCall object; _call="
             + str(self._call)
-            + ' _args='
+            + " _args="
             + str(self._args)
-            + ' _keywds='
+            + " _keywds="
             + str(self._keywds)
-            + '>'
+            + ">"
         )
 
 
@@ -198,7 +198,7 @@ class _Call:
     """
 
     # Optimize performance a bit; we shouldn't need to be super dynamic.
-    __slots__ = ['_call', '_args', '_keywds']
+    __slots__ = ["_call", "_args", "_keywds"]
 
     def __init__(self, *args: Any, **keywds: Any):
         self._call = args[0]
@@ -211,13 +211,13 @@ class _Call:
     @override
     def __str__(self) -> str:
         return (
-            '<ba.Call object; _call='
+            "<ba.Call object; _call="
             + str(self._call)
-            + ' _args='
+            + " _args="
             + str(self._args)
-            + ' _keywds='
+            + " _keywds="
             + str(self._keywds)
-            + '>'
+            + ">"
         )
 
 
@@ -242,9 +242,9 @@ if TYPE_CHECKING:
     Call = functools.partial
 else:
     WeakCall = _WeakCall
-    WeakCall.__name__ = 'WeakCall'
+    WeakCall.__name__ = "WeakCall"
     Call = _Call
-    Call.__name__ = 'Call'
+    Call.__name__ = "Call"
 
 
 class WeakMethod:
@@ -255,7 +255,7 @@ class WeakMethod:
     """
 
     # Optimize performance a bit; we shouldn't need to be super dynamic.
-    __slots__ = ['_func', '_obj']
+    __slots__ = ["_func", "_obj"]
 
     def __init__(self, call: types.MethodType):
         assert isinstance(call, types.MethodType)
@@ -270,7 +270,7 @@ class WeakMethod:
 
     @override
     def __str__(self) -> str:
-        return '<ba.WeakMethod object; call=' + str(self._func) + '>'
+        return "<ba.WeakMethod object; call=" + str(self._func) + ">"
 
 
 def verify_object_death(obj: object) -> None:
@@ -282,7 +282,7 @@ def verify_object_death(obj: object) -> None:
     try:
         ref = weakref.ref(obj)
     except Exception:
-        logging.exception('Unable to create weak-ref in verify_object_death')
+        logging.exception("Unable to create weak-ref in verify_object_death")
         return
 
     # Use a slight range for our checks so they don't all land at once
@@ -303,13 +303,13 @@ def _verify_object_death(wref: weakref.ref) -> None:
     try:
         name = type(obj).__name__
     except Exception:
-        print(f'Note: unable to get type name for {obj}')
-        name = 'object'
+        print(f"Note: unable to get type name for {obj}")
+        name = "object"
 
     print(
-        f'{Clr.RED}Error: {name} not dying when expected to:'
-        f' {Clr.BLD}{obj}{Clr.RST}\n'
-        'See efro.debug for ways to debug this.'
+        f"{Clr.RED}Error: {name} not dying when expected to:"
+        f" {Clr.BLD}{obj}{Clr.RST}\n"
+        "See efro.debug for ways to debug this."
     )
 
 
@@ -340,7 +340,7 @@ def storagename(suffix: str | None = None) -> str:
     """
     frame = inspect.currentframe()
     if frame is None:
-        raise RuntimeError('Cannot get current stack frame.')
+        raise RuntimeError("Cannot get current stack frame.")
     fback = frame.f_back
 
     # Note: We need to explicitly clear frame here to avoid a ref-loop
@@ -350,17 +350,17 @@ def storagename(suffix: str | None = None) -> str:
     del frame
 
     if fback is None:
-        raise RuntimeError('Cannot get parent stack frame.')
-    modulepath = fback.f_globals.get('__name__')
+        raise RuntimeError("Cannot get parent stack frame.")
+    modulepath = fback.f_globals.get("__name__")
     if modulepath is None:
-        raise RuntimeError('Cannot get parent stack module path.')
+        raise RuntimeError("Cannot get parent stack module path.")
     assert isinstance(modulepath, str)
-    qualname = fback.f_locals.get('__qualname__')
+    qualname = fback.f_locals.get("__qualname__")
     if qualname is not None:
         assert isinstance(qualname, str)
-        fullpath = f'_{modulepath}_{qualname.lower()}'
+        fullpath = f"_{modulepath}_{qualname.lower()}"
     else:
-        fullpath = f'_{modulepath}'
+        fullpath = f"_{modulepath}"
     if suffix is not None:
-        fullpath = f'{fullpath}_{suffix}'
-    return fullpath.replace('.', '_')
+        fullpath = f"{fullpath}_{suffix}"
+    return fullpath.replace(".", "_")

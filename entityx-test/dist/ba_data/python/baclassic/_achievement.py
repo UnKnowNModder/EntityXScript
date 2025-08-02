@@ -31,42 +31,42 @@ if TYPE_CHECKING:
 #  at coop levels instead of hard-coding names.
 #  (so level name substitution works right and whatnot).
 ACH_LEVEL_NAMES = {
-    'Boom Goes the Dynamite': 'Pro Onslaught',
-    'Boxer': 'Onslaught Training',
-    'Flawless Victory': 'Rookie Onslaught',
-    'Gold Miner': 'Uber Onslaught',
-    'Got the Moves': 'Uber Football',
-    'Last Stand God': 'The Last Stand',
-    'Last Stand Master': 'The Last Stand',
-    'Last Stand Wizard': 'The Last Stand',
-    'Mine Games': 'Rookie Onslaught',
-    'Off You Go Then': 'Onslaught Training',
-    'Onslaught God': 'Infinite Onslaught',
-    'Onslaught Master': 'Infinite Onslaught',
-    'Onslaught Training Victory': 'Onslaught Training',
-    'Onslaught Wizard': 'Infinite Onslaught',
-    'Precision Bombing': 'Pro Runaround',
-    'Pro Boxer': 'Pro Onslaught',
-    'Pro Football Shutout': 'Pro Football',
-    'Pro Football Victory': 'Pro Football',
-    'Pro Onslaught Victory': 'Pro Onslaught',
-    'Pro Runaround Victory': 'Pro Runaround',
-    'Rookie Football Shutout': 'Rookie Football',
-    'Rookie Football Victory': 'Rookie Football',
-    'Rookie Onslaught Victory': 'Rookie Onslaught',
-    'Runaround God': 'Infinite Runaround',
-    'Runaround Master': 'Infinite Runaround',
-    'Runaround Wizard': 'Infinite Runaround',
-    'Stayin\' Alive': 'Uber Runaround',
-    'Super Mega Punch': 'Pro Football',
-    'Super Punch': 'Rookie Football',
-    'TNT Terror': 'Uber Onslaught',
-    'The Great Wall': 'Uber Runaround',
-    'The Wall': 'Pro Runaround',
-    'Uber Football Shutout': 'Uber Football',
-    'Uber Football Victory': 'Uber Football',
-    'Uber Onslaught Victory': 'Uber Onslaught',
-    'Uber Runaround Victory': 'Uber Runaround',
+    "Boom Goes the Dynamite": "Pro Onslaught",
+    "Boxer": "Onslaught Training",
+    "Flawless Victory": "Rookie Onslaught",
+    "Gold Miner": "Uber Onslaught",
+    "Got the Moves": "Uber Football",
+    "Last Stand God": "The Last Stand",
+    "Last Stand Master": "The Last Stand",
+    "Last Stand Wizard": "The Last Stand",
+    "Mine Games": "Rookie Onslaught",
+    "Off You Go Then": "Onslaught Training",
+    "Onslaught God": "Infinite Onslaught",
+    "Onslaught Master": "Infinite Onslaught",
+    "Onslaught Training Victory": "Onslaught Training",
+    "Onslaught Wizard": "Infinite Onslaught",
+    "Precision Bombing": "Pro Runaround",
+    "Pro Boxer": "Pro Onslaught",
+    "Pro Football Shutout": "Pro Football",
+    "Pro Football Victory": "Pro Football",
+    "Pro Onslaught Victory": "Pro Onslaught",
+    "Pro Runaround Victory": "Pro Runaround",
+    "Rookie Football Shutout": "Rookie Football",
+    "Rookie Football Victory": "Rookie Football",
+    "Rookie Onslaught Victory": "Rookie Onslaught",
+    "Runaround God": "Infinite Runaround",
+    "Runaround Master": "Infinite Runaround",
+    "Runaround Wizard": "Infinite Runaround",
+    "Stayin' Alive": "Uber Runaround",
+    "Super Mega Punch": "Pro Football",
+    "Super Punch": "Rookie Football",
+    "TNT Terror": "Uber Onslaught",
+    "The Great Wall": "Uber Runaround",
+    "The Wall": "Pro Runaround",
+    "Uber Football Shutout": "Uber Football",
+    "Uber Football Victory": "Uber Football",
+    "Uber Onslaught Victory": "Uber Onslaught",
+    "Uber Runaround Victory": "Uber Runaround",
 }
 
 
@@ -78,9 +78,7 @@ class AchievementSubsystem:
 
     def __init__(self) -> None:
         self.achievements: list[Achievement] = []
-        self.achievements_to_display: list[
-            tuple[baclassic.Achievement, bool]
-        ] = []
+        self.achievements_to_display: list[tuple[baclassic.Achievement, bool]] = []
         self.achievement_display_timer: bascenev1.BaseTimer | None = None
         self.last_achievement_display_time: float = 0.0
         self.achievement_completion_banner_slots: set[int] = set()
@@ -91,306 +89,306 @@ class AchievementSubsystem:
 
         self.achievements += [
             Achievement(
-                'In Control',
-                'achievementInControl',
+                "In Control",
+                "achievementInControl",
                 (1, 1, 1),
-                '',
+                "",
                 award=5,
             ),
             Achievement(
-                'Sharing is Caring',
-                'achievementSharingIsCaring',
+                "Sharing is Caring",
+                "achievementSharingIsCaring",
                 (1, 1, 1),
-                '',
+                "",
                 award=15,
             ),
             Achievement(
-                'Dual Wielding',
-                'achievementDualWielding',
+                "Dual Wielding",
+                "achievementDualWielding",
                 (1, 1, 1),
-                '',
+                "",
                 award=10,
             ),
             Achievement(
-                'Free Loader',
-                'achievementFreeLoader',
+                "Free Loader",
+                "achievementFreeLoader",
                 (1, 1, 1),
-                '',
+                "",
                 award=10,
             ),
             Achievement(
-                'Team Player',
-                'achievementTeamPlayer',
+                "Team Player",
+                "achievementTeamPlayer",
                 (1, 1, 1),
-                '',
+                "",
                 award=20,
             ),
             Achievement(
-                'Onslaught Training Victory',
-                'achievementOnslaught',
+                "Onslaught Training Victory",
+                "achievementOnslaught",
                 (1, 1, 1),
-                'Default:Onslaught Training',
+                "Default:Onslaught Training",
                 award=5,
             ),
             Achievement(
-                'Off You Go Then',
-                'achievementOffYouGo',
+                "Off You Go Then",
+                "achievementOffYouGo",
                 (1, 1.1, 1.3),
-                'Default:Onslaught Training',
+                "Default:Onslaught Training",
                 award=5,
             ),
             Achievement(
-                'Boxer',
-                'achievementBoxer',
+                "Boxer",
+                "achievementBoxer",
                 (1, 0.6, 0.6),
-                'Default:Onslaught Training',
+                "Default:Onslaught Training",
                 award=10,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Rookie Onslaught Victory',
-                'achievementOnslaught',
+                "Rookie Onslaught Victory",
+                "achievementOnslaught",
                 (0.5, 1.4, 0.6),
-                'Default:Rookie Onslaught',
+                "Default:Rookie Onslaught",
                 award=10,
             ),
             Achievement(
-                'Mine Games',
-                'achievementMine',
+                "Mine Games",
+                "achievementMine",
                 (1, 1, 1.4),
-                'Default:Rookie Onslaught',
+                "Default:Rookie Onslaught",
                 award=10,
             ),
             Achievement(
-                'Flawless Victory',
-                'achievementFlawlessVictory',
+                "Flawless Victory",
+                "achievementFlawlessVictory",
                 (1, 1, 1),
-                'Default:Rookie Onslaught',
+                "Default:Rookie Onslaught",
                 award=15,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Rookie Football Victory',
-                'achievementFootballVictory',
+                "Rookie Football Victory",
+                "achievementFootballVictory",
                 (1.0, 1, 0.6),
-                'Default:Rookie Football',
+                "Default:Rookie Football",
                 award=10,
             ),
             Achievement(
-                'Super Punch',
-                'achievementSuperPunch',
+                "Super Punch",
+                "achievementSuperPunch",
                 (1, 1, 1.8),
-                'Default:Rookie Football',
+                "Default:Rookie Football",
                 award=10,
             ),
             Achievement(
-                'Rookie Football Shutout',
-                'achievementFootballShutout',
+                "Rookie Football Shutout",
+                "achievementFootballShutout",
                 (1, 1, 1),
-                'Default:Rookie Football',
+                "Default:Rookie Football",
                 award=15,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Pro Onslaught Victory',
-                'achievementOnslaught',
+                "Pro Onslaught Victory",
+                "achievementOnslaught",
                 (0.3, 1, 2.0),
-                'Default:Pro Onslaught',
+                "Default:Pro Onslaught",
                 award=15,
             ),
             Achievement(
-                'Boom Goes the Dynamite',
-                'achievementTNT',
+                "Boom Goes the Dynamite",
+                "achievementTNT",
                 (1.4, 1.2, 0.8),
-                'Default:Pro Onslaught',
+                "Default:Pro Onslaught",
                 award=15,
             ),
             Achievement(
-                'Pro Boxer',
-                'achievementBoxer',
+                "Pro Boxer",
+                "achievementBoxer",
                 (2, 2, 0),
-                'Default:Pro Onslaught',
+                "Default:Pro Onslaught",
                 award=20,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Pro Football Victory',
-                'achievementFootballVictory',
+                "Pro Football Victory",
+                "achievementFootballVictory",
                 (1.3, 1.3, 2.0),
-                'Default:Pro Football',
+                "Default:Pro Football",
                 award=15,
             ),
             Achievement(
-                'Super Mega Punch',
-                'achievementSuperPunch',
+                "Super Mega Punch",
+                "achievementSuperPunch",
                 (2, 1, 0.6),
-                'Default:Pro Football',
+                "Default:Pro Football",
                 award=15,
             ),
             Achievement(
-                'Pro Football Shutout',
-                'achievementFootballShutout',
+                "Pro Football Shutout",
+                "achievementFootballShutout",
                 (0.7, 0.7, 2.0),
-                'Default:Pro Football',
+                "Default:Pro Football",
                 award=20,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Pro Runaround Victory',
-                'achievementRunaround',
+                "Pro Runaround Victory",
+                "achievementRunaround",
                 (1, 1, 1),
-                'Default:Pro Runaround',
+                "Default:Pro Runaround",
                 award=15,
             ),
             Achievement(
-                'Precision Bombing',
-                'achievementCrossHair',
+                "Precision Bombing",
+                "achievementCrossHair",
                 (1, 1, 1.3),
-                'Default:Pro Runaround',
+                "Default:Pro Runaround",
                 award=20,
                 hard_mode_only=True,
             ),
             Achievement(
-                'The Wall',
-                'achievementWall',
+                "The Wall",
+                "achievementWall",
                 (1, 0.7, 0.7),
-                'Default:Pro Runaround',
+                "Default:Pro Runaround",
                 award=25,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Uber Onslaught Victory',
-                'achievementOnslaught',
+                "Uber Onslaught Victory",
+                "achievementOnslaught",
                 (2, 2, 1),
-                'Default:Uber Onslaught',
+                "Default:Uber Onslaught",
                 award=30,
             ),
             Achievement(
-                'Gold Miner',
-                'achievementMine',
+                "Gold Miner",
+                "achievementMine",
                 (2, 1.6, 0.2),
-                'Default:Uber Onslaught',
+                "Default:Uber Onslaught",
                 award=30,
                 hard_mode_only=True,
             ),
             Achievement(
-                'TNT Terror',
-                'achievementTNT',
+                "TNT Terror",
+                "achievementTNT",
                 (2, 1.8, 0.3),
-                'Default:Uber Onslaught',
+                "Default:Uber Onslaught",
                 award=30,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Uber Football Victory',
-                'achievementFootballVictory',
+                "Uber Football Victory",
+                "achievementFootballVictory",
                 (1.8, 1.4, 0.3),
-                'Default:Uber Football',
+                "Default:Uber Football",
                 award=30,
             ),
             Achievement(
-                'Got the Moves',
-                'achievementGotTheMoves',
+                "Got the Moves",
+                "achievementGotTheMoves",
                 (2, 1, 0),
-                'Default:Uber Football',
+                "Default:Uber Football",
                 award=30,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Uber Football Shutout',
-                'achievementFootballShutout',
+                "Uber Football Shutout",
+                "achievementFootballShutout",
                 (2, 2, 0),
-                'Default:Uber Football',
+                "Default:Uber Football",
                 award=40,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Uber Runaround Victory',
-                'achievementRunaround',
+                "Uber Runaround Victory",
+                "achievementRunaround",
                 (1.5, 1.2, 0.2),
-                'Default:Uber Runaround',
+                "Default:Uber Runaround",
                 award=30,
             ),
             Achievement(
-                'The Great Wall',
-                'achievementWall',
+                "The Great Wall",
+                "achievementWall",
                 (2, 1.7, 0.4),
-                'Default:Uber Runaround',
+                "Default:Uber Runaround",
                 award=40,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Stayin\' Alive',
-                'achievementStayinAlive',
+                "Stayin' Alive",
+                "achievementStayinAlive",
                 (2, 2, 1),
-                'Default:Uber Runaround',
+                "Default:Uber Runaround",
                 award=40,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Last Stand Master',
-                'achievementMedalSmall',
+                "Last Stand Master",
+                "achievementMedalSmall",
                 (2, 1.5, 0.3),
-                'Default:The Last Stand',
+                "Default:The Last Stand",
                 award=20,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Last Stand Wizard',
-                'achievementMedalMedium',
+                "Last Stand Wizard",
+                "achievementMedalMedium",
                 (2, 1.5, 0.3),
-                'Default:The Last Stand',
+                "Default:The Last Stand",
                 award=40,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Last Stand God',
-                'achievementMedalLarge',
+                "Last Stand God",
+                "achievementMedalLarge",
                 (2, 1.5, 0.3),
-                'Default:The Last Stand',
+                "Default:The Last Stand",
                 award=60,
                 hard_mode_only=True,
             ),
             Achievement(
-                'Onslaught Master',
-                'achievementMedalSmall',
+                "Onslaught Master",
+                "achievementMedalSmall",
                 (0.7, 1, 0.7),
-                'Challenges:Infinite Onslaught',
+                "Challenges:Infinite Onslaught",
                 award=5,
             ),
             Achievement(
-                'Onslaught Wizard',
-                'achievementMedalMedium',
+                "Onslaught Wizard",
+                "achievementMedalMedium",
                 (0.7, 1.0, 0.7),
-                'Challenges:Infinite Onslaught',
+                "Challenges:Infinite Onslaught",
                 award=15,
             ),
             Achievement(
-                'Onslaught God',
-                'achievementMedalLarge',
+                "Onslaught God",
+                "achievementMedalLarge",
                 (0.7, 1.0, 0.7),
-                'Challenges:Infinite Onslaught',
+                "Challenges:Infinite Onslaught",
                 award=30,
             ),
             Achievement(
-                'Runaround Master',
-                'achievementMedalSmall',
+                "Runaround Master",
+                "achievementMedalSmall",
                 (1.0, 1.0, 1.2),
-                'Challenges:Infinite Runaround',
+                "Challenges:Infinite Runaround",
                 award=5,
             ),
             Achievement(
-                'Runaround Wizard',
-                'achievementMedalMedium',
+                "Runaround Wizard",
+                "achievementMedalMedium",
                 (1.0, 1.0, 1.2),
-                'Challenges:Infinite Runaround',
+                "Challenges:Infinite Runaround",
                 award=15,
             ),
             Achievement(
-                'Runaround God',
-                'achievementMedalLarge',
+                "Runaround God",
+                "achievementMedalLarge",
                 (1.0, 1.0, 1.2),
-                'Challenges:Infinite Runaround',
+                "Challenges:Infinite Runaround",
                 award=30,
             ),
         ]
@@ -399,7 +397,7 @@ class AchievementSubsystem:
         """For non-game-based achievements such as controller-connection."""
         plus = babase.app.plus
         if plus is None:
-            logging.warning('achievements require plus feature-set')
+            logging.warning("achievements require plus feature-set")
             return
         try:
             ach = self.get_achievement(achname)
@@ -409,14 +407,14 @@ class AchievementSubsystem:
 
                 # And to our account.
                 plus.add_v1_account_transaction(
-                    {'type': 'ACHIEVEMENT', 'name': achname}
+                    {"type": "ACHIEVEMENT", "name": achname}
                 )
 
                 # Now attempt to show a banner.
                 self.display_achievement_banner(achname)
 
         except Exception:
-            logging.exception('Error in award_local_achievement.')
+            logging.exception("Error in award_local_achievement.")
 
     def display_achievement_banner(self, achname: str) -> None:
         """Display a completion banner for an achievement.
@@ -435,7 +433,7 @@ class AchievementSubsystem:
                 with activity.context:
                     self.get_achievement(achname).announce_completion()
         except Exception:
-            logging.exception('Error in display_achievement_banner.')
+            logging.exception("Error in display_achievement_banner.")
 
     def set_completed_achievements(self, achs: Sequence[str]) -> None:
         """Set the current state of completed achievements.
@@ -450,7 +448,7 @@ class AchievementSubsystem:
         # even if that means we have to un-set an achievement we think we have.
 
         cfg = babase.app.config
-        cfg['Achievements'] = {}
+        cfg["Achievements"] = {}
         for a_name in achs:
             self.get_achievement(a_name).set_complete(True)
         cfg.commit()
@@ -472,8 +470,7 @@ class AchievementSubsystem:
         return [
             a
             for a in self.achievements
-            if a.level_name
-            in (level_name, level_name.replace('Easy', 'Default'))
+            if a.level_name in (level_name, level_name.replace("Easy", "Default"))
         ]
 
     def _test(self) -> None:
@@ -502,7 +499,7 @@ def _get_ach_mult(include_pro_bonus: bool = False) -> int:
     classic = babase.app.classic
     if plus is None or classic is None:
         return 5
-    val: int = plus.get_v1_account_misc_read_val('achAwardMult', 5)
+    val: int = plus.get_v1_account_misc_read_val("achAwardMult", 5)
     assert isinstance(val, int)
     if include_pro_bonus and classic.accounts.have_pro():
         val *= 2
@@ -520,7 +517,7 @@ def _display_next_achievement() -> None:
             ach, sound = ach_ss.achievements_to_display.pop(0)
             ach.show_completion_banner(sound)
         except Exception:
-            logging.exception('Error in _display_next_achievement.')
+            logging.exception("Error in _display_next_achievement.")
             ach_ss.achievements_to_display = []
             ach_ss.achievement_display_timer = None
     else:
@@ -561,15 +558,11 @@ class Achievement:
 
     def get_icon_ui_texture(self, complete: bool) -> bauiv1.Texture:
         """Return the icon texture to display for this achievement"""
-        return bauiv1.gettexture(
-            self._icon_name if complete else 'achievementEmpty'
-        )
+        return bauiv1.gettexture(self._icon_name if complete else "achievementEmpty")
 
     def get_icon_texture(self, complete: bool) -> bascenev1.Texture:
         """Return the icon texture to display for this achievement"""
-        return bascenev1.gettexture(
-            self._icon_name if complete else 'achievementEmpty'
-        )
+        return bascenev1.gettexture(self._icon_name if complete else "achievementEmpty")
 
     def get_icon_color(self, complete: bool) -> Sequence[float]:
         """Return the color tint for this Achievement's icon."""
@@ -585,7 +578,7 @@ class Achievement:
     @property
     def complete(self) -> bool:
         """Whether this Achievement is currently complete."""
-        val: bool = self._getconfig()['Complete']
+        val: bool = self._getconfig()["Complete"]
         assert isinstance(val, bool)
         return val
 
@@ -596,7 +589,7 @@ class Achievement:
         plus = app.plus
         classic = app.classic
         if plus is None or classic is None:
-            logging.warning('ach account_completion not available.')
+            logging.warning("ach account_completion not available.")
             return
 
         ach_ss = classic.ach
@@ -605,7 +598,7 @@ class Achievement:
         # signed in, lets not show them (otherwise we tend to get
         # confusing 'controller connected' achievements popping up while
         # waiting to sign in which can be confusing).
-        if plus.get_v1_account_state() != 'signed_in':
+        if plus.get_v1_account_state() != "signed_in":
             return
 
         # If we're being freshly complete, display/report it and whatnot.
@@ -635,16 +628,16 @@ class Achievement:
         actually award achievements.
         """
         config = self._getconfig()
-        if complete != config['Complete']:
-            config['Complete'] = complete
+        if complete != config["Complete"]:
+            config["Complete"] = complete
 
     @property
     def display_name(self) -> babase.Lstr:
         """Return a babase.Lstr for this Achievement's name."""
         name: babase.Lstr | str
         try:
-            if self._level_name != '':
-                campaignname, campaign_level = self._level_name.split(':')
+            if self._level_name != "":
+                campaignname, campaign_level = self._level_name.split(":")
                 classic = babase.app.classic
                 assert classic is not None
                 name = (
@@ -653,55 +646,48 @@ class Achievement:
                     .displayname
                 )
             else:
-                name = ''
+                name = ""
         except Exception:
-            name = ''
-            logging.exception('Error calcing achievement display-name.')
+            name = ""
+            logging.exception("Error calcing achievement display-name.")
         return babase.Lstr(
-            resource='achievements.' + self._name + '.name',
-            subs=[('${LEVEL}', name)],
+            resource="achievements." + self._name + ".name",
+            subs=[("${LEVEL}", name)],
         )
 
     @property
     def description(self) -> babase.Lstr:
         """Get a babase.Lstr for the Achievement's brief description."""
-        if (
-            'description'
-            in babase.app.lang.get_resource('achievements')[self._name]
-        ):
-            return babase.Lstr(
-                resource='achievements.' + self._name + '.description'
-            )
-        return babase.Lstr(
-            resource='achievements.' + self._name + '.descriptionFull'
-        )
+        if "description" in babase.app.lang.get_resource("achievements")[self._name]:
+            return babase.Lstr(resource="achievements." + self._name + ".description")
+        return babase.Lstr(resource="achievements." + self._name + ".descriptionFull")
 
     @property
     def description_complete(self) -> babase.Lstr:
         """Get a babase.Lstr for the Achievement's description when complete."""
         if (
-            'descriptionComplete'
-            in babase.app.lang.get_resource('achievements')[self._name]
+            "descriptionComplete"
+            in babase.app.lang.get_resource("achievements")[self._name]
         ):
             return babase.Lstr(
-                resource='achievements.' + self._name + '.descriptionComplete'
+                resource="achievements." + self._name + ".descriptionComplete"
             )
         return babase.Lstr(
-            resource='achievements.' + self._name + '.descriptionFullComplete'
+            resource="achievements." + self._name + ".descriptionFullComplete"
         )
 
     @property
     def description_full(self) -> babase.Lstr:
         """Get a babase.Lstr for the Achievement's full description."""
         return babase.Lstr(
-            resource='achievements.' + self._name + '.descriptionFull',
+            resource="achievements." + self._name + ".descriptionFull",
             subs=[
                 (
-                    '${LEVEL}',
+                    "${LEVEL}",
                     babase.Lstr(
                         translate=(
-                            'coopLevelNames',
-                            ACH_LEVEL_NAMES.get(self._name, '?'),
+                            "coopLevelNames",
+                            ACH_LEVEL_NAMES.get(self._name, "?"),
                         )
                     ),
                 )
@@ -712,14 +698,14 @@ class Achievement:
     def description_full_complete(self) -> babase.Lstr:
         """Get a babase.Lstr for the Achievement's full desc. when completed."""
         return babase.Lstr(
-            resource='achievements.' + self._name + '.descriptionFullComplete',
+            resource="achievements." + self._name + ".descriptionFullComplete",
             subs=[
                 (
-                    '${LEVEL}',
+                    "${LEVEL}",
                     babase.Lstr(
                         translate=(
-                            'coopLevelNames',
-                            ACH_LEVEL_NAMES.get(self._name, '?'),
+                            "coopLevelNames",
+                            ACH_LEVEL_NAMES.get(self._name, "?"),
                         )
                     ),
                 )
@@ -733,9 +719,7 @@ class Achievement:
         # Can add distinct values if need be later.
         plus = babase.app.plus
         assert plus is not None
-        t = plus.get_v1_account_misc_read_val(
-            f'achAward.{self.name}', self._award
-        )
+        t = plus.get_v1_account_misc_read_val(f"achAward.{self.name}", self._award)
         return (
             ClassicChestAppearance.L6
             if t >= 30
@@ -776,7 +760,7 @@ class Achievement:
         if plus is None:
             return 0
         val: int = plus.get_v1_account_misc_read_val(
-            'achLeaguePoints.' + self._name, self._award
+            "achLeaguePoints." + self._name, self._award
         )
         assert isinstance(val, int)
         return val
@@ -789,7 +773,7 @@ class Achievement:
         *,
         outdelay: float | None = None,
         color: Sequence[float] | None = None,
-        style: str = 'post_game',
+        style: str = "post_game",
     ) -> list[bascenev1.Actor]:
         """Create a display for the Achievement.
 
@@ -801,19 +785,19 @@ class Achievement:
         from bascenev1lib.actor.text import Text
 
         # Yeah this needs cleaning up.
-        if style == 'post_game':
+        if style == "post_game":
             in_game_colors = False
             in_main_menu = False
             h_attach = Text.HAttach.CENTER
             v_attach = Text.VAttach.CENTER
             attach = Image.Attach.CENTER
-        elif style == 'in_game':
+        elif style == "in_game":
             in_game_colors = True
             in_main_menu = False
             h_attach = Text.HAttach.LEFT
             v_attach = Text.VAttach.TOP
             attach = Image.Attach.TOP_LEFT
-        elif style == 'news':
+        elif style == "news":
             in_game_colors = True
             in_main_menu = True
             h_attach = Text.HAttach.CENTER
@@ -832,11 +816,11 @@ class Achievement:
                 if isinstance(session, CoopSession):
                     campaign = session.campaign
                     assert campaign is not None
-                    hmo = self._hard_mode_only and campaign.name == 'Easy'
+                    hmo = self._hard_mode_only and campaign.name == "Easy"
                 else:
                     hmo = False
             except Exception:
-                logging.exception('Error determining campaign.')
+                logging.exception("Error determining campaign.")
                 hmo = False
 
         objs: list[bascenev1.Actor]
@@ -912,7 +896,7 @@ class Achievement:
 
             if hmo:
                 txtactor = Text(
-                    babase.Lstr(resource='difficultyHardOnlyText'),
+                    babase.Lstr(resource="difficultyHardOnlyText"),
                     host_only=True,
                     maxwidth=txt2_max_w * 0.7,
                     position=(x + 60, y + 5),
@@ -943,15 +927,13 @@ class Achievement:
                     # Provide magical extended dict version of texture
                     # that Image actor supports.
                     texture={
-                        'texture': bascenev1.gettexture(
-                            chestdisplayinfo.texclosed
-                        ),
-                        'tint_texture': bascenev1.gettexture(
+                        "texture": bascenev1.gettexture(chestdisplayinfo.texclosed),
+                        "tint_texture": bascenev1.gettexture(
                             chestdisplayinfo.texclosedtint
                         ),
-                        'tint_color': chestdisplayinfo.tint,
-                        'tint2_color': chestdisplayinfo.tint2,
-                        'mask_texture': None,
+                        "tint_color": chestdisplayinfo.tint,
+                        "tint2_color": chestdisplayinfo.tint2,
+                        "mask_texture": None,
                     },
                     color=chestdisplayinfo.color + (0.5 if hmo else 1.0,),
                     position=(x + award_x + 37, y + 12),
@@ -1021,11 +1003,9 @@ class Achievement:
             if complete:
                 objs.append(
                     Image(
-                        bascenev1.gettexture('achievementOutline'),
+                        bascenev1.gettexture("achievementOutline"),
                         host_only=True,
-                        mesh_transparent=bascenev1.getmesh(
-                            'achievementOutline'
-                        ),
+                        mesh_transparent=bascenev1.getmesh("achievementOutline"),
                         color=(2, 1.4, 0.4, 1),
                         vr_depth=8,
                         position=(x - 25, y + 5),
@@ -1064,18 +1044,17 @@ class Achievement:
                             # Provide magical extended dict version of texture
                             # that Image actor supports.
                             texture={
-                                'texture': bascenev1.gettexture(
+                                "texture": bascenev1.gettexture(
                                     chestdisplayinfo.texclosed
                                 ),
-                                'tint_texture': bascenev1.gettexture(
+                                "tint_texture": bascenev1.gettexture(
                                     chestdisplayinfo.texclosedtint
                                 ),
-                                'tint_color': chestdisplayinfo.tint,
-                                'tint2_color': chestdisplayinfo.tint2,
-                                'mask_texture': None,
+                                "tint_color": chestdisplayinfo.tint,
+                                "tint2_color": chestdisplayinfo.tint2,
+                                "mask_texture": None,
                             },
-                            color=chestdisplayinfo.color
-                            + (0.5 if hmo else 1.0,),
+                            color=chestdisplayinfo.color + (0.5 if hmo else 1.0,),
                             position=(x + award_x + 38, y + 14),
                             scale=(32.0, 32.0),
                             transition=Image.Transition.IN_RIGHT,
@@ -1108,7 +1087,7 @@ class Achievement:
                     # when that's the case.
                     if hmo:
                         txtactor = Text(
-                            babase.Lstr(resource='difficultyHardOnlyText'),
+                            babase.Lstr(resource="difficultyHardOnlyText"),
                             host_only=True,
                             maxwidth=300 * 0.7,
                             position=(x + 60, y + 5),
@@ -1178,8 +1157,8 @@ class Achievement:
         state is stored, creating it if need be.
         """
         val: dict[str, Any] = babase.app.config.setdefault(
-            'Achievements', {}
-        ).setdefault(self._name, {'Complete': False})
+            "Achievements", {}
+        ).setdefault(self._name, {"Complete": False})
         assert isinstance(val, dict)
         return val
 
@@ -1212,14 +1191,14 @@ class Achievement:
             return
 
         if activity is None:
-            print('show_completion_banner() called with no current activity!')
+            print("show_completion_banner() called with no current activity!")
             return
 
         if sound:
-            bascenev1.getsound('achievement').play(host_only=True)
+            bascenev1.getsound("achievement").play(host_only=True)
         else:
             bascenev1.timer(
-                0.5, lambda: bascenev1.getsound('ding').play(host_only=True)
+                0.5, lambda: bascenev1.getsound("ding").play(host_only=True)
             )
 
         in_time = 0.300
@@ -1238,16 +1217,14 @@ class Achievement:
                 # Use an app-timer in an empty context so the removal
                 # runs even if our activity/session dies.
                 with babase.ContextRef.empty():
-                    babase.apptimer(
-                        in_time + out_time, self._remove_banner_slot
-                    )
+                    babase.apptimer(in_time + out_time, self._remove_banner_slot)
                 break
             i += 1
         assert self._completion_banner_slot is not None
         y_offs = 110 * self._completion_banner_slot
         objs: list[bascenev1.Actor] = []
         obj = Image(
-            bascenev1.gettexture('shadow'),
+            bascenev1.gettexture("shadow"),
             position=(-30, 30 + y_offs),
             front=True,
             attach=Image.Attach.BOTTOM_CENTER,
@@ -1262,7 +1239,7 @@ class Achievement:
         assert obj.node
         obj.node.host_only = True
         obj = Image(
-            bascenev1.gettexture('light'),
+            bascenev1.gettexture("light"),
             position=(-180, 60 + y_offs),
             front=True,
             attach=Image.Attach.BOTTOM_CENTER,
@@ -1277,12 +1254,10 @@ class Achievement:
         assert obj.node
         obj.node.host_only = True
         obj.node.premultiplied = True
-        combine = bascenev1.newnode(
-            'combine', owner=obj.node, attrs={'size': 2}
-        )
+        combine = bascenev1.newnode("combine", owner=obj.node, attrs={"size": 2})
         bascenev1.animate(
             combine,
-            'input0',
+            "input0",
             {
                 in_time: 0,
                 in_time + 0.4: 30,
@@ -1293,7 +1268,7 @@ class Achievement:
         )
         bascenev1.animate(
             combine,
-            'input1',
+            "input1",
             {
                 in_time: 0,
                 in_time + 0.4: 200,
@@ -1302,8 +1277,8 @@ class Achievement:
                 in_time + 2.0: 0,
             },
         )
-        combine.connectattr('output', obj.node, 'scale')
-        bascenev1.animate(obj.node, 'rotate', {0: 0.0, 0.35: 360.0}, loop=True)
+        combine.connectattr("output", obj.node, "scale")
+        bascenev1.animate(obj.node, "rotate", {0: 0.0, 0.35: 360.0}, loop=True)
         obj = Image(
             self.get_icon_texture(True),
             position=(-180, 60 + y_offs),
@@ -1321,9 +1296,7 @@ class Achievement:
 
         # Flash.
         color = self.get_icon_color(True)
-        combine = bascenev1.newnode(
-            'combine', owner=obj.node, attrs={'size': 3}
-        )
+        combine = bascenev1.newnode("combine", owner=obj.node, attrs={"size": 3})
         keys = {
             in_time: 1.0 * color[0],
             in_time + 0.4: 1.5 * color[0],
@@ -1331,7 +1304,7 @@ class Achievement:
             in_time + 0.6: 1.5 * color[0],
             in_time + 2.0: 1.0 * color[0],
         }
-        bascenev1.animate(combine, 'input0', keys)
+        bascenev1.animate(combine, "input0", keys)
         keys = {
             in_time: 1.0 * color[1],
             in_time + 0.4: 1.5 * color[1],
@@ -1339,7 +1312,7 @@ class Achievement:
             in_time + 0.6: 1.5 * color[1],
             in_time + 2.0: 1.0 * color[1],
         }
-        bascenev1.animate(combine, 'input1', keys)
+        bascenev1.animate(combine, "input1", keys)
         keys = {
             in_time: 1.0 * color[2],
             in_time + 0.4: 1.5 * color[2],
@@ -1347,12 +1320,12 @@ class Achievement:
             in_time + 0.6: 1.5 * color[2],
             in_time + 2.0: 1.0 * color[2],
         }
-        bascenev1.animate(combine, 'input2', keys)
-        combine.connectattr('output', obj.node, 'color')
+        bascenev1.animate(combine, "input2", keys)
+        combine.connectattr("output", obj.node, "color")
 
         obj = Image(
-            bascenev1.gettexture('achievementOutline'),
-            mesh_transparent=bascenev1.getmesh('achievementOutline'),
+            bascenev1.gettexture("achievementOutline"),
+            mesh_transparent=bascenev1.getmesh("achievementOutline"),
             position=(-180, 60 + y_offs),
             front=True,
             attach=Image.Attach.BOTTOM_CENTER,
@@ -1367,9 +1340,7 @@ class Achievement:
 
         # Flash.
         color = (2, 1.4, 0.4, 1)
-        combine = bascenev1.newnode(
-            'combine', owner=obj.node, attrs={'size': 3}
-        )
+        combine = bascenev1.newnode("combine", owner=obj.node, attrs={"size": 3})
         keys = {
             in_time: 1.0 * color[0],
             in_time + 0.4: 1.5 * color[0],
@@ -1377,7 +1348,7 @@ class Achievement:
             in_time + 0.6: 1.5 * color[0],
             in_time + 2.0: 1.0 * color[0],
         }
-        bascenev1.animate(combine, 'input0', keys)
+        bascenev1.animate(combine, "input0", keys)
         keys = {
             in_time: 1.0 * color[1],
             in_time + 0.4: 1.5 * color[1],
@@ -1385,7 +1356,7 @@ class Achievement:
             in_time + 0.6: 1.5 * color[1],
             in_time + 2.0: 1.0 * color[1],
         }
-        bascenev1.animate(combine, 'input1', keys)
+        bascenev1.animate(combine, "input1", keys)
         keys = {
             in_time: 1.0 * color[2],
             in_time + 0.4: 1.5 * color[2],
@@ -1393,14 +1364,14 @@ class Achievement:
             in_time + 0.6: 1.5 * color[2],
             in_time + 2.0: 1.0 * color[2],
         }
-        bascenev1.animate(combine, 'input2', keys)
-        combine.connectattr('output', obj.node, 'color')
+        bascenev1.animate(combine, "input2", keys)
+        combine.connectattr("output", obj.node, "color")
         objs.append(obj)
 
         objt = Text(
             babase.Lstr(
-                value='${A}:',
-                subs=[('${A}', babase.Lstr(resource='achievementText'))],
+                value="${A}:",
+                subs=[("${A}", babase.Lstr(resource="achievementText"))],
             ),
             position=(-120, 91 + y_offs),
             front=True,

@@ -20,7 +20,7 @@ class TestingWindow(bui.MainWindow):
         self,
         title: bui.Lstr,
         entries: list[dict[str, Any]],
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
@@ -58,9 +58,7 @@ class TestingWindow(bui.MainWindow):
                 size=(self._width, self._height),
                 scale=scale,
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
             ),
             transition=transition,
@@ -70,7 +68,7 @@ class TestingWindow(bui.MainWindow):
         )
 
         if uiscale is bui.UIScale.SMALL:
-            self._back_button = bui.get_special_widget('back_button')
+            self._back_button = bui.get_special_widget("back_button")
             bui.containerwidget(
                 edit=self._root_widget, on_cancel_call=self.main_window_back
             )
@@ -83,7 +81,7 @@ class TestingWindow(bui.MainWindow):
                 scale=0.8,
                 text_scale=1.2,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
             )
             bui.containerwidget(edit=self._root_widget, cancel_button=btn)
@@ -98,8 +96,8 @@ class TestingWindow(bui.MainWindow):
             size=(0, 0),
             scale=0.7 if uiscale is bui.UIScale.SMALL else 1.0,
             color=bui.app.ui_v1.title_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             maxwidth=245,
             text=self.title,
         )
@@ -113,10 +111,10 @@ class TestingWindow(bui.MainWindow):
             size=(0, 0),
             scale=0.5,
             color=bui.app.ui_v1.infotextcolor,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             maxwidth=self._scroll_width * 0.75,
-            text=bui.Lstr(resource='settingsWindowAdvanced.forTestingText'),
+            text=bui.Lstr(resource="settingsWindowAdvanced.forTestingText"),
         )
         self._scrollwidget = bui.scrollwidget(
             parent=self._root_widget,
@@ -144,7 +142,7 @@ class TestingWindow(bui.MainWindow):
         v = self._sub_height - 48
 
         for i, entry in enumerate(self._entries):
-            entry_name = entry['name']
+            entry_name = entry["name"]
 
             # If we haven't yet, record the default value for this name
             # so we can reset if we want..
@@ -157,10 +155,10 @@ class TestingWindow(bui.MainWindow):
                 parent=self._subcontainer,
                 position=(h, v),
                 size=(0, 0),
-                h_align='right',
-                v_align='center',
+                h_align="right",
+                v_align="center",
                 maxwidth=200,
-                text=entry['label'],
+                text=entry["label"],
             )
             btn = bui.buttonwidget(
                 parent=self._subcontainer,
@@ -169,20 +167,20 @@ class TestingWindow(bui.MainWindow):
                 autoselect=True,
                 repeat=True,
                 left_widget=self._back_button,
-                button_type='square',
-                label='-',
-                on_activate_call=bui.Call(self._on_minus_press, entry['name']),
+                button_type="square",
+                label="-",
+                on_activate_call=bui.Call(self._on_minus_press, entry["name"]),
             )
             if i == 0:
                 bui.widget(edit=btn, up_widget=self._back_button)
-            entry['widget'] = bui.textwidget(
+            entry["widget"] = bui.textwidget(
                 parent=self._subcontainer,
                 position=(h + 100, v),
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 maxwidth=60,
-                text=f'{bui.app.classic.value_test(entry_name):.4g}',
+                text=f"{bui.app.classic.value_test(entry_name):.4g}",
             )
             btn = bui.buttonwidget(
                 parent=self._subcontainer,
@@ -190,9 +188,9 @@ class TestingWindow(bui.MainWindow):
                 size=(40, 40),
                 autoselect=True,
                 repeat=True,
-                button_type='square',
-                label='+',
-                on_activate_call=bui.Call(self._on_plus_press, entry['name']),
+                button_type="square",
+                label="+",
+                on_activate_call=bui.Call(self._on_plus_press, entry["name"]),
             )
             if i == 0:
                 bui.widget(edit=btn, up_widget=self._back_button)
@@ -203,47 +201,47 @@ class TestingWindow(bui.MainWindow):
             autoselect=True,
             size=(200, 50),
             position=(self._sub_width * 0.5 - 100, v),
-            label=bui.Lstr(resource='settingsWindowAdvanced.resetText'),
+            label=bui.Lstr(resource="settingsWindowAdvanced.resetText"),
             right_widget=btn,
             on_activate_call=self._on_reset_press,
         )
 
     def _get_entry(self, name: str) -> dict[str, Any]:
         for entry in self._entries:
-            if entry['name'] == name:
+            if entry["name"] == name:
                 return entry
-        raise bui.NotFoundError(f'Entry not found: {name}')
+        raise bui.NotFoundError(f"Entry not found: {name}")
 
     def _on_reset_press(self) -> None:
         assert bui.app.classic is not None
         for entry in self._entries:
             bui.app.classic.value_test(
-                entry['name'],
-                absolute=bui.app.classic.value_test_defaults[entry['name']],
+                entry["name"],
+                absolute=bui.app.classic.value_test_defaults[entry["name"]],
             )
             bui.textwidget(
-                edit=entry['widget'],
-                text=f'{bui.app.classic.value_test(entry['name']):.4g}',
+                edit=entry["widget"],
+                text=f"{bui.app.classic.value_test(entry['name']):.4g}",
             )
 
     def _on_minus_press(self, entry_name: str) -> None:
         assert bui.app.classic is not None
         entry = self._get_entry(entry_name)
-        bui.app.classic.value_test(entry['name'], change=-entry['increment'])
+        bui.app.classic.value_test(entry["name"], change=-entry["increment"])
         # pylint: disable=consider-using-f-string
         bui.textwidget(
-            edit=entry['widget'],
-            text='%.4g' % bui.app.classic.value_test(entry['name']),
+            edit=entry["widget"],
+            text="%.4g" % bui.app.classic.value_test(entry["name"]),
         )
 
     def _on_plus_press(self, entry_name: str) -> None:
         assert bui.app.classic is not None
         entry = self._get_entry(entry_name)
-        bui.app.classic.value_test(entry['name'], change=entry['increment'])
+        bui.app.classic.value_test(entry["name"], change=entry["increment"])
         # pylint: disable=consider-using-f-string
         bui.textwidget(
-            edit=entry['widget'],
-            text='%.4g' % bui.app.classic.value_test(entry['name']),
+            edit=entry["widget"],
+            text="%.4g" % bui.app.classic.value_test(entry["name"]),
         )
 
     @override

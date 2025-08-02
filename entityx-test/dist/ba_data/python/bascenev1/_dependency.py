@@ -51,12 +51,10 @@ class Dependency[T: DependencyComponent]:
     def __get__(self, obj: Any, cls: Any = None) -> T:
         if not isinstance(obj, DependencyComponent):
             if obj is None:
-                raise TypeError(
-                    'Dependency must be accessed through an instance.'
-                )
+                raise TypeError("Dependency must be accessed through an instance.")
             raise TypeError(
-                f'Dependency cannot be added to class of type {type(obj)}'
-                ' (class must inherit from bascenev1.DependencyComponent).'
+                f"Dependency cannot be added to class of type {type(obj)}"
+                " (class must inherit from bascenev1.DependencyComponent)."
             )
 
         # We expect to be instantiated from an already living
@@ -65,18 +63,16 @@ class Dependency[T: DependencyComponent]:
 
         # Get the DependencyEntry this instance is associated with and from
         # there get back to the DependencySet
-        entry = getattr(obj, '_dep_entry')
+        entry = getattr(obj, "_dep_entry")
         if entry is None:
-            raise RuntimeError('Invalid dependency access.')
+            raise RuntimeError("Invalid dependency access.")
         entry = entry()
         assert isinstance(entry, DependencyEntry)
         depset = entry.depset()
         assert isinstance(depset, DependencySet)
 
         if not depset.resolved:
-            raise RuntimeError(
-                "Can't access data on an unresolved DependencySet."
-            )
+            raise RuntimeError("Can't access data on an unresolved DependencySet.")
 
         # Look up the data in the set based on the hash for this Dependency.
         assert self._hash in depset.entries
@@ -144,7 +140,7 @@ class DependencyEntry[T: DependencyComponent]:
             # We don't simply call our type to instantiate our instance;
             # instead we manually call __new__ and then __init__.
             # This allows us to inject its data properly before __init__().
-            print('creating', self.cls)
+            print("creating", self.cls)
             instance = self.cls.__new__(self.cls)
             # pylint: disable=protected-access, unnecessary-dunder-call
             instance._dep_entry = weakref.ref(self)
@@ -157,8 +153,7 @@ class DependencyEntry[T: DependencyComponent]:
         assert isinstance(component, self.cls)
         if component is None:
             raise RuntimeError(
-                f'Accessing DependencyComponent {self.cls} '
-                'in an invalid state.'
+                f"Accessing DependencyComponent {self.cls} " "in an invalid state."
             )
         return component
 
@@ -191,7 +186,7 @@ class DependencySet[T: DependencyComponent]:
         """
 
         if self._resolved:
-            raise RuntimeError('DependencySet has already been resolved.')
+            raise RuntimeError("DependencySet has already been resolved.")
 
         # print('RESOLVING DEP SET')
 
@@ -224,7 +219,7 @@ class DependencySet[T: DependencyComponent]:
         """
         ids: set[str] = set()
         if not self._resolved:
-            raise RuntimeError('Must be called on a resolved dep-set.')
+            raise RuntimeError("Must be called on a resolved dep-set.")
         for entry in self.entries.values():
             if issubclass(entry.cls, AssetPackage):
                 assert isinstance(entry.config, str)
@@ -252,7 +247,7 @@ class DependencySet[T: DependencyComponent]:
     def root(self) -> T:
         """The instantiated root DependencyComponent instance for the set."""
         if not self._loaded:
-            raise RuntimeError('DependencySet is not loaded.')
+            raise RuntimeError("DependencySet is not loaded.")
 
         rootdata = self.entries[self._root_dependency.get_hash()].component
         assert isinstance(rootdata, self._root_dependency.cls)
@@ -261,7 +256,7 @@ class DependencySet[T: DependencyComponent]:
     def _resolve(self, dep: Dependency[T], recursion: int) -> None:
         # Watch for wacky infinite dep loops.
         if recursion > 10:
-            raise RecursionError('Max recursion reached')
+            raise RecursionError("Max recursion reached")
 
         hashval = dep.get_hash()
 
@@ -275,9 +270,7 @@ class DependencySet[T: DependencyComponent]:
 
         # Grab all Dependency instances we find in the class.
         subdeps = [
-            cls
-            for cls in dep.cls.__dict__.values()
-            if isinstance(cls, Dependency)
+            cls for cls in dep.cls.__dict__.values() if isinstance(cls, Dependency)
         ]
 
         # ..and add in any dynamic ones it provides.
@@ -299,7 +292,7 @@ class AssetPackage(DependencyComponent):
         assert entry is not None
         assert isinstance(entry.config, str)
         self.package_id = entry.config
-        print(f'LOADING ASSET PACKAGE {self.package_id}')
+        print(f"LOADING ASSET PACKAGE {self.package_id}")
 
     @override
     @classmethod
@@ -307,7 +300,7 @@ class AssetPackage(DependencyComponent):
         assert isinstance(config, str)
 
         # Temp: hard-coding for a single asset-package at the moment.
-        if config == 'stdassets@1':
+        if config == "stdassets@1":
             return True
         return False
 
@@ -350,15 +343,15 @@ class AssetPackage(DependencyComponent):
 class TestClassFactory(DependencyComponent):
     """Another test dep-obj."""
 
-    _assets = Dependency(AssetPackage, 'stdassets@1')
+    _assets = Dependency(AssetPackage, "stdassets@1")
 
     def __init__(self) -> None:
         super().__init__()
-        print('Instantiating TestClassFactory')
-        self.tex = self._assets.gettexture('black')
-        self.mesh = self._assets.getmesh('landMine')
-        self.sound = self._assets.getsound('error')
-        self.data = self._assets.getdata('langdata')
+        print("Instantiating TestClassFactory")
+        self.tex = self._assets.gettexture("black")
+        self.mesh = self._assets.getmesh("landMine")
+        self.sound = self._assets.getsound("error")
+        self.data = self._assets.getdata("langdata")
 
 
 class TestClassObj(DependencyComponent):
@@ -373,21 +366,21 @@ class TestClass(DependencyComponent):
     _factoryclass2 = Dependency(TestClassFactory, 123)
 
     def __del__(self) -> None:
-        print('~TestClass()')
+        print("~TestClass()")
 
     def __init__(self) -> None:
         super().__init__()
-        print('TestClass()')
+        print("TestClass()")
         self._actor = self._testclass
-        print('got actor', self._actor)
-        print('have factory', self._factoryclass)
-        print('have factory2', self._factoryclass2)
+        print("got actor", self._actor)
+        print("have factory", self._factoryclass)
+        print("have factory2", self._factoryclass2)
 
 
 def test_depset() -> None:
     """Test call to try this stuff out..."""
     if bool(False):
-        print('running test_depset()...')
+        print("running test_depset()...")
 
         def doit() -> None:
             depset = DependencySet(Dependency(TestClass))
@@ -396,24 +389,24 @@ def test_depset() -> None:
             except DependencyError as exc:
                 for dep in exc.deps:
                     if dep.cls is AssetPackage:
-                        print('MISSING ASSET PACKAGE', dep.config)
+                        print("MISSING ASSET PACKAGE", dep.config)
                     else:
                         raise RuntimeError(
-                            f'Unknown dependency error for {dep.cls}'
+                            f"Unknown dependency error for {dep.cls}"
                         ) from exc
             except Exception as exc:
-                print('DependencySet resolve failed with exc type:', type(exc))
+                print("DependencySet resolve failed with exc type:", type(exc))
             if depset.resolved:
                 depset.load()
                 testobj = depset.root
                 # instance = testclass(123)
-                print('INSTANTIATED ROOT:', testobj)
+                print("INSTANTIATED ROOT:", testobj)
 
         doit()
 
         # To test this, add prints on __del__ for stuff used above;
         # everything should be dead at this point if we have no cycles.
-        print('everything should be cleaned up...')
+        print("everything should be cleaned up...")
         babase.quit()
 
 

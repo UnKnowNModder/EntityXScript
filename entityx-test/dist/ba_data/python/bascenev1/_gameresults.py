@@ -39,9 +39,7 @@ class GameResults:
         self._scores: dict[
             int, tuple[weakref.ref[bascenev1.SessionTeam], int | None]
         ] = {}
-        self._sessionteams: list[weakref.ref[bascenev1.SessionTeam]] | None = (
-            None
-        )
+        self._sessionteams: list[weakref.ref[bascenev1.SessionTeam]] | None = None
         self._playerinfos: list[bascenev1.PlayerInfo] | None = None
         self._lower_is_better: bool | None = None
         self._score_label: str | None = None
@@ -51,11 +49,9 @@ class GameResults:
     def set_game(self, game: bascenev1.GameActivity) -> None:
         """Set the game instance these results are applying to."""
         if self._game_set:
-            raise RuntimeError('Game set twice for GameResults.')
+            raise RuntimeError("Game set twice for GameResults.")
         self._game_set = True
-        self._sessionteams = [
-            weakref.ref(team.sessionteam) for team in game.teams
-        ]
+        self._sessionteams = [weakref.ref(team.sessionteam) for team in game.teams]
         scoreconfig = game.getscoreconfig()
         self._playerinfos = copy.deepcopy(game.initialplayerinfos)
         self._lower_is_better = scoreconfig.lower_is_better
@@ -73,9 +69,7 @@ class GameResults:
         sessionteam = team.sessionteam
         self._scores[sessionteam.id] = (weakref.ref(sessionteam), score)
 
-    def get_sessionteam_score(
-        self, sessionteam: bascenev1.SessionTeam
-    ) -> int | None:
+    def get_sessionteam_score(self, sessionteam: bascenev1.SessionTeam) -> int | None:
         """Return the score for a given team."""
         assert isinstance(sessionteam, SessionTeam)
         for score in list(self._scores.values()):
@@ -98,9 +92,7 @@ class GameResults:
                 teams.append(team)
         return teams
 
-    def has_score_for_sessionteam(
-        self, sessionteam: bascenev1.SessionTeam
-    ) -> bool:
+    def has_score_for_sessionteam(self, sessionteam: bascenev1.SessionTeam) -> bool:
         """Return whether there is a score for a given team."""
         return any(s[0]() is sessionteam for s in self._scores.values())
 
@@ -118,13 +110,13 @@ class GameResults:
         for score in list(self._scores.values()):
             if score[0]() is sessionteam:
                 if score[1] is None:
-                    return babase.Lstr(value='-')
+                    return babase.Lstr(value="-")
                 if self._scoretype is ScoreType.SECONDS:
                     return babase.timestring(score[1], centi=False)
                 if self._scoretype is ScoreType.MILLISECONDS:
                     return babase.timestring(score[1] / 1000.0, centi=True)
                 return babase.Lstr(value=str(score[1]))
-        return babase.Lstr(value='-')
+        return babase.Lstr(value="-")
 
     @property
     def playerinfos(self) -> list[bascenev1.PlayerInfo]:

@@ -25,7 +25,7 @@ class PlayWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
         playlist_select_context: PlaylistSelectContext | None = None,
     ):
@@ -36,18 +36,16 @@ class PlayWindow(bui.MainWindow):
 
         # TEMP TESTING
         if bool(False):
-            print('HELLO FROM TEST')
+            print("HELLO FROM TEST")
             plus = bui.app.plus
             assert plus is not None
             plus.cloud.send_message_cb(
-                bacommon.cloud.SecureDataCheckMessage(
-                    data=b'fo', signature=b'mo'
-                ),
-                on_response=lambda r: print('GOT CHECK RESPONSE', r),
+                bacommon.cloud.SecureDataCheckMessage(data=b"fo", signature=b"mo"),
+                on_response=lambda r: print("GOT CHECK RESPONSE", r),
             )
             plus.cloud.send_message_cb(
                 bacommon.cloud.SecureDataCheckerRequest(),
-                on_response=lambda r: print('GOT CHECKER RESPONSE', r),
+                on_response=lambda r: print("GOT CHECKER RESPONSE", r),
             )
 
         # Preload some modules we use in a background thread so we won't
@@ -71,11 +69,11 @@ class PlayWindow(bui.MainWindow):
 
             # Need to store this ourself since we can function as a
             # non-main window.
-            self._transition_out = 'out_scale'
+            self._transition_out = "out_scale"
         else:
-            self._transition_out = 'out_right'
+            self._transition_out = "out_right"
 
-        self._r = 'playWindow'
+        self._r = "playWindow"
 
         # Do some fancy math to fill all available screen area up to the
         # size of our backing container. This lets us fit to the exact
@@ -105,9 +103,7 @@ class PlayWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(width, height),
                 toolbar_visibility=(
-                    'menu_full'
-                    if playlist_select_context is None
-                    else 'menu_minimal'
+                    "menu_full" if playlist_select_context is None else "menu_minimal"
                 ),
                 scale=scale,
             ),
@@ -134,12 +130,10 @@ class PlayWindow(bui.MainWindow):
                 text_scale=1.2,
                 autoselect=True,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
 
         bui.textwidget(
             parent=self._root_widget,
@@ -150,17 +144,17 @@ class PlayWindow(bui.MainWindow):
             size=(0, 0),
             text=bui.Lstr(
                 resource=(
-                    (f'{self._r}.titleText')
+                    (f"{self._r}.titleText")
                     if self._playlist_select_context is None
-                    else 'playlistsText'
+                    else "playlistsText"
                 )
             ),
             scale=1.2 if uiscale is bui.UIScale.SMALL else 1.7,
             res_scale=2.0,
             maxwidth=250,
             color=bui.app.ui_v1.heading_color,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         ynudge = (
@@ -174,28 +168,16 @@ class PlayWindow(bui.MainWindow):
 
         bcount = 3 if self._playlist_select_context is None else 2
 
-        total_b_width = (
-            bcount * button_width * scl + (bcount - 1) * button_spacing
-        )
+        total_b_width = bcount * button_width * scl + (bcount - 1) * button_spacing
         hoffs = (width - total_b_width) * 0.5
 
-        self._lineup_tex = bui.gettexture('playerLineup')
-        angry_computer_transparent_mesh = bui.getmesh(
-            'angryComputerTransparent'
-        )
-        self._lineup_1_transparent_mesh = bui.getmesh(
-            'playerLineup1Transparent'
-        )
-        self._lineup_2_transparent_mesh = bui.getmesh(
-            'playerLineup2Transparent'
-        )
-        self._lineup_3_transparent_mesh = bui.getmesh(
-            'playerLineup3Transparent'
-        )
-        self._lineup_4_transparent_mesh = bui.getmesh(
-            'playerLineup4Transparent'
-        )
-        self._eyes_mesh = bui.getmesh('plasticEyesTransparent')
+        self._lineup_tex = bui.gettexture("playerLineup")
+        angry_computer_transparent_mesh = bui.getmesh("angryComputerTransparent")
+        self._lineup_1_transparent_mesh = bui.getmesh("playerLineup1Transparent")
+        self._lineup_2_transparent_mesh = bui.getmesh("playerLineup2Transparent")
+        self._lineup_3_transparent_mesh = bui.getmesh("playerLineup3Transparent")
+        self._lineup_4_transparent_mesh = bui.getmesh("playerLineup4Transparent")
+        self._eyes_mesh = bui.getmesh("plasticEyesTransparent")
 
         self._coop_button: bui.Widget | None = None
 
@@ -210,23 +192,23 @@ class PlayWindow(bui.MainWindow):
                 ),
                 extra_touch_border_scale=0.1,
                 autoselect=True,
-                label='',
-                button_type='square',
+                label="",
+                button_type="square",
                 on_activate_call=self._coop,
             )
 
             if uiscale is bui.UIScale.SMALL:
                 bui.widget(
                     edit=btn,
-                    left_widget=bui.get_special_widget('back_button'),
+                    left_widget=bui.get_special_widget("back_button"),
                 )
                 bui.widget(
                     edit=btn,
-                    up_widget=bui.get_special_widget('account_button'),
+                    up_widget=bui.get_special_widget("account_button"),
                 )
                 bui.widget(
                     edit=btn,
-                    down_widget=bui.get_special_widget('settings_button'),
+                    down_widget=bui.get_special_widget("settings_button"),
                 )
 
             self._draw_dude(
@@ -274,13 +256,13 @@ class PlayWindow(bui.MainWindow):
                 position=(hoffs + scl * (-10), v + scl * 95),
                 size=(scl * button_width, scl * 50),
                 text=bui.Lstr(
-                    resource='playModes.singlePlayerCoopText',
-                    fallback_resource='playModes.coopText',
+                    resource="playModes.singlePlayerCoopText",
+                    fallback_resource="playModes.coopText",
                 ),
                 maxwidth=scl * button_width * 0.7,
                 res_scale=1.5,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 color=(0.7, 0.9, 0.7, 1.0),
                 scale=scl * 1.5,
             )
@@ -290,9 +272,9 @@ class PlayWindow(bui.MainWindow):
                 draw_controller=btn,
                 position=(hoffs + scl * (-10), v + (scl * 54)),
                 size=(scl * button_width, scl * 30),
-                text=bui.Lstr(resource=f'{self._r}.oneToFourPlayersText'),
-                h_align='center',
-                v_align='center',
+                text=bui.Lstr(resource=f"{self._r}.oneToFourPlayersText"),
+                h_align="center",
+                v_align="center",
                 scale=0.83 * scl,
                 flatness=1.0,
                 maxwidth=scl * button_width * 0.7,
@@ -310,8 +292,8 @@ class PlayWindow(bui.MainWindow):
             ),
             extra_touch_border_scale=0.1,
             autoselect=True,
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
             on_activate_call=self._team_tourney,
         )
 
@@ -397,12 +379,12 @@ class PlayWindow(bui.MainWindow):
             position=(hoffs + scl * (-10), v + scl * 95),
             size=(scl * button_width, scl * 50),
             text=bui.Lstr(
-                resource='playModes.teamsText', fallback_resource='teamsText'
+                resource="playModes.teamsText", fallback_resource="teamsText"
             ),
             res_scale=1.5,
             maxwidth=scl * button_width * 0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             color=(0.7, 0.9, 0.7, 1.0),
             scale=scl * 1.5,
         )
@@ -411,9 +393,9 @@ class PlayWindow(bui.MainWindow):
             draw_controller=btn,
             position=(hoffs + scl * (-10), v + (scl * 54)),
             size=(scl * button_width, scl * 30),
-            text=bui.Lstr(resource=f'{self._r}.twoToEightPlayersText'),
-            h_align='center',
-            v_align='center',
+            text=bui.Lstr(resource=f"{self._r}.twoToEightPlayersText"),
+            h_align="center",
+            v_align="center",
             res_scale=1.5,
             scale=0.83 * scl,
             flatness=1.0,
@@ -428,8 +410,8 @@ class PlayWindow(bui.MainWindow):
             size=(scl * button_width, scl * button_height),
             extra_touch_border_scale=0.1,
             autoselect=True,
-            label='',
-            button_type='square',
+            label="",
+            button_type="square",
             on_activate_call=self._free_for_all,
         )
 
@@ -513,12 +495,12 @@ class PlayWindow(bui.MainWindow):
             position=(hoffs + scl * (-10), v + scl * 95),
             size=(scl * button_width, scl * 50),
             text=bui.Lstr(
-                resource='playModes.freeForAllText',
-                fallback_resource='freeForAllText',
+                resource="playModes.freeForAllText",
+                fallback_resource="freeForAllText",
             ),
             maxwidth=scl * button_width * 0.7,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             color=(0.7, 0.9, 0.7, 1.0),
             scale=scl * 1.5,
         )
@@ -527,9 +509,9 @@ class PlayWindow(bui.MainWindow):
             draw_controller=btn,
             position=(hoffs + scl * (-10), v + (scl * 54)),
             size=(scl * button_width, scl * 30),
-            text=bui.Lstr(resource=f'{self._r}.twoToEightPlayersText'),
-            h_align='center',
-            v_align='center',
+            text=bui.Lstr(resource=f"{self._r}.twoToEightPlayersText"),
+            h_align="center",
+            v_align="center",
             scale=0.83 * scl,
             flatness=1.0,
             maxwidth=scl * button_width * 0.7,
@@ -597,13 +579,11 @@ class PlayWindow(bui.MainWindow):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() != 'signed_in':
+        if plus.get_v1_account_state() != "signed_in":
             show_sign_in_prompt()
             return
 
-        self.main_window_replace(
-            CoopBrowserWindow(origin_widget=self._coop_button)
-        )
+        self.main_window_replace(CoopBrowserWindow(origin_widget=self._coop_button))
 
     def _team_tourney(self) -> None:
         # pylint: disable=cyclic-import
@@ -760,31 +740,31 @@ class PlayWindow(bui.MainWindow):
         try:
             sel = self._root_widget.get_selected_child()
             if sel == self._teams_button:
-                sel_name = 'Team Games'
+                sel_name = "Team Games"
             elif self._coop_button is not None and sel == self._coop_button:
-                sel_name = 'Co-op Games'
+                sel_name = "Co-op Games"
             elif sel == self._free_for_all_button:
-                sel_name = 'Free-for-All Games'
+                sel_name = "Free-for-All Games"
             elif sel == self._back_button:
-                sel_name = 'Back'
+                sel_name = "Back"
             else:
-                raise ValueError(f'unrecognized selection {sel}')
+                raise ValueError(f"unrecognized selection {sel}")
             assert bui.app.classic is not None
             bui.app.ui_v1.window_states[type(self)] = sel_name
         except Exception:
-            logging.exception('Error saving state for %s.', self)
+            logging.exception("Error saving state for %s.", self)
 
     def _restore_state(self) -> None:
         try:
             assert bui.app.classic is not None
             sel_name = bui.app.ui_v1.window_states.get(type(self))
-            if sel_name == 'Team Games':
+            if sel_name == "Team Games":
                 sel = self._teams_button
-            elif sel_name == 'Co-op Games' and self._coop_button is not None:
+            elif sel_name == "Co-op Games" and self._coop_button is not None:
                 sel = self._coop_button
-            elif sel_name == 'Free-for-All Games':
+            elif sel_name == "Free-for-All Games":
                 sel = self._free_for_all_button
-            elif sel_name == 'Back' and self._back_button is not None:
+            elif sel_name == "Back" and self._back_button is not None:
                 sel = self._back_button
             else:
                 sel = (
@@ -794,4 +774,4 @@ class PlayWindow(bui.MainWindow):
                 )
             bui.containerwidget(edit=self._root_widget, selected_child=sel)
         except Exception:
-            logging.exception('Error restoring state for %s.', self)
+            logging.exception("Error restoring state for %s.", self)

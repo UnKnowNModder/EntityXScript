@@ -68,9 +68,9 @@ def getobjs(
     gc.collect()
 
     if not isinstance(cls, type | str):
-        raise TypeError('Expected a type or string for cls')
+        raise TypeError("Expected a type or string for cls")
     if not isinstance(contains, str | None):
-        raise TypeError('Expected a string or None for contains')
+        raise TypeError("Expected a string or None for contains")
 
     allobjs = _get_all_objects(expanded=expanded)
 
@@ -128,7 +128,7 @@ def getobj(objid: int, expanded: bool = False) -> Any:
     #     objid = int(objid, 0)  # Autodetect hex/etc.
 
     if not isinstance(objid, int):
-        raise TypeError(f'Expected an int for objid; got a {type(objid)}.')
+        raise TypeError(f"Expected an int for objid; got a {type(objid)}.")
 
     # Don't wanna return stuff waiting to be garbage-collected.
     # UPDATE: Turning this off.
@@ -138,7 +138,7 @@ def getobj(objid: int, expanded: bool = False) -> Any:
     for obj in allobjs:
         if id(obj) == objid:
             return obj
-    raise RuntimeError(f'Object with id {objid} not found.')
+    raise RuntimeError(f"Object with id {objid} not found.")
 
 
 def getrefs(obj: Any) -> list[Any]:
@@ -171,22 +171,22 @@ def printfiles(file: TextIO | None = None) -> None:
 
     # FIXME: we could do a more limited version of this when psutil is
     # not present that simply includes Python's files.
-    print('Files open by this app (not limited to Python\'s):', file=file)
+    print("Files open by this app (not limited to Python's):", file=file)
     for i, ofile in enumerate(proc.open_files()):
         # Mypy doesn't know about mode apparently.
         # (and can't use type: ignore because we don't require psutil
         # and then mypy complains about unused ignore comment when its
         # not present)
-        mode = getattr(ofile, 'mode')
+        mode = getattr(ofile, "mode")
         assert isinstance(mode, str)
         textio = textio_ids.get(ofile.fd)
-        textio_s = id(textio) if textio is not None else '<not found>'
+        textio_s = id(textio) if textio is not None else "<not found>"
         fileio = fileio_ids.get(ofile.fd)
-        fileio_s = id(fileio) if fileio is not None else '<not found>'
+        fileio_s = id(fileio) if fileio is not None else "<not found>"
         print(
-            f'#{i+1}: path={ofile.path!r},'
-            f' fd={ofile.fd}, mode={mode!r}, TextIOWrapper={textio_s},'
-            f' FileIO={fileio_s}',
+            f"#{i+1}: path={ofile.path!r},"
+            f" fd={ofile.fd}, mode={mode!r}, TextIOWrapper={textio_s},"
+            f" FileIO={fileio_s}",
             file=file,
         )
     file.flush()
@@ -250,8 +250,8 @@ def printtypes(
     for obj in allobjs:
         modname = type(obj).__module__
         tpname = type(obj).__qualname__
-        if modname != 'builtins':
-            tpname = f'{modname}.{tpname}'
+        if modname != "builtins":
+            tpname = f"{modname}.{tpname}"
         objtypes[tpname] = objtypes.get(tpname, 0) + 1
 
     if file is None:
@@ -264,13 +264,13 @@ def printtypes(
     allobjs.clear()
     del allobjs
 
-    print(f'Types most allocated ({allobjc} total objects):', file=file)
+    print(f"Types most allocated ({allobjc} total objects):", file=file)
     for i, tpitem in enumerate(
         sorted(objtypes.items(), key=lambda x: x[1], reverse=True)[:limit]
     ):
         tpname, tpval = tpitem
         percent = tpval / allobjc * 100.0
-        print(f'{i+1}: {tpname}: {tpval} ({percent:.2f}%)', file=file)
+        print(f"{i+1}: {tpname}: {tpval} ({percent:.2f}%)", file=file)
 
     file.flush()
 
@@ -291,15 +291,15 @@ def printsizes(
     for obj in allobjs:
         modname = type(obj).__module__
         tpname = type(obj).__qualname__
-        if modname != 'builtins':
-            tpname = f'{modname}.{tpname}'
+        if modname != "builtins":
+            tpname = f"{modname}.{tpname}"
         objsize = sys.getsizeof(obj)
         objsizes[tpname] = objsizes.get(tpname, 0) + objsize
         totalobjsize += objsize
 
     totalobjmb = totalobjsize / (1024 * 1024)
     print(
-        f'Types with most allocated bytes ({totalobjmb:.2f} mb total):',
+        f"Types with most allocated bytes ({totalobjmb:.2f} mb total):",
         file=file,
     )
     for i, tpitem in enumerate(
@@ -307,7 +307,7 @@ def printsizes(
     ):
         tpname, tpval = tpitem
         percent = tpval / totalobjsize * 100.0
-        print(f'{i+1}: {tpname}: {tpval} ({percent:.2f}%)', file=file)
+        print(f"{i+1}: {tpname}: {tpval} ({percent:.2f}%)", file=file)
 
     file.flush()
 
@@ -315,11 +315,11 @@ def printsizes(
 def _desctype(obj: Any) -> str:
     cls = type(obj)
     if cls is types.ModuleType:
-        return f'{type(obj).__name__} {obj.__name__}'
+        return f"{type(obj).__name__} {obj.__name__}"
     if cls is types.MethodType:
-        bnd = 'bound' if hasattr(obj, '__self__') else 'unbound'
-        return f'{bnd} {type(obj).__name__} {obj.__name__}'
-    return f'{type(obj).__name__}'
+        bnd = "bound" if hasattr(obj, "__self__") else "unbound"
+        return f"{bnd} {type(obj).__name__} {obj.__name__}"
+    return f"{type(obj).__name__}"
 
 
 def _desc(obj: Any) -> str:
@@ -327,35 +327,33 @@ def _desc(obj: Any) -> str:
     if isinstance(obj, list | tuple):
         # Print length and the first few types.
         tps = [_desctype(i) for i in obj[:3]]
-        tpsj = ', '.join(tps)
+        tpsj = ", ".join(tps)
         tpss = (
-            f', contains [{tpsj}, ...]'
+            f", contains [{tpsj}, ...]"
             if len(obj) > 3
-            else f', contains [{tpsj}]' if tps else ''
+            else f", contains [{tpsj}]" if tps else ""
         )
-        extra = f' (len {len(obj)}{tpss})'
+        extra = f" (len {len(obj)}{tpss})"
     elif isinstance(obj, dict):
         # If it seems to be the vars() for a type or module, try to
         # identify what.
         for ref in getrefs(obj):
-            if hasattr(ref, '__dict__') and vars(ref) is obj:
-                extra = f' (vars for {_desctype(ref)} @ {hex(id(ref))})'
+            if hasattr(ref, "__dict__") and vars(ref) is obj:
+                extra = f" (vars for {_desctype(ref)} @ {hex(id(ref))})"
 
         # Generic dict: print length and the first few key:type pairs.
         if extra is None:
-            pairs = [
-                f'{repr(n)}: {_desctype(v)}' for n, v in list(obj.items())[:3]
-            ]
-            pairsj = ', '.join(pairs)
+            pairs = [f"{repr(n)}: {_desctype(v)}" for n, v in list(obj.items())[:3]]
+            pairsj = ", ".join(pairs)
             pairss = (
-                f', contains {{{pairsj}, ...}}'
+                f", contains {{{pairsj}, ...}}"
                 if len(obj) > 3
-                else f', contains {{{pairsj}}}' if pairs else ''
+                else f", contains {{{pairsj}}}" if pairs else ""
             )
-            extra = f' (len {len(obj)}{pairss})'
+            extra = f" (len {len(obj)}{pairss})"
     if extra is None:
-        extra = ''
-    return f'{_desctype(obj)} @ {hex(id(obj))}{extra}'
+        extra = ""
+    return f"{_desctype(obj)} @ {hex(id(obj))}{extra}"
 
 
 def _printrefs(
@@ -367,7 +365,7 @@ def _printrefs(
     expand_ids: list[int],
     file: TextIO,
 ) -> None:
-    ind = '  ' * level
+    ind = "  " * level
     print(ind + _desc(obj), file=file)
     v = vars()
     if level < max_level or (id(obj) in expand_ids and level < ABS_MAX_LEVEL):
@@ -424,7 +422,7 @@ class DeadlockDumper:
         with cls.lock:
             if cls.watch_in_progress:
                 _get_logger().error(
-                    'Existing DeadlockDumper found; new one will be a no-op.',
+                    "Existing DeadlockDumper found; new one will be a no-op.",
                 )
                 self.active = False
                 return
@@ -456,8 +454,8 @@ class DeadlockDumper:
                 duration = time.monotonic() - starttime
                 if duration > 1.0:
                     _get_logger().error(
-                        'DeadlockDumper faulthandler cancel took %.2fs;'
-                        ' should not happen.',
+                        "DeadlockDumper faulthandler cancel took %.2fs;"
+                        " should not happen.",
                         duration,
                     )
                 cls.watch_in_progress = False
@@ -494,7 +492,7 @@ class DeadlockWatcher:
         cls = type(self)
         if cls.watchers_lock is None or cls.watchers is None:
             _get_logger().error(
-                'DeadlockWatcher created without watchers enabled.',
+                "DeadlockWatcher created without watchers enabled.",
             )
             return
 
@@ -508,9 +506,9 @@ class DeadlockWatcher:
         self.caller_source_loc = caller_source_location()
         curthread = threading.current_thread()
         self.thread_id = (
-            '<unknown>'
+            "<unknown>"
             if curthread.ident is None
-            else hex(curthread.ident).removeprefix('0x')
+            else hex(curthread.ident).removeprefix("0x")
         )
         self.active = False
 
@@ -528,8 +526,8 @@ class DeadlockWatcher:
         duration = time.monotonic() - self.create_time
         if duration > self.timeout:
             _get_logger().error(
-                'DeadlockWatcher %s at %s in thread %s lived %.2fs,'
-                ' past its timeout of %.2fs. You should see a deadlock dump.',
+                "DeadlockWatcher %s at %s in thread %s lived %.2fs,"
+                " past its timeout of %.2fs. You should see a deadlock dump.",
                 id(self),
                 self.caller_source_loc,
                 self.thread_id,
@@ -559,9 +557,7 @@ class DeadlockWatcher:
         cls.watchers = []
 
         threading.Thread(
-            target=strict_partial(
-                cls._deadlock_watcher_thread_main, use_logs=use_logs
-            ),
+            target=strict_partial(cls._deadlock_watcher_thread_main, use_logs=use_logs),
             daemon=True,
         ).start()
 
@@ -585,10 +581,10 @@ class DeadlockWatcher:
         # explicitly cancel it. This way we should get state dumps even
         # for things like total GIL deadlocks.
         with TemporaryDirectory() as tempdir:
-            logfilepath = os.path.join(tempdir, 'dumps')
+            logfilepath = os.path.join(tempdir, "dumps")
             if use_logs:
                 # pylint: disable=consider-using-with
-                logfile = open(logfilepath, 'wb')
+                logfile = open(logfilepath, "wb")
             else:
                 logfile = None
 
@@ -603,14 +599,14 @@ class DeadlockWatcher:
                     file=logfile.fileno() if logfile is not None else None,
                 )
 
-                ex = f't1 {time.monotonic()-starttime:.2f}'
+                ex = f"t1 {time.monotonic()-starttime:.2f}"
 
                 # Sleep most of the way through it but give ourselves time
                 # to turn it off if we're still responsive.
                 time.sleep(timeout - 1.53)
                 now = time.monotonic()
 
-                ex += f' t2 {time.monotonic()-starttime:.2f}'
+                ex += f" t2 {time.monotonic()-starttime:.2f}"
 
                 found_fresh_expired = False
 
@@ -631,20 +627,20 @@ class DeadlockWatcher:
                             # If they supplied a logger, let them know they
                             # should check stderr for a dump.
                             _get_logger().error(
-                                'Found expired DeadlockWatcher %s at %s'
-                                ' in thread %s;'
-                                ' will force a state dump.',
+                                "Found expired DeadlockWatcher %s at %s"
+                                " in thread %s;"
+                                " will force a state dump.",
                                 id(w),
                                 w.caller_source_loc,
                                 w.thread_id,
                             )
                             wdur = now - w.create_time
                             watcher_info = (
-                                f'DeadlockWatcher {id(w)}'
-                                f' at {w.caller_source_loc}'
-                                f' in thread {w.thread_id}'
-                                f' lived {wdur:.2f}s past its timeout of'
-                                f' {w.timeout:.2f}s.'
+                                f"DeadlockWatcher {id(w)}"
+                                f" at {w.caller_source_loc}"
+                                f" in thread {w.thread_id}"
+                                f" lived {wdur:.2f}s past its timeout of"
+                                f" {w.timeout:.2f}s."
                             )
                             found_fresh_expired = True
                             w.noted_expire = True
@@ -684,14 +680,12 @@ class DeadlockWatcher:
                             now = time.monotonic()
                         try:
                             logfile.close()
-                            with open(
-                                logfilepath, 'r', encoding='utf-8'
-                            ) as infile:
+                            with open(logfilepath, "r", encoding="utf-8") as infile:
                                 dump = infile.read()
                             # Reset it for next time.
                             os.remove(logfilepath)
                             # pylint: disable=consider-using-with
-                            logfile = open(logfilepath, 'wb')
+                            logfile = open(logfilepath, "wb")
                             if watcher_info is None:
                                 # This seems to happen periodically
                                 # simply due to scheduling on some
@@ -699,23 +693,23 @@ class DeadlockWatcher:
                                 # instead of erroring.
                                 logcall = _get_logger().warning
                                 watcher_info = (
-                                    f'No expired watchers found'
-                                    f' (slept {duration:.2f}s of'
-                                    f' {timeout:.2f}s,'
-                                    f' {total_duration:.2f}s'
-                                    f' since thread start).'
-                                    f' ex: {ex}'
+                                    f"No expired watchers found"
+                                    f" (slept {duration:.2f}s of"
+                                    f" {timeout:.2f}s,"
+                                    f" {total_duration:.2f}s"
+                                    f" since thread start)."
+                                    f" ex: {ex}"
                                 )
                             else:
                                 logcall = _get_logger().error
                             logcall(
-                                'Deadlock Detected!\n%s\n\n%s',
+                                "Deadlock Detected!\n%s\n\n%s",
                                 watcher_info,
                                 dump,
                             )
                         except Exception:
                             _get_logger().exception(
-                                'Error logging/resetting dump file.'
+                                "Error logging/resetting dump file."
                             )
                             logfile = None
 
@@ -726,11 +720,11 @@ class DeadlockWatcher:
                     # include this info there).
                     if not found_fresh_expired and not use_logs:
                         _get_logger().error(
-                            'DeadlockWatcher thread seems to have dumped states'
-                            ' without any expired watchers'
-                            ' (slept %.2f of %.2f, %.2f since thread start).'
-                            ' This likely means something is not playing nice'
-                            ' with the GIL.',
+                            "DeadlockWatcher thread seems to have dumped states"
+                            " without any expired watchers"
+                            " (slept %.2f of %.2f, %.2f since thread start)."
+                            " This likely means something is not playing nice"
+                            " with the GIL.",
                             duration,
                             timeout,
                             now - thread_start_time,

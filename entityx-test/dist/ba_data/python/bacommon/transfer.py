@@ -20,8 +20,8 @@ if TYPE_CHECKING:
 class DirectoryManifestFile:
     """Describes a file in a manifest."""
 
-    hash_sha256: Annotated[str, IOAttrs('h')]
-    size: Annotated[int, IOAttrs('s')]
+    hash_sha256: Annotated[str, IOAttrs("h")]
+    size: Annotated[int, IOAttrs("s")]
 
 
 @ioprepped
@@ -29,11 +29,11 @@ class DirectoryManifestFile:
 class DirectoryManifest:
     """Contains a summary of files in a directory."""
 
-    files: Annotated[dict[str, DirectoryManifestFile], IOAttrs('f')]
+    files: Annotated[dict[str, DirectoryManifestFile], IOAttrs("f")]
 
     # Soft-default added April 2024; can remove eventually once this
     # attr is widespread in client.
-    exists: Annotated[bool, IOAttrs('e', soft_default=True)]
+    exists: Annotated[bool, IOAttrs("e", soft_default=True)]
 
     @classmethod
     def create_from_disk(cls, path: Path) -> DirectoryManifest:
@@ -64,15 +64,13 @@ class DirectoryManifest:
             fullfilepath = os.path.join(pathstr, filepath)
             if not os.path.isfile(fullfilepath):
                 raise RuntimeError(f'File not found: "{fullfilepath}".')
-            with open(fullfilepath, 'rb') as infile:
+            with open(fullfilepath, "rb") as infile:
                 filebytes = infile.read()
                 filesize = len(filebytes)
                 sha.update(filebytes)
             return (
                 filepath,
-                DirectoryManifestFile(
-                    hash_sha256=sha.hexdigest(), size=filesize
-                ),
+                DirectoryManifestFile(hash_sha256=sha.hexdigest(), size=filesize),
             )
 
         # Now use all procs to hash the files efficiently.
@@ -80,9 +78,7 @@ class DirectoryManifest:
         if cpus is None:
             cpus = 4
         with ThreadPoolExecutor(max_workers=cpus) as executor:
-            return cls(
-                files=dict(executor.map(_get_file_info, paths)), exists=exists
-            )
+            return cls(files=dict(executor.map(_get_file_info, paths)), exists=exists)
 
     def validate(self) -> None:
         """Log any odd data in the manifest; for debugging."""
@@ -92,10 +88,8 @@ class DirectoryManifest:
             # We want to be dealing in only forward slashes; make sure
             # that's the case (wondering if we'll ever see backslashes
             # for escape purposes).
-            if '\\' in fpath:
-                logging.exception(
-                    "Found unusual path in manifest: '%s'.", fpath
-                )
+            if "\\" in fpath:
+                logging.exception("Found unusual path in manifest: '%s'.", fpath)
                 break  # 1 error is enough for now.
 
     # @classmethod

@@ -61,7 +61,7 @@ class PartyQueueWindow(bui.Window):
             self._body_image = bui.buttonwidget(
                 parent=parent.get_root_widget(),
                 selectable=True,
-                label='',
+                label="",
                 size=(sc * 60, sc * 80),
                 color=self._color,
                 texture=parent.lineup_tex,
@@ -88,8 +88,8 @@ class PartyQueueWindow(bui.Window):
                 flatness=1.0,
                 text=name,
                 maxwidth=100,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 scale=0.75,
                 color=(1, 1, 1, 0.6),
             )
@@ -149,8 +149,7 @@ class PartyQueueWindow(bui.Window):
             if self._debug:
                 sc = self._sc
                 position = (
-                    self._line_left
-                    + self._line_width * (1.0 - self._target_distance),
+                    self._line_left + self._line_width * (1.0 - self._target_distance),
                     self._line_bottom - 30,
                 )
                 bui.imagewidget(
@@ -171,8 +170,7 @@ class PartyQueueWindow(bui.Window):
         def step(self, smoothing: float) -> None:
             """Step this dude."""
             self._distance = (
-                smoothing * self._distance
-                + (1.0 - smoothing) * self._target_distance
+                smoothing * self._distance + (1.0 - smoothing) * self._target_distance
             )
             self._update_image()
             self._boost_brightness *= 0.9
@@ -239,37 +237,31 @@ class PartyQueueWindow(bui.Window):
         self._line_left = 40.0
         self._line_width = self._width - 190
         self._line_bottom = self._height * 0.4
-        self.lineup_tex: bui.Texture = bui.gettexture('playerLineup')
+        self.lineup_tex: bui.Texture = bui.gettexture("playerLineup")
         self._smoothing = 0.0
         self._initial_offset = 0.0
         self._boost_tickets = 0
         self._boost_strength = 0.0
-        self._angry_computer_transparent_mesh = bui.getmesh(
-            'angryComputerTransparent'
-        )
+        self._angry_computer_transparent_mesh = bui.getmesh("angryComputerTransparent")
         self._angry_computer_image: bui.Widget | None = None
         self.lineup_1_transparent_mesh: bui.Mesh = bui.getmesh(
-            'playerLineup1Transparent'
+            "playerLineup1Transparent"
         )
         self._lineup_2_transparent_mesh: bui.Mesh = bui.getmesh(
-            'playerLineup2Transparent'
+            "playerLineup2Transparent"
         )
 
-        self._lineup_3_transparent_mesh = bui.getmesh(
-            'playerLineup3Transparent'
-        )
-        self._lineup_4_transparent_mesh = bui.getmesh(
-            'playerLineup4Transparent'
-        )
+        self._lineup_3_transparent_mesh = bui.getmesh("playerLineup3Transparent")
+        self._lineup_4_transparent_mesh = bui.getmesh("playerLineup4Transparent")
         self._line_image: bui.Widget | None = None
-        self.eyes_mesh: bui.Mesh = bui.getmesh('plasticEyesTransparent')
-        self._white_tex = bui.gettexture('white')
+        self.eyes_mesh: bui.Mesh = bui.getmesh("plasticEyesTransparent")
+        self._white_tex = bui.gettexture("white")
         uiscale = bui.app.ui_v1.uiscale
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 color=(0.45, 0.63, 0.15),
-                transition='in_scale',
+                transition="in_scale",
                 scale=(
                     1.4
                     if uiscale is bui.UIScale.SMALL
@@ -283,16 +275,14 @@ class PartyQueueWindow(bui.Window):
             scale=1.0,
             position=(60, self._height - 80),
             size=(50, 50),
-            label='',
+            label="",
             on_activate_call=self.close,
             autoselect=True,
             color=(0.45, 0.63, 0.15),
-            icon=bui.gettexture('crossOut'),
+            icon=bui.gettexture("crossOut"),
             iconscale=1.2,
         )
-        bui.containerwidget(
-            edit=self._root_widget, cancel_button=self._cancel_button
-        )
+        bui.containerwidget(edit=self._root_widget, cancel_button=self._cancel_button)
 
         self._title_text = bui.textwidget(
             parent=self._root_widget,
@@ -300,9 +290,9 @@ class PartyQueueWindow(bui.Window):
             size=(0, 0),
             color=(1.0, 3.0, 1.0),
             scale=1.3,
-            h_align='center',
-            v_align='center',
-            text=bui.Lstr(resource='internal.connectingToPartyText'),
+            h_align="center",
+            v_align="center",
+            text=bui.Lstr(resource="internal.connectingToPartyText"),
             maxwidth=self._width * 0.65,
         )
 
@@ -312,15 +302,13 @@ class PartyQueueWindow(bui.Window):
             size=(0, 0),
             color=(0.2, 1.0, 0.2),
             scale=0.7,
-            h_align='center',
-            v_align='center',
-            text='',
+            h_align="center",
+            v_align="center",
+            text="",
         )
 
         # Update at roughly 30fps.
-        self._update_timer = bui.AppTimer(
-            0.033, bui.WeakCall(self.update), repeat=True
-        )
+        self._update_timer = bui.AppTimer(0.033, bui.WeakCall(self.update), repeat=True)
         self.update()
 
     def __del__(self) -> None:
@@ -329,11 +317,11 @@ class PartyQueueWindow(bui.Window):
             assert plus is not None
 
             plus.add_v1_account_transaction(
-                {'type': 'PARTY_QUEUE_REMOVE', 'q': self._queue_id}
+                {"type": "PARTY_QUEUE_REMOVE", "q": self._queue_id}
             )
             plus.run_v1_account_transactions()
         except Exception:
-            logging.exception('Error removing self from party queue.')
+            logging.exception("Error removing self from party queue.")
 
     def get_line_left(self) -> float:
         """(internal)"""
@@ -354,7 +342,7 @@ class PartyQueueWindow(bui.Window):
         from bauiv1lib.account.viewer import AccountViewerWindow
 
         if account_id is None:
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             return
         AccountViewerWindow(
             account_id=account_id,
@@ -363,7 +351,7 @@ class PartyQueueWindow(bui.Window):
 
     def close(self) -> None:
         """Close the ui."""
-        bui.containerwidget(edit=self._root_widget, transition='out_scale')
+        bui.containerwidget(edit=self._root_widget, transition="out_scale")
 
     def _update_field(self, response: dict[str, Any]) -> None:
         plus = bui.app.plus
@@ -399,16 +387,16 @@ class PartyQueueWindow(bui.Window):
         if -1 not in self._dudes_by_id:
             dude = self.Dude(
                 self,
-                response['d'],
+                response["d"],
                 self._initial_offset,
                 True,
-                plus.get_v1_account_misc_read_val_2('resolvedAccountID', None),
+                plus.get_v1_account_misc_read_val_2("resolvedAccountID", None),
                 plus.get_v1_account_display_string(),
             )
             self._dudes_by_id[-1] = dude
             self._dudes.append(dude)
         else:
-            self._dudes_by_id[-1].set_target_distance(response['d'])
+            self._dudes_by_id[-1].set_target_distance(response["d"])
         self._dudes_by_id[-1].claimed = True
 
         # now create/destroy enemies
@@ -417,7 +405,7 @@ class PartyQueueWindow(bui.Window):
             enemy_distance,
             enemy_account_id,
             enemy_name,
-        ) in response['e']:
+        ) in response["e"]:
             if enemy_id not in self._dudes_by_id:
                 dude = self.Dude(
                     self,
@@ -435,11 +423,7 @@ class PartyQueueWindow(bui.Window):
 
         # Remove unclaimed dudes from both of our lists.
         self._dudes_by_id = dict(
-            [
-                item
-                for item in list(self._dudes_by_id.items())
-                if item[1].claimed
-            ]
+            [item for item in list(self._dudes_by_id.items()) if item[1].claimed]
         )
         self._dudes = [dude for dude in self._dudes if dude.claimed]
 
@@ -461,19 +445,19 @@ class PartyQueueWindow(bui.Window):
 
         # Seeing this in logs; debugging.
         if not self._title_text:
-            print('PartyQueueWindows update: Have root but no title_text.')
+            print("PartyQueueWindows update: Have root but no title_text.")
             return
 
         if response is not None:
-            should_show_field = response.get('d') is not None
-            self._smoothing = response['s']
-            self._initial_offset = response['o']
+            should_show_field = response.get("d") is not None
+            self._smoothing = response["s"]
+            self._initial_offset = response["o"]
 
             # If they gave us a position, show the field.
             if should_show_field:
                 bui.textwidget(
                     edit=self._title_text,
-                    text=bui.Lstr(resource='waitingInLineText'),
+                    text=bui.Lstr(resource="waitingInLineText"),
                     position=(self._width * 0.5, self._height * 0.85),
                 )
                 self._update_field(response)
@@ -481,24 +465,24 @@ class PartyQueueWindow(bui.Window):
             if not should_show_field and self._field_shown:
                 bui.textwidget(
                     edit=self._title_text,
-                    text=bui.Lstr(resource='internal.connectingToPartyText'),
+                    text=bui.Lstr(resource="internal.connectingToPartyText"),
                     position=(self._width * 0.5, self._height * 0.55),
                 )
                 self._hide_field()
                 self._field_shown = False
 
             # If they told us there's a boost button, update.
-            if response.get('bt') is not None:
-                self._boost_tickets = response['bt']
-                self._boost_strength = response['ba']
+            if response.get("bt") is not None:
+                self._boost_tickets = response["bt"]
+                self._boost_strength = response["ba"]
                 if self._boost_button is None:
                     self._boost_button = bui.buttonwidget(
                         parent=self._root_widget,
                         scale=1.0,
                         position=(self._width * 0.5 - 75, 20),
                         size=(150, 100),
-                        button_type='square',
-                        label='',
+                        button_type="square",
+                        label="",
                         on_activate_call=self.on_boost_press,
                         enable_sound=False,
                         color=(0, 1, 0),
@@ -511,9 +495,9 @@ class PartyQueueWindow(bui.Window):
                         size=(0, 0),
                         color=(0.8, 1.0, 0.8),
                         scale=1.5,
-                        h_align='center',
-                        v_align='center',
-                        text=bui.Lstr(resource='boostText'),
+                        h_align="center",
+                        v_align="center",
+                        text=bui.Lstr(resource="boostText"),
                         maxwidth=150,
                     )
                     self._boost_price = bui.textwidget(
@@ -523,8 +507,8 @@ class PartyQueueWindow(bui.Window):
                         size=(0, 0),
                         color=(0, 1, 0),
                         scale=0.9,
-                        h_align='center',
-                        v_align='center',
+                        h_align="center",
+                        v_align="center",
                         text=bui.charstr(bui.SpecialChar.TICKET)
                         + str(self._boost_tickets),
                         maxwidth=150,
@@ -544,7 +528,7 @@ class PartyQueueWindow(bui.Window):
             # Note: servers will disconnect us if we try to connect
             # before getting this go-ahead, so don't get any bright
             # ideas.
-            if response.get('c', False):
+            if response.get("c", False):
                 # Enforce a delay between connection attempts (in case
                 # they're jamming on the boost button).
                 now = time.time()
@@ -578,19 +562,19 @@ class PartyQueueWindow(bui.Window):
             return
 
         if classic.tickets < self._boost_tickets:
-            bui.getsound('error').play()
+            bui.getsound("error").play()
             bui.screenmessage(
-                bui.Lstr(resource='notEnoughTicketsText'),
+                bui.Lstr(resource="notEnoughTicketsText"),
                 color=(1, 0, 0),
             )
             return
 
-        bui.getsound('laserReverse').play()
+        bui.getsound("laserReverse").play()
         plus.add_v1_account_transaction(
             {
-                'type': 'PARTY_QUEUE_BOOST',
-                't': self._boost_tickets,
-                'q': self._queue_id,
+                "type": "PARTY_QUEUE_BOOST",
+                "t": self._boost_tickets,
+                "q": self._queue_id,
             },
             callback=bui.WeakCall(self.on_update_response),
         )
@@ -618,8 +602,7 @@ class PartyQueueWindow(bui.Window):
         if self._boost_price is not None:
             bui.textwidget(
                 edit=self._boost_price,
-                text=bui.charstr(bui.SpecialChar.TICKET)
-                + str(self._boost_tickets),
+                text=bui.charstr(bui.SpecialChar.TICKET) + str(self._boost_tickets),
             )
 
         # Update boost button color based on if we have enough moola.
@@ -636,25 +619,23 @@ class PartyQueueWindow(bui.Window):
         # Update ticket-count.
         if self._tickets_text is not None:
             if self._boost_button is not None:
-                if plus.get_v1_account_state() == 'signed_in':
-                    val = bui.charstr(bui.SpecialChar.TICKET) + str(
-                        classic.tickets
-                    )
+                if plus.get_v1_account_state() == "signed_in":
+                    val = bui.charstr(bui.SpecialChar.TICKET) + str(classic.tickets)
                 else:
-                    val = bui.charstr(bui.SpecialChar.TICKET) + '???'
+                    val = bui.charstr(bui.SpecialChar.TICKET) + "???"
                 bui.textwidget(edit=self._tickets_text, text=val)
             else:
-                bui.textwidget(edit=self._tickets_text, text='')
+                bui.textwidget(edit=self._tickets_text, text="")
 
         current_time = bui.apptime()
         if (
             self._last_transaction_time is None
             or current_time - self._last_transaction_time
-            > 0.001 * plus.get_v1_account_misc_read_val('pqInt', 5000)
+            > 0.001 * plus.get_v1_account_misc_read_val("pqInt", 5000)
         ):
             self._last_transaction_time = current_time
             plus.add_v1_account_transaction(
-                {'type': 'PARTY_QUEUE_QUERY', 'q': self._queue_id},
+                {"type": "PARTY_QUEUE_QUERY", "q": self._queue_id},
                 callback=bui.WeakCall(self.on_update_response),
             )
             plus.run_v1_account_transactions()

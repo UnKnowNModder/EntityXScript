@@ -18,7 +18,7 @@ class AudioSettingsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = 'in_right',
+        transition: str | None = "in_right",
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
@@ -28,7 +28,7 @@ class AudioSettingsWindow(bui.MainWindow):
         assert bui.app.classic is not None
         music = bui.app.classic.music
 
-        self._r = 'audioSettingsWindow'
+        self._r = "audioSettingsWindow"
 
         spacing = 50.0
         uiscale = bui.app.ui_v1.uiscale
@@ -63,9 +63,7 @@ class AudioSettingsWindow(bui.MainWindow):
                 size=(width, height),
                 scale=scale,
                 toolbar_visibility=(
-                    'menu_minimal'
-                    if uiscale is bui.UIScale.SMALL
-                    else 'menu_full'
+                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
                 ),
             ),
             transition=transition,
@@ -87,13 +85,11 @@ class AudioSettingsWindow(bui.MainWindow):
                 scale=0.8,
                 text_scale=1.2,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type='backSmall',
+                button_type="backSmall",
                 on_activate_call=self.main_window_back,
                 autoselect=True,
             )
-            bui.containerwidget(
-                edit=self._root_widget, cancel_button=self._back_button
-            )
+            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
 
         bui.textwidget(
             parent=self._root_widget,
@@ -102,11 +98,11 @@ class AudioSettingsWindow(bui.MainWindow):
                 yoffs - (48 if uiscale is bui.UIScale.SMALL else 32),
             ),
             size=(0, 0),
-            text=bui.Lstr(resource=f'{self._r}.titleText'),
+            text=bui.Lstr(resource=f"{self._r}.titleText"),
             color=bui.app.ui_v1.title_color,
             maxwidth=180,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
         )
 
         # Roughly center everything else in our window.
@@ -118,8 +114,8 @@ class AudioSettingsWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(x, y),
             xoffset=10,
-            configkey='Sound Volume',
-            displayname=bui.Lstr(resource=f'{self._r}.soundVolumeText'),
+            configkey="Sound Volume",
+            displayname=bui.Lstr(resource=f"{self._r}.soundVolumeText"),
             minval=0.0,
             maxval=1.0,
             increment=0.05,
@@ -127,15 +123,15 @@ class AudioSettingsWindow(bui.MainWindow):
         )
         bui.widget(
             edit=svne.plusbutton,
-            right_widget=bui.get_special_widget('squad_button'),
+            right_widget=bui.get_special_widget("squad_button"),
         )
         y -= spacing
         self._music_volume_numedit = ConfigNumberEdit(
             parent=self._root_widget,
             position=(x, y),
             xoffset=10,
-            configkey='Music Volume',
-            displayname=bui.Lstr(resource=f'{self._r}.musicVolumeText'),
+            configkey="Music Volume",
+            displayname=bui.Lstr(resource=f"{self._r}.musicVolumeText"),
             minval=0.0,
             maxval=1.0,
             increment=0.05,
@@ -154,7 +150,7 @@ class AudioSettingsWindow(bui.MainWindow):
                 position=(width * 0.5 - 155, y),
                 size=(310, 50),
                 autoselect=True,
-                label=bui.Lstr(resource=f'{self._r}.soundtrackButtonText'),
+                label=bui.Lstr(resource=f"{self._r}.soundtrackButtonText"),
                 on_activate_call=self._do_soundtracks,
             )
             y -= spacing * 0.3
@@ -162,10 +158,10 @@ class AudioSettingsWindow(bui.MainWindow):
                 parent=self._root_widget,
                 position=(0.5 * width, y),
                 size=(0.0, 0.0),
-                text=bui.Lstr(resource=f'{self._r}.soundtrackDescriptionText'),
+                text=bui.Lstr(resource=f"{self._r}.soundtrackDescriptionText"),
                 flatness=1.0,
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
                 maxwidth=400,
                 scale=0.5,
                 color=(0.7, 0.8, 0.7, 1.0),
@@ -177,10 +173,8 @@ class AudioSettingsWindow(bui.MainWindow):
         if self._back_button is not None:
             bui.widget(edit=self._back_button, down_widget=svne.minusbutton)
         else:
-            spback = bui.get_special_widget('back_button')
-            bui.widget(
-                edit=svne.minusbutton, up_widget=spback, left_widget=spback
-            )
+            spback = bui.get_special_widget("back_button")
+            bui.widget(edit=svne.minusbutton, up_widget=spback, left_widget=spback)
 
         self._restore_state()
 
@@ -209,14 +203,12 @@ class AudioSettingsWindow(bui.MainWindow):
         # We require disk access for soundtracks; request it if we don't
         # have it.
         if not bui.have_permission(bui.Permission.STORAGE):
-            bui.getsound('ding').play()
+            bui.getsound("ding").play()
             bui.screenmessage(
-                bui.Lstr(resource='storagePermissionAccessText'),
+                bui.Lstr(resource="storagePermissionAccessText"),
                 color=(0.5, 1, 0.5),
             )
-            bui.apptimer(
-                1.0, bui.Call(bui.request_permission, bui.Permission.STORAGE)
-            )
+            bui.apptimer(1.0, bui.Call(bui.request_permission, bui.Permission.STORAGE))
             return
 
         self.main_window_replace(
@@ -227,44 +219,44 @@ class AudioSettingsWindow(bui.MainWindow):
         try:
             sel = self._root_widget.get_selected_child()
             if sel == self._sound_volume_numedit.minusbutton:
-                sel_name = 'SoundMinus'
+                sel_name = "SoundMinus"
             elif sel == self._sound_volume_numedit.plusbutton:
-                sel_name = 'SoundPlus'
+                sel_name = "SoundPlus"
             elif sel == self._music_volume_numedit.minusbutton:
-                sel_name = 'MusicMinus'
+                sel_name = "MusicMinus"
             elif sel == self._music_volume_numedit.plusbutton:
-                sel_name = 'MusicPlus'
+                sel_name = "MusicPlus"
             elif sel == self._soundtrack_button:
-                sel_name = 'Soundtrack'
+                sel_name = "Soundtrack"
             elif sel == self._back_button:
-                sel_name = 'Back'
+                sel_name = "Back"
             else:
-                raise ValueError(f'unrecognized selection \'{sel}\'')
+                raise ValueError(f"unrecognized selection '{sel}'")
             assert bui.app.classic is not None
             bui.app.ui_v1.window_states[type(self)] = sel_name
         except Exception:
-            logging.exception('Error saving state for %s.', self)
+            logging.exception("Error saving state for %s.", self)
 
     def _restore_state(self) -> None:
         try:
             assert bui.app.classic is not None
             sel_name = bui.app.ui_v1.window_states.get(type(self))
             sel: bui.Widget | None
-            if sel_name == 'SoundMinus':
+            if sel_name == "SoundMinus":
                 sel = self._sound_volume_numedit.minusbutton
-            elif sel_name == 'SoundPlus':
+            elif sel_name == "SoundPlus":
                 sel = self._sound_volume_numedit.plusbutton
-            elif sel_name == 'MusicMinus':
+            elif sel_name == "MusicMinus":
                 sel = self._music_volume_numedit.minusbutton
-            elif sel_name == 'MusicPlus':
+            elif sel_name == "MusicPlus":
                 sel = self._music_volume_numedit.plusbutton
-            elif sel_name == 'Soundtrack':
+            elif sel_name == "Soundtrack":
                 sel = self._soundtrack_button
-            elif sel_name == 'Back':
+            elif sel_name == "Back":
                 sel = self._back_button
             else:
                 sel = self._back_button
             if sel:
                 bui.containerwidget(edit=self._root_widget, selected_child=sel)
         except Exception:
-            logging.exception('Error restoring state for %s.', self)
+            logging.exception("Error restoring state for %s.", self)

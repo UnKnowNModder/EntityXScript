@@ -22,12 +22,12 @@ SIMPLE_TYPES = {int, bool, str, float, type(None)}
 # Attr name for dict of extra attributes included on dataclass
 # instances. Note that this is only added if extra attributes are
 # present.
-EXTRA_ATTRS_ATTR = '_DCIOEXATTRS'
+EXTRA_ATTRS_ATTR = "_DCIOEXATTRS"
 
 # Attr name for a bool attr for flagging data as lossy, which means it
 # may have been modified in some way during load and should generally
 # not be written back out.
-LOSSY_ATTR = '_DCIOLOSSY'
+LOSSY_ATTR = "_DCIOLOSSY"
 
 
 class Codec(Enum):
@@ -35,11 +35,11 @@ class Codec(Enum):
 
     #: Use only types that will translate cleanly to/from json - lists,
     #: dicts with str keys, bools, ints, floats, and None.
-    JSON = 'json'
+    JSON = "json"
 
     #: Mostly like JSON but passes bytes and datetime objects through
     #: as-is instead of converting them to json-friendly types.
-    FIRESTORE = 'firestore'
+    FIRESTORE = "firestore"
 
 
 class IOExtendedData:
@@ -121,12 +121,10 @@ class IOMultiType[EnumT: Enum]:
         looked up types so can be significantly more efficient with
         large multitypes and repeat lookups.
         """
-        storage: dict[EnumT, type[Self]] | None = getattr(
-            cls, '_iomt_tp_cache', None
-        )
+        storage: dict[EnumT, type[Self]] | None = getattr(cls, "_iomt_tp_cache", None)
         if storage is None:
             storage = {}
-            setattr(cls, '_iomt_tp_cache', storage)
+            setattr(cls, "_iomt_tp_cache", storage)
         tp: type[Self] | None = storage.get(type_id)
         if tp is None:
             tp = storage[type_id] = cls.get_type(type_id)
@@ -154,7 +152,7 @@ class IOMultiType[EnumT: Enum]:
         overriding this call. One just needs to make sure that no
         encompassed types serialize anything to 'type' themself.
         """
-        return '_dciotype'
+        return "_dciotype"
 
     # NOTE: Currently (Jan 2025) mypy complains if overrides annotate
     # return type of 'Self | None'. Substituting their own explicit type
@@ -195,7 +193,7 @@ class IOAttrs:
 
         @override
         def __repr__(self) -> str:
-            return '<MISSING>'
+            return "<MISSING>"
 
     #: :meta private:
     MISSING = _MissingType()
@@ -291,15 +289,15 @@ class IOAttrs:
             # tell the user to use factory for mutable ones.
             if isinstance(soft_default, (list, dict, set)):
                 raise ValueError(
-                    f'mutable {type(soft_default)} is not allowed'
-                    f' for soft_default; use soft_default_factory.'
+                    f"mutable {type(soft_default)} is not allowed"
+                    f" for soft_default; use soft_default_factory."
                 )
             self.soft_default = soft_default
         if soft_default_factory is not cls.soft_default_factory:
             self.soft_default_factory = soft_default_factory
             if self.soft_default is not cls.soft_default:
                 raise ValueError(
-                    'Cannot set both soft_default and soft_default_factory'
+                    "Cannot set both soft_default and soft_default_factory"
                 )
         if enum_fallback is not cls.enum_fallback:
             self.enum_fallback = enum_fallback
@@ -322,16 +320,14 @@ class IOAttrs:
                 and self.soft_default_factory is self.MISSING
             ):
                 raise TypeError(
-                    f'Field {field.name} of {cls} has'
-                    f' neither a default nor a default_factory'
-                    f' and IOAttrs contains neither a soft_default'
-                    f' nor a soft_default_factory;'
-                    f' store_default=False cannot be set for it.'
+                    f"Field {field.name} of {cls} has"
+                    f" neither a default nor a default_factory"
+                    f" and IOAttrs contains neither a soft_default"
+                    f" nor a soft_default_factory;"
+                    f" store_default=False cannot be set for it."
                 )
 
-    def validate_datetime(
-        self, value: datetime.datetime, fieldpath: str
-    ) -> None:
+    def validate_datetime(self, value: datetime.datetime, fieldpath: str) -> None:
         """Ensure a datetime value meets our value requirements."""
         if self.whole_days:
             if any(
@@ -343,20 +339,16 @@ class IOAttrs:
                     value.microsecond,
                 )
             ):
-                raise ValueError(
-                    f'Value {value} at {fieldpath} is not a whole day.'
-                )
+                raise ValueError(f"Value {value} at {fieldpath} is not a whole day.")
         elif self.whole_hours:
-            if any(
-                x != 0 for x in (value.minute, value.second, value.microsecond)
-            ):
+            if any(x != 0 for x in (value.minute, value.second, value.microsecond)):
                 raise ValueError(
-                    f'Value {value} at {fieldpath}' f' is not a whole hour.'
+                    f"Value {value} at {fieldpath}" f" is not a whole hour."
                 )
         elif self.whole_minutes:
             if any(x != 0 for x in (value.second, value.microsecond)):
                 raise ValueError(
-                    f'Value {value} at {fieldpath}' f' is not a whole minute.'
+                    f"Value {value} at {fieldpath}" f" is not a whole minute."
                 )
 
 
@@ -369,7 +361,7 @@ def _raise_type_error(
     if len(expected) == 1:
         expected_str = expected[0].__name__
     else:
-        expected_str = ' | '.join(t.__name__ for t in expected)
+        expected_str = " | ".join(t.__name__ for t in expected)
     raise TypeError(
         f'Invalid value type for "{fieldpath}";'
         f' expected "{expected_str}", got'
@@ -393,8 +385,7 @@ def _is_valid_for_codec(obj: Any, codec: Codec) -> bool:
         # JSON 'objects' supports only string dict keys, but all value
         # types.
         return all(
-            isinstance(k, str) and _is_valid_for_codec(v, codec)
-            for k, v in obj.items()
+            isinstance(k, str) and _is_valid_for_codec(v, codec) for k, v in obj.items()
         )
     if objtype is list:
         return all(_is_valid_for_codec(elem, codec) for elem in obj)
@@ -431,8 +422,8 @@ def parse_annotated(anntype: Any) -> tuple[Any, IOAttrs | None]:
             if isinstance(annarg, IOAttrs):
                 if ioattrs is not None:
                     raise RuntimeError(
-                        'Multiple IOAttrs instances found for a'
-                        ' single annotation; this is not supported.'
+                        "Multiple IOAttrs instances found for a"
+                        " single annotation; this is not supported."
                     )
                 ioattrs = annarg
 
@@ -440,20 +431,16 @@ def parse_annotated(anntype: Any) -> tuple[Any, IOAttrs | None]:
             # IOAttrs('x'); catch these mistakes.
             elif isinstance(annarg, (str, int, float, bool)):
                 raise RuntimeError(
-                    f'Raw {type(annarg)} found in Annotated[] entry:'
-                    f' {anntype}; this is probably not what you intended.'
+                    f"Raw {type(annarg)} found in Annotated[] entry:"
+                    f" {anntype}; this is probably not what you intended."
                 )
         anntype = annargs[0]
     return anntype, ioattrs
 
 
-def _get_multitype_type(
-    cls: type[IOMultiType], fieldpath: str, val: Any
-) -> type[Any]:
+def _get_multitype_type(cls: type[IOMultiType], fieldpath: str, val: Any) -> type[Any]:
     if not isinstance(val, dict):
-        raise ValueError(
-            f"Found a {type(val)} at '{fieldpath}'; expected a dict."
-        )
+        raise ValueError(f"Found a {type(val)} at '{fieldpath}'; expected a dict.")
     storename = cls.get_type_id_storage_name()
     id_val = val.get(storename)
     if id_val is None:

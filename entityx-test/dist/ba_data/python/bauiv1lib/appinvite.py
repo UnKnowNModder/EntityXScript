@@ -18,7 +18,7 @@ class ShowFriendCodeWindow(bui.Window):
     """Window showing a code for sharing with friends."""
 
     def __init__(self, data: dict[str, Any]):
-        bui.set_analytics_screen('Friend Promo Code')
+        bui.set_analytics_screen("Friend Promo Code")
         self._width = 650
         self._height = 400
         assert bui.app.classic is not None
@@ -27,7 +27,7 @@ class ShowFriendCodeWindow(bui.Window):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 color=(0.45, 0.63, 0.15),
-                transition='in_scale',
+                transition="in_scale",
                 scale=(
                     1.5
                     if uiscale is bui.UIScale.SMALL
@@ -36,24 +36,22 @@ class ShowFriendCodeWindow(bui.Window):
             )
         )
         self._data = copy.deepcopy(data)
-        bui.getsound('cashRegister').play()
-        bui.getsound('swish').play()
+        bui.getsound("cashRegister").play()
+        bui.getsound("swish").play()
 
         self._cancel_button = bui.buttonwidget(
             parent=self._root_widget,
             scale=0.7,
             position=(50, self._height - 50),
             size=(60, 60),
-            label='',
+            label="",
             on_activate_call=self.close,
             autoselect=True,
             color=(0.45, 0.63, 0.15),
-            icon=bui.gettexture('crossOut'),
+            icon=bui.gettexture("crossOut"),
             iconscale=1.2,
         )
-        bui.containerwidget(
-            edit=self._root_widget, cancel_button=self._cancel_button
-        )
+        bui.containerwidget(edit=self._root_widget, cancel_button=self._cancel_button)
 
         bui.textwidget(
             parent=self._root_widget,
@@ -62,9 +60,9 @@ class ShowFriendCodeWindow(bui.Window):
             color=bui.app.ui_v1.infotextcolor,
             scale=1.0,
             flatness=1.0,
-            h_align='center',
-            v_align='center',
-            text=bui.Lstr(resource='gatherWindow.shareThisCodeWithFriendsText'),
+            h_align="center",
+            v_align="center",
+            text=bui.Lstr(resource="gatherWindow.shareThisCodeWithFriendsText"),
             maxwidth=self._width * 0.85,
         )
 
@@ -74,20 +72,20 @@ class ShowFriendCodeWindow(bui.Window):
             size=(0, 0),
             color=(1.0, 3.0, 1.0),
             scale=2.0,
-            h_align='center',
-            v_align='center',
-            text=data['code'],
+            h_align="center",
+            v_align="center",
+            text=data["code"],
             maxwidth=self._width * 0.85,
         )
 
         award_str: str | bui.Lstr | None
-        if self._data['awardTickets'] != 0:
+        if self._data["awardTickets"] != 0:
             award_str = bui.Lstr(
-                resource='gatherWindow.friendPromoCodeAwardText',
-                subs=[('${COUNT}', str(self._data['awardTickets']))],
+                resource="gatherWindow.friendPromoCodeAwardText",
+                subs=[("${COUNT}", str(self._data["awardTickets"]))],
             )
         else:
-            award_str = ''
+            award_str = ""
         bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height * 0.37),
@@ -95,43 +93,39 @@ class ShowFriendCodeWindow(bui.Window):
             color=bui.app.ui_v1.infotextcolor,
             scale=1.0,
             flatness=1.0,
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             text=bui.Lstr(
-                value='${A}\n${B}\n${C}\n${D}',
+                value="${A}\n${B}\n${C}\n${D}",
                 subs=[
                     (
-                        '${A}',
+                        "${A}",
                         bui.Lstr(
-                            resource=(
-                                'gatherWindow.friendPromoCodeRedeemLongText'
-                            ),
+                            resource=("gatherWindow.friendPromoCodeRedeemLongText"),
                             subs=[
-                                ('${COUNT}', str(self._data['tickets'])),
+                                ("${COUNT}", str(self._data["tickets"])),
                                 (
-                                    '${MAX_USES}',
-                                    str(self._data['usesRemaining']),
+                                    "${MAX_USES}",
+                                    str(self._data["usesRemaining"]),
                                 ),
                             ],
                         ),
                     ),
                     (
-                        '${B}',
+                        "${B}",
                         bui.Lstr(
-                            resource=(
-                                'gatherWindow.friendPromoCodeWhereToEnterText'
-                            )
+                            resource=("gatherWindow.friendPromoCodeWhereToEnterText")
                         ),
                     ),
-                    ('${C}', award_str),
+                    ("${C}", award_str),
                     (
-                        '${D}',
+                        "${D}",
                         bui.Lstr(
-                            resource='gatherWindow.friendPromoCodeExpireText',
+                            resource="gatherWindow.friendPromoCodeExpireText",
                             subs=[
                                 (
-                                    '${EXPIRE_HOURS}',
-                                    str(self._data['expireHours']),
+                                    "${EXPIRE_HOURS}",
+                                    str(self._data["expireHours"]),
                                 )
                             ],
                         ),
@@ -149,7 +143,7 @@ class ShowFriendCodeWindow(bui.Window):
                 size=(200, 40),
                 position=(self._width * 0.5 - 100 + xoffs, 39),
                 autoselect=True,
-                label=bui.Lstr(resource='gatherWindow.emailItText'),
+                label=bui.Lstr(resource="gatherWindow.emailItText"),
                 on_activate_call=bui.WeakCall(self._email),
             )
 
@@ -160,56 +154,54 @@ class ShowFriendCodeWindow(bui.Window):
         assert plus is not None
 
         # If somehow we got signed out.
-        if plus.get_v1_account_state() != 'signed_in':
-            bui.screenmessage(
-                bui.Lstr(resource='notSignedInText'), color=(1, 0, 0)
-            )
-            bui.getsound('error').play()
+        if plus.get_v1_account_state() != "signed_in":
+            bui.screenmessage(bui.Lstr(resource="notSignedInText"), color=(1, 0, 0))
+            bui.getsound("error").play()
             return
 
-        bui.set_analytics_screen('Email Friend Code')
+        bui.set_analytics_screen("Email Friend Code")
         subject = (
-            bui.Lstr(resource='gatherWindow.friendHasSentPromoCodeText')
+            bui.Lstr(resource="gatherWindow.friendHasSentPromoCodeText")
             .evaluate()
-            .replace('${NAME}', plus.get_v1_account_name())
-            .replace('${APP_NAME}', bui.Lstr(resource='titleText').evaluate())
-            .replace('${COUNT}', str(self._data['tickets']))
+            .replace("${NAME}", plus.get_v1_account_name())
+            .replace("${APP_NAME}", bui.Lstr(resource="titleText").evaluate())
+            .replace("${COUNT}", str(self._data["tickets"]))
         )
         body = (
-            bui.Lstr(resource='gatherWindow.youHaveBeenSentAPromoCodeText')
+            bui.Lstr(resource="gatherWindow.youHaveBeenSentAPromoCodeText")
             .evaluate()
-            .replace('${APP_NAME}', bui.Lstr(resource='titleText').evaluate())
-            + '\n\n'
-            + str(self._data['code'])
-            + '\n\n'
+            .replace("${APP_NAME}", bui.Lstr(resource="titleText").evaluate())
+            + "\n\n"
+            + str(self._data["code"])
+            + "\n\n"
         )
         body += (
             (
-                bui.Lstr(resource='gatherWindow.friendPromoCodeRedeemShortText')
+                bui.Lstr(resource="gatherWindow.friendPromoCodeRedeemShortText")
                 .evaluate()
-                .replace('${COUNT}', str(self._data['tickets']))
+                .replace("${COUNT}", str(self._data["tickets"]))
             )
-            + '\n\n'
-            + bui.Lstr(resource='gatherWindow.friendPromoCodeInstructionsText')
+            + "\n\n"
+            + bui.Lstr(resource="gatherWindow.friendPromoCodeInstructionsText")
             .evaluate()
-            .replace('${APP_NAME}', bui.Lstr(resource='titleText').evaluate())
-            + '\n'
-            + bui.Lstr(resource='gatherWindow.friendPromoCodeExpireText')
+            .replace("${APP_NAME}", bui.Lstr(resource="titleText").evaluate())
+            + "\n"
+            + bui.Lstr(resource="gatherWindow.friendPromoCodeExpireText")
             .evaluate()
-            .replace('${EXPIRE_HOURS}', str(self._data['expireHours']))
-            + '\n'
-            + bui.Lstr(resource='enjoyText').evaluate()
+            .replace("${EXPIRE_HOURS}", str(self._data["expireHours"]))
+            + "\n"
+            + bui.Lstr(resource="enjoyText").evaluate()
         )
         bui.open_url(
-            'mailto:?subject='
+            "mailto:?subject="
             + urllib.parse.quote(subject)
-            + '&body='
+            + "&body="
             + urllib.parse.quote(body)
         )
 
     def close(self) -> None:
         """Close the window."""
-        bui.containerwidget(edit=self._root_widget, transition='out_scale')
+        bui.containerwidget(edit=self._root_widget, transition="out_scale")
 
 
 def handle_app_invites_press() -> None:
@@ -219,22 +211,22 @@ def handle_app_invites_press() -> None:
     assert plus is not None
 
     bui.screenmessage(
-        bui.Lstr(resource='gatherWindow.requestingAPromoCodeText'),
+        bui.Lstr(resource="gatherWindow.requestingAPromoCodeText"),
         color=(0, 1, 0),
     )
 
     def handle_result(result: dict[str, Any] | None) -> None:
         if result is None:
-            bui.screenmessage(bui.Lstr(resource='errorText'), color=(1, 0, 0))
-            bui.getsound('error').play()
+            bui.screenmessage(bui.Lstr(resource="errorText"), color=(1, 0, 0))
+            bui.getsound("error").play()
         else:
             ShowFriendCodeWindow(result)
 
     plus.add_v1_account_transaction(
         {
-            'type': 'FRIEND_PROMO_CODE_REQUEST',
-            'ali': False,
-            'expire_time': time.time() + 10,
+            "type": "FRIEND_PROMO_CODE_REQUEST",
+            "ali": False,
+            "expire_time": time.time() + 10,
         },
         callback=handle_result,
     )

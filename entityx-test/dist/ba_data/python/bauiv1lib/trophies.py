@@ -48,11 +48,11 @@ class TrophiesWindow(popup.PopupWindow):
             position=(50, self._height - 30),
             size=(50, 50),
             scale=0.5,
-            label='',
+            label="",
             color=bg_color,
             on_activate_call=self._on_cancel_press,
             autoselect=True,
-            icon=bui.gettexture('crossOut'),
+            icon=bui.gettexture("crossOut"),
             iconscale=1.2,
         )
 
@@ -60,10 +60,10 @@ class TrophiesWindow(popup.PopupWindow):
             parent=self.root_widget,
             position=(self._width * 0.5, self._height - 20),
             size=(0, 0),
-            h_align='center',
-            v_align='center',
+            h_align="center",
+            v_align="center",
             scale=0.6,
-            text=bui.Lstr(resource='trophiesText'),
+            text=bui.Lstr(resource="trophiesText"),
             maxwidth=200,
             # color=(1, 1, 1, 0.4),
             color=bui.app.ui_v1.title_color,
@@ -78,18 +78,16 @@ class TrophiesWindow(popup.PopupWindow):
         )
         bui.widget(edit=self._scrollwidget, autoselect=True)
 
-        bui.containerwidget(
-            edit=self.root_widget, cancel_button=self._cancel_button
-        )
+        bui.containerwidget(edit=self.root_widget, cancel_button=self._cancel_button)
 
         incr = 31
         sub_width = self._width - 90
 
-        trophy_types = [['0a'], ['0b'], ['1'], ['2'], ['3'], ['4']]
+        trophy_types = [["0a"], ["0b"], ["1"], ["2"], ["3"], ["4"]]
         sub_height = 40 + len(trophy_types) * incr
 
         eq_text = bui.Lstr(
-            resource='coopSelectWindow.powerRankingPointsEqualsText'
+            resource="coopSelectWindow.powerRankingPointsEqualsText"
         ).evaluate()
 
         self._subcontainer = bui.containerwidget(
@@ -101,7 +99,7 @@ class TrophiesWindow(popup.PopupWindow):
         total_pts = 0
 
         multi_txt = bui.Lstr(
-            resource='coopSelectWindow.powerRankingPointsMultText'
+            resource="coopSelectWindow.powerRankingPointsMultText"
         ).evaluate()
 
         total_pts += self._create_trophy_type_widgets(
@@ -119,12 +117,12 @@ class TrophiesWindow(popup.PopupWindow):
             color=(0.7, 0.8, 1.0),
             flatness=1.0,
             shadow=0.0,
-            text=bui.Lstr(resource='coopSelectWindow.totalText').evaluate()
-            + ' '
-            + eq_text.replace('${NUMBER}', str(total_pts)),
+            text=bui.Lstr(resource="coopSelectWindow.totalText").evaluate()
+            + " "
+            + eq_text.replace("${NUMBER}", str(total_pts)),
             size=(0, 0),
-            h_align='right',
-            v_align='center',
+            h_align="right",
+            v_align="center",
         )
 
     def _create_trophy_type_widgets(
@@ -141,8 +139,8 @@ class TrophiesWindow(popup.PopupWindow):
 
         total_pts = 0
         for i, trophy_type in enumerate(trophy_types):
-            t_count = self._data['t' + trophy_type[0]]
-            t_mult = self._data['t' + trophy_type[0] + 'm']
+            t_count = self._data["t" + trophy_type[0]]
+            t_mult = self._data["t" + trophy_type[0] + "m"]
             bui.textwidget(
                 parent=self._subcontainer,
                 position=(sub_width * 0.15, sub_height - 20 - incr * i),
@@ -152,8 +150,8 @@ class TrophiesWindow(popup.PopupWindow):
                 color=(1, 1, 1),
                 text=get_trophy_string(trophy_type[0]),
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
 
             bui.textwidget(
@@ -166,11 +164,11 @@ class TrophiesWindow(popup.PopupWindow):
                 color=(0, 1, 0) if (t_count > 0) else (0.6, 0.6, 0.6, 0.5),
                 text=str(t_count),
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
 
-            txt = multi_txt.replace('${NUMBER}', str(t_mult))
+            txt = multi_txt.replace("${NUMBER}", str(t_mult))
             bui.textwidget(
                 parent=self._subcontainer,
                 position=(sub_width * 0.57, sub_height - 20 - incr * i),
@@ -178,13 +176,11 @@ class TrophiesWindow(popup.PopupWindow):
                 scale=0.4,
                 flatness=1.0,
                 shadow=0.0,
-                color=(
-                    (0.63, 0.6, 0.75) if (t_count > 0) else (0.6, 0.6, 0.6, 0.4)
-                ),
+                color=((0.63, 0.6, 0.75) if (t_count > 0) else (0.6, 0.6, 0.6, 0.4)),
                 text=txt,
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
 
             this_pts = t_count * t_mult
@@ -192,16 +188,14 @@ class TrophiesWindow(popup.PopupWindow):
                 parent=self._subcontainer,
                 position=(sub_width * 0.88, sub_height - 20 - incr * i),
                 maxwidth=sub_width * 0.3,
-                color=(
-                    (0.7, 0.8, 1.0) if (t_count > 0) else (0.9, 0.9, 1.0, 0.3)
-                ),
+                color=((0.7, 0.8, 1.0) if (t_count > 0) else (0.9, 0.9, 1.0, 0.3)),
                 flatness=1.0,
                 shadow=0.0,
                 scale=0.5,
-                text=eq_text.replace('${NUMBER}', str(this_pts)),
+                text=eq_text.replace("${NUMBER}", str(this_pts)),
                 size=(0, 0),
-                h_align='center',
-                v_align='center',
+                h_align="center",
+                v_align="center",
             )
             total_pts += this_pts
         return total_pts
@@ -212,9 +206,9 @@ class TrophiesWindow(popup.PopupWindow):
     def _transition_out(self) -> None:
         if not self._transitioning_out:
             self._transitioning_out = True
-            bui.containerwidget(edit=self.root_widget, transition='out_scale')
+            bui.containerwidget(edit=self.root_widget, transition="out_scale")
 
     @override
     def on_popup_cancel(self) -> None:
-        bui.getsound('swish').play()
+        bui.getsound("swish").play()
         self._transition_out()

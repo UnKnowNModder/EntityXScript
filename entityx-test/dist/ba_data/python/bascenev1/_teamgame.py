@@ -40,9 +40,7 @@ class TeamGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
     @override
     @classmethod
-    def supports_session_type(
-        cls, sessiontype: type[bascenev1.Session]
-    ) -> bool:
+    def supports_session_type(cls, sessiontype: type[bascenev1.Session]) -> bool:
         # By default, team games support dual-teams and ffa.
         return issubclass(sessiontype, DualTeamSession) or issubclass(
             sessiontype, FreeForAllSession
@@ -69,9 +67,9 @@ class TeamGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         # we're being run in co-op mode, in which case we leave it up to
         # them).
         if not isinstance(self.session, CoopSession) and getattr(
-            self, 'show_controls_guide', True
+            self, "show_controls_guide", True
         ):
-            attrname = '_have_shown_ctrl_help_overlay'
+            attrname = "_have_shown_ctrl_help_overlay"
             if not getattr(self.session, attrname, False):
                 delay = 4.0
                 lifespan = 10.0
@@ -94,17 +92,13 @@ class TeamGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             if isinstance(self.session, FreeForAllSession):
                 if len(self.players) >= 2:
                     if babase.app.classic is not None:
-                        babase.app.classic.ach.award_local_achievement(
-                            'Free Loader'
-                        )
+                        babase.app.classic.ach.award_local_achievement("Free Loader")
             elif isinstance(self.session, DualTeamSession):
                 if len(self.players) >= 4:
                     if babase.app.classic is not None:
-                        babase.app.classic.ach.award_local_achievement(
-                            'Team Player'
-                        )
+                        babase.app.classic.ach.award_local_achievement("Team Player")
         except Exception:
-            logging.exception('Error in on_begin.')
+            logging.exception("Error in on_begin.")
 
     @override
     def spawn_player_spaz(
@@ -172,11 +166,11 @@ class TeamGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             # don't want delay on restarts..
             if (
                 isinstance(results, dict)
-                and 'outcome' in results
-                and results['outcome'] == 'restart'
+                and "outcome" in results
+                and results["outcome"] == "restart"
             ):
                 delay = 0.0
             else:
                 delay = 2.0
-                _bascenev1.timer(0.1, _bascenev1.getsound('boxingBell').play)
+                _bascenev1.timer(0.1, _bascenev1.getsound("boxingBell").play)
             super().end(results, delay=delay, force=force)

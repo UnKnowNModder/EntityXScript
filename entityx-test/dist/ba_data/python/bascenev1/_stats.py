@@ -146,28 +146,28 @@ class PlayerRecord:
             sound = None
         elif self._multi_kill_count == 2:
             score = 20
-            name = babase.Lstr(resource='twoKillText')
+            name = babase.Lstr(resource="twoKillText")
             color = (0.1, 1.0, 0.0, 1)
             scale = 1.0
             delay = 0.0
             sound = stats.orchestrahitsound1
         elif self._multi_kill_count == 3:
             score = 40
-            name = babase.Lstr(resource='threeKillText')
+            name = babase.Lstr(resource="threeKillText")
             color = (1.0, 0.7, 0.0, 1)
             scale = 1.1
             delay = 0.3
             sound = stats.orchestrahitsound2
         elif self._multi_kill_count == 4:
             score = 60
-            name = babase.Lstr(resource='fourKillText')
+            name = babase.Lstr(resource="fourKillText")
             color = (1.0, 1.0, 0.0, 1)
             scale = 1.2
             delay = 0.6
             sound = stats.orchestrahitsound3
         elif self._multi_kill_count == 5:
             score = 80
-            name = babase.Lstr(resource='fiveKillText')
+            name = babase.Lstr(resource="fiveKillText")
             color = (1.0, 0.5, 0.0, 1)
             scale = 1.3
             delay = 0.9
@@ -175,8 +175,8 @@ class PlayerRecord:
         else:
             score = 100
             name = babase.Lstr(
-                resource='multiKillText',
-                subs=[('${COUNT}', str(self._multi_kill_count))],
+                resource="multiKillText",
+                subs=[("${COUNT}", str(self._multi_kill_count))],
             )
             color = (1.0, 0.5, 0.0, 1)
             scale = 1.3
@@ -216,9 +216,9 @@ class PlayerRecord:
             if activity is not None:
                 PopupText(
                     babase.Lstr(
-                        value=(('+' + str(score2) + ' ') if showpoints2 else '')
-                        + '${N}',
-                        subs=[('${N}', name2)],
+                        value=(("+" + str(score2) + " ") if showpoints2 else "")
+                        + "${N}",
+                        subs=[("${N}", name2)],
                     ),
                     color=color2,
                     scale=scale2,
@@ -237,9 +237,7 @@ class PlayerRecord:
         if name is not None:
             _bascenev1.timer(
                 0.3 + delay,
-                babase.Call(
-                    _apply, name, score, showpoints, color, scale, sound
-                ),
+                babase.Call(_apply, name, score, showpoints, color, scale, sound),
             )
 
         # Keep the tally rollin'...
@@ -266,7 +264,7 @@ class Stats:
         # Load our media into this activity's context.
         if activity is not None:
             if activity.expired:
-                logging.exception('Unexpected finalized activity.')
+                logging.exception("Unexpected finalized activity.")
             else:
                 with activity.context:
                     self._load_activity_media()
@@ -281,10 +279,10 @@ class Stats:
         return self._activity()
 
     def _load_activity_media(self) -> None:
-        self.orchestrahitsound1 = _bascenev1.getsound('orchestraHit')
-        self.orchestrahitsound2 = _bascenev1.getsound('orchestraHit2')
-        self.orchestrahitsound3 = _bascenev1.getsound('orchestraHit3')
-        self.orchestrahitsound4 = _bascenev1.getsound('orchestraHit4')
+        self.orchestrahitsound1 = _bascenev1.getsound("orchestraHit")
+        self.orchestrahitsound2 = _bascenev1.getsound("orchestraHit2")
+        self.orchestrahitsound3 = _bascenev1.getsound("orchestraHit3")
+        self.orchestrahitsound4 = _bascenev1.getsound("orchestraHit4")
 
     def reset(self) -> None:
         """Reset the stats instance completely."""
@@ -314,9 +312,7 @@ class Stats:
             self._player_records[name].associate_with_sessionplayer(player)
         else:
             name_full = player.getname(full=True)
-            self._player_records[name] = PlayerRecord(
-                name, name_full, player, self
-            )
+            self._player_records[name] = PlayerRecord(name, name_full, player, self)
 
     def get_records(self) -> dict[str, bascenev1.PlayerRecord]:
         """Get PlayerRecord corresponding to still-existing players."""
@@ -383,13 +379,13 @@ class Stats:
                     name_full = player.getname(full=True, icon=False)
                     activity.show_zoom_message(
                         babase.Lstr(
-                            resource='nameScoresText',
-                            subs=[('${NAME}', name_full)],
+                            resource="nameScoresText",
+                            subs=[("${NAME}", name_full)],
                         ),
                         color=babase.normalized_color(player.team.color),
                     )
             except Exception:
-                logging.exception('Error showing big_message.')
+                logging.exception("Error showing big_message.")
 
         # If we currently have a actor, pop up a score over it.
         if display and showpoints:
@@ -409,13 +405,11 @@ class Stats:
                 if activity is not None:
                     if title is not None:
                         sval = babase.Lstr(
-                            value='+${A} ${B}',
-                            subs=[('${A}', str(points)), ('${B}', title)],
+                            value="+${A} ${B}",
+                            subs=[("${A}", str(points)), ("${B}", title)],
                         )
                     else:
-                        sval = babase.Lstr(
-                            value='+${A}', subs=[('${A}', str(points))]
-                        )
+                        sval = babase.Lstr(value="+${A}", subs=[("${A}", str(points))])
                     PopupText(
                         sval,
                         color=display_color,
@@ -432,15 +426,13 @@ class Stats:
         try:
             if screenmessage and not kill:
                 _bascenev1.broadcastmessage(
-                    babase.Lstr(
-                        resource='nameScoresText', subs=[('${NAME}', name)]
-                    ),
+                    babase.Lstr(resource="nameScoresText", subs=[("${NAME}", name)]),
                     top=True,
                     color=player.color,
                     image=player.get_icon(),
                 )
         except Exception:
-            logging.exception('Error announcing score.')
+            logging.exception("Error announcing score.")
 
         s_player.score += points
         s_player.accumscore += points
@@ -471,7 +463,7 @@ class Stats:
                 if killer is player:
                     _bascenev1.broadcastmessage(
                         babase.Lstr(
-                            resource='nameSuicideText', subs=[('${NAME}', name)]
+                            resource="nameSuicideText", subs=[("${NAME}", name)]
                         ),
                         top=True,
                         color=player.color,
@@ -481,10 +473,10 @@ class Stats:
                     if killer.team is player.team:
                         _bascenev1.broadcastmessage(
                             babase.Lstr(
-                                resource='nameBetrayedText',
+                                resource="nameBetrayedText",
                                 subs=[
-                                    ('${NAME}', killer.getname()),
-                                    ('${VICTIM}', name),
+                                    ("${NAME}", killer.getname()),
+                                    ("${VICTIM}", name),
                                 ],
                             ),
                             top=True,
@@ -494,10 +486,10 @@ class Stats:
                     else:
                         _bascenev1.broadcastmessage(
                             babase.Lstr(
-                                resource='nameKilledText',
+                                resource="nameKilledText",
                                 subs=[
-                                    ('${NAME}', killer.getname()),
-                                    ('${VICTIM}', name),
+                                    ("${NAME}", killer.getname()),
+                                    ("${VICTIM}", name),
                                 ],
                             ),
                             top=True,
@@ -506,12 +498,10 @@ class Stats:
                         )
                 else:
                     _bascenev1.broadcastmessage(
-                        babase.Lstr(
-                            resource='nameDiedText', subs=[('${NAME}', name)]
-                        ),
+                        babase.Lstr(resource="nameDiedText", subs=[("${NAME}", name)]),
                         top=True,
                         color=player.color,
                         image=player.get_icon(),
                     )
         except Exception:
-            logging.exception('Error announcing kill.')
+            logging.exception("Error announcing kill.")

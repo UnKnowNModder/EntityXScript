@@ -27,15 +27,15 @@ class JsonStyle(Enum):
 
     #: Single line, no spaces, no sorting. Not deterministic.
     #: Use this where speed is more important than determinism.
-    FAST = 'fast'
+    FAST = "fast"
 
     #: Single line, no spaces, sorted keys. Deterministic.
     #: Use this when output may be hashed or compared for equality.
-    SORTED = 'sorted'
+    SORTED = "sorted"
 
     #: Multiple lines, spaces, sorted keys. Deterministic.
     #: Use this for pretty human readable output.
-    PRETTY = 'pretty'
+    PRETTY = "pretty"
 
 
 def dataclass_to_dict(
@@ -91,7 +91,7 @@ def dataclass_to_json(
         sort_keys = pretty
     if pretty:
         return json.dumps(jdict, indent=2, sort_keys=sort_keys)
-    return json.dumps(jdict, separators=(',', ':'), sort_keys=sort_keys)
+    return json.dumps(jdict, separators=(",", ":"), sort_keys=sort_keys)
 
 
 def dataclass_from_dict[T](
@@ -206,11 +206,11 @@ def dataclass_hash(obj: Any, coerce_to_float: bool = True) -> str:
     )
 
     # Need to sort keys to keep things deterministic.
-    json_str = json.dumps(json_dict, separators=(',', ':'), sort_keys=True)
+    json_str = json.dumps(json_dict, separators=(",", ":"), sort_keys=True)
 
     sha = hashlib.sha256()
     sha.update(json_str.encode())
 
     # Go with urlsafe base64 instead of the usual hex to save some
     # space, and kill those ugly padding chars at the end.
-    return urlsafe_b64encode(sha.digest()).decode().strip('=')
+    return urlsafe_b64encode(sha.digest()).decode().strip("=")

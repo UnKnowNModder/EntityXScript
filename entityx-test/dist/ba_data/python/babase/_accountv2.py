@@ -92,9 +92,7 @@ class AccountV2Subsystem:
         """The primary account for the app, or None if not logged in."""
         return self.do_get_primary()
 
-    def on_primary_account_changed(
-        self, account: AccountV2Handle | None
-    ) -> None:
+    def on_primary_account_changed(self, account: AccountV2Handle | None) -> None:
         """Callback run after the primary account changes.
 
         Will be called with None on log-outs and when new credentials
@@ -115,7 +113,7 @@ class AccountV2Subsystem:
             try:
                 call(account)
             except Exception:
-                logging.exception('Error in primary-account-changed callback.')
+                logging.exception("Error in primary-account-changed callback.")
 
         # Currently don't do anything special on sign-outs.
         if account is None:
@@ -141,11 +139,11 @@ class AccountV2Subsystem:
                 # game that initial-log-in is done or if we've already
                 # kicked off a workspace load.
                 _babase.screenmessage(
-                    f'\'{account.workspacename}\''
-                    f' will be activated at next app launch.',
+                    f"'{account.workspacename}'"
+                    f" will be activated at next app launch.",
                     color=(1, 1, 0),
                 )
-                _babase.getsimplesound('error').play()
+                _babase.getsimplesound("error").play()
             return
 
         # Ok; no workspace to worry about; carry on.
@@ -227,7 +225,7 @@ class AccountV2Subsystem:
         assert _babase.in_logic_thread()
 
         cfg = _babase.app.config
-        cfgkey = 'ImplicitLoginStates'
+        cfgkey = "ImplicitLoginStates"
         cfgdict = _babase.app.config.setdefault(cfgkey, {})
 
         # Store which (if any) adapter is currently implicitly signed
@@ -240,9 +238,7 @@ class AccountV2Subsystem:
             new_state = cfgdict[login_type.value] = None
         else:
             self._implicit_signed_in_adapter = self.login_adapters[login_type]
-            new_state = cfgdict[login_type.value] = self._hashstr(
-                state.login_id
-            )
+            new_state = cfgdict[login_type.value] = self._hashstr(state.login_id)
 
             # Special case: if the user is already signed in but not
             # with this implicit login, let them know that the 'Welcome
@@ -253,12 +249,12 @@ class AccountV2Subsystem:
             ):
                 service_str: Lstr | None
                 if login_type is LoginType.GPGS:
-                    service_str = Lstr(resource='googlePlayText')
+                    service_str = Lstr(resource="googlePlayText")
                 elif login_type is LoginType.GAME_CENTER:
                     # Note: Apparently Game Center is just called 'Game
                     # Center' in all languages. Can revisit if not true.
                     # https://developer.apple.com/forums/thread/725779
-                    service_str = Lstr(value='Game Center')
+                    service_str = Lstr(value="Game Center")
                 elif login_type is LoginType.EMAIL:
                     # Not possible; just here for exhaustive coverage.
                     service_str = None
@@ -270,10 +266,10 @@ class AccountV2Subsystem:
                         partial(
                             _babase.screenmessage,
                             Lstr(
-                                resource='notUsingAccountText',
+                                resource="notUsingAccountText",
                                 subs=[
-                                    ('${ACCOUNT}', state.display_name),
-                                    ('${SERVICE}', service_str),
+                                    ("${ACCOUNT}", state.display_name),
+                                    ("${SERVICE}", service_str),
                                 ],
                             ),
                             (1, 0.5, 0),
@@ -287,8 +283,8 @@ class AccountV2Subsystem:
         # switched accounts within that back-end.
         if prev_state != new_state:
             accountlog.debug(
-                'Implicit state changed (%s -> %s);'
-                ' will update app sign-in state accordingly.',
+                "Implicit state changed (%s -> %s);"
+                " will update app sign-in state accordingly.",
                 prev_state,
                 new_state,
             )
@@ -331,7 +327,7 @@ class AccountV2Subsystem:
                 # If implicit back-end has signed out, we follow suit
                 # immediately; no need to wait for network connectivity.
                 accountlog.debug(
-                    'Signing out as result of implicit state change...',
+                    "Signing out as result of implicit state change...",
                 )
                 plus.accounts.set_primary_credentials(None)
                 self._implicit_state_changed = False
@@ -350,11 +346,11 @@ class AccountV2Subsystem:
                 # test case where we don't have connectivity here.
                 if plus.cloud.is_connected():
                     accountlog.debug(
-                        'Signing in as result of implicit state change...',
+                        "Signing in as result of implicit state change...",
                     )
                     self._implicit_signed_in_adapter.sign_in(
                         self._on_explicit_sign_in_completed,
-                        description='implicit state change',
+                        description="implicit state change",
                     )
                     self._implicit_state_changed = False
 
@@ -374,7 +370,7 @@ class AccountV2Subsystem:
         # not be what they want (A user signing out and then restarting
         # may be auto-signed back in).
         connected = plus.cloud.is_connected()
-        signed_in_v1 = plus.get_v1_account_state() == 'signed_in'
+        signed_in_v1 = plus.get_v1_account_state() == "signed_in"
         signed_in_v2 = plus.accounts.have_primary_credentials()
         if (
             connected
@@ -383,11 +379,11 @@ class AccountV2Subsystem:
             and self._implicit_signed_in_adapter is not None
         ):
             accountlog.debug(
-                'Signing in due to on-launch-auto-sign-in...',
+                "Signing in due to on-launch-auto-sign-in...",
             )
             self._can_do_auto_sign_in = False  # Only ATTEMPT once
             self._implicit_signed_in_adapter.sign_in(
-                self._on_implicit_sign_in_completed, description='auto-sign-in'
+                self._on_implicit_sign_in_completed, description="auto-sign-in"
             )
 
     def _on_explicit_sign_in_completed(
@@ -410,16 +406,16 @@ class AccountV2Subsystem:
             # exception for anything else though.
             if not isinstance(result, CommunicationError):
                 logging.warning(
-                    'Error on explicit accountv2 sign in attempt.',
+                    "Error on explicit accountv2 sign in attempt.",
                     exc_info=result,
                 )
 
             # For now just show 'error'. Should do better than this.
             _babase.screenmessage(
-                Lstr(resource='internal.signInErrorText'),
+                Lstr(resource="internal.signInErrorText"),
                 color=(1, 0, 0),
             )
-            _babase.getsimplesound('error').play()
+            _babase.getsimplesound("error").play()
 
             # Also I suppose we should sign them out in this case since
             # it could be misleading to be still signed in with the old
@@ -447,7 +443,7 @@ class AccountV2Subsystem:
             # Log a full exception for anything else though.
             if not isinstance(result, CommunicationError):
                 logging.warning(
-                    'Error on implicit accountv2 sign in attempt.',
+                    "Error on implicit accountv2 sign in attempt.",
                     exc_info=result,
                 )
             return
@@ -457,7 +453,7 @@ class AccountV2Subsystem:
         # in case the user has since explicitly signed in since we
         # kicked off.
         connected = plus.cloud.is_connected()
-        signed_in_v1 = plus.get_v1_account_state() == 'signed_in'
+        signed_in_v1 = plus.get_v1_account_state() == "signed_in"
         signed_in_v2 = plus.accounts.have_primary_credentials()
         if connected and not signed_in_v1 and not signed_in_v2:
             plus.accounts.set_primary_credentials(result.credentials)

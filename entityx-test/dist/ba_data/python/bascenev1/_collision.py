@@ -19,7 +19,7 @@ class Collision:
     @property
     def position(self) -> bascenev1.Vec3:
         """The position of the current collision."""
-        return babase.Vec3(_bascenev1.get_collision_info('position'))
+        return babase.Vec3(_bascenev1.get_collision_info("position"))
 
     @property
     def sourcenode(self) -> bascenev1.Node:
@@ -29,7 +29,7 @@ class Collision:
         not exist, though the node should always exist (at least at the
         start of the collision callback).
         """
-        node = _bascenev1.get_collision_info('sourcenode')
+        node = _bascenev1.get_collision_info("sourcenode")
         assert isinstance(node, (_bascenev1.Node, type(None)))
         if not node:
             raise babase.NodeNotFoundError()
@@ -44,7 +44,7 @@ class Collision:
         'disconnect' callbacks triggered by deleting a
         currently-colliding node.
         """
-        node = _bascenev1.get_collision_info('opposingnode')
+        node = _bascenev1.get_collision_info("opposingnode")
         assert isinstance(node, (_bascenev1.Node, type(None)))
         if not node:
             raise babase.NodeNotFoundError()
@@ -53,7 +53,7 @@ class Collision:
     @property
     def opposingbody(self) -> int:
         """The body index on the opposing node in the current collision."""
-        body = _bascenev1.get_collision_info('opposingbody')
+        body = _bascenev1.get_collision_info("opposingbody")
         assert isinstance(body, int)
         return body
 
