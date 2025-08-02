@@ -2,8 +2,7 @@ name: ballistica server run
 
 on:
   workflow_dispatch:
-    branches:
-      - latest-dev
+  push:
 
 jobs:
   server:
