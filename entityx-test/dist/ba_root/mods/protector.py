@@ -4,7 +4,7 @@ though I'm not unwanted :D (hope so)
 from __future__ import annotations
 import bascenev1 as bs
 import babase as ba
-from types import Role
+from enums import Role
 from clients import get_clients
 
 class Protector:

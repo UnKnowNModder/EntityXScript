@@ -2,7 +2,7 @@
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
 from clients import Client
-from types import Authority
+from enums import Authority
 _commands = {}
 
 def on_command(name: str, aliases: list[str] = [], authority: Authority = Authority.USER, usage: str = ""):

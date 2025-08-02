@@ -1,5 +1,5 @@
 """ storage that holds file configuration. """
-from types import Role, Utility, Authority, Playlist, Match
+from enums import Role, Utility, Authority, Playlist, Match
 from typing import override
 from clients import Client
 import bascenev1, babase

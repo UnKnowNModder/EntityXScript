@@ -7,7 +7,7 @@ from cmd_core import on_command
 import baclassic._servermode
 import bascenev1lib.activity.multiteamvictory
 from utils import success
-from types import Authority
+from enums import Authority
 from clients import Dummy, Client
 
 series: list = [] # i like lists.. (more like i hate using global keyword)

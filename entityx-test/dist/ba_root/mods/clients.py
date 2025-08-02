@@ -2,7 +2,7 @@
 from __future__ import annotations
 import bascenev1 as bs
 import utils
-from types import Authority
+from enums import Authority
 from typing import override
 
 class ClientPlayer:
