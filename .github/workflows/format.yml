@@ -1,7 +1,7 @@
 name: format py files
 
 on:
-  push:
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -23,7 +23,7 @@ jobs:
 
       - name: format the files.
         run: |
-          black . --exclude '^$'
+          black entityx-test/dist/ba_root/mods/ --exclude '^$'
 
       - name: fetch the changes
         run: |
