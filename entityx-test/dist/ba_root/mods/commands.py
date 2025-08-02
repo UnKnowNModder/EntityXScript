@@ -6,7 +6,7 @@ from enums import Authority, Role, Playlist, Utility
 from utils import success, send
 import bascenev1 as bs
 import babase as ba
-from clients import Client, Player, get_client
+from clients import Client, Player, get_client, get_clients
 
 
 # =================== #
@@ -15,13 +15,14 @@ from clients import Client, Player, get_client
 @on_command(name="/list", aliases=["/ls"])
 def list(client: Client):
 	"""shows the client, a list of players."""
+	clients = get_clients()
 	heads = "{0:^16}{1:^14}{2:^12}"
 	sep = "\n------------------------------------------------------\n"
 	string = heads.format("Name", "Client ID", "Index ID") + sep
-	for index, player in enumerate(bs.get_foreground_host_session().sessionplayers):
+	for client in clients:
 		string += (
 			heads.format(
-				player.getname(True, False), player.inputdevice.client_id, index
+				client.name, client.client_id, client.index
 			)
 			+ "\n"
 		)

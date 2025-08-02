@@ -74,6 +74,17 @@ class Client:
 		self.is_v2 = is_v2
 		self.in_lobby = in_lobby
 
+
+	@property
+	def index(self) -> int | str:
+		""" returns the bs.SessionPlayer's index. """
+		if self.in_lobby:
+			return "<in lobby>"
+		if session := bs.get_foreground_host_session():
+			for index, player in enumerate(session.sessionplayers):
+				if player.inputdevice.client_id == self.client_id:
+					return index
+
 	@property
 	def authority(self) -> Authority:
 		"""this client's authority level."""
