@@ -2,8 +2,7 @@
 
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
-from clients import Client, get_client, get_player
-from enums import Authority
+from core._clients import Client, get_client, get_player, Authority
 
 _commands = {}
 

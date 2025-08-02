@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 from cmd_core import on_command
-from enums import Authority, Role, Playlist, Utility
+from core._enums import Authority, Role, Playlist, Utility
+from core._utils import success, send
+from core._clients import Client, Player, get_client, get_clients
 import core
-from utils import success, send
-import bascenev1 as bs
-import babase as ba
-from clients import Client, Player, get_client, get_clients
+import bascenev1
+import babase
 
 
 # =================== #
@@ -52,7 +52,7 @@ def private_message(client: Client, target: Client):
 @on_command(name="/end", aliases=["/over"], authority=Authority.ADMIN)
 def end_game(client: Client):
 	"""Ends the current game."""
-	activity = bs.get_foreground_host_activity()
+	activity = bascenev1.get_foreground_host_activity()
 	with activity.context:
 		activity.end_game()
 		success(f"{client.name} ended the game")
@@ -129,7 +129,7 @@ def kick_player(client: Client, target: Client):
 @on_command(name="/resume", authority=Authority.ADMIN)
 def resume_game(client: Client):
 	"""Resume paused game"""
-	gnode = bs.get_foreground_host_activity().globalsnode
+	gnode = bascenev1.get_foreground_host_activity().globalsnode
 	if gnode.paused:
 		gnode.paused = False
 		success(f"{client.name} resumed the game")
@@ -138,7 +138,7 @@ def resume_game(client: Client):
 @on_command(name="/pause", authority=Authority.ADMIN)
 def pause_game(client: Client):
 	"""Pause current game"""
-	gnode = bs.get_foreground_host_activity().globalsnode
+	gnode = bascenev1.get_foreground_host_activity().globalsnode
 	if not gnode.paused:
 		gnode.paused = True
 		success(f"{client.name} paused the game")
@@ -148,7 +148,7 @@ def pause_game(client: Client):
 def restart_server(client: Client):
 	"""Restart server"""
 	success(f"{client.name} has hit restart")
-	ba.quit()
+	babase.quit()
 
 
 @on_command(
@@ -160,15 +160,15 @@ def restart_server(client: Client):
 def set_max_players(client: Client, args: list[str]):
 	"""Set max player limit"""
 	limit = int(args[0])
-	bs.set_public_party_max_size(limit)
-	bs.get_foreground_host_session().max_players = limit
+	bascenev1.set_public_party_max_size(limit)
+	bascenev1.get_foreground_host_session().max_players = limit
 	client.success(f"Limit set to {limit}")
 
 
 @on_command(name="/spectator", aliases=["/lobby"], authority=Authority.ADMIN)
 def toggle_spectators(client: Client):
 	"""Toggle spectator mode"""
-	status = "allowed" if core.storage.config.toggle(Utility.SPECTATOR) else "disallowed"
+	status = "allowed" if core.config.toggle(Utility.SPECTATOR) else "disallowed"
 	success(f"{client.name} has {status} spectators")
 
 
@@ -194,13 +194,13 @@ def unmute_player(client: Client, target: Client):
 @on_command(name="/ffa", authority=Authority.ADMIN)
 def set_ffa_playlist(client: Client):
 	"""Set FFA playlist"""
-	core.storage.config.set_playlist(Playlist.FFA)
+	core.config.set_playlist(Playlist.FFA)
 
 
 @on_command(name="/teams", authority=Authority.ADMIN)
 def set_teams_playlist(client: Client):
 	"""Set Teams playlist"""
-	core.storage.config.set_playlist(Playlist.TEAMS)
+	core.config.set_playlist(Playlist.TEAMS)
 
 
 # =================== #
@@ -211,28 +211,28 @@ def set_teams_playlist(client: Client):
 @on_command(name="/ban", authority=Authority.LEADER, usage="/ban <account_id>")
 def ban_player(client: Client, account_id: str):
 	"""Ban player"""
-	core.storage.roles.add(Role.BANLIST, account_id)
+	core.roles.add(Role.BANLIST, account_id)
 	client.success(f"Banned {account_id}")
 
 
 @on_command(name="/unban", authority=Authority.LEADER, usage="/unban <account_id>")
 def unban_player(client: Client, account_id: str):
 	"""Unban account"""
-	core.storage.roles.remove(Role.BANLIST, account_id)
+	core.roles.remove(Role.BANLIST, account_id)
 	client.success(f"Unbanned {account_id}")
 
 
 @on_command(name="/whitelist", aliases=["/wl"], authority=Authority.LEADER)
 def toggle_whitelist(client: Client):
 	"""Toggle whitelist"""
-	status = "enabled" if core.storage.config.toggle(Utility.WHITELIST) else "disabled"
+	status = "enabled" if core.config.toggle(Utility.WHITELIST) else "disabled"
 	success(f"{client.name} has {status} whitelist")
 
 
 @on_command(name="/addwl", authority=Authority.LEADER, usage="/addwl <account_id>")
 def add_to_whitelist(client: Client, account_id: str):
 	"""Add to whitelist"""
-	core.storage.roles.add(Role.WHITELIST, account_id)
+	core.roles.add(Role.WHITELIST, account_id)
 	client.success(f"Whitelisted {account_id}")
 
 
@@ -244,19 +244,19 @@ def add_to_whitelist(client: Client, account_id: str):
 )
 def remove_from_whitelist(client: Client, account_id: str):
 	"""Remove from whitelist"""
-	core.storage.roles.remove(Role.WHITELIST, account_id)
+	core.roles.remove(Role.WHITELIST, account_id)
 	client.success(f"Removed {account_id} from whitelist")
 
 
 @on_command(name="/admin", authority=Authority.LEADER, usage="/admin <client_id>")
 def add_admin(client: Client, target: Client):
 	"""Add admin"""
-	core.storage.roles.add(Role.ADMIN, target.account_id)
+	core.roles.add(Role.ADMIN, target.account_id)
 	client.success(f"Added {target.name} as admin")
 
 
 @on_command(name="/rmadmin", authority=Authority.LEADER, usage="/rmadmin <client_id>")
 def remove_admin(client: Client, target: Client):
 	"""Remove admin"""
-	core.storage.roles.remove(Role.ADMIN, target.account_id)
+	core.roles.remove(Role.ADMIN, target.account_id)
 	client.success(f"Removed {target.name} as admin")

@@ -3,11 +3,9 @@ though I'm not unwanted :D (hope so)
 """
 
 from __future__ import annotations
-import core
-import bascenev1 as bs
-import babase as ba
-from enums import Role
-from clients import get_clients
+from core._enums import Role
+from core._clients import get_clients
+import core, bascenev1, babase
 
 
 class Protector:
@@ -19,16 +17,16 @@ class Protector:
 
 	def on_app_running(self):
 		# delay to get a valid session..
-		self.runner_loop_timer = bs.AppTimer(3, self.check_context)
+		self.runner_loop_timer = bascenev1.AppTimer(3, self.check_context)
 
 	def check_context(self):
-		session = bs.get_foreground_host_session()
+		session = bascenev1.get_foreground_host_session()
 		if session:
 			with session.context:
-				self.runner_loop_timer = bs.timer(
-					1, ba.Call(self.runner_loop), repeat=True
+				self.runner_loop_timer = bascenev1.timer(
+					1, babase.Call(self.runner_loop), repeat=True
 				)
-				print("✅ Initiated protector utility. ")
+				print("✅ Executed protector utility. ")
 
 	def runner_loop(self):
 		"""this is the runner loop that protects everything.."""
@@ -71,18 +69,18 @@ class Protector:
 			self.lobby[client] -= 1
 			if self.lobby[client] == 0:
 				# kick the client..
-				bs.broadcastmessage(
+				bascenev1.broadcastmessage(
 					"Kicking you for being idle in lobby for too long",
 					color=(1, 0, 0),
 					transient=True,
 					clients=[client],
 				)
-				bs.disconnect_client(client)
+				bascenev1.disconnect_client(client)
 				print(f"Kicked {client} for being afk in lobby")
 				del self.lobby[client]
 			elif self.lobby[client] <= self.afk_time:
 				# start warnings..
-				bs.broadcastmessage(
+				bascenev1.broadcastmessage(
 					f"You have {self.lobby[client]}s left, hurry up and join the game.",
 					color=(1, 0, 0),
 					transient=True,

@@ -1,15 +1,15 @@
 """client-related utility"""
 
 from __future__ import annotations
-import bascenev1 as bs
-import utils
-from enums import Authority
+import bascenev1
+from . import _utils as utils
+from ._enums import Authority
 
 
 class Player:
 	"""Player object."""
 
-	def __init__(self, player: bs.SessionPlayer) -> None:
+	def __init__(self, player: bascenev1.SessionPlayer) -> None:
 		self._player = player
 
 	@property
@@ -46,13 +46,13 @@ class Player:
 
 	def kill(self) -> None:
 		"""kill this player."""
-		self.handle(bs.DieMessage())
+		self.handle(bascenev1.DieMessage())
 
 	def freeze(self) -> None:
-		self.handle(bs.FreezeMessage())
+		self.handle(bascenev1.FreezeMessage())
 
 	def thaw(self) -> None:
-		self.handle(bs.ThawMessage())
+		self.handle(bascenev1.ThawMessage())
 
 
 class Client:
@@ -77,10 +77,10 @@ class Client:
 
 	@property
 	def index(self) -> int | str:
-		""" returns the bs.SessionPlayer's index. """
+		""" returns the bascenev1.SessionPlayer's index. """
 		if self.in_lobby:
 			return "<in lobby>"
-		if session := bs.get_foreground_host_session():
+		if session := bascenev1.get_foreground_host_session():
 			for index, player in enumerate(session.sessionplayers):
 				if player.inputdevice.client_id == self.client_id:
 					return index
@@ -91,7 +91,7 @@ class Client:
 		if self.client_id == -1:
 			# special access to server.
 			return Authority.HOST
-		return bs.storage.roles.get_authority_level(self.account_id)
+		return bascenev1.storage.roles.get_authority_level(self.account_id)
 
 	@property
 	def is_mute(self) -> bool:
@@ -114,7 +114,7 @@ class Client:
 
 	def kick(self, time: int = 300) -> None:
 		"""kick this client."""
-		bs.disconnect_client(self.client_id, ban_time=time)
+		bascenev1.disconnect_client(self.client_id, ban_time=time)
 
 	def success(self, message: str) -> None:
 		"""show this client a success message."""
@@ -140,7 +140,7 @@ class Dummy(Client):
 def get_clients() -> list[Client]:
 	"""returns a list of Client object."""
 	clients = []
-	for client in bs.get_game_roster()[1:]:
+	for client in bascenev1.get_game_roster()[1:]:
 		client_id = client["client_id"]
 		account_id = client["account_id"]
 		spec_string = eval(client["spec_string"])
@@ -173,6 +173,6 @@ def get_player(player_index: int | str) -> Player | None:
 	"""fetches and tries to returns a valid player."""
 	# manual converting to avoid str cases.
 	player_index = int(player_index)
-	if session := bs.get_foreground_host_session():
+	if session := bascenev1.get_foreground_host_session():
 		sessionplayer = session.sessionplayers[player_index]
 		return Player(sessionplayer)
