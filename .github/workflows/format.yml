@@ -23,7 +23,7 @@ jobs:
 
       - name: format the files.
         run: |
-          black . --include '\.py$' --exclude '/(.*\/)?[^/]+/'
+          black . --exclude '^$'
 
       - name: fetch the changes
         run: |
