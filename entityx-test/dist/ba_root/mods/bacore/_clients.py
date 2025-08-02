@@ -5,56 +5,6 @@ import bascenev1
 from . import _utils as utils
 from ._enums import Authority
 
-
-class Player:
-	"""Player object."""
-
-	def __init__(self, player: bascenev1.SessionPlayer) -> None:
-		self._player = player
-
-	@property
-	def name(self) -> str:
-		"""name of the player."""
-		if self.exists():
-			return self._player.getname(True, True)
-		return ""
-
-	def handle(self, message) -> None:
-		"""handles message for the player."""
-		if self.is_alive():
-			player = self._player.activityplayer
-			player.actor.handlemessage(message)
-
-	def exists(self) -> bool:
-		"""returns whether the bascenev1.SessionPlayer exists."""
-		return self._player.exists()
-
-	def is_alive(self) -> bool:
-		"""returns whether the bascenev1.Player is alive"""
-		return self.exists() and self._player.activityplayer.is_alive()
-
-	def remove(self) -> None:
-		"""removes the player from game."""
-		if self.exists():
-			self._player.remove_from_game()
-
-	def profiles(self) -> list[str]:
-		"""returns the profiles of the session player.."""
-		if self.exists():
-			return self._player.inputdevice.get_player_profiles()
-		return []
-
-	def kill(self) -> None:
-		"""kill this player."""
-		self.handle(bascenev1.DieMessage())
-
-	def freeze(self) -> None:
-		self.handle(bascenev1.FreezeMessage())
-
-	def thaw(self) -> None:
-		self.handle(bascenev1.ThawMessage())
-
-
 class Client:
 	"""Client object."""
 
@@ -136,8 +86,56 @@ class Dummy(Client):
 		self.client_id = client_id
 		self.account_id = account_id
 
+class Player:
+	"""Player object."""
 
-def get_clients() -> list[Client]:
+	def __init__(self, player: bascenev1.SessionPlayer) -> None:
+		self._player = player
+
+	@property
+	def name(self) -> str:
+		"""name of the player."""
+		if self.exists():
+			return self._player.getname(True, True)
+		return ""
+
+	def handle(self, message) -> None:
+		"""handles message for the player."""
+		if self.is_alive():
+			player = self._player.activityplayer
+			player.actor.handlemessage(message)
+
+	def exists(self) -> bool:
+		"""returns whether the bascenev1.SessionPlayer exists."""
+		return self._player.exists()
+
+	def is_alive(self) -> bool:
+		"""returns whether the bascenev1.Player is alive"""
+		return self.exists() and self._player.activityplayer.is_alive()
+
+	def remove(self) -> None:
+		"""removes the player from game."""
+		if self.exists():
+			self._player.remove_from_game()
+
+	def profiles(self) -> list[str]:
+		"""returns the profiles of the session player.."""
+		if self.exists():
+			return self._player.inputdevice.get_player_profiles()
+		return []
+
+	def kill(self) -> None:
+		"""kill this player."""
+		self.handle(bascenev1.DieMessage())
+
+	def freeze(self) -> None:
+		self.handle(bascenev1.FreezeMessage())
+
+	def thaw(self) -> None:
+		self.handle(bascenev1.ThawMessage())
+		
+
+def all_clients() -> list[Client]:
 	"""returns a list of Client object."""
 	clients = []
 	for client in bascenev1.get_game_roster()[1:]:
@@ -159,7 +157,7 @@ def get_clients() -> list[Client]:
 	return clients
 
 
-def get_client(client_id: int | str) -> Client | None:
+def fetch_client(client_id: int | str) -> Client | None:
 	"""fetches and tries to returns a valid client."""
 	# manual converting to avoid str cases.
 	client_id = int(client_id)
@@ -169,7 +167,7 @@ def get_client(client_id: int | str) -> Client | None:
 	return
 
 
-def get_player(player_index: int | str) -> Player | None:
+def fetch_player(player_index: int | str) -> Player | None:
 	"""fetches and tries to returns a valid player."""
 	# manual converting to avoid str cases.
 	player_index = int(player_index)

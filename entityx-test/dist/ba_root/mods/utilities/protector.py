@@ -3,9 +3,7 @@ though I'm not unwanted :D (hope so)
 """
 
 from __future__ import annotations
-from core._enums import Role
-from core._clients import get_clients
-import core, bascenev1, babase
+import bacore, bascenev1, babase
 
 
 class Protector:
@@ -30,9 +28,9 @@ class Protector:
 
 	def runner_loop(self):
 		"""this is the runner loop that protects everything.."""
-		config = core.storage.config
-		roles = core.storage.roles
-		clients = get_clients()
+		config = bacore.config
+		roles = bacore.roles
+		clients = bacore.all_clients()
 		for client in clients:
 			if client.authority:
 				# no checks against authority.
@@ -43,7 +41,7 @@ class Protector:
 				continue
 
 			# blacklist
-			if roles.has_role(Role.BANLIST, client.account_id):
+			if roles.has_role(bacore.Role.BANLIST, client.account_id):
 				# direct kick em, no message.
 				client.kick()
 				continue
@@ -57,7 +55,7 @@ class Protector:
 
 	def handle_lobby_afk(self):
 		"""handles afk lobby players.."""
-		clients = get_clients()
+		clients = bacore.all_clients()
 		for client in clients:
 			# lobby afk
 			client_id = client.client_id

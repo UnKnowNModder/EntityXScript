@@ -1,4 +1,5 @@
 """ tournament storage core. """
+from __future__ import annotations
 import os
 import babase, bascenev1
 from ._storage import Storage

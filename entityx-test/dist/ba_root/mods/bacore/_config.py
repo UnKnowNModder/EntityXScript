@@ -1,4 +1,5 @@
 """ config storage core. """
+from __future__ import annotations
 import os
 from ._storage import Storage
 from ._enums import Utility, Playlist

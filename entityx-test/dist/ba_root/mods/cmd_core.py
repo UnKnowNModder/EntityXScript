@@ -2,7 +2,7 @@
 
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
-from core._clients import Client, get_client, get_player, Authority
+from bacore import Authority, Client, fetch_client, fetch_player
 
 _commands = {}
 
@@ -40,10 +40,10 @@ def command_line(msg: str, client: Client) -> str | None:
 				if "args" in params:
 					function(client, args)
 				elif "target" in params:
-					target = get_client(args[0])
+					target = fetch_client(args[0])
 					function(client, target)
 				elif "player" in params:
-					player = get_player(args[0])
+					player = fetch_player(args[0])
 					function(client, player)
 				elif "account_id" in params:
 					function(client, args[0])

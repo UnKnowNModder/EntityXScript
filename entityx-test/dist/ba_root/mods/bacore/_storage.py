@@ -1,4 +1,5 @@
 """defines base storage class."""
+from __future__ import annotations
 import os, json
 
 class Storage:
