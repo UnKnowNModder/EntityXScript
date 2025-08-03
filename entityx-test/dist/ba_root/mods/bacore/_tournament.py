@@ -11,15 +11,15 @@ class Tournament(Storage):
 
 	def __init__(self) -> None:
 		super().__init__("tournament.json")
-		self.results = os.path.join(self.directory, "tournament_results.json")
+		self.results = self.directory / "tournament_results.json"
 		self.match: Match = {}
 		self.bootstrap()
 
 	def bootstrap(self) -> None:
 		"""creates tournament file."""
-		if not os.path.exists(self.path):
+		if not self.path.exists():
 			self.commit([])
-		if not os.path.exists(self.results):
+		if not self.results.exists():
 			self.commit([], self.results)
 
 	def insert(self, match: Match) -> None:

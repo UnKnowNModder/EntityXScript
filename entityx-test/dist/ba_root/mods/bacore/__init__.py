@@ -32,7 +32,7 @@ class Initialize(babase.Plugin):
 	"""initializes the module and sets up storage methods."""
 
 	def __init__(self) -> None:
-		module = sys.modules(__name__)
+		module = sys.modules[__name__]
 		module.config = Config()
 		module.roles = Roles()
 		module.tournament = Tournament()

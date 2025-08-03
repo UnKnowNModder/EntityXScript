@@ -1,6 +1,6 @@
 """ config storage core. """
 from __future__ import annotations
-import os
+from pathlib import Path
 from ._storage import Storage
 from ._enums import Utility, Playlist
 
@@ -9,14 +9,12 @@ class Config(Storage):
 
 	def __init__(self) -> None:
 		super().__init__("config.json")
-		self.toml = os.path.join(
-			f"{os.sep}".join(os.getcwd().split(os.sep)[:-1]), "config.toml"
-		)
+		self.toml = self.directory.parents[3] / "config.toml"
 		self.bootstrap()
 
 	def bootstrap(self) -> None:
 		"""creates essential files."""
-		if not os.path.exists(self.path):
+		if not self.path.exists():
 			config = {}
 			config[Utility.WHITELIST] = False
 			config[Utility.SPECTATOR] = True
@@ -34,9 +32,9 @@ class Config(Storage):
 	def set_playlist(self, playlist: Playlist) -> None:
 		"""changes the playlist code in .toml file."""
 		code = playlist.value
-		with open(self.toml, "r") as f:
+		with self.toml.open("r") as f:
 			lines = f.readlines()
-		with open(self.toml, "w") as f:
+		with self.toml.open("w") as f:
 			for line in lines:
 				if line.strip().startswith(f"playlist_code ="):
 					f.write(f"playlist_code = {code}\n")

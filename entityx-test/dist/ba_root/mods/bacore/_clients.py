@@ -38,10 +38,11 @@ class Client:
 	@property
 	def authority(self) -> Authority:
 		"""this client's authority level."""
+		from . import roles
 		if self.client_id == -1:
 			# special access to server.
 			return Authority.HOST
-		return bascenev1.storage.roles.get_authority_level(self.account_id)
+		return roles.get_authority_level(self.account_id)
 
 	@property
 	def is_mute(self) -> bool:

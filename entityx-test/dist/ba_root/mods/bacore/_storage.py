@@ -1,32 +1,29 @@
 """defines base storage class."""
 from __future__ import annotations
-import os, json
+from pathlib import Path
+from typing import Optional
+import json, babase
 
 class Storage:
 	"""storage class."""
 
 	def __init__(self, filename: str) -> None:
-		self.directory = os.path.join(babase.env()["python_directory_user"], "storage")
-		os.makedirs(self.directory, exist_ok=True)
-		self.path = os.path.join(self.directory, filename)
+		self.directory = Path(babase.env()["python_directory_user"]) / "storage"
+		self.directory.mkdir(parents=True, exist_ok=True)
+		self.path = self.directory / filename
 
-	def read(self, external_path: str = "") -> dict:
+	def read(self, external_path: Optional[Path] = None) -> dict:
 		"""reads the data from the file."""
+		target_path = external_path or self.path
 		try:
-			if external_path:
-				with open(external_path, "r") as f:
-					return json.load(f)
-			with open(self.path, "r") as f:
+			with target_path.open("r") as f:
 				return json.load(f)
-		except:
+		except (FileNotFoundError, json.JSONDecodeError):
 			return {}
 
-	def commit(self, data: dict | list, external_path: str = "") -> None:
+	def commit(self, data: dict | list, external_path: Optional[Path] = None) -> None:
 		"""commits the data to the file."""
-		if external_path:
-			with open(external_path, "w") as f:
-				json.dump(data, f, indent=4)
-			return
-		with open(self.path, "w") as f:
+		target_path = external_path or self.path
+		with target_path.open("w") as f:
 			json.dump(data, f, indent=4)
 

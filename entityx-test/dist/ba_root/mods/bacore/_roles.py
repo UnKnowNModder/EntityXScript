@@ -1,6 +1,5 @@
 """ roles storage core. """
 from __future__ import annotations
-import os
 from ._storage import Storage
 from ._enums import Role, Authority
 
@@ -13,7 +12,7 @@ class Roles(Storage):
 
 	def bootstrap(self) -> None:
 		"""creates essential files."""
-		if not os.path.exists(self.path):
+		if not self.path.exists():
 			config = {}
 			config[Role.LEADER] = [
 				"pb-JiNJARFZUEBCVVtJGUVQUlxCEEZZQ1dA",

@@ -1,8 +1,10 @@
-"""core command file."""
-
+"""core command package."""
+# ba_meta require api 9
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
 from bacore import Authority, Client, fetch_client, fetch_player
+import importlib, babase
+from pathlib import Path
 
 _commands = {}
 
@@ -28,7 +30,9 @@ def on_command(
 
 def command_line(msg: str, client: Client) -> str | None:
 	"""processes a chat message as a command.
-	AKA command line as the name says."""
+	command line as the name says."""
+	if not msg.startswith("/"):
+		return msg
 	command = msg.split()[0].lower()
 	args = msg.split()[1:]
 	if command in _commands:
@@ -52,5 +56,23 @@ def command_line(msg: str, client: Client) -> str | None:
 			except:
 				client.error(f"Usage: {cmd['usage']}")
 			return
-	# wasn't any command.
+	# wasn't any known command.
 	return msg
+
+def _load_commands():
+    """automatically imports command files in the directory."""
+    package_dir = Path(__file__).parent
+    for file in package_dir.glob("*.py"):
+        if file.stem == "__init__":
+            continue
+        module_name = f"{__package__}.{file.stem}"
+        try:
+            importlib.import_module(module_name)
+        except ImportError:
+            print(f"⚠️ Failed to load command file {file.stem}")
+
+# ba_meta export babase.Plugin
+class Load(babase.Plugin):
+	def on_app_running(self) -> None:
+		_load_commands()
+		print("✅ Loaded commands. ")

@@ -1,50 +1,10 @@
-"""commands file."""
-
+""" management commands. """
 from __future__ import annotations
-from cmd_core import on_command
-from bacore import Authority, Role, Playlist, Utility, success, send, Client, Player, fetch_client, all_clients
-import bacore, bascenev1, babase
+from . import on_command
+from bacore import Authority, Client, Player, Role, Playlist, Utility, send, success, fetch_client
+import bascenev1, bacore, babase
 
 
-# =================== #
-#     USER COMMANDS     #
-# =================== #
-@on_command(name="/list", aliases=["/ls"])
-def list(client: Client):
-	"""shows the client, a list of players."""
-	clients = all_clients()
-	heads = "{0:^16}{1:^14}{2:^12}"
-	sep = "\n------------------------------------------------------\n"
-	string = heads.format("Name", "Client ID", "Index ID") + sep
-	for client in clients:
-		string += (
-			heads.format(
-				client.name, client.client_id, client.index
-			)
-			+ "\n"
-		)
-	client.success(string)
-
-
-@on_command(name="/pb", aliases=["/ac", "/id"])
-def show_account_id(client: Client, target: Client):
-	"""Shows the client's or target's account ID."""
-	target = target or client
-	client.send(target.account_id, sender=f"{target.name}'s ID")
-
-
-@on_command(name="/pm", aliases=["/dm"], usage="/pm <client id> <message>")
-def private_message(client: Client, target: Client):
-	"""Sends a private message to target client."""
-	message = " ".join(args[1:])
-	name = f"{client.name} (pvt)"
-	target.send(message, sender=name)
-	client.send(message, sender=name)
-
-
-# =================== #
-#    ADMIN COMMANDS   #
-# =================== #
 @on_command(name="/end", aliases=["/over"], authority=Authority.ADMIN)
 def end_game(client: Client):
 	"""Ends the current game."""
@@ -52,25 +12,6 @@ def end_game(client: Client):
 	with activity.context:
 		activity.end_game()
 		success(f"{client.name} ended the game")
-
-
-@on_command(name="/kill", authority=Authority.ADMIN, usage="/kill <index id>")
-def kill_player(client: Client, player: Player):
-	"""Kill target player"""
-	player.kill()
-
-
-@on_command(name="/freeze", authority=Authority.ADMIN, usage="/freeze <index id>")
-def freeze_player(client: Client, player: Player):
-	"""Freeze target player"""
-	player.freeze()
-
-
-@on_command(name="/thaw", authority=Authority.ADMIN, usage="/thaw <index id>")
-def thaw_player(client: Client, player: Player):
-	"""thaw the freezed target player"""
-	player.thaw()
-
 
 @on_command(
 	name="/remove",
