@@ -1,5 +1,6 @@
 """ roles storage core. """
 from __future__ import annotations
+from datetime import datetime
 from ._storage import Storage
 from ._enums import Role, Authority
 
@@ -8,6 +9,7 @@ class Roles(Storage):
 
 	def __init__(self) -> None:
 		super().__init__("roles.json")
+		self.auth = self.directory / "auth.json"
 		self.bootstrap()
 
 	def bootstrap(self) -> None:
@@ -30,6 +32,23 @@ class Roles(Storage):
 			config[Role.WHITELIST] = []
 			config[Role.BANLIST] = []
 			self.commit(config)
+		
+		today = datetime.now().date()
+		# check for auth file
+		if self.auth.exists():
+			# exists, we need to check for deletion time.
+			auth = self.read(self.auth)
+			deletion = datetime.strptime(auth["deletion"], "%Y-%m-%d").date()
+			if deletion <= today:
+				# your time has come, HAHWHSHAHAHA.
+				auth["deletion"] = today.strftime("%Y-%m-%d")
+				auth["authentic"] = []
+				self.commit(auth, self.auth)
+		else:
+			auth = {}
+			auth["deletion"] = today.strftime("%Y-%m-%d")
+			auth["authentic"] = []
+			self.commit(auth, self.auth)
 
 	def add(self, role: Role, account_id: str) -> bool:
 		"""adds the mentioned role to the client."""
@@ -68,3 +87,17 @@ class Roles(Storage):
 		elif account_id in roles[Role.WHITELIST]:
 			return Authority.WHITELIST
 		return Authority.USER
+	
+	def authenticate(self, account_id: str) -> bool:
+		""" authenticate the account. """
+		auth = self.read(self.auth)
+		if account_id not in auth["authentic"]:
+			auth["authentic"].append(account_id)
+			self.commit(auth, self.auth)
+			return True
+	
+	def is_authentic(self, account_id: str) -> bool:
+		""" returns whether the account's authentic,
+		this is handled by OTPs. """
+		auth = self.read(self.auth)
+		return account_id in auth["authentic"]
