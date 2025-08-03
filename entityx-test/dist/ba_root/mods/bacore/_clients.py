@@ -43,6 +43,12 @@ class Client:
 			# special access to server.
 			return Authority.HOST
 		return roles.get_authority_level(self.account_id)
+	
+	@property
+	def authencity(self) -> bool:
+		"""returns whether the user has authenticity."""
+		return roles.is_authentic(self.account_id)
+
 
 	@property
 	def is_mute(self) -> bool:
