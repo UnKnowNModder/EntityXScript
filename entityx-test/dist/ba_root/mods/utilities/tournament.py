@@ -1,7 +1,7 @@
 """tournament related."""
 
 from __future__ import annotations
-from cmd_core import on_command
+from commands import on_command
 from bacore import Dummy, Client, Authority
 import bacore, bascenev1, babase
 import baclassic._servermode

@@ -50,6 +50,7 @@ class Client:
 	@property
 	def authenticity(self) -> bool:
 		"""this client's authenticity."""
+		from . import roles
 		if self.account_id in Client.__authenticated:
 			# we don't wanna fetch it from database everytime.
 			return True
@@ -60,6 +61,7 @@ class Client:
 
 	def authenticate(self) -> bool:
 		""" authenticate this client. """
+		from . import roles
 		response = roles.authenticate(self.account_id)
 		if response:
 			self.success("You have been verified successfully.")
@@ -194,7 +196,7 @@ def fetch_client(client_id: int | str) -> Client | None:
 	"""fetches and tries to returns a valid client."""
 	# manual converting to avoid str cases.
 	client_id = int(client_id)
-	for client in get_clients():
+	for client in all_clients():
 		if client.client_id == client_id:
 			return client
 	return
