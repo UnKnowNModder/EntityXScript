@@ -1,14 +1,17 @@
 """client-related utility"""
 
 from __future__ import annotations
-import bascenev1
+import bascenev1, secrets
 from . import _utils as utils
 from ._enums import Authority
+
 
 class Client:
 	"""Client object."""
 
 	__mute_clients = set()  # class level var
+	__authenticated = set()
+	__auth_codes = {}
 
 	def __init__(
 		self,
@@ -45,10 +48,33 @@ class Client:
 		return roles.get_authority_level(self.account_id)
 	
 	@property
-	def authencity(self) -> bool:
-		"""returns whether the user has authenticity."""
-		return roles.is_authentic(self.account_id)
+	def authenticity(self) -> bool:
+		"""this client's authenticity."""
+		if self.account_id in Client.__authenticated:
+			# we don't wanna fetch it from database everytime.
+			return True
+		response = roles.is_authentic(self.account_id)
+		if response:
+			Client.__authenticated.add(self.account_id)
+		return response
 
+	def authenticate(self) -> bool:
+		""" authenticate this client. """
+		response = roles.authenticate(self.account_id)
+		if response:
+			self.success("You have been verified successfully.")
+		return response
+
+	def get_auth_code(self) -> None:
+		""" generates an auth code for this client if doesn't exists. """
+		if self.account_id not in Client.__auth_codes:
+			Client.__auth_codes[self.account_id] = f'{secrets.randbelow(1_000_000):06d}'
+		return Client.__auth_codes[self.account_id]
+	
+	def verify_auth_code(self, code: str) -> bool:
+		""" verifies the entered code to auth code. """
+		if Client.__auth_codes[self.account_id] == code:
+			return self.authenticate()
 
 	@property
 	def is_mute(self) -> bool:

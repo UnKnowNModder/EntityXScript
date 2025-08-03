@@ -47,6 +47,10 @@ old_on_player_request = bascenev1._session.Session.on_player_request
 
 def new_on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
 	client = Dummy(player.inputdevice.client_id, player.get_v1_account_id())
+	if not client.authenticity:
+		auth_code = client.get_auth_code()
+		client.error(f"Your auth code is: {auth_code}\nPlease enter in chat to verify.")
+		return False
 	if match := bacore.tournament.match:
 		if client.account_id not in match["players"]:
 			# match is on.

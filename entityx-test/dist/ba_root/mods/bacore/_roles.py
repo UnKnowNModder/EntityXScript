@@ -1,6 +1,6 @@
 """ roles storage core. """
 from __future__ import annotations
-from datetime import datetime
+from datetime import datetime, timedelta
 from ._storage import Storage
 from ._enums import Role, Authority
 
@@ -34,6 +34,7 @@ class Roles(Storage):
 			self.commit(config)
 		
 		today = datetime.now().date()
+		future_deletion = today + timedelta(days=7)
 		# check for auth file
 		if self.auth.exists():
 			# exists, we need to check for deletion time.
@@ -41,12 +42,12 @@ class Roles(Storage):
 			deletion = datetime.strptime(auth["deletion"], "%Y-%m-%d").date()
 			if deletion <= today:
 				# your time has come, HAHWHSHAHAHA.
-				auth["deletion"] = today.strftime("%Y-%m-%d")
+				auth["deletion"] = future_deletion.strftime("%Y-%m-%d")
 				auth["authentic"] = []
 				self.commit(auth, self.auth)
 		else:
 			auth = {}
-			auth["deletion"] = today.strftime("%Y-%m-%d")
+			auth["deletion"] = future_deletion.strftime("%Y-%m-%d")
 			auth["authentic"] = []
 			self.commit(auth, self.auth)
 
