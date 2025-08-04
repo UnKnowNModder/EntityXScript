@@ -1,4 +1,4 @@
-# Bombsquad Server Scrupts
+# Bombsquad Server Scripts
 it's a modified version server scripts
 it has a few features and utilities described below.
 - script version: 1.7.46 (dev)
@@ -13,7 +13,7 @@ it has a few features and utilities described below.
 - once a week OTP verification for every player.
 
 ## Tournament Utility:
-- it's basically an utility that manages tournament matches, the storage for it can be seen in storage.py, it's not much advanced but helpful.
+- it's basically an utility that manages tournament matches, the methods for it can be seen in bacore/_tournament.py, it's not much advanced but helpful.
 - the matches should be added through discord bot / through manual code (the support for in-game commands has not been added)
 - /confirm command for participents who have been registered in a match, once all participents of a specific match has been confirmed, the match will automatically start
 - after the match ends, the result will be stored in tournament_results.json, along with the winner team's name.
