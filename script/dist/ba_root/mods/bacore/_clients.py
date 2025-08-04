@@ -138,7 +138,7 @@ class Player:
 		"""handles message for the player."""
 		if self.is_alive():
 			player = self._player.activityplayer
-			player.actor.handlemessage(message)
+			player.actor.node.handlemessage(message)
 
 	def exists(self) -> bool:
 		"""returns whether the bascenev1.SessionPlayer exists."""
@@ -164,11 +164,33 @@ class Player:
 		self.handle(bascenev1.DieMessage())
 
 	def freeze(self) -> None:
+		""" freeze this player."""
 		self.handle(bascenev1.FreezeMessage())
 
 	def thaw(self) -> None:
+		""" thaw this player."""
 		self.handle(bascenev1.ThawMessage())
 		
+class Players:
+	""" handles every player in session. """
+	def handle(self, message) -> None:
+		""" handles message for the all the players."""
+		activity = bascenev1.get_foreground_host_activity()
+		for player in activity.players:
+			player.actor.handlemessage(message)
+	
+	def kill(self) -> None:
+		""" kill all the players. """
+		self.handle(bascenev1.DieMessage())
+
+	def freeze(self) -> None:
+		""" freeze all the players. """
+		self.handle(bascenev1.FreezeMessage())
+
+	def thaw(self) -> None:
+		""" thaw all the players. """
+		self.handle(bascenev1.ThawMessage())
+
 
 def all_clients() -> list[Client]:
 	"""returns a list of Client object."""

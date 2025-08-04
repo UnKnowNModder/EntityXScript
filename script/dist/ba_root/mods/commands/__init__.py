@@ -2,7 +2,7 @@
 # ba_meta require api 9
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
-from bacore import Authority, Client, fetch_client, fetch_player
+from bacore import Authority, Players, Dummy, Client, fetch_client, fetch_player
 import importlib, babase
 from pathlib import Path
 
@@ -49,6 +49,9 @@ def command_line(msg: str, client: Client) -> str | None:
 				elif "player" in params:
 					player = fetch_player(args[0])
 					function(client, player)
+				elif "players" in params:
+					players = Players()
+					function(client, players)
 				elif "account_id" in params:
 					function(client, args[0])
 				else:
@@ -58,6 +61,21 @@ def command_line(msg: str, client: Client) -> str | None:
 			return
 	# wasn't any known command.
 	return msg
+
+def control_message(msg: str, client_id: int) -> bool:
+	""" controls the message for filters/commands. """
+	client = Dummy(client_id, "Host") if client_id == -1 else fetch_client(client_id)
+	if client and msg:
+		if not client.authenticity:
+			auth_code = client.get_auth_code()
+			if not client.verify_auth_code(msg.split()[0]):
+				client.error(f"Your auth code is: {auth_code}\nPlease enter in chat to verify.")
+			return
+		if client.is_mute:
+			print(f"{client.name} (muted): {msg}")
+			return
+		return command_line(msg, client)
+	return
 
 def _load_commands():
     """automatically imports command files in the directory."""
