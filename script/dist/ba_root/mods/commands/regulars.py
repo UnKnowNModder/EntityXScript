@@ -13,6 +13,9 @@ def list(client: Client):
 	if session := bascenev1.get_foreground_host_session():
 		for index, player in enumerate(session.sessionplayers):
 			string += heads.format(player.getname(True, True), player.inputdevice.client_id, index)
+	for i in bascenev1.get_game_roster()[1:]:
+		if str(i["client_id"]) not in string:
+			string += heads.format(i["display_string"], i["client_id"], "<in lobby>")
 	client.success(string)
 
 

@@ -3,7 +3,7 @@
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
 from bacore import Authority, Players, Dummy, Client, fetch_client, fetch_player
-import importlib, babase
+import importlib, babase, inspect
 from pathlib import Path
 
 _commands = {}
@@ -39,7 +39,8 @@ def command_line(msg: str, client: Client) -> str | None:
 		cmd = _commands[command]
 		if client.authority >= cmd["authority"]:
 			function = cmd["call"]
-			params = function.__code__.co_varnames
+			sign = inspect.signature(function)
+			params = [param for param in sign.parameters]
 			try:
 				if "args" in params:
 					function(client, args)
