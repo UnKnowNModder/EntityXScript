@@ -180,7 +180,9 @@ class Players:
 		""" handles message for the all the players."""
 		activity = bascenev1.get_foreground_host_activity()
 		for player in activity.players:
-			player.actor.handlemessage(message)
+			with activity.context:
+				if player.is_alive():
+					player.actor.node.handlemessage(message)
 	
 	def kill(self) -> None:
 		""" kill all the players. """
