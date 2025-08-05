@@ -56,7 +56,8 @@ def command_line(msg: str, client: Client) -> str | None:
 					function(client, args[0])
 				else:
 					function(client)
-			except:
+			except Exception as err:
+				print("err:", err)
 				client.error(f"Usage: {cmd['usage']}")
 			return
 	# wasn't any known command.

@@ -50,6 +50,9 @@ class Client:
 	@property
 	def authenticity(self) -> bool:
 		"""this client's authenticity."""
+		if self.client_id == -1:
+			# host is always authentic
+			return True
 		from . import roles
 		if self.account_id in Client.__authenticated:
 			# we don't wanna fetch it from database everytime.
