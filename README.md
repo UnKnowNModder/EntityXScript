@@ -4,6 +4,7 @@ it has a few features and utilities described below.
 - script version: 1.7.46 (dev)
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Chat-7289DA?style=for-the-badge&logo=discord&logoColor=white&labelColor=7289DA)](https://discord.gg/yrYqbSU7wT)
 
 ## Features:
 - has important commands

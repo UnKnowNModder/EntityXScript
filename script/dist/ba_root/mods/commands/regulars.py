@@ -2,21 +2,17 @@
 from __future__ import annotations
 from . import on_command
 from bacore import Client, all_clients
+import bascenev1
 
 @on_command(name="/list", aliases=["/ls"])
 def list(client: Client):
 	"""shows the client, a list of players."""
-	clients = all_clients()
-	heads = "{0:^16}{1:^14}{2:^12}"
-	sep = "\n------------------------------------------------------\n"
+	heads = "{0:^16}{1:^15}{2:^15}\n"
+	sep = "--------------------------------------------------------------\n"
 	string = heads.format("Name", "Client ID", "Index ID") + sep
-	for client in clients:
-		string += (
-			heads.format(
-				client.name, client.client_id, client.index
-			)
-			+ "\n"
-		)
+	if session := bascenev1.get_foreground_host_session():
+		for index, player in enumerate(session.sessionplayers):
+			string += heads.format(player.getname(True, True), player.inputdevice.client_id, index)
 	client.success(string)
 
 
