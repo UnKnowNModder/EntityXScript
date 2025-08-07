@@ -506,6 +506,21 @@ class EliminationGame(bs.TeamGameActivity[Player, Team]):
 
     @override
     def on_player_leave(self, player: Player) -> None:
+        if player.lives > 0:
+            members = [tplayer for tplayer in player.team.players if tplayer != player]
+            lives = player.lives
+            count = len(members)
+            if count > 0:
+                idx = 0
+                distributed = 0
+                while distributed < lives:
+                    member = members[idx % count]
+                    if member.is_alive():
+                        member.lives += 1
+                        distributed += 1
+                    idx += 1
+            if len(self._get_living_teams()) < 2:
+                self.end_game()
         # (Pylint Bug?) pylint: disable=missing-function-docstring
         super().on_player_leave(player)
         player.icons = []
