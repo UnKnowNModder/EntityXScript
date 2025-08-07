@@ -22,7 +22,7 @@ class EntityBot(commands.Bot):
     match_group = app_commands.Group(name='match', description='Match Management')
 
     @match_group.command(name='add',description='Add a match')
-    async def match_add(self, interaction: discord.Interaction, match_id: int, series: int, team_name1: str, team_name2: str, team_)
+    async def match_add(self, interaction: discord.Interaction, match_id: int, series_count: int, team_name1: str, team_name2: str, team1_pbids: List[str, str, str ,str], team2_pbids: List[str, str, str, str]):
 
 def main():
     bot = EntityBot()
