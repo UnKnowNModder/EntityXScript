@@ -23,12 +23,14 @@ class EntityBot(commands.Bot):
     match_group = app_commands.Group(name='match', description='Match Management')
 
     @match_group.command(name='add',description='Add a match')
-    async def match_add(self, interaction: discord.Interaction, series_count: int, team_name1: str, team_name2: str, team1_players: list[str], team2_players: list[str]):
+    async def match_add(self, interaction: discord.Interaction, series_count: int, team_name1: str, team_name2: str, team1_pbids: str, team2_pbids: str):
         try:
-            if len(team1_players) or len(team2_players) < 1:
-                await interaction.response.send_message("Every team must have atleast a single player")
+            team1_players = team1_pbids.split(',')
+            team2_players = team2_pbids.split(',')
+            if len(team1_players) or len(team2_players) < 4:
+                await interaction.response.send_message("Enter equal players **4** in both teams")
             else:
-                match = {"series": series_count, "team1": {team_name1: team1_players}, "team2": {team_name2: team2_players}}
+                match = {"series": series_count, "team1": [team_name1, team1_players], "team2": [team_name2, team2_players]}
                 bacore.tournament.insert(match)
                 await interaction.response.send_message("Match Appointed")
         except Exception as e:
