@@ -167,8 +167,8 @@ class ClassicAppSubsystem(babase.AppSubsystem):
 
         Examples are: 'mac', 'windows', android'.
         """
-        assert isinstance(self._env["platform"], str)
-        return self._env["platform"]
+        assert isinstance(self._env['platform'], str)
+        return self._env['platform']
 
     def scene_v1_protocol_version(self) -> int:
         """(internal)"""
@@ -181,14 +181,14 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         Can be empty. For the 'android' platform, subplatform may
         be 'google', 'amazon', etc.
         """
-        assert isinstance(self._env["subplatform"], str)
-        return self._env["subplatform"]
+        assert isinstance(self._env['subplatform'], str)
+        return self._env['subplatform']
 
     @property
     def legacy_user_agent_string(self) -> str:
         """String containing various bits of info about OS/device/etc."""
-        assert isinstance(self._env["legacy_user_agent_string"], str)
-        return self._env["legacy_user_agent_string"]
+        assert isinstance(self._env['legacy_user_agent_string'], str)
+        return self._env['legacy_user_agent_string']
 
     @override
     def on_app_loading(self) -> None:
@@ -210,22 +210,22 @@ class ClassicAppSubsystem(babase.AppSubsystem):
             and not env.variant is type(env.variant).TEST_BUILD
             and not plus.is_blessed()
         ):
-            babase.screenmessage("WARNING: NON-BLESSED BUILD", color=(1, 0, 0))
+            babase.screenmessage('WARNING: NON-BLESSED BUILD', color=(1, 0, 0))
 
         stdmaps.register_all_maps()
 
         spazappearance.register_appearances()
         bascenev1.init_campaigns()
 
-        launch_count = cfg.get("launchCount", 0)
+        launch_count = cfg.get('launchCount', 0)
         launch_count += 1
 
         # So we know how many times we've run the game at various
         # version milestones.
-        for key in ("lc14173", "lc14292"):
+        for key in ('lc14173', 'lc14292'):
             cfg.setdefault(key, launch_count)
 
-        cfg["launchCount"] = launch_count
+        cfg['launchCount'] = launch_count
         cfg.commit()
 
         # If there's a leftover log file, attempt to upload it to the
@@ -253,7 +253,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         If there's a foreground host-activity that says it's pausable, tell it
         to pause. Note: we now no longer pause if there are connected clients.
         """
-        activity: bascenev1.Activity | None = bascenev1.get_foreground_host_activity()
+        activity: bascenev1.Activity | None = (
+            bascenev1.get_foreground_host_activity()
+        )
         if (
             activity is not None
             and activity.allow_pausing
@@ -267,18 +269,18 @@ class ClassicAppSubsystem(babase.AppSubsystem):
             with activity.context:
                 globs = activity.globalsnode
                 if not globs.paused:
-                    bascenev1.getsound("refWhistle").play()
+                    bascenev1.getsound('refWhistle').play()
                     globs.paused = True
 
                 # FIXME: This should not be an attr on Actor.
                 activity.paused_text = NodeActor(
                     bascenev1.newnode(
-                        "text",
+                        'text',
                         attrs={
-                            "text": Lstr(resource="pausedByHostText"),
-                            "client_only": True,
-                            "flatness": 1.0,
-                            "h_align": "center",
+                            'text': Lstr(resource='pausedByHostText'),
+                            'client_only': True,
+                            'flatness': 1.0,
+                            'h_align': 'center',
                         },
                     )
                 )
@@ -297,7 +299,7 @@ class ClassicAppSubsystem(babase.AppSubsystem):
             with activity.context:
                 globs = activity.globalsnode
                 if globs.paused:
-                    bascenev1.getsound("refWhistle").play()
+                    bascenev1.getsound('refWhistle').play()
                     globs.paused = False
 
                     # FIXME: This should not be an actor attr.
@@ -307,10 +309,10 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         """Adds an individual level to the 'practice' section in Co-op."""
 
         # Assign this level to our catch-all campaign.
-        self.campaigns["Challenges"].addlevel(level)
+        self.campaigns['Challenges'].addlevel(level)
 
         # Make note to add it to our challenges UI.
-        self.custom_coop_practice_games.append(f"Challenges:{level.name}")
+        self.custom_coop_practice_games.append(f'Challenges:{level.name}')
 
     def launch_coop_game(
         self, game: str, force: bool = False, args: dict | None = None
@@ -323,9 +325,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
 
         if args is None:
             args = {}
-        if game == "":
-            raise ValueError("empty game name")
-        campaignname, levelname = game.split(":")
+        if game == '':
+            raise ValueError('empty game name')
+        campaignname, levelname = game.split(':')
         campaign = babase.app.classic.getcampaign(campaignname)
 
         # If this campaign is sequential, make sure we've completed the
@@ -346,8 +348,8 @@ class ClassicAppSubsystem(babase.AppSubsystem):
 
         # Ok, we're good to go.
         self.coop_session_args = {
-            "campaign": campaignname,
-            "level": levelname,
+            'campaign': campaignname,
+            'level': levelname,
         }
         for arg_name, arg_val in list(args.items()):
             self.coop_session_args[arg_name] = arg_val
@@ -358,7 +360,7 @@ class ClassicAppSubsystem(babase.AppSubsystem):
             try:
                 bascenev1.new_host_session(CoopSession)
             except Exception:
-                logging.exception("Error creating coopsession after fade end.")
+                logging.exception('Error creating coopsession after fade end.')
                 from bascenev1lib.mainmenu import MainMenuSession
 
                 bascenev1.new_host_session(MainMenuSession)
@@ -366,7 +368,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         babase.fade_screen(False, endcall=_fade_end)
         return True
 
-    def return_to_main_menu_session_gracefully(self, reset_ui: bool = True) -> None:
+    def return_to_main_menu_session_gracefully(
+        self, reset_ui: bool = True
+    ) -> None:
         """Attempt to cleanly get back to the main menu."""
         # pylint: disable=cyclic-import
         from baclassic import _benchmark
@@ -388,12 +392,14 @@ class ClassicAppSubsystem(babase.AppSubsystem):
 
         # If we're in a host-session, tell them to end. This lets them
         # tear themselves down gracefully.
-        host_session: bascenev1.Session | None = bascenev1.get_foreground_host_session()
+        host_session: bascenev1.Session | None = (
+            bascenev1.get_foreground_host_session()
+        )
         if host_session is not None:
             # Kick off a little transaction so we'll hopefully have all
             # the latest account state when we get back to the menu.
             plus.add_v1_account_transaction(
-                {"type": "END_SESSION", "sType": str(type(host_session))}
+                {'type': 'END_SESSION', 'sType': str(type(host_session))}
             )
             plus.run_v1_account_transactions()
 
@@ -401,7 +407,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
 
         # Otherwise just force the issue.
         else:
-            babase.pushcall(babase.Call(bascenev1.new_host_session, MainMenuSession))
+            babase.pushcall(
+                babase.Call(bascenev1.new_host_session, MainMenuSession)
+            )
 
     def getmaps(self, playtype: str) -> list[str]:
         """Return a list of bascenev1.Map types supporting a playtype str.
@@ -447,7 +455,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
           Has two or more 'race_point' locations.
         """
         return sorted(
-            key for key, val in self.maps.items() if playtype in val.get_play_types()
+            key
+            for key, val in self.maps.items()
+            if playtype in val.get_play_types()
         )
 
     def game_begin_analytics(self) -> None:
@@ -473,16 +483,18 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         if isinstance(data, list):
             return [cls.json_prep(element) for element in data]
         if isinstance(data, tuple):
-            logging.exception("json_prep encountered tuple")
+            logging.exception('json_prep encountered tuple')
             return [cls.json_prep(element) for element in data]
         if isinstance(data, bytes):
             try:
-                return data.decode(errors="ignore")
+                return data.decode(errors='ignore')
             except Exception:
-                logging.exception("json_prep encountered utf-8 decode error")
-                return data.decode(errors="ignore")
+                logging.exception('json_prep encountered utf-8 decode error')
+                return data.decode(errors='ignore')
         if not isinstance(data, (str, float, bool, type(None), int)):
-            logging.exception("got unsupported type in json_prep: %s", type(data))
+            logging.exception(
+                'got unsupported type in json_prep: %s', type(data)
+            )
         return data
 
     def master_server_v1_get(
@@ -490,27 +502,28 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         request: str,
         data: dict[str, Any],
         callback: MasterServerCallback | None = None,
-        response_type: MasterServerResponseType = MasterServerResponseType.JSON,
     ) -> None:
         """Make a call to the master server via a http GET.
 
         :meta private:
         """
-
-        MasterServerV1CallThread(request, "get", data, callback, response_type).start()
+        MasterServerV1CallThread(
+            request, 'get', data, callback, MasterServerResponseType.JSON
+        ).start()
 
     def master_server_v1_post(
         self,
         request: str,
         data: dict[str, Any],
         callback: MasterServerCallback | None = None,
-        response_type: MasterServerResponseType = MasterServerResponseType.JSON,
     ) -> None:
         """Make a call to the master server via a http POST.
 
         :meta private:
         """
-        MasterServerV1CallThread(request, "post", data, callback, response_type).start()
+        MasterServerV1CallThread(
+            request, 'post', data, callback, MasterServerResponseType.JSON
+        ).start()
 
     def set_tournament_prize_image(
         self, entry: dict[str, Any], index: int, image: bauiv1.Widget
@@ -529,7 +542,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         """Given a tournament entry, return strings for its prize levels."""
         from baclassic import _tournament
 
-        _tournament.create_in_game_tournament_prize_image(entry, index, position)
+        _tournament.create_in_game_tournament_prize_image(
+            entry, index, position
+        )
 
     def get_tournament_prize_strings(
         self, entry: dict[str, Any], include_tickets: bool
@@ -568,8 +583,8 @@ class ClassicAppSubsystem(babase.AppSubsystem):
     def run_stress_test(
         self,
         *,
-        playlist_type: str = "Random",
-        playlist_name: str = "__default__",
+        playlist_type: str = 'Random',
+        playlist_name: str = '__default__',
         player_count: int = 8,
         round_duration: int = 30,
         attract_mode: bool = False,
@@ -600,7 +615,9 @@ class ClassicAppSubsystem(babase.AppSubsystem):
             device.name, device.unique_identifier, name, default
         )
 
-    def get_input_device_map_hash(self, inputdevice: bascenev1.InputDevice) -> str:
+    def get_input_device_map_hash(
+        self, inputdevice: bascenev1.InputDevice
+    ) -> str:
         """Given an input device, return hash based on its raw input values."""
         del inputdevice  # unused currently
         return _input.get_input_device_map_hash()
@@ -685,7 +702,7 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         except Exception:
             sddata = None
             logging.warning(
-                "Got malformatted ServerDialogData: %s",
+                'Got malformatted ServerDialogData: %s',
                 data,
             )
         if sddata is not None:
@@ -738,7 +755,7 @@ class ClassicAppSubsystem(babase.AppSubsystem):
 
     def profile_browser_window(
         self,
-        transition: str = "in_right",
+        transition: str = 'in_right',
         origin_widget: bauiv1.Widget | None = None,
         selected_profile: str | None = None,
     ) -> None:
@@ -748,8 +765,8 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         main_window = babase.app.ui_v1.get_main_window()
         if main_window is not None:
             logging.warning(
-                "profile_browser_window()"
-                " called with existing main window; should not happen."
+                'profile_browser_window()'
+                ' called with existing main window; should not happen.'
             )
             return
 
@@ -767,14 +784,14 @@ class ClassicAppSubsystem(babase.AppSubsystem):
     def preload_map_preview_media(self) -> None:
         """Preload media needed for map preview UIs."""
         try:
-            bauiv1.getmesh("level_select_button_opaque")
-            bauiv1.getmesh("level_select_button_transparent")
+            bauiv1.getmesh('level_select_button_opaque')
+            bauiv1.getmesh('level_select_button_transparent')
             for maptype in list(self.maps.values()):
                 map_tex_name = maptype.get_preview_texture_name()
                 if map_tex_name is not None:
                     bauiv1.gettexture(map_tex_name)
         except Exception:
-            logging.exception("Error preloading map preview media.")
+            logging.exception('Error preloading map preview media.')
 
     def party_icon_activate(self, origin: Sequence[float]) -> None:
         """(internal)"""
@@ -786,10 +803,12 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         # Play explicit swish sound so it occurs due to keypresses/etc.
         # This means we have to disable it for any button or else we get
         # double.
-        bauiv1.getsound("swish").play()
+        bauiv1.getsound('swish').play()
 
         # If it exists, dismiss it; otherwise make a new one.
-        party_window = None if self.party_window is None else self.party_window()
+        party_window = (
+            None if self.party_window is None else self.party_window()
+        )
         if party_window is not None:
             party_window.close()
         else:
@@ -809,7 +828,7 @@ class ClassicAppSubsystem(babase.AppSubsystem):
             # need to make sure to disable swish sounds for any buttons
             # that lead us here.
             if babase.app.env.gui:
-                bauiv1.getsound("swish").play()
+                bauiv1.getsound('swish').play()
 
             # Pause gameplay.
             self.pause()
@@ -889,26 +908,28 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         if label is cls.UNKNOWN:
             # Server should not be sending us unknown stuff; make noise
             # if they do.
-            logging.error("Got BasicClientUI.ButtonLabel.UNKNOWN; should not happen.")
-            return babase.Lstr(value="<error>")
+            logging.error(
+                'Got BasicClientUI.ButtonLabel.UNKNOWN; should not happen.'
+            )
+            return babase.Lstr(value='<error>')
 
         rsrc: str | None = None
         if label is cls.OK:
-            rsrc = "okText"
+            rsrc = 'okText'
         elif label is cls.APPLY:
-            rsrc = "applyText"
+            rsrc = 'applyText'
         elif label is cls.CANCEL:
-            rsrc = "cancelText"
+            rsrc = 'cancelText'
         elif label is cls.ACCEPT:
-            rsrc = "gatherWindow.partyInviteAcceptText"
+            rsrc = 'gatherWindow.partyInviteAcceptText'
         elif label is cls.DECLINE:
-            rsrc = "gatherWindow.partyInviteDeclineText"
+            rsrc = 'gatherWindow.partyInviteDeclineText'
         elif label is cls.IGNORE:
-            rsrc = "gatherWindow.partyInviteIgnoreText"
+            rsrc = 'gatherWindow.partyInviteIgnoreText'
         elif label is cls.CLAIM:
-            rsrc = "claimText"
+            rsrc = 'claimText'
         elif label is cls.DISCARD:
-            rsrc = "discardText"
+            rsrc = 'discardText'
         else:
             assert_never(label)
 
@@ -919,46 +940,54 @@ class ClassicAppSubsystem(babase.AppSubsystem):
         # pylint: disable=too-many-return-statements
 
         if game in (
-            "Challenges:Infinite Runaround",
-            "Challenges:Tournament Infinite Runaround",
+            'Challenges:Infinite Runaround',
+            'Challenges:Tournament Infinite Runaround',
         ):
             # Special case: Pro used to unlock this.
-            return [] if self.accounts.have_pro() else ["upgrades.infinite_runaround"]
+            return (
+                []
+                if self.accounts.have_pro()
+                else ['upgrades.infinite_runaround']
+            )
         if game in (
-            "Challenges:Infinite Onslaught",
-            "Challenges:Tournament Infinite Onslaught",
+            'Challenges:Infinite Onslaught',
+            'Challenges:Tournament Infinite Onslaught',
         ):
             # Special case: Pro used to unlock this.
-            return [] if self.accounts.have_pro() else ["upgrades.infinite_onslaught"]
+            return (
+                []
+                if self.accounts.have_pro()
+                else ['upgrades.infinite_onslaught']
+            )
         if game in (
-            "Challenges:Meteor Shower",
-            "Challenges:Epic Meteor Shower",
+            'Challenges:Meteor Shower',
+            'Challenges:Epic Meteor Shower',
         ):
-            return ["games.meteor_shower"]
-
-        if game in (
-            "Challenges:Target Practice",
-            "Challenges:Target Practice B",
-        ):
-            return ["games.target_practice"]
+            return ['games.meteor_shower']
 
         if game in (
-            "Challenges:Ninja Fight",
-            "Challenges:Pro Ninja Fight",
+            'Challenges:Target Practice',
+            'Challenges:Target Practice B',
         ):
-            return ["games.ninja_fight"]
-
-        if game in ("Challenges:Race", "Challenges:Pro Race"):
-            return ["games.race"]
-
-        if game in ("Challenges:Lake Frigid Race",):
-            return ["games.race", "maps.lake_frigid"]
+            return ['games.target_practice']
 
         if game in (
-            "Challenges:Easter Egg Hunt",
-            "Challenges:Pro Easter Egg Hunt",
+            'Challenges:Ninja Fight',
+            'Challenges:Pro Ninja Fight',
         ):
-            return ["games.easter_egg_hunt"]
+            return ['games.ninja_fight']
+
+        if game in ('Challenges:Race', 'Challenges:Pro Race'):
+            return ['games.race']
+
+        if game in ('Challenges:Lake Frigid Race',):
+            return ['games.race', 'maps.lake_frigid']
+
+        if game in (
+            'Challenges:Easter Egg Hunt',
+            'Challenges:Pro Easter Egg Hunt',
+        ):
+            return ['games.easter_egg_hunt']
 
         return []
 

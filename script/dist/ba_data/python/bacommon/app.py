@@ -24,37 +24,37 @@ class AppInterfaceIdiom(Enum):
     """
 
     #: Small screen; assumed to have touch as primary input.
-    PHONE = "phone"
+    PHONE = 'phone'
 
     #: Medium size screen; assumed to have touch as primary input.
-    TABLET = "tablet"
+    TABLET = 'tablet'
 
     #: Screen with medium amount of detail visible; assumed to have game
     #: controller(s) as primary input. Note that this covers handheld or
     #: arcade cabinet scenarios in addition to tv-connected consoles.
-    CONSOLE = "console"
+    CONSOLE = 'console'
 
     #: Screen with high amount of detail visible; assumed to have
     #: keyboard/mouse as primary input.
-    DESKTOP = "desktop"
+    DESKTOP = 'desktop'
 
     #: Displayed over or in place of of the real world on a headset;
     #: assumed to have hand tracking or spatial controllers as primary
     #: input.
-    XR_HEADSET = "xr_headset"
+    XR_HEADSET = 'xr_headset'
 
     #: Displayed over or instead of the real world on a small screen;
     #: assumed to have device movement augmented by physical or
     #: touchscreen controls as primary input.
-    XR_PHONE = "xr_phone"
+    XR_PHONE = 'xr_phone'
 
     #: Displayed over or instead of the real world on a medium size
     #: screen; assumed to have device movement augmented by physical or
     #: touchscreen controls as primary input.
-    XR_TABLET = "xr_tablet"
+    XR_TABLET = 'xr_tablet'
 
     #: The app has no interface (generally is acting as a server).
-    HEADLESS = "headless"
+    HEADLESS = 'headless'
 
 
 # UPDATE: Don't think this will be necessary. Will keep it around for a
@@ -90,11 +90,11 @@ class AppInterfaceIdiom(Enum):
 class AppArchitecture(Enum):
     """Processor architecture an app can be running on."""
 
-    UNKNOWN = "unknown"
-    ARM = "arm"
-    ARM64 = "arm64"
-    X86 = "x86"
-    X86_64 = "x86_64"
+    UNKNOWN = 'unknown'
+    ARM = 'arm'
+    ARM64 = 'arm64'
+    X86 = 'x86'
+    X86_64 = 'x86_64'
 
 
 class AppPlatform(Enum):
@@ -106,13 +106,13 @@ class AppPlatform(Enum):
     build.
     """
 
-    UNKNOWN = "unknown"
-    MACOS = "macos"
-    WINDOWS = "windows"
-    LINUX = "linux"
-    ANDROID = "android"
-    IOS = "ios"
-    TVOS = "tvos"
+    UNKNOWN = 'unknown'
+    MACOS = 'macos'
+    WINDOWS = 'windows'
+    LINUX = 'linux'
+    ANDROID = 'android'
+    IOS = 'ios'
+    TVOS = 'tvos'
 
 
 class AppVariant(Enum):
@@ -125,22 +125,22 @@ class AppVariant(Enum):
     """
 
     #: Default builds.
-    GENERIC = "generic"
+    GENERIC = 'generic'
 
     #: Particular builds intended for public testing (may have some extra
     #: checks or logging enabled).
-    TEST_BUILD = "test_build"
+    TEST_BUILD = 'test_build'
 
     # Various stores.
-    AMAZON_APPSTORE = "amazon_appstore"
-    GOOGLE_PLAY = "google_play"
-    APPLE_APP_STORE = "apple_app_store"
-    WINDOWS_STORE = "windows_store"
-    STEAM = "steam"
-    META = "meta"
-    EPIC_GAMES_STORE = "epic_games_store"
+    AMAZON_APPSTORE = 'amazon_appstore'
+    GOOGLE_PLAY = 'google_play'
+    APPLE_APP_STORE = 'apple_app_store'
+    WINDOWS_STORE = 'windows_store'
+    STEAM = 'steam'
+    META = 'meta'
+    EPIC_GAMES_STORE = 'epic_games_store'
 
     # Other.
-    ARCADE = "arcade"
-    DEMO = "demo"
-    CARDBOARD = "cardboard"
+    ARCADE = 'arcade'
+    DEMO = 'demo'
+    CARDBOARD = 'cardboard'

@@ -21,13 +21,13 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
         current_entry: Any,
         selection_target_name: str,
         *,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
         assert bui.app.classic is not None
         music = bui.app.classic.music
-        self._r = "editSoundtrackWindow"
+        self._r = 'editSoundtrackWindow'
 
         self._selection_target_name = selection_target_name
         self._callback = callback
@@ -41,10 +41,10 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
         # themselves here.
         do_default = True
         do_mac_music_app_playlist = music.supports_soundtrack_entry_type(
-            "iTunesPlaylist"
+            'iTunesPlaylist'
         )
-        do_music_file = music.supports_soundtrack_entry_type("musicFile")
-        do_music_folder = music.supports_soundtrack_entry_type("musicFolder")
+        do_music_file = music.supports_soundtrack_entry_type('musicFile')
+        do_music_folder = music.supports_soundtrack_entry_type('musicFolder')
 
         if do_mac_music_app_playlist:
             self._height += spacing
@@ -79,7 +79,7 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
             size=(160, 60),
             scale=0.8,
             text_scale=1.2,
-            label=bui.Lstr(resource="cancelText"),
+            label=bui.Lstr(resource='cancelText'),
             on_activate_call=self._on_cancel_press,
         )
         bui.containerwidget(edit=self._root_widget, cancel_button=btn)
@@ -87,11 +87,11 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(self._width * 0.5, self._height - 32),
             size=(0, 0),
-            text=bui.Lstr(resource=f"{self._r}.selectASourceText"),
+            text=bui.Lstr(resource=f'{self._r}.selectASourceText'),
             color=bui.app.ui_v1.title_color,
             maxwidth=230,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
         bui.textwidget(
@@ -102,8 +102,8 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
             color=bui.app.ui_v1.infotextcolor,
             scale=0.7,
             maxwidth=230,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
         v = self._height - 155
@@ -115,10 +115,10 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
                 parent=self._root_widget,
                 size=(self._width - 100, 60),
                 position=(50, v),
-                label=bui.Lstr(resource=f"{self._r}.useDefaultGameMusicText"),
+                label=bui.Lstr(resource=f'{self._r}.useDefaultGameMusicText'),
                 on_activate_call=self._on_default_press,
             )
-            if current_entry_type == "default":
+            if current_entry_type == 'default':
                 bui.containerwidget(edit=self._root_widget, selected_child=btn)
             v -= spacing
 
@@ -127,11 +127,11 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
                 parent=self._root_widget,
                 size=(self._width - 100, 60),
                 position=(50, v),
-                label=bui.Lstr(resource=f"{self._r}.useITunesPlaylistText"),
+                label=bui.Lstr(resource=f'{self._r}.useITunesPlaylistText'),
                 on_activate_call=self._on_mac_music_app_playlist_press,
                 icon=None,
             )
-            if current_entry_type == "iTunesPlaylist":
+            if current_entry_type == 'iTunesPlaylist':
                 bui.containerwidget(edit=self._root_widget, selected_child=btn)
             v -= spacing
 
@@ -140,11 +140,11 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
                 parent=self._root_widget,
                 size=(self._width - 100, 60),
                 position=(50, v),
-                label=bui.Lstr(resource=f"{self._r}.useMusicFileText"),
+                label=bui.Lstr(resource=f'{self._r}.useMusicFileText'),
                 on_activate_call=self._on_music_file_press,
-                icon=bui.gettexture("file"),
+                icon=bui.gettexture('file'),
             )
-            if current_entry_type == "musicFile":
+            if current_entry_type == 'musicFile':
                 bui.containerwidget(edit=self._root_widget, selected_child=btn)
             v -= spacing
 
@@ -153,12 +153,12 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
                 parent=self._root_widget,
                 size=(self._width - 100, 60),
                 position=(50, v),
-                label=bui.Lstr(resource=f"{self._r}.useMusicFolderText"),
+                label=bui.Lstr(resource=f'{self._r}.useMusicFolderText'),
                 on_activate_call=self._on_music_folder_press,
-                icon=bui.gettexture("folder"),
+                icon=bui.gettexture('folder'),
                 icon_color=(1.1, 0.8, 0.2),
             )
-            if current_entry_type == "musicFolder":
+            if current_entry_type == 'musicFolder':
                 bui.containerwidget(edit=self._root_widget, selected_child=btn)
             v -= spacing
 
@@ -195,7 +195,10 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
             return
 
         current_playlist_entry: str | None
-        if music.get_soundtrack_entry_type(self._current_entry) == "iTunesPlaylist":
+        if (
+            music.get_soundtrack_entry_type(self._current_entry)
+            == 'iTunesPlaylist'
+        ):
             current_playlist_entry = music.get_soundtrack_entry_name(
                 self._current_entry
             )
@@ -225,7 +228,9 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
                 base_path,
                 callback=self._music_file_selector_cb,
                 show_base_path=False,
-                valid_file_extensions=(OSMusicPlayer.get_valid_music_file_extensions()),
+                valid_file_extensions=(
+                    OSMusicPlayer.get_valid_music_file_extensions()
+                ),
                 allow_folders=False,
             ),
         )
@@ -255,13 +260,13 @@ class SoundtrackEntryTypeSelectWindow(bui.MainWindow):
         if result is None:
             self._callback(self._current_entry)
         else:
-            self._callback({"type": "musicFile", "name": result})
+            self._callback({'type': 'musicFile', 'name': result})
 
     def _music_folder_selector_cb(self, result: str | None) -> None:
         if result is None:
             self._callback(self._current_entry)
         else:
-            self._callback({"type": "musicFolder", "name": result})
+            self._callback({'type': 'musicFolder', 'name': result})
 
     def _on_default_press(self) -> None:
         self.main_window_back()

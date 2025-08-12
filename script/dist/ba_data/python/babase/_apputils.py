@@ -50,8 +50,8 @@ def is_browser_likely_available() -> bool:
 
     if app.classic is None:
         balog.warning(
-            "is_browser_likely_available() needs to be updated"
-            " to work without classic."
+            'is_browser_likely_available() needs to be updated'
+            ' to work without classic.'
         )
         return True
 
@@ -62,7 +62,7 @@ def is_browser_likely_available() -> bool:
     # assume no browser.
     # FIXME: Might not be the case anymore; should make this definable
     #  at the platform level.
-    if app.env.vr or (platform == "android" and not hastouchscreen):
+    if app.env.vr or (platform == 'android' and not hastouchscreen):
         return False
 
     # Anywhere else assume we've got one.
@@ -73,12 +73,12 @@ def get_remote_app_name() -> babase.Lstr:
     """:meta private:"""
     from babase import _language
 
-    return _language.Lstr(resource="remote_app.app_name")
+    return _language.Lstr(resource='remote_app.app_name')
 
 
 def should_submit_debug_info() -> bool:
     """:meta private:"""
-    val = _babase.app.config.get("Submit Debug Info", True)
+    val = _babase.app.config.get('Submit Debug Info', True)
     assert isinstance(val, bool)
     return val
 
@@ -97,8 +97,8 @@ def handle_v1_cloud_log() -> None:
     if classic is None or plus is None:
         if _babase.do_once():
             balog.warning(
-                "handle_v1_cloud_log should not be getting called"
-                " without classic and plus present."
+                'handle_v1_cloud_log should not be getting called'
+                ' without classic and plus present.'
             )
         return
 
@@ -111,24 +111,24 @@ def handle_v1_cloud_log() -> None:
             try:
                 sessionname = str(classic.get_foreground_host_session())
             except Exception:
-                sessionname = "unavailable"
+                sessionname = 'unavailable'
             try:
                 activityname = str(classic.get_foreground_host_activity())
             except Exception:
-                activityname = "unavailable"
+                activityname = 'unavailable'
 
             info = {
-                "log": _babase.get_v1_cloud_log(),
-                "version": app.env.engine_version,
-                "build": app.env.engine_build_number,
-                "userAgentString": classic.legacy_user_agent_string,
-                "session": sessionname,
-                "activity": activityname,
-                "fatal": 0,
-                "userRanCommands": _babase.has_user_run_commands(),
-                "time": _babase.apptime(),
-                "userModded": _babase.workspaces_in_use(),
-                "newsShow": plus.get_classic_news_show(),
+                'log': _babase.get_v1_cloud_log(),
+                'version': app.env.engine_version,
+                'build': app.env.engine_build_number,
+                'userAgentString': classic.legacy_user_agent_string,
+                'session': sessionname,
+                'activity': activityname,
+                'fatal': 0,
+                'userRanCommands': _babase.has_user_run_commands(),
+                'time': _babase.apptime(),
+                'userModded': _babase.workspaces_in_use(),
+                'newsShow': plus.get_classic_news_show(),
             }
 
             def response(data: Any) -> None:
@@ -139,7 +139,7 @@ def handle_v1_cloud_log() -> None:
                     classic.log_have_new = False
                     _babase.mark_log_sent()
 
-            classic.master_server_v1_post("bsLog", info, response)
+            classic.master_server_v1_post('bsLog', info, response)
 
         classic.log_upload_timer_started = True
 
@@ -173,7 +173,9 @@ def handle_leftover_v1_cloud_log_file() -> None:
         import json
 
         if os.path.exists(_babase.get_v1_cloud_log_file_path()):
-            with open(_babase.get_v1_cloud_log_file_path(), encoding="utf-8") as infile:
+            with open(
+                _babase.get_v1_cloud_log_file_path(), encoding='utf-8'
+            ) as infile:
                 info = json.loads(infile.read())
             infile.close()
             do_send = should_submit_debug_info()
@@ -191,13 +193,15 @@ def handle_leftover_v1_cloud_log_file() -> None:
                             # killed it since. ¯\_(ツ)_/¯
                             pass
 
-                _babase.app.classic.master_server_v1_post("bsLog", info, response)
+                _babase.app.classic.master_server_v1_post(
+                    'bsLog', info, response
+                )
             else:
-                # If they don't want logs uploaded just kill it.
+                # If they don't want logs uploaded, just kill it.
                 os.remove(_babase.get_v1_cloud_log_file_path())
 
     except Exception:
-        balog.exception("Error handling leftover log file.")
+        balog.exception('Error handling leftover log file.')
 
 
 def print_corrupt_file_error() -> None:
@@ -207,13 +211,13 @@ def print_corrupt_file_error() -> None:
         _babase.apptimer(
             2.0,
             lambda: _babase.screenmessage(
-                _babase.app.lang.get_resource("internal.corruptFileText").replace(
-                    "${EMAIL}", "support@froemling.net"
-                ),
+                _babase.app.lang.get_resource(
+                    'internal.corruptFileText'
+                ).replace('${EMAIL}', 'support@froemling.net'),
                 color=(1, 0, 0),
             ),
         )
-        _babase.apptimer(2.0, _babase.getsimplesound("error").play)
+        _babase.apptimer(2.0, _babase.getsimplesound('error').play)
 
 
 _tb_held_files: list[TextIO] = []
@@ -231,7 +235,7 @@ class DumpedAppStateMetadata:
 
 def dump_app_state(
     delay: float = 0.0,
-    reason: str = "Unspecified",
+    reason: str = 'Unspecified',
     log_level: LogLevel = LogLevel.WARNING,
 ) -> None:
     """Dump various app state for debugging purposes.
@@ -260,9 +264,9 @@ def dump_app_state(
     try:
         mdpath = os.path.join(
             os.path.dirname(_babase.app.env.config_file_path),
-            "_appstate_dump_md",
+            '_appstate_dump_md',
         )
-        with open(mdpath, "w", encoding="utf-8") as outfile:
+        with open(mdpath, 'w', encoding='utf-8') as outfile:
             outfile.write(
                 dataclass_to_json(
                     DumpedAppStateMetadata(
@@ -274,14 +278,14 @@ def dump_app_state(
             )
     except Exception:
         # Abandon whole dump if we can't write metadata.
-        balog.exception("Error writing app state dump metadata.")
+        balog.exception('Error writing app state dump metadata.')
         return
 
     tbpath = os.path.join(
-        os.path.dirname(_babase.app.env.config_file_path), "_appstate_dump_tb"
+        os.path.dirname(_babase.app.env.config_file_path), '_appstate_dump_tb'
     )
 
-    tbfile = open(tbpath, "w", encoding="utf-8")
+    tbfile = open(tbpath, 'w', encoding='utf-8')
 
     # faulthandler needs the raw file descriptor to still be valid when
     # it fires, so stuff this into a global var to make sure it doesn't get
@@ -308,10 +312,10 @@ def log_dumped_app_state(from_previous_run: bool = False) -> None:
     """If an app-state dump exists, log it and clear it. No-op otherwise."""
 
     try:
-        out = ""
+        out = ''
         mdpath = os.path.join(
             os.path.dirname(_babase.app.env.config_file_path),
-            "_appstate_dump_md",
+            '_appstate_dump_md',
         )
         if os.path.exists(mdpath):
             # We may be hanging on to open file descriptors for use by
@@ -322,7 +326,7 @@ def log_dumped_app_state(from_previous_run: bool = False) -> None:
                 heldfile.close()
             _tb_held_files.clear()
 
-            with open(mdpath, "r", encoding="utf-8") as infile:
+            with open(mdpath, 'r', encoding='utf-8') as infile:
                 appstatedata = infile.read()
 
             # Kill the file first in case we can't parse the data; don't
@@ -332,25 +336,25 @@ def log_dumped_app_state(from_previous_run: bool = False) -> None:
             metadata = dataclass_from_json(DumpedAppStateMetadata, appstatedata)
 
             header = (
-                "Found app state dump from previous app run"
+                'Found app state dump from previous app run'
                 if from_previous_run
-                else "App state dump"
+                else 'App state dump'
             )
             out += (
-                f"{header}:\nReason: {metadata.reason}\n"
-                f"Time: {metadata.app_time:.2f}"
+                f'{header}:\nReason: {metadata.reason}\n'
+                f'Time: {metadata.app_time:.2f}'
             )
             tbpath = os.path.join(
                 os.path.dirname(_babase.app.env.config_file_path),
-                "_appstate_dump_tb",
+                '_appstate_dump_tb',
             )
             if os.path.exists(tbpath):
-                with open(tbpath, "r", encoding="utf-8") as infile:
-                    out += "\nPython tracebacks:\n" + infile.read()
+                with open(tbpath, 'r', encoding='utf-8') as infile:
+                    out += '\nPython tracebacks:\n' + infile.read()
                 os.unlink(tbpath)
             balog.log(metadata.log_level.python_logging_level, out)
     except Exception:
-        balog.exception("Error logging dumped app state.")
+        balog.exception('Error logging dumped app state.')
 
 
 class AppHealthSubsystem(AppSubsystem):
@@ -401,11 +405,11 @@ class AppHealthSubsystem(AppSubsystem):
         self._running = True
 
     def _app_monitor_thread_main(self) -> None:
-        _babase.set_thread_name("ballistica app-monitor")
+        _babase.set_thread_name('ballistica app-monitor')
         try:
             self._monitor_app()
         except Exception:
-            balog.exception("Error in AppHealthSubsystem thread.")
+            balog.exception('Error in AppHealthSubsystem thread.')
 
     def _set_response(self) -> None:
         assert _babase.in_logic_thread()
@@ -448,7 +452,8 @@ class AppHealthSubsystem(AppSubsystem):
                 duration = time.monotonic() - starttime
                 if duration > threshold:
                     dump_app_state(
-                        reason=f"Logic thread unresponsive" f" for {threshold} seconds."
+                        reason=f'Logic thread unresponsive'
+                        f' for {threshold} seconds.'
                     )
 
                     # We just do one alert for now.

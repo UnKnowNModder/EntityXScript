@@ -31,7 +31,7 @@ class CleanError(Exception):
     def pretty_print(
         self,
         flush: bool = True,
-        prefix: str = "Error",
+        prefix: str = 'Error',
         file: Any = None,
         clr: type[ClrBase] | None = None,
     ) -> None:
@@ -45,10 +45,12 @@ class CleanError(Exception):
             clr = Clr
 
         if prefix:
-            prefix = f"{prefix}: "
+            prefix = f'{prefix}: '
         errstr = str(self)
         if errstr:
-            print(f"{clr.SRED}{prefix}{errstr}{clr.RST}", flush=flush, file=file)
+            print(
+                f'{clr.SRED}{prefix}{errstr}{clr.RST}', flush=flush, file=file
+            )
 
 
 class CommunicationError(Exception):
@@ -83,12 +85,12 @@ class RemoteError(Exception):
 
     @override
     def __str__(self) -> str:
-        s = "".join(str(arg) for arg in self.args)
+        s = ''.join(str(arg) for arg in self.args)
         # Indent so we can more easily tell what is the remote part when
         # this is in the middle of a long exception chain.
-        padding = "  "
-        s = "".join(padding + line for line in s.splitlines(keepends=True))
-        return f"The following occurred on {self._peer_desc}:\n{s}"
+        padding = '  '
+        s = ''.join(padding + line for line in s.splitlines(keepends=True))
+        return f'The following occurred on {self._peer_desc}:\n{s}'
 
 
 class IntegrityError(ValueError):
@@ -120,8 +122,8 @@ class Urllib3HttpError(Exception):
         try:
             desc = HTTPStatus(self.code).description
         except ValueError:
-            desc = "Unknown HTTP Status Code"
-        return f"{self.code}: {desc}"
+            desc = 'Unknown HTTP Status Code'
+        return f'{self.code}: {desc}'
 
 
 def raise_for_urllib3_status(
@@ -165,13 +167,13 @@ def is_urllib3_communication_error(exc: BaseException, url: str | None) -> bool:
         # governments or whatnot). Let's consider that a communication
         # error since its out of our control so we don't fill up logs
         # with it.
-        if exc.code == 403 and url is not None and ".appspot.com" in url:
+        if exc.code == 403 and url is not None and '.appspot.com' in url:
             return True
 
         # Another special case; we tend to get the occasional flukish
         # gateway error when sending between our servers; treat those as
         # comm-errors.
-        if exc.code == 502 and url is not None and "ballistica.net" in url:
+        if exc.code == 502 and url is not None and 'ballistica.net' in url:
             return True
 
     elif isinstance(
@@ -197,8 +199,8 @@ def is_urllib3_communication_error(exc: BaseException, url: str | None) -> bool:
         # take it on a case by case basis.
         excstr = str(exc)
         if (
-            "Connection aborted." in excstr
-            or "Software caused connection abort" in excstr
+            'Connection aborted.' in excstr
+            or 'Software caused connection abort' in excstr
         ):
             return True
 
@@ -242,7 +244,7 @@ def is_urllib_communication_error(exc: BaseException, url: str | None) -> bool:
             # (forbidden) to some countries. I'm assuming for legal reasons?..
             # Let's consider that a communication error since its out of our
             # control so we don't fill up logs with it.
-            if exc.code == 403 and url is not None and ".appspot.com" in url:
+            if exc.code == 403 and url is not None and '.appspot.com' in url:
                 return True
 
             return False
@@ -265,7 +267,7 @@ def is_requests_communication_error(exc: BaseException) -> bool:
     """Is the provided exception a communication-related error from requests?"""
     import requests
 
-    # Looks like this maps pretty well onto requests' ConnectionError
+    # Looks like this maps pretty well onto requests' ConnectionError.
     return isinstance(exc, requests.ConnectionError)
 
 
@@ -282,8 +284,6 @@ def is_udp_communication_error(exc: BaseException) -> bool:
     if isinstance(exc, ConnectionRefusedError | TimeoutError):
         return True
     if isinstance(exc, OSError):
-        if exc.errno == 10051:  # Windows unreachable network error.
-            return True
         if exc.errno in {
             errno.EADDRNOTAVAIL,
             errno.ETIMEDOUT,
@@ -292,13 +292,18 @@ def is_udp_communication_error(exc: BaseException) -> bool:
             errno.EINVAL,
             errno.EPERM,
             errno.EACCES,
-            # Windows 'invalid argument' error.
-            10022,
-            # Windows 'a socket operation was attempted to'
-            #         'an unreachable network' error.
-            10051,
         }:
             return True
+
+        # Windows specific ones.
+        winerr = getattr(exc, 'winerror', None)
+        assert isinstance(winerr, int | None)
+        if winerr is not None and winerr in {
+            10051,  # Unreachable network.
+            10022,  # Invalid argument.
+        }:
+            return True
+
     return False
 
 
@@ -326,8 +331,6 @@ def is_asyncio_streams_communication_error(exc: BaseException) -> bool:
 
     # Also some specific errno ones.
     if isinstance(exc, OSError):
-        if exc.errno == 10051:  # Windows unreachable network error.
-            return True
         if exc.errno in {
             errno.ETIMEDOUT,
             errno.EHOSTUNREACH,
@@ -335,29 +338,55 @@ def is_asyncio_streams_communication_error(exc: BaseException) -> bool:
         }:
             return True
 
+        # Windows specific ones.
+        winerr = getattr(exc, 'winerror', None)
+        assert isinstance(winerr, int | None)
+        if winerr is not None and winerr in {
+            10051,  # Windows unreachable network error.
+            121,  # Semaphore timeout period expired.
+        }:
+            return True
+
     # Am occasionally getting a specific SSL error on shutdown which I
-    # believe is harmless (APPLICATION_DATA_AFTER_CLOSE_NOTIFY).
-    # It sounds like it may soon be ignored by Python (as of March 2022).
+    # believe is harmless (APPLICATION_DATA_AFTER_CLOSE_NOTIFY). It
+    # sounds like it may soon be ignored by Python (as of March 2022).
     # Let's still complain, however, if we get any SSL errors besides
     # this one. https://bugs.python.org/issue39951
     if isinstance(exc, ssl.SSLError):
         excstr = str(exc)
-        if "APPLICATION_DATA_AFTER_CLOSE_NOTIFY" in excstr:
+        if 'APPLICATION_DATA_AFTER_CLOSE_NOTIFY' in excstr:
             return True
 
         # Also occasionally am getting WRONG_VERSION_NUMBER ssl errors;
         # Assuming this just means client is attempting to connect from some
         # outdated browser or whatnot.
-        if "SSL: WRONG_VERSION_NUMBER" in excstr:
+        if 'SSL: WRONG_VERSION_NUMBER' in excstr:
             return True
 
         # Also getting this sometimes which sounds like corrupt SSL data
         # or something.
-        if "SSL: BAD_RECORD_TYPE" in excstr:
+        if 'SSL: BAD_RECORD_TYPE' in excstr:
             return True
 
         # And seeing this very rarely; assuming its just data corruption?
-        if "SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC" in excstr:
+        if 'SSL: DECRYPTION_FAILED_OR_BAD_RECORD_MAC' in excstr:
             return True
+
+    return False
+
+
+def is_connection_reset_error(exc: BaseException) -> bool:
+    """Check if the exception is due to a connection reset by peer."""
+    if not isinstance(exc, OSError):
+        return False
+
+    if exc.errno == errno.ECONNRESET:
+        return True
+
+    # Windows specific ones.
+    winerr = getattr(exc, 'winerror', None)
+    assert isinstance(winerr, int | None)
+    if winerr is not None and winerr == 10054:
+        return True
 
     return False

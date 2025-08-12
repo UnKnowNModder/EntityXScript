@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
     """Activity showing the rotating main menu bg stuff."""
 
-    _stdassets = bs.Dependency(bs.AssetPackage, "stdassets@1")
+    _stdassets = bs.Dependency(bs.AssetPackage, 'stdassets@1')
 
     _did_initial_transition = False
 
@@ -65,24 +65,24 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         # the host is navigating menus while they're just staring at an
         # empty-ish screen.
         tval = bs.Lstr(
-            resource="hostIsNavigatingMenusText",
-            subs=[("${HOST}", plus.get_v1_account_display_string())],
+            resource='hostIsNavigatingMenusText',
+            subs=[('${HOST}', plus.get_v1_account_display_string())],
         )
         self._host_is_navigating_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "text": tval,
-                    "client_only": True,
-                    "position": (0, -200),
-                    "flatness": 1.0,
-                    "h_align": "center",
+                    'text': tval,
+                    'client_only': True,
+                    'position': (0, -200),
+                    'flatness': 1.0,
+                    'h_align': 'center',
                 },
             )
         )
         if not self._did_initial_transition and self.my_name is not None:
             assert self.my_name.node
-            bs.animate(self.my_name.node, "opacity", {2.3: 0, 3.0: 1.0})
+            bs.animate(self.my_name.node, 'opacity', {2.3: 0, 3.0: 1.0})
 
         # Throw in test build info.
         self.beta_info = self.beta_info_2 = None
@@ -90,38 +90,38 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
             pos = (230, 35)
             self.beta_info = bs.NodeActor(
                 bs.newnode(
-                    "text",
+                    'text',
                     attrs={
-                        "v_attach": "center",
-                        "h_align": "center",
-                        "color": (1, 1, 1, 1),
-                        "shadow": 0.5,
-                        "flatness": 0.5,
-                        "scale": 1,
-                        "vr_depth": -60,
-                        "position": pos,
-                        "text": bs.Lstr(resource="testBuildText"),
+                        'v_attach': 'center',
+                        'h_align': 'center',
+                        'color': (1, 1, 1, 1),
+                        'shadow': 0.5,
+                        'flatness': 0.5,
+                        'scale': 1,
+                        'vr_depth': -60,
+                        'position': pos,
+                        'text': bs.Lstr(resource='testBuildText'),
                     },
                 )
             )
             if not self._did_initial_transition:
                 assert self.beta_info.node
-                bs.animate(self.beta_info.node, "opacity", {1.3: 0, 1.8: 1.0})
+                bs.animate(self.beta_info.node, 'opacity', {1.3: 0, 1.8: 1.0})
 
-        mesh = bs.getmesh("thePadLevel")
-        trees_mesh = bs.getmesh("trees")
-        bottom_mesh = bs.getmesh("thePadLevelBottom")
-        color_texture = bs.gettexture("thePadLevelColor")
-        trees_texture = bs.gettexture("treesColor")
-        bgtex = bs.gettexture("menuBG")
-        bgmesh = bs.getmesh("thePadBG")
+        mesh = bs.getmesh('thePadLevel')
+        trees_mesh = bs.getmesh('trees')
+        bottom_mesh = bs.getmesh('thePadLevelBottom')
+        color_texture = bs.gettexture('thePadLevelColor')
+        trees_texture = bs.gettexture('treesColor')
+        bgtex = bs.gettexture('menuBG')
+        bgmesh = bs.getmesh('thePadBG')
 
         # Load these last since most platforms don't use them.
-        vr_bottom_fill_mesh = bs.getmesh("thePadVRFillBottom")
-        vr_top_fill_mesh = bs.getmesh("thePadVRFillTop")
+        vr_bottom_fill_mesh = bs.getmesh('thePadVRFillBottom')
+        vr_top_fill_mesh = bs.getmesh('thePadVRFillTop')
 
         gnode = self.globalsnode
-        gnode.camera_mode = "rotate"
+        gnode.camera_mode = 'rotate'
 
         tint = (1.14, 1.1, 1.0)
         gnode.tint = tint
@@ -131,70 +131,70 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
 
         self.bottom = bs.NodeActor(
             bs.newnode(
-                "terrain",
+                'terrain',
                 attrs={
-                    "mesh": bottom_mesh,
-                    "lighting": False,
-                    "reflection": "soft",
-                    "reflection_scale": [0.45],
-                    "color_texture": color_texture,
+                    'mesh': bottom_mesh,
+                    'lighting': False,
+                    'reflection': 'soft',
+                    'reflection_scale': [0.45],
+                    'color_texture': color_texture,
                 },
             )
         )
         self.vr_bottom_fill = bs.NodeActor(
             bs.newnode(
-                "terrain",
+                'terrain',
                 attrs={
-                    "mesh": vr_bottom_fill_mesh,
-                    "lighting": False,
-                    "vr_only": True,
-                    "color_texture": color_texture,
+                    'mesh': vr_bottom_fill_mesh,
+                    'lighting': False,
+                    'vr_only': True,
+                    'color_texture': color_texture,
                 },
             )
         )
         self.vr_top_fill = bs.NodeActor(
             bs.newnode(
-                "terrain",
+                'terrain',
                 attrs={
-                    "mesh": vr_top_fill_mesh,
-                    "vr_only": True,
-                    "lighting": False,
-                    "color_texture": bgtex,
+                    'mesh': vr_top_fill_mesh,
+                    'vr_only': True,
+                    'lighting': False,
+                    'color_texture': bgtex,
                 },
             )
         )
         self.terrain = bs.NodeActor(
             bs.newnode(
-                "terrain",
+                'terrain',
                 attrs={
-                    "mesh": mesh,
-                    "color_texture": color_texture,
-                    "reflection": "soft",
-                    "reflection_scale": [0.3],
+                    'mesh': mesh,
+                    'color_texture': color_texture,
+                    'reflection': 'soft',
+                    'reflection_scale': [0.3],
                 },
             )
         )
         self.trees = bs.NodeActor(
             bs.newnode(
-                "terrain",
+                'terrain',
                 attrs={
-                    "mesh": trees_mesh,
-                    "lighting": False,
-                    "reflection": "char",
-                    "reflection_scale": [0.1],
-                    "color_texture": trees_texture,
+                    'mesh': trees_mesh,
+                    'lighting': False,
+                    'reflection': 'char',
+                    'reflection_scale': [0.1],
+                    'color_texture': trees_texture,
                 },
             )
         )
         self.bgterrain = bs.NodeActor(
             bs.newnode(
-                "terrain",
+                'terrain',
                 attrs={
-                    "mesh": bgmesh,
-                    "color": (0.92, 0.91, 0.9),
-                    "lighting": False,
-                    "background": True,
-                    "color_texture": bgtex,
+                    'mesh': bgmesh,
+                    'color': (0.92, 0.91, 0.9),
+                    'lighting': False,
+                    'background': True,
+                    'color_texture': bgtex,
                 },
             )
         )
@@ -230,15 +230,15 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
             if custom_texture != self._custom_logo_tex_name:
                 self._custom_logo_tex_name = custom_texture
                 self._logo_node.texture = bs.gettexture(
-                    custom_texture if custom_texture is not None else "logo"
+                    custom_texture if custom_texture is not None else 'logo'
                 )
                 self._logo_node.mesh_opaque = (
-                    None if custom_texture is not None else bs.getmesh("logo")
+                    None if custom_texture is not None else bs.getmesh('logo')
                 )
                 self._logo_node.mesh_transparent = (
                     None
                     if custom_texture is not None
-                    else bs.getmesh("logoTransparent")
+                    else bs.getmesh('logoTransparent')
                 )
 
         # If language has changed, recreate our logo text/graphics.
@@ -261,7 +261,10 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
             # We draw higher in kiosk mode (make sure to test this
             # when making adjustments) for now we're hard-coded for
             # a few languages.. should maybe look into generalizing this?..
-            if app.locale.current_locale.resolved is LocaleResolved.CHINESE_SIMPLIFIED:
+            if (
+                app.locale.current_locale.resolved
+                is LocaleResolved.CHINESE_SIMPLIFIED
+            ):
                 base_x = -270.0
                 x = base_x - 20.0
                 spacing = 85.0 * base_scale
@@ -271,7 +274,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     113 + y + 1.2 * y_extra,
                     0.34 * base_scale,
                     delay=base_delay + 0.1,
-                    custom_texture="chTitleChar1",
+                    custom_texture='chTitleChar1',
                     jitter_scale=2.0,
                     vr_depth_offset=-30,
                 )
@@ -282,7 +285,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     110 + y + 1.2 * y_extra,
                     0.31 * base_scale,
                     delay=base_delay + 0.15,
-                    custom_texture="chTitleChar2",
+                    custom_texture='chTitleChar2',
                     jitter_scale=2.0,
                     vr_depth_offset=-30,
                 )
@@ -293,7 +296,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     110 + y + 1.2 * y_extra,
                     0.3 * base_scale,
                     delay=base_delay + 0.25,
-                    custom_texture="chTitleChar3",
+                    custom_texture='chTitleChar3',
                     jitter_scale=2.0,
                     vr_depth_offset=-30,
                 )
@@ -304,7 +307,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     110 + y + 1.2 * y_extra,
                     0.31 * base_scale,
                     delay=base_delay + 0.3,
-                    custom_texture="chTitleChar4",
+                    custom_texture='chTitleChar4',
                     jitter_scale=2.0,
                     vr_depth_offset=-30,
                 )
@@ -315,7 +318,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     105 + y + 1.2 * y_extra,
                     0.34 * base_scale,
                     delay=base_delay + 0.35,
-                    custom_texture="chTitleChar5",
+                    custom_texture='chTitleChar5',
                     jitter_scale=2.0,
                     vr_depth_offset=-30,
                 )
@@ -337,7 +340,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x = xv1
                     delay = delay1
                     self._make_word(
-                        "B",
+                        'B',
                         x - 50,
                         y - 23 + 0.8 * y_extra,
                         scale=1.3 * base_scale,
@@ -348,7 +351,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing
                     delay += delay_inc
                     self._make_word(
-                        "m",
+                        'm',
                         x,
                         y + y_extra,
                         delay=delay,
@@ -358,7 +361,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing * 1.25
                     delay += delay_inc
                     self._make_word(
-                        "b",
+                        'b',
                         x,
                         y + y_extra - 10,
                         delay=delay,
@@ -369,7 +372,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing * 0.85
                     delay += delay_inc
                     self._make_word(
-                        "S",
+                        'S',
                         x,
                         y - 25 + 0.8 * y_extra,
                         scale=1.35 * base_scale,
@@ -380,7 +383,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing
                     delay += delay_inc
                     self._make_word(
-                        "q",
+                        'q',
                         x,
                         y + y_extra,
                         delay=delay,
@@ -390,7 +393,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing * 0.9
                     delay += delay_inc
                     self._make_word(
-                        "u",
+                        'u',
                         x,
                         y + y_extra,
                         delay=delay,
@@ -401,7 +404,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing * 0.9
                     delay += delay_inc
                     self._make_word(
-                        "a",
+                        'a',
                         x,
                         y + y_extra,
                         delay=delay,
@@ -411,7 +414,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                     x += spacing * 0.64
                     delay += delay_inc
                     self._make_word(
-                        "d",
+                        'd',
                         x,
                         y + y_extra - 10,
                         delay=delay,
@@ -443,19 +446,19 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         if shadow:
             word_obj = bs.NodeActor(
                 bs.newnode(
-                    "text",
+                    'text',
                     attrs={
-                        "position": (x, y),
-                        "big": True,
-                        "color": (0.0, 0.0, 0.2, 0.08),
-                        "tilt_translate": 0.09,
-                        "opacity_scales_shadow": False,
-                        "shadow": 0.2,
-                        "vr_depth": -130,
-                        "v_align": "center",
-                        "project_scale": 0.97 * scale,
-                        "scale": 1.0,
-                        "text": word,
+                        'position': (x, y),
+                        'big': True,
+                        'color': (0.0, 0.0, 0.2, 0.08),
+                        'tilt_translate': 0.09,
+                        'opacity_scales_shadow': False,
+                        'shadow': 0.2,
+                        'vr_depth': -130,
+                        'v_align': 'center',
+                        'project_scale': 0.97 * scale,
+                        'scale': 1.0,
+                        'text': word,
                     },
                 )
             )
@@ -463,18 +466,18 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         else:
             word_obj = bs.NodeActor(
                 bs.newnode(
-                    "text",
+                    'text',
                     attrs={
-                        "position": (x, y),
-                        "big": True,
-                        "color": (1.2, 1.15, 1.15, 1.0),
-                        "tilt_translate": 0.11,
-                        "shadow": 0.2,
-                        "vr_depth": -40 + vr_depth_offset,
-                        "v_align": "center",
-                        "project_scale": scale,
-                        "scale": 1.0,
-                        "text": word,
+                        'position': (x, y),
+                        'big': True,
+                        'color': (1.2, 1.15, 1.15, 1.0),
+                        'tilt_translate': 0.11,
+                        'shadow': 0.2,
+                        'vr_depth': -40 + vr_depth_offset,
+                        'v_align': 'center',
+                        'project_scale': scale,
+                        'scale': 1.0,
+                        'text': word,
                     },
                 )
             )
@@ -486,19 +489,23 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
             cmb: bs.Node | None
             cmb2: bs.Node | None
             if not shadow:
-                cmb = bs.newnode("combine", owner=word_obj.node, attrs={"size": 2})
+                cmb = bs.newnode(
+                    'combine', owner=word_obj.node, attrs={'size': 2}
+                )
             else:
                 cmb = None
             if shadow:
-                cmb2 = bs.newnode("combine", owner=word_obj.node, attrs={"size": 2})
+                cmb2 = bs.newnode(
+                    'combine', owner=word_obj.node, attrs={'size': 2}
+                )
             else:
                 cmb2 = None
             if not shadow:
                 assert cmb and word_obj.node
-                cmb.connectattr("output", word_obj.node, "position")
+                cmb.connectattr('output', word_obj.node, 'position')
             if shadow:
                 assert cmb2 and word_obj.node
-                cmb2.connectattr("output", word_obj.node, "position")
+                cmb2.connectattr('output', word_obj.node, 'position')
             keys = {}
             keys2 = {}
             time_v = 0.0
@@ -509,9 +516,9 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                 keys2[time_v * self._ts] = val2 + 5
                 time_v += random.random() * 0.1
             if cmb is not None:
-                bs.animate(cmb, "input0", keys, loop=True)
+                bs.animate(cmb, 'input0', keys, loop=True)
             if cmb2 is not None:
-                bs.animate(cmb2, "input0", keys2, loop=True)
+                bs.animate(cmb2, 'input0', keys2, loop=True)
             keys = {}
             keys2 = {}
             time_v = 0
@@ -522,22 +529,22 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                 keys2[time_v * self._ts] = val2 - 9
                 time_v += random.random() * 0.1
             if cmb is not None:
-                bs.animate(cmb, "input1", keys, loop=True)
+                bs.animate(cmb, 'input1', keys, loop=True)
             if cmb2 is not None:
-                bs.animate(cmb2, "input1", keys2, loop=True)
+                bs.animate(cmb2, 'input1', keys2, loop=True)
 
         if not shadow:
             assert word_obj.node
             bs.animate(
                 word_obj.node,
-                "project_scale",
+                'project_scale',
                 {delay: 0.0, delay + 0.1: scale * 1.1, delay + 0.2: scale},
             )
         else:
             assert word_obj.node
             bs.animate(
                 word_obj.node,
-                "project_scale",
+                'project_scale',
                 {delay: 0.0, delay + 0.1: scale * 1.1, delay + 0.2: scale},
             )
 
@@ -545,8 +552,8 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_misc_read_val("easter", False):
-            return "logoEaster"
+        if plus.get_v1_account_misc_read_val('easter', False):
+            return 'logoEaster'
         return None
 
     # Pop the logo and menu in.
@@ -566,23 +573,29 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         if custom_texture is None:
             custom_texture = self._get_custom_logo_tex_name()
         self._custom_logo_tex_name = custom_texture
-        ltex = bs.gettexture(custom_texture if custom_texture is not None else "logo")
-        mopaque = None if custom_texture is not None else bs.getmesh("logo")
-        mtrans = None if custom_texture is not None else bs.getmesh("logoTransparent")
+        ltex = bs.gettexture(
+            custom_texture if custom_texture is not None else 'logo'
+        )
+        mopaque = None if custom_texture is not None else bs.getmesh('logo')
+        mtrans = (
+            None
+            if custom_texture is not None
+            else bs.getmesh('logoTransparent')
+        )
         logo_attrs = {
-            "position": (x, y),
-            "texture": ltex,
-            "mesh_opaque": mopaque,
-            "mesh_transparent": mtrans,
-            "vr_depth": -10 + vr_depth_offset,
-            "rotate": rotate,
-            "attach": "center",
-            "tilt_translate": 0.21,
-            "absolute_scale": True,
+            'position': (x, y),
+            'texture': ltex,
+            'mesh_opaque': mopaque,
+            'mesh_transparent': mtrans,
+            'vr_depth': -10 + vr_depth_offset,
+            'rotate': rotate,
+            'attach': 'center',
+            'tilt_translate': 0.21,
+            'absolute_scale': True,
         }
         if custom_texture is None:
-            logo_attrs["scale"] = (2000.0, 2000.0)
-        logo = bs.NodeActor(bs.newnode("image", attrs=logo_attrs))
+            logo_attrs['scale'] = (2000.0, 2000.0)
+        logo = bs.NodeActor(bs.newnode('image', attrs=logo_attrs))
         self._logo_node = logo.node
         self._word_actors.append(logo)
 
@@ -592,16 +605,18 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
 
         def jitter() -> None:
             if not bs.app.env.vr:
-                cmb = bs.newnode("combine", owner=logo.node, attrs={"size": 2})
-                cmb.connectattr("output", logo.node, "position")
+                cmb = bs.newnode('combine', owner=logo.node, attrs={'size': 2})
+                cmb.connectattr('output', logo.node, 'position')
                 keys = {}
                 time_v = 0.0
 
                 # Gen some random keys for that stop-motion-y look
                 for _i in range(10):
-                    keys[time_v] = x + (random.random() - 0.5) * 0.7 * jitter_scale
+                    keys[time_v] = (
+                        x + (random.random() - 0.5) * 0.7 * jitter_scale
+                    )
                     time_v += random.random() * 0.1
-                bs.animate(cmb, "input0", keys, loop=True)
+                bs.animate(cmb, 'input0', keys, loop=True)
                 keys = {}
                 time_v = 0.0
                 for _i in range(10):
@@ -609,7 +624,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                         y + (random.random() - 0.5) * 0.7 * jitter_scale
                     )
                     time_v += random.random() * 0.1
-                bs.animate(cmb, "input1", keys, loop=True)
+                bs.animate(cmb, 'input1', keys, loop=True)
 
         # Do a fun spinny animation on the logo the first time in.
         if (
@@ -618,7 +633,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
             and not self._did_initial_transition
         ):
             jitter()
-            cmb = bs.newnode("combine", owner=logo.node, attrs={"size": 2})
+            cmb = bs.newnode('combine', owner=logo.node, attrs={'size': 2})
 
             delay = 0.0
             keys = {
@@ -629,9 +644,9 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                 delay + 0.55: 605.0 * scale,
                 delay + 0.6: 600.0 * scale,
             }
-            bs.animate(cmb, "input0", keys)
-            bs.animate(cmb, "input1", keys)
-            cmb.connectattr("output", logo.node, "scale")
+            bs.animate(cmb, 'input0', keys)
+            bs.animate(cmb, 'input1', keys)
+            cmb.connectattr('output', logo.node, 'scale')
 
             keys = {
                 delay: 100.0,
@@ -639,21 +654,21 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
                 delay + 0.45: 357.0,
                 delay + 0.5: 360.0,
             }
-            bs.animate(logo.node, "rotate", keys)
+            bs.animate(logo.node, 'rotate', keys)
             type(self)._did_initial_transition = True
         else:
             # For all other cases do a simple scale up animation.
             jitter()
-            cmb = bs.newnode("combine", owner=logo.node, attrs={"size": 2})
+            cmb = bs.newnode('combine', owner=logo.node, attrs={'size': 2})
 
             keys = {
                 delay: 0.0,
                 delay + 0.1: 700.0 * scale,
                 delay + 0.2: 600.0 * scale,
             }
-            bs.animate(cmb, "input0", keys)
-            bs.animate(cmb, "input1", keys)
-            cmb.connectattr("output", logo.node, "scale")
+            bs.animate(cmb, 'input0', keys)
+            bs.animate(cmb, 'input1', keys)
+            cmb.connectattr('output', logo.node, 'scale')
 
     def _start_preloads(self) -> None:
         # FIXME: The func that calls us back doesn't save/restore state
@@ -673,7 +688,7 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         if bui.app.classic is None:
             return
 
-        if not bui.app.config.resolve("Show Demos When Idle"):
+        if not bui.app.config.resolve('Show Demos When Idle'):
             return
 
         threshold = 20.0
@@ -682,8 +697,8 @@ class MainMenuActivity(bs.Activity[bs.Player, bs.Team]):
         # flip over to our cpu demo.
         if bui.get_input_idle_time() > threshold and bs.time() > threshold:
             bui.app.classic.run_stress_test(
-                playlist_type="Random",
-                playlist_name="__default__",
+                playlist_type='Random',
+                playlist_name='__default__',
                 player_count=8,
                 round_duration=20,
                 attract_mode=True,
@@ -715,7 +730,7 @@ class NewsDisplay:
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() == "signed_in":
+        if plus.get_v1_account_state() == 'signed_in':
             self._fetch_news()
             self._fetch_timer = None
 
@@ -727,7 +742,7 @@ class NewsDisplay:
         bs.app.classic.main_menu_last_news_fetch_time = time.time()
 
         # UPDATE - We now just pull news from MRVs.
-        news = plus.get_v1_account_misc_read_val("n", None)
+        news = plus.get_v1_account_misc_read_val('n', None)
         if news is not None:
             self._got_news(news)
 
@@ -749,10 +764,10 @@ class NewsDisplay:
                     for phr in self._used_phrases:
                         self._phrases.insert(0, phr)
                 val = self._phrases.pop()
-                if val == "__ACH__":
+                if val == '__ACH__':
                     vrmode = app.env.vr
                     Text(
-                        bs.Lstr(resource="nextAchievementsText"),
+                        bs.Lstr(resource='nextAchievementsText'),
                         color=((1, 1, 1, 1) if vrmode else (0.95, 0.9, 1, 0.4)),
                         host_only=True,
                         maxwidth=200,
@@ -767,7 +782,11 @@ class NewsDisplay:
                         transition_delay=1.0,
                         transition_out_delay=self._message_duration,
                     ).autoretain()
-                    achs = [a for a in app.classic.ach.achievements if not a.complete]
+                    achs = [
+                        a
+                        for a in app.classic.ach.achievements
+                        if not a.complete
+                    ]
                     if achs:
                         ach = achs.pop(random.randrange(min(4, len(achs))))
                         ach.create_display(
@@ -775,7 +794,7 @@ class NewsDisplay:
                             -35,
                             1.0,
                             outdelay=self._message_duration,
-                            style="news",
+                            style='news',
                         )
                     if achs:
                         ach = achs.pop(random.randrange(min(8, len(achs))))
@@ -784,7 +803,7 @@ class NewsDisplay:
                             -35,
                             1.25,
                             outdelay=self._message_duration,
-                            style="news",
+                            style='news',
                         )
                 else:
                     spc = self._message_spacing
@@ -795,7 +814,7 @@ class NewsDisplay:
                         spc + self._message_duration: 0.0,
                     }
                     assert self._text.node
-                    bs.animate(self._text.node, "opacity", keys)
+                    bs.animate(self._text.node, 'opacity', keys)
                     # {k: v
                     #  for k, v in list(keys.items())})
                     self._text.node.text = val
@@ -811,8 +830,8 @@ class NewsDisplay:
 
             # Show upcoming achievements in non-vr versions (currently
             # too hard to read in vr).
-            self._used_phrases = (["__ACH__"] if not bs.app.env.vr else []) + [
-                s for s in news.split("<br>\n") if s != ""
+            self._used_phrases = (['__ACH__'] if not bs.app.env.vr else []) + [
+                s for s in news.split('<br>\n') if s != ''
             ]
             self._phrase_change_timer = bs.Timer(
                 (self._message_duration + self._message_spacing),
@@ -831,19 +850,19 @@ class NewsDisplay:
             shadow = 1.0 if bs.app.env.vr else 0.4
             self._text = bs.NodeActor(
                 bs.newnode(
-                    "text",
+                    'text',
                     attrs={
-                        "v_attach": "top",
-                        "h_attach": "center",
-                        "h_align": "center",
-                        "vr_depth": -20,
-                        "shadow": shadow,
-                        "flatness": 0.8,
-                        "v_align": "top",
-                        "color": color2,
-                        "scale": scl,
-                        "maxwidth": 900.0 / scl,
-                        "position": (0, -10),
+                        'v_attach': 'top',
+                        'h_attach': 'center',
+                        'h_align': 'center',
+                        'vr_depth': -20,
+                        'shadow': shadow,
+                        'flatness': 0.8,
+                        'v_align': 'top',
+                        'color': color2,
+                        'scale': scl,
+                        'maxwidth': 900.0 / scl,
+                        'position': (0, -10),
                     },
                 )
             )
@@ -856,29 +875,29 @@ def _preload1() -> None:
     Helps avoid hitches later on.
     """
     for mname in [
-        "plasticEyesTransparent",
-        "playerLineup1Transparent",
-        "playerLineup2Transparent",
-        "playerLineup3Transparent",
-        "playerLineup4Transparent",
-        "angryComputerTransparent",
-        "scrollWidgetShort",
-        "windowBGBlotch",
+        'plasticEyesTransparent',
+        'playerLineup1Transparent',
+        'playerLineup2Transparent',
+        'playerLineup3Transparent',
+        'playerLineup4Transparent',
+        'angryComputerTransparent',
+        'scrollWidgetShort',
+        'windowBGBlotch',
     ]:
         bs.getmesh(mname)
-    for tname in ["playerLineup", "lock"]:
+    for tname in ['playerLineup', 'lock']:
         bs.gettexture(tname)
     for tex in [
-        "iconRunaround",
-        "iconOnslaught",
-        "medalComplete",
-        "medalBronze",
-        "medalSilver",
-        "medalGold",
-        "characterIconMask",
+        'iconRunaround',
+        'iconOnslaught',
+        'medalComplete',
+        'medalBronze',
+        'medalSilver',
+        'medalGold',
+        'characterIconMask',
     ]:
         bs.gettexture(tex)
-    bs.gettexture("bg")
+    bs.gettexture('bg')
     from bascenev1lib.actor.powerupbox import PowerupBoxFactory
 
     PowerupBoxFactory.get()
@@ -889,28 +908,28 @@ def _preload2() -> None:
     # FIXME: Could integrate these loads with the classes that use them
     #  so they don't have to redundantly call the load
     #  (even if the actual result is cached).
-    for mname in ["powerup", "powerupSimple"]:
+    for mname in ['powerup', 'powerupSimple']:
         bs.getmesh(mname)
     for tname in [
-        "powerupBomb",
-        "powerupSpeed",
-        "powerupPunch",
-        "powerupIceBombs",
-        "powerupStickyBombs",
-        "powerupShield",
-        "powerupImpactBombs",
-        "powerupHealth",
+        'powerupBomb',
+        'powerupSpeed',
+        'powerupPunch',
+        'powerupIceBombs',
+        'powerupStickyBombs',
+        'powerupShield',
+        'powerupImpactBombs',
+        'powerupHealth',
     ]:
         bs.gettexture(tname)
     for sname in [
-        "powerup01",
-        "boxDrop",
-        "boxingBell",
-        "scoreHit01",
-        "scoreHit02",
-        "dripity",
-        "spawn",
-        "gong",
+        'powerup01',
+        'boxDrop',
+        'boxingBell',
+        'scoreHit01',
+        'scoreHit02',
+        'dripity',
+        'spawn',
+        'gong',
     ]:
         bs.getsound(sname)
     from bascenev1lib.actor.bomb import BombFactory
@@ -922,28 +941,28 @@ def _preload2() -> None:
 def _preload3() -> None:
     from bascenev1lib.actor.spazfactory import SpazFactory
 
-    for mname in ["bomb", "bombSticky", "impactBomb"]:
+    for mname in ['bomb', 'bombSticky', 'impactBomb']:
         bs.getmesh(mname)
     for tname in [
-        "bombColor",
-        "bombColorIce",
-        "bombStickyColor",
-        "impactBombColor",
-        "impactBombColorLit",
+        'bombColor',
+        'bombColorIce',
+        'bombStickyColor',
+        'impactBombColor',
+        'impactBombColorLit',
     ]:
         bs.gettexture(tname)
-    for sname in ["freeze", "fuse01", "activateBeep", "warnBeep"]:
+    for sname in ['freeze', 'fuse01', 'activateBeep', 'warnBeep']:
         bs.getsound(sname)
     SpazFactory.get()
     bui.apptimer(0.2, _preload4)
 
 
 def _preload4() -> None:
-    for tname in ["bar", "meter", "null", "flagColor", "achievementOutline"]:
+    for tname in ['bar', 'meter', 'null', 'flagColor', 'achievementOutline']:
         bs.gettexture(tname)
-    for mname in ["frameInset", "meterTransparent", "achievementOutline"]:
+    for mname in ['frameInset', 'meterTransparent', 'achievementOutline']:
         bs.getmesh(mname)
-    for sname in ["metalHit", "metalSkid", "refWhistle", "achievement"]:
+    for sname in ['metalHit', 'metalSkid', 'refWhistle', 'achievement']:
         bs.getsound(sname)
     from bascenev1lib.actor.flag import FlagFactory
 

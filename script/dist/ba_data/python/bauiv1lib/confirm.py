@@ -33,11 +33,11 @@ class ConfirmWindow:
     ):
         # pylint: disable=too-many-locals
         if text is None:
-            text = bui.Lstr(resource="areYouSureText")
+            text = bui.Lstr(resource='areYouSureText')
         if ok_text is None:
-            ok_text = bui.Lstr(resource="okText")
+            ok_text = bui.Lstr(resource='okText')
         if cancel_text is None:
-            cancel_text = bui.Lstr(resource="cancelText")
+            cancel_text = bui.Lstr(resource='cancelText')
         height += 40
         width = max(width, 360)
         self._action = action
@@ -46,21 +46,21 @@ class ConfirmWindow:
         self._transition_out: str | None
         scale_origin: tuple[float, float] | None
         if origin_widget is not None:
-            self._transition_out = "out_scale"
+            self._transition_out = 'out_scale'
             scale_origin = origin_widget.get_screen_space_center()
-            transition = "in_scale"
+            transition = 'in_scale'
         else:
             self._transition_out = None
             scale_origin = None
-            transition = "in_right"
+            transition = 'in_right'
 
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
         self.root_widget = bui.containerwidget(
             size=(width, height),
             transition=transition,
-            toolbar_visibility="menu_minimal_no_back",
-            parent=bui.get_special_widget("overlay_stack"),
+            toolbar_visibility='menu_minimal_no_back',
+            parent=bui.get_special_widget('overlay_stack'),
             scale=(
                 1.9
                 if uiscale is bui.UIScale.SMALL
@@ -73,8 +73,8 @@ class ConfirmWindow:
             parent=self.root_widget,
             position=(width * 0.5, height - 5 - (height - 75) * 0.5),
             size=(0, 0),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             text=text,
             scale=text_scale,
             color=color,
@@ -112,11 +112,15 @@ class ConfirmWindow:
         # if they didn't want a cancel button, we still want to be able to hit
         # cancel/back/etc to dismiss the window
         if not cancel_button:
-            bui.containerwidget(edit=self.root_widget, on_cancel_call=btn.activate)
+            bui.containerwidget(
+                edit=self.root_widget, on_cancel_call=btn.activate
+            )
 
         bui.containerwidget(
             edit=self.root_widget,
-            selected_child=(cbtn if cbtn is not None and cancel_is_selected else btn),
+            selected_child=(
+                cbtn if cbtn is not None and cancel_is_selected else btn
+            ),
             start_button=btn,
         )
 
@@ -124,7 +128,9 @@ class ConfirmWindow:
         bui.containerwidget(
             edit=self.root_widget,
             transition=(
-                "out_right" if self._transition_out is None else self._transition_out
+                'out_right'
+                if self._transition_out is None
+                else self._transition_out
             ),
         )
 
@@ -134,7 +140,9 @@ class ConfirmWindow:
         bui.containerwidget(
             edit=self.root_widget,
             transition=(
-                "out_left" if self._transition_out is None else self._transition_out
+                'out_left'
+                if self._transition_out is None
+                else self._transition_out
             ),
         )
         if self._action is not None:
@@ -161,22 +169,24 @@ class QuitWindow:
             ui.quit_window.delete()
             ui.quit_window = None
         if swish:
-            bui.getsound("swish").play()
+            bui.getsound('swish').play()
 
         if app.classic is None:
             if bui.do_once():
                 logging.warning(
-                    "QuitWindow needs to be updated to work without classic."
+                    'QuitWindow needs to be updated to work without classic.'
                 )
-            quit_resource = "exitGameText"
+            quit_resource = 'exitGameText'
         else:
             quit_resource = (
-                "quitGameText" if app.classic.platform == "mac" else "exitGameText"
+                'quitGameText'
+                if app.classic.platform == 'mac'
+                else 'exitGameText'
             )
         self._root_widget = ui.quit_window = ConfirmWindow(
             bui.Lstr(
                 resource=quit_resource,
-                subs=[("${APP_NAME}", bui.Lstr(resource="titleText"))],
+                subs=[('${APP_NAME}', bui.Lstr(resource='titleText'))],
             ),
             lambda: (
                 bui.quit(confirm=False, quit_type=self._quit_type)

@@ -45,7 +45,7 @@ class GatherTab:
         specified region.
         """
         # pylint: disable=too-many-positional-arguments
-        raise RuntimeError("Should not get here.")
+        raise RuntimeError('Should not get here.')
 
     def on_deactivate(self) -> None:
         """Called when the tab will no longer be the active one."""
@@ -63,15 +63,15 @@ class GatherWindow(bui.MainWindow):
     class TabID(Enum):
         """Our available tab types."""
 
-        ABOUT = "about"
-        INTERNET = "internet"
-        PRIVATE = "private"
-        NEARBY = "nearby"
-        MANUAL = "manual"
+        ABOUT = 'about'
+        INTERNET = 'internet'
+        PRIVATE = 'private'
+        NEARBY = 'nearby'
+        MANUAL = 'manual'
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
@@ -85,7 +85,7 @@ class GatherWindow(bui.MainWindow):
         plus = bui.app.plus
         assert plus is not None
 
-        bui.set_analytics_screen("Gather Window")
+        bui.set_analytics_screen('Gather Window')
         uiscale = bui.app.ui_v1.uiscale
         self._width = (
             1640
@@ -98,7 +98,7 @@ class GatherWindow(bui.MainWindow):
             else 730 if uiscale is bui.UIScale.MEDIUM else 900
         )
         self._current_tab: GatherWindow.TabID | None = None
-        self._r = "gatherWindow"
+        self._r = 'gatherWindow'
 
         # Do some fancy math to fill all available screen area up to the
         # size of our backing container. This lets us fit to the exact
@@ -127,7 +127,9 @@ class GatherWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    "menu_tokens" if uiscale is bui.UIScale.SMALL else "menu_full"
+                    'menu_tokens'
+                    if uiscale is bui.UIScale.SMALL
+                    else 'menu_full'
                 ),
                 scale=scale,
             ),
@@ -150,7 +152,7 @@ class GatherWindow(bui.MainWindow):
                 scale=1.1,
                 autoselect=True,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type="backSmall",
+                button_type='backSmall',
                 on_activate_call=self.main_window_back,
             )
             bui.containerwidget(edit=self._root_widget, cancel_button=btn)
@@ -171,28 +173,32 @@ class GatherWindow(bui.MainWindow):
             size=(0, 0),
             color=bui.app.ui_v1.title_color,
             scale=1.3 if uiscale is bui.UIScale.SMALL else 1.0,
-            h_align="left" if uiscale is bui.UIScale.SMALL else "center",
-            v_align="center",
-            text=(bui.Lstr(resource=f"{self._r}.titleText")),
+            h_align='left' if uiscale is bui.UIScale.SMALL else 'center',
+            v_align='center',
+            text=(bui.Lstr(resource=f'{self._r}.titleText')),
             maxwidth=135 if uiscale is bui.UIScale.SMALL else 320,
         )
 
         # Build up the set of tabs we want.
         tabdefs: list[tuple[GatherWindow.TabID, bui.Lstr]] = [
-            (self.TabID.ABOUT, bui.Lstr(resource=f"{self._r}.aboutText"))
+            (self.TabID.ABOUT, bui.Lstr(resource=f'{self._r}.aboutText'))
         ]
-        if plus.get_v1_account_misc_read_val("enablePublicParties", True):
+        if plus.get_v1_account_misc_read_val('enablePublicParties', True):
             tabdefs.append(
                 (
                     self.TabID.INTERNET,
-                    bui.Lstr(resource=f"{self._r}.publicText"),
+                    bui.Lstr(resource=f'{self._r}.publicText'),
                 )
             )
         tabdefs.append(
-            (self.TabID.PRIVATE, bui.Lstr(resource=f"{self._r}.privateText"))
+            (self.TabID.PRIVATE, bui.Lstr(resource=f'{self._r}.privateText'))
         )
-        tabdefs.append((self.TabID.NEARBY, bui.Lstr(resource=f"{self._r}.nearbyText")))
-        tabdefs.append((self.TabID.MANUAL, bui.Lstr(resource=f"{self._r}.manualText")))
+        tabdefs.append(
+            (self.TabID.NEARBY, bui.Lstr(resource=f'{self._r}.nearbyText'))
+        )
+        tabdefs.append(
+            (self.TabID.MANUAL, bui.Lstr(resource=f'{self._r}.manualText'))
+        )
 
         tab_inset = 250.0 if uiscale is bui.UIScale.SMALL else 100.0
 
@@ -225,13 +231,13 @@ class GatherWindow(bui.MainWindow):
         # about this.
         bui.widget(
             edit=self._tab_row.tabs[tabdefs[-1][0]].button,
-            right_widget=bui.get_special_widget("tokens_meter"),
+            right_widget=bui.get_special_widget('tokens_meter'),
         )
         if uiscale is bui.UIScale.SMALL:
             bui.widget(
                 edit=self._tab_row.tabs[tabdefs[0][0]].button,
-                left_widget=bui.get_special_widget("back_button"),
-                up_widget=bui.get_special_widget("back_button"),
+                left_widget=bui.get_special_widget('back_button'),
+                up_widget=bui.get_special_widget('back_button'),
             )
 
         # Not actually using a scroll widget anymore; just an image.
@@ -242,8 +248,8 @@ class GatherWindow(bui.MainWindow):
                 self._width * 0.5 - self._scroll_width * 0.5,
                 self._scroll_bottom,
             ),
-            texture=bui.gettexture("scrollWidget"),
-            mesh_transparent=bui.getmesh("softEdgeOutside"),
+            texture=bui.gettexture('scrollWidget'),
+            mesh_transparent=bui.getmesh('softEdgeOutside'),
             opacity=0.4,
         )
         self._tab_container: bui.Widget | None = None
@@ -294,7 +300,7 @@ class GatherWindow(bui.MainWindow):
 
         # We wanna preserve our current tab between runs.
         cfg = bui.app.config
-        cfg["Gather Tab"] = tab_id.value
+        cfg['Gather Tab'] = tab_id.value
         cfg.commit()
 
         # Update tab colors based on which is selected.
@@ -333,20 +339,20 @@ class GatherWindow(bui.MainWindow):
                 if sel == tab.button
             ]
             if sel == self._back_button:
-                sel_name = "Back"
+                sel_name = 'Back'
             elif selected_tab_ids:
                 assert len(selected_tab_ids) == 1
-                sel_name = f"Tab:{selected_tab_ids[0].value}"
+                sel_name = f'Tab:{selected_tab_ids[0].value}'
             elif sel == self._tab_container:
-                sel_name = "TabContainer"
+                sel_name = 'TabContainer'
             else:
-                raise ValueError(f"unrecognized selection: '{sel}'")
+                raise ValueError(f'unrecognized selection: \'{sel}\'')
             assert bui.app.classic is not None
             bui.app.ui_v1.window_states[type(self)] = {
-                "sel_name": sel_name,
+                'sel_name': sel_name,
             }
         except Exception:
-            logging.exception("Error saving state for %s.", self)
+            logging.exception('Error saving state for %s.', self)
 
     def _restore_state(self) -> None:
         try:
@@ -356,10 +362,10 @@ class GatherWindow(bui.MainWindow):
             sel: bui.Widget | None
             assert bui.app.classic is not None
             winstate = bui.app.ui_v1.window_states.get(type(self), {})
-            sel_name = winstate.get("sel_name", None)
+            sel_name = winstate.get('sel_name', None)
             assert isinstance(sel_name, (str, type(None)))
             current_tab = self.TabID.ABOUT
-            gather_tab_val = bui.app.config.get("Gather Tab")
+            gather_tab_val = bui.app.config.get('Gather Tab')
             try:
                 stored_tab = self.TabID(gather_tab_val)
                 if stored_tab in self._tab_row.tabs:
@@ -367,13 +373,13 @@ class GatherWindow(bui.MainWindow):
             except ValueError:
                 pass
             self._set_tab(current_tab)
-            if sel_name == "Back":
+            if sel_name == 'Back':
                 sel = self._back_button
-            elif sel_name == "TabContainer":
+            elif sel_name == 'TabContainer':
                 sel = self._tab_container
-            elif isinstance(sel_name, str) and sel_name.startswith("Tab:"):
+            elif isinstance(sel_name, str) and sel_name.startswith('Tab:'):
                 try:
-                    sel_tab_id = self.TabID(sel_name.split(":")[-1])
+                    sel_tab_id = self.TabID(sel_name.split(':')[-1])
                 except ValueError:
                     sel_tab_id = self.TabID.ABOUT
                 sel = self._tab_row.tabs[sel_tab_id].button
@@ -382,4 +388,4 @@ class GatherWindow(bui.MainWindow):
             bui.containerwidget(edit=self._root_widget, selected_child=sel)
 
         except Exception:
-            logging.exception("Error restoring state for %s.", self)
+            logging.exception('Error restoring state for %s.', self)

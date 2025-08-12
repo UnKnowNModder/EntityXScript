@@ -43,7 +43,7 @@ class PlaylistEditController:
         self._editing_game_type: type[bs.GameActivity] | None = None
         self._pvars = PlaylistTypeVars(sessiontype)
         self._existing_playlist_name = existing_playlist_name
-        self._config_name_full = self._pvars.config_name + " Playlists"
+        self._config_name_full = self._pvars.config_name + ' Playlists'
 
         self._pre_game_add_state: bui.MainWindowState | None = None
         self._pre_game_edit_state: bui.MainWindowState | None = None
@@ -58,7 +58,7 @@ class PlaylistEditController:
 
             # Filter out invalid games.
             self._playlist = filter_playlist(
-                appconfig[self._pvars.config_name + " Playlists"][
+                appconfig[self._pvars.config_name + ' Playlists'][
                     existing_playlist_name
                 ],
                 sessiontype=sessiontype,
@@ -77,19 +77,20 @@ class PlaylistEditController:
                 # Find a good unused name.
                 i = 1
                 while True:
-                    self._name = self._pvars.default_new_list_name.evaluate() + (
-                        (" " + str(i)) if i > 1 else ""
+                    self._name = (
+                        self._pvars.default_new_list_name.evaluate()
+                        + ((' ' + str(i)) if i > 1 else '')
                     )
                     if (
                         self._name
-                        not in appconfig[self._pvars.config_name + " Playlists"]
+                        not in appconfig[self._pvars.config_name + ' Playlists']
                     ):
                         break
                     i += 1
 
             # Also we want it to start with 'add' highlighted since its empty
             # and that's all they can do.
-            self._edit_ui_selection = "add_button"
+            self._edit_ui_selection = 'add_button'
 
         editwindow = PlaylistEditWindow(editcontroller=self)
         from_window.main_window_replace(editwindow)
@@ -172,7 +173,7 @@ class PlaylistEditController:
 
         self._show_edit_ui(
             gametype=bui.getclass(
-                self._playlist[self._selected_index]["type"],
+                self._playlist[self._selected_index]['type'],
                 subclassof=bs.GameActivity,
             ),
             settings=self._playlist[self._selected_index],
@@ -213,7 +214,9 @@ class PlaylistEditController:
         self, gametype: type[bs.GameActivity], from_window: bui.MainWindow
     ) -> None:
         """(internal)"""
-        self._show_edit_ui(gametype=gametype, settings=None, from_window=from_window)
+        self._show_edit_ui(
+            gametype=gametype, settings=None, from_window=from_window
+        )
 
     def _edit_game_done(
         self, config: dict[str, Any] | None, from_window: bui.MainWindow
@@ -225,21 +228,23 @@ class PlaylistEditController:
 
         assert bui.app.classic is not None
         if config is None:
-            bui.getsound("powerdown01").play()
+            bui.getsound('powerdown01').play()
         else:
             # Make sure type is in there.
             assert self._editing_game_type is not None
-            config["type"] = bui.get_type_name(self._editing_game_type)
+            config['type'] = bui.get_type_name(self._editing_game_type)
 
             if self._editing_game:
                 self._playlist[self._selected_index] = copy.deepcopy(config)
             else:
                 # Add a new entry to the playlist.
-                insert_index = min(len(self._playlist), self._selected_index + 1)
+                insert_index = min(
+                    len(self._playlist), self._selected_index + 1
+                )
                 self._playlist.insert(insert_index, copy.deepcopy(config))
                 self._selected_index = insert_index
 
-            bui.getsound("gunCocking").play()
+            bui.getsound('gunCocking').play()
 
         # If we're adding, jump to before the add started.
         # Otherwise jump to before the edit started.

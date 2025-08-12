@@ -60,8 +60,8 @@ class _Inputter:
 
         if not allow_unknown_attrs and discard_unknown_attrs:
             raise ValueError(
-                "discard_unknown_attrs cannot be True"
-                " when allow_unknown_attrs is False."
+                'discard_unknown_attrs cannot be True'
+                ' when allow_unknown_attrs is False.'
             )
 
     def run(self, values: dict) -> Any:
@@ -83,8 +83,8 @@ class _Inputter:
             type_id_val = values.get(storename)
             if type_id_val is None:
                 raise ValueError(
-                    f"'{storename}' type id value"
-                    f" not found in '{self._cls.__name__}' input data."
+                    f'\'{storename}\' type id value'
+                    f' not found in \'{self._cls.__name__}\' input data.'
                 )
             type_id_enum = self._cls.get_type_id_type()
             try:
@@ -113,9 +113,9 @@ class _Inputter:
                     # useful for debugging these sorts of situations.
                     if fallback is not None:
                         raise ValueError(
-                            "Failed loading unrecognized multitype object."
-                            " Note that the multitype provides a fallback"
-                            " and thus would succeed in lossy mode."
+                            'Failed loading unrecognized multitype object.'
+                            ' Note that the multitype provides a fallback'
+                            ' and thus would succeed in lossy mode.'
                         ) from exc
 
                 # Otherwise the error stands as-is.
@@ -133,7 +133,7 @@ class _Inputter:
         else:
             is_ext = False
 
-        out = self._dataclass_from_input(outcls, "", values)
+        out = self._dataclass_from_input(outcls, '', values)
         assert isinstance(out, outcls)
 
         if is_ext:
@@ -170,11 +170,11 @@ class _Inputter:
         if origin is typing.Any:
             if not _is_valid_for_codec(value, self._codec):
                 raise TypeError(
-                    f"Invalid value type for '{fieldpath}';"
-                    f" 'Any' typed values must contain only"
-                    f" types directly supported by the specified"
-                    f" codec ({self._codec.name}); found"
-                    f" '{type(value).__name__}' which is not."
+                    f'Invalid value type for \'{fieldpath}\';'
+                    f' \'Any\' typed values must contain only'
+                    f' types directly supported by the specified'
+                    f' codec ({self._codec.name}); found'
+                    f' \'{type(value).__name__}\' which is not.'
                 )
             return value
 
@@ -202,7 +202,11 @@ class _Inputter:
             if type(value) is not origin:
                 # Special case: if they want to coerce ints to floats,
                 # do so.
-                if self._coerce_to_float and origin is float and type(value) is int:
+                if (
+                    self._coerce_to_float
+                    and origin is float
+                    and type(value) is int
+                ):
                     return float(value)
                 _raise_type_error(fieldpath, type(value), (origin,))
             return value
@@ -213,10 +217,14 @@ class _Inputter:
             )
 
         if origin is tuple:
-            return self._tuple_from_input(cls, fieldpath, anntype, value, ioattrs)
+            return self._tuple_from_input(
+                cls, fieldpath, anntype, value, ioattrs
+            )
 
         if origin is dict:
-            return self._dict_from_input(cls, fieldpath, anntype, value, ioattrs)
+            return self._dict_from_input(
+                cls, fieldpath, anntype, value, ioattrs
+            )
 
         if dataclasses.is_dataclass(origin):
             return self._dataclass_from_input(origin, fieldpath, value)
@@ -242,8 +250,8 @@ class _Inputter:
                     if self._lossy:
                         return ioattrs.enum_fallback
                     raise ValueError(
-                        "Failed to load Enum.  Note that it has a fallback"
-                        " value and thus would succeed in lossy mode."
+                        'Failed to load Enum.  Note that it has a fallback'
+                        ' value and thus would succeed in lossy mode.'
                     ) from exc
 
                 # Otherwise the error stands as-is.
@@ -258,7 +266,9 @@ class _Inputter:
         if origin is bytes:
             return self._bytes_from_input(origin, fieldpath, value)
 
-        raise TypeError(f"Field '{fieldpath}' of type '{anntype}' is unsupported here.")
+        raise TypeError(
+            f"Field '{fieldpath}' of type '{anntype}' is unsupported here."
+        )
 
     def _bytes_from_input(self, cls: type, fieldpath: str, value: Any) -> bytes:
         """Given input data, returns bytes."""
@@ -269,8 +279,8 @@ class _Inputter:
         if self._codec is Codec.FIRESTORE:
             if not isinstance(value, bytes):
                 raise TypeError(
-                    f"Expected a bytes object for {fieldpath}"
-                    f" on {cls.__name__}; got a {type(value)}."
+                    f'Expected a bytes object for {fieldpath}'
+                    f' on {cls.__name__}; got a {type(value)}.'
                 )
 
             return value
@@ -278,12 +288,14 @@ class _Inputter:
         assert self._codec is Codec.JSON
         if not isinstance(value, str):
             raise TypeError(
-                f"Expected a string object for {fieldpath}"
-                f" on {cls.__name__}; got a {type(value)}."
+                f'Expected a string object for {fieldpath}'
+                f' on {cls.__name__}; got a {type(value)}.'
             )
         return base64.b64decode(value)
 
-    def _dataclass_from_input(self, cls: type, fieldpath: str, values: dict) -> Any:
+    def _dataclass_from_input(
+        self, cls: type, fieldpath: str, values: dict
+    ) -> Any:
         """Given a dict, instantiates a dataclass of the given type.
 
         The dict must be in the json-friendly format as emitted from
@@ -305,23 +317,27 @@ class _Inputter:
                 # Make sure fallback gave us the right type.
                 if not isinstance(fallback, cls):
                     raise RuntimeError(
-                        f"handle_input_error() was expected to return a {cls}"
-                        f" but returned a {type(fallback)}."
+                        f'handle_input_error() was expected to return a {cls}'
+                        f' but returned a {type(fallback)}.'
                     ) from exc
                 return fallback
             raise
 
-    def _do_dataclass_from_input(self, cls: type, fieldpath: str, values: dict) -> Any:
+    def _do_dataclass_from_input(
+        self, cls: type, fieldpath: str, values: dict
+    ) -> Any:
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-branches
         if not isinstance(values, dict):
             raise TypeError(
-                f"Expected a dict for {fieldpath} on {cls.__name__};"
-                f" got a {type(values)}."
+                f'Expected a dict for {fieldpath} on {cls.__name__};'
+                f' got a {type(values)}.'
             )
 
-        prep = PrepSession(explicit=False).prep_dataclass(cls, recursion_level=0)
+        prep = PrepSession(explicit=False).prep_dataclass(
+            cls, recursion_level=0
+        )
         assert prep is not None
 
         extra_attrs = {}
@@ -350,8 +366,8 @@ class _Inputter:
             if type_id_store_name in fields_by_name:
                 raise RuntimeError(
                     f"{cls} contains a '{type_id_store_name}' field"
-                    " which clashes with the type-id-storage-name of"
-                    " the IOMultiType it inherits from."
+                    ' which clashes with the type-id-storage-name of'
+                    ' the IOMultiType it inherits from.'
                 )
 
         else:
@@ -379,18 +395,22 @@ class _Inputter:
                     # valid raw json.
                     if not _is_valid_for_codec(value, self._codec):
                         raise TypeError(
-                            f"Unknown attr '{key}'"
-                            f" on {fieldpath} contains data type(s)"
-                            f" not supported by the specified codec"
-                            f" ({self._codec.name})."
+                            f'Unknown attr \'{key}\''
+                            f' on {fieldpath} contains data type(s)'
+                            f' not supported by the specified codec'
+                            f' ({self._codec.name}).'
                         )
                     extra_attrs[key] = value
                 else:
-                    raise AttributeError(f"'{cls.__name__}' has no '{key}' field.")
+                    raise AttributeError(
+                        f"'{cls.__name__}' has no '{key}' field."
+                    )
             else:
                 fieldname = field.name
                 anntype, ioattrs = parsed_field_annotations[fieldname]
-                subfieldpath = f"{fieldpath}.{fieldname}" if fieldpath else fieldname
+                subfieldpath = (
+                    f'{fieldpath}.{fieldname}' if fieldpath else fieldname
+                )
                 args[key] = self._value_from_input(
                     cls, subfieldpath, anntype, value, ioattrs
                 )
@@ -419,14 +439,15 @@ class _Inputter:
                 self._type_check_soft_default(
                     value=soft_default,
                     anntype=aparsed[0],
-                    fieldpath=(f"{fieldpath}.{key}" if fieldpath else key),
+                    fieldpath=(f'{fieldpath}.{key}' if fieldpath else key),
                 )
 
         try:
             out = cls(**args)
         except Exception as exc:
             raise ValueError(
-                f"Error instantiating class {cls.__name__}" f" at {fieldpath}: {exc}"
+                f'Error instantiating class {cls.__name__}'
+                f' at {fieldpath}: {exc}'
             ) from exc
         if extra_attrs:
             setattr(out, EXTRA_ATTRS_ATTR, extra_attrs)
@@ -466,8 +487,8 @@ class _Inputter:
 
         if not isinstance(value, dict):
             raise TypeError(
-                f"Expected a dict for '{fieldpath}' on {cls.__name__};"
-                f" got a {type(value)}."
+                f'Expected a dict for \'{fieldpath}\' on {cls.__name__};'
+                f' got a {type(value)}.'
             )
 
         childtypes = typing.get_args(anntype)
@@ -482,11 +503,11 @@ class _Inputter:
                 value, self._codec
             ):
                 raise TypeError(
-                    f"Got invalid value for Dict[Any, Any]"
-                    f" at '{fieldpath}' on {cls.__name__};"
-                    f" all keys and values must be"
-                    f" compatible with the specified codec"
-                    f" ({self._codec.name})."
+                    f'Got invalid value for Dict[Any, Any]'
+                    f' at \'{fieldpath}\' on {cls.__name__};'
+                    f' all keys and values must be'
+                    f' compatible with the specified codec'
+                    f' ({self._codec.name}).'
                 )
             out = value
         else:
@@ -501,9 +522,9 @@ class _Inputter:
                 for key, val in value.items():
                     if not isinstance(key, str):
                         raise TypeError(
-                            f"Got invalid key type {type(key)} for"
-                            f" dict key at '{fieldpath}' on {cls.__name__};"
-                            f" expected a str."
+                            f'Got invalid key type {type(key)} for'
+                            f' dict key at \'{fieldpath}\' on {cls.__name__};'
+                            f' expected a str.'
                         )
                     out[key] = self._value_from_input(
                         cls, fieldpath, valanntype, val, ioattrs
@@ -514,17 +535,17 @@ class _Inputter:
                 for key, val in value.items():
                     if not isinstance(key, str):
                         raise TypeError(
-                            f"Got invalid key type {type(key)} for"
-                            f" dict key at '{fieldpath}' on {cls.__name__};"
-                            f" expected a str."
+                            f'Got invalid key type {type(key)} for'
+                            f' dict key at \'{fieldpath}\' on {cls.__name__};'
+                            f' expected a str.'
                         )
                     try:
                         keyint = int(key)
                     except ValueError as exc:
                         raise TypeError(
-                            f"Got invalid key value {repr(key)} for"
-                            f" dict key at '{fieldpath}' on {cls.__name__};"
-                            f" expected an int in string form."
+                            f'Got invalid key value {repr(key)} for'
+                            f' dict key at \'{fieldpath}\' on {cls.__name__};'
+                            f' expected an int in string form.'
                         ) from exc
                     out[keyint] = self._value_from_input(
                         cls, fieldpath, valanntype, val, ioattrs
@@ -542,11 +563,11 @@ class _Inputter:
                             enumval = keyanntype(key)
                         except ValueError as exc:
                             raise ValueError(
-                                f"Got invalid key value {repr(key)} for"
-                                f" dict key at '{fieldpath}'"
-                                f" on {cls.__name__};"
-                                f" expected a value corresponding to"
-                                f" a {keyanntype}."
+                                f'Got invalid key value {repr(key)} for'
+                                f' dict key at \'{fieldpath}\''
+                                f' on {cls.__name__};'
+                                f' expected a value corresponding to'
+                                f' a {keyanntype}.'
                             ) from exc
                         out[enumval] = self._value_from_input(
                             cls, fieldpath, valanntype, val, ioattrs
@@ -557,18 +578,18 @@ class _Inputter:
                             enumval = keyanntype(int(key))
                         except (ValueError, TypeError) as exc:
                             raise ValueError(
-                                f"Got invalid key value {repr(key)} for"
-                                f" dict key at '{fieldpath}'"
-                                f" on {cls.__name__};"
-                                f" expected {keyanntype} value (though"
-                                f" in string form)."
+                                f'Got invalid key value {repr(key)} for'
+                                f' dict key at \'{fieldpath}\''
+                                f' on {cls.__name__};'
+                                f' expected {keyanntype} value (though'
+                                f' in string form).'
                             ) from exc
                         out[enumval] = self._value_from_input(
                             cls, fieldpath, valanntype, val, ioattrs
                         )
 
             else:
-                raise RuntimeError(f"Unhandled dict in-key-type {keyanntype}")
+                raise RuntimeError(f'Unhandled dict in-key-type {keyanntype}')
 
         return out
 
@@ -586,7 +607,7 @@ class _Inputter:
         if type(value) is not list:
             raise TypeError(
                 f'Invalid input value for "{fieldpath}";'
-                f" expected a list, got a {type(value).__name__}"
+                f' expected a list, got a {type(value).__name__}'
             )
 
         childanntypes = typing.get_args(anntype)
@@ -597,8 +618,8 @@ class _Inputter:
             for i, child in enumerate(value):
                 if not _is_valid_for_codec(child, self._codec):
                     raise TypeError(
-                        f"Item {i} of {fieldpath} contains"
-                        f" data type(s) not supported by json."
+                        f'Item {i} of {fieldpath} contains'
+                        f' data type(s) not supported by json.'
                     )
             return value if type(value) is seqtype else seqtype(value)
 
@@ -610,7 +631,9 @@ class _Inputter:
         # values to determine which type to load for each element.
         # Make sure we only pass actual types to issubclass; it will error
         # if we give it something like typing.Any.
-        if isinstance(childanntype, type) and issubclass(childanntype, IOMultiType):
+        if isinstance(childanntype, type) and issubclass(
+            childanntype, IOMultiType
+        ):
             return seqtype(
                 self._multitype_obj(childanntype, fieldpath, i) for i in value
             )
@@ -650,7 +673,7 @@ class _Inputter:
         if type(value) is not list:
             raise TypeError(
                 f'Invalid input value for "{fieldpath}";'
-                f" expected a list, got a {type(value).__name__}"
+                f' expected a list, got a {type(value).__name__}'
             )
 
         childanntypes = typing.get_args(anntype)
@@ -661,8 +684,8 @@ class _Inputter:
         if len(value) != len(childanntypes):
             raise ValueError(
                 f'Invalid tuple input for "{fieldpath}";'
-                f" expected {len(childanntypes)} values,"
-                f" found {len(value)}."
+                f' expected {len(childanntypes)} values,'
+                f' found {len(value)}.'
             )
 
         for i, childanntype in enumerate(childanntypes):
@@ -673,8 +696,8 @@ class _Inputter:
             if childanntype is typing.Any:
                 if not _is_valid_for_codec(childval, self._codec):
                     raise TypeError(
-                        f"Item {i} of {fieldpath} contains"
-                        f" data type(s) not supported by json."
+                        f'Item {i} of {fieldpath} contains'
+                        f' data type(s) not supported by json.'
                     )
                 out.append(childval)
             else:
@@ -698,7 +721,7 @@ class _Inputter:
                 raise TypeError(
                     f'Invalid input value for "{fieldpath}" on'
                     f' "{cls.__name__}";'
-                    f" expected a datetime, got a {type(value).__name__}"
+                    f' expected a datetime, got a {type(value).__name__}'
                 )
             check_utc(value)
             return value
@@ -709,21 +732,23 @@ class _Inputter:
         # a float/int (timestamp).
         valt = type(value)
         if valt is float or valt is int:
-            out = datetime.datetime.fromtimestamp(value, tz=datetime.timezone.utc)
+            out = datetime.datetime.fromtimestamp(
+                value, tz=datetime.timezone.utc
+            )
         else:
             if valt is not list:
                 raise TypeError(
                     f'Invalid input value for "{fieldpath}"'
                     f' on "{cls.__name__}";'
-                    f" expected a timestamp or list,"
-                    f" got a {type(value).__name__}"
+                    f' expected a timestamp or list,'
+                    f' got a {type(value).__name__}'
                 )
             if len(value) != 7 or not all(isinstance(x, int) for x in value):
                 raise ValueError(
                     f'Invalid input value for "{fieldpath}"'
                     f' on "{cls.__name__}";'
-                    f" expected a list of 7 ints,"
-                    f" got {[type(v) for v in value]}."
+                    f' expected a list of 7 ints,'
+                    f' got {[type(v) for v in value]}.'
                 )
             out = datetime.datetime(  # type: ignore
                 *value, tzinfo=datetime.timezone.utc
@@ -748,14 +773,14 @@ class _Inputter:
                 raise TypeError(
                     f'Invalid input value for "{fieldpath}"'
                     f' on "{cls.__name__}";'
-                    f" expected a number or list, got a {type(value).__name__}"
+                    f' expected a number or list, got a {type(value).__name__}'
                 )
             if len(value) != 3 or not all(isinstance(x, int) for x in value):
                 raise ValueError(
                     f'Invalid input value for "{fieldpath}"'
                     f' on "{cls.__name__}";'
-                    f" expected a list of 3 ints,"
-                    f" got {[type(v) for v in value]}."
+                    f' expected a list of 3 ints,'
+                    f' got {[type(v) for v in value]}.'
                 )
             out = datetime.timedelta(
                 days=value[0], seconds=value[1], microseconds=value[2]

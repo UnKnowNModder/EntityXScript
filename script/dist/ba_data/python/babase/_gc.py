@@ -117,7 +117,7 @@ class GarbageCollectionSubsystem(AppSubsystem):
         #: info provided by its log messages to address the issue or, if
         #: need be, you can flip to :attr:`LEAK_DEBUG` mode to dive in
         #: deeper.
-        STANDARD = "standard"
+        STANDARD = 'standard'
 
         #: In this mode, Python's garbage-collector is set to the
         #: :obj:`gc.DEBUG_LEAK` flag, which causes information on all
@@ -153,7 +153,7 @@ class GarbageCollectionSubsystem(AppSubsystem):
         #:   #     tuple @ 0x1060f1400 (len 2, contains [type, type])
         #:   #     getset_descriptor @ 0x106234470
         #:   #     getset_descriptor @ 0x1062344d0
-        LEAK_DEBUG = "leak_debug"
+        LEAK_DEBUG = 'leak_debug'
 
         #: In this mode, Python's garbage collection is left completely
         #: untouched. Use this if you want to do some sort of manual
@@ -161,9 +161,9 @@ class GarbageCollectionSubsystem(AppSubsystem):
         #: the way. Note that you should generally restart the app after
         #: switching to this mode, as it will not undo any changes that
         #: have already been made by other modes.
-        DISABLED = "disabled"
+        DISABLED = 'disabled'
 
-    _MODE_CONFIG_KEY = "Garbage Collection Mode"
+    _MODE_CONFIG_KEY = 'Garbage Collection Mode'
     _SCREEN_MSG_COLOR = (1.0, 0.8, 0.4)
 
     def __init__(self) -> None:
@@ -187,20 +187,20 @@ class GarbageCollectionSubsystem(AppSubsystem):
         # (so they don't forget to switch it back when done).
         if self._mode is not None and self._mode is not self.Mode.STANDARD:
             _babase.screenmessage(
-                f"Garbage-gollection mode is {self._mode.name}.",
+                f'Garbage-gollection mode is {self._mode.name}.',
                 color=self._SCREEN_MSG_COLOR,
             )
         # Also log some usage tips (handy to copy/paste).
         if self._mode is self.Mode.LEAK_DEBUG:
             gc_log.warning(
                 (
-                    "Garbage-gollection mode is %s.\n"
-                    "Eliminate ref-loops to minimize"
-                    " garbage-collected objects.\n"
-                    "Set %s logger to INFO or DEBUG for more info.\n"
-                    "To debug refs for an object, do:"
-                    " `from efro.debug import printrefs, getobj;"
-                    " printrefs(getobj(OBJID))`."
+                    'Garbage-gollection mode is %s.\n'
+                    'Eliminate ref-loops to minimize'
+                    ' garbage-collected objects.\n'
+                    'Set %s logger to INFO or DEBUG for more info.\n'
+                    'To debug refs for an object, do:'
+                    ' `from efro.debug import printrefs, getobj;'
+                    ' printrefs(getobj(OBJID))`.'
                 ),
                 self._mode.name,
                 bacommon.logging.ClientLoggerName.GARBAGE_COLLECTION.value,
@@ -215,7 +215,7 @@ class GarbageCollectionSubsystem(AppSubsystem):
         non-default value).
         """
         if self._mode is None:
-            raise RuntimeError("Initial mode has not yet been set.")
+            raise RuntimeError('Initial mode has not yet been set.')
         return self._mode
 
     @mode.setter
@@ -223,7 +223,7 @@ class GarbageCollectionSubsystem(AppSubsystem):
         cls = type(mode)
 
         _babase.screenmessage(
-            f"Garbage-gollection mode is now {mode.name}.",
+            f'Garbage-gollection mode is now {mode.name}.',
             color=self._SCREEN_MSG_COLOR,
         )
         self._apply_mode(mode)
@@ -251,13 +251,13 @@ class GarbageCollectionSubsystem(AppSubsystem):
 
         if self._mode is None:
             gc_log.debug(
-                "Skipping explicit gc pass (no mode set).",
+                'Skipping explicit gc pass (no mode set).',
             )
             return
 
         if self._mode is self.Mode.DISABLED:
             gc_log.debug(
-                "Skipping explicit gc pass (mode is %s).",
+                'Skipping explicit gc pass (mode is %s).',
                 self.Mode.DISABLED.name,
             )
             return
@@ -265,7 +265,8 @@ class GarbageCollectionSubsystem(AppSubsystem):
         # If we find automatic gc is somehow enabled, abort.
         if gc.isenabled():
             gc_log.debug(
-                "Skipping explicit gc pass" " (automatic collection is enabled)."
+                'Skipping explicit gc pass'
+                ' (automatic collection is enabled).'
             )
             return
 
@@ -277,7 +278,7 @@ class GarbageCollectionSubsystem(AppSubsystem):
             and now - self._last_collection_time < 20
             and not force
         ):
-            gc_log.debug("Skipping explicit gc pass (too little time passed).")
+            gc_log.debug('Skipping explicit gc pass (too little time passed).')
             return
 
         # Also let's skip occasional runs randomly to shake things up a
@@ -289,7 +290,7 @@ class GarbageCollectionSubsystem(AppSubsystem):
         # GC occasionally, those sorts of issues are more likely to come
         # to light.
         if not force and random.random() > 0.8:
-            gc_log.debug("Skipping explicit gc pass (random jitter).")
+            gc_log.debug('Skipping explicit gc pass (random jitter).')
             return
 
         if self._mode is self.Mode.STANDARD:
@@ -305,13 +306,13 @@ class GarbageCollectionSubsystem(AppSubsystem):
         """:meta private:"""
 
         # If an env var is set, that takes priority.
-        envval = os.environ.get("BA_GC_MODE")
+        envval = os.environ.get('BA_GC_MODE')
         if envval:
             try:
                 self._mode = self.Mode(envval)
             except ValueError:
                 gc_log.warning(
-                    "Invalid garbage-collection-mode; valid options are %s.",
+                    'Invalid garbage-collection-mode; valid options are %s.',
                     [m.value for m in self.Mode],
                 )
         if self._mode is None:
@@ -333,14 +334,17 @@ class GarbageCollectionSubsystem(AppSubsystem):
         duration = now2 - starttime
         self._total_num_gc_objects += num_affected_objs
 
-        if num_affected_objs >= gc_threshold and not self._showed_standard_mode_warning:
+        if (
+            num_affected_objs >= gc_threshold
+            and not self._showed_standard_mode_warning
+        ):
             loglevel: int = logging.WARNING
             self._showed_standard_mode_warning = True
         else:
             loglevel = logging.INFO
 
         log_is_visible = gc_log.isEnabledFor(loglevel)
-        obj_summary = ""
+        obj_summary = ''
 
         # Since we started with DEBUG_SAVEALL on, any objects we just
         # collected should show up in gc.garbage. So we go through those
@@ -355,14 +359,14 @@ class GarbageCollectionSubsystem(AppSubsystem):
                 try:
                     obj_summary = _summarize_garbage(loglevel)
                 except Exception:
-                    gc_log.exception("Error summarizing garbage.")
-                    obj_summary = "(error in summarization)"
+                    gc_log.exception('Error summarizing garbage.')
+                    obj_summary = '(error in summarization)'
 
             if len(gc.garbage) < num_affected_objs:
                 gc_log.debug(
                     (
-                        "_collect_standard() collected %d objs but"
-                        " only %d appear in gc.garbage; unexpected."
+                        '_collect_standard() collected %d objs but'
+                        ' only %d appear in gc.garbage; unexpected.'
                     ),
                     num_affected_objs,
                     len(gc.garbage),
@@ -380,21 +384,21 @@ class GarbageCollectionSubsystem(AppSubsystem):
         if gc.garbage:
             gc_log.debug(
                 (
-                    "Wound up with %d items in gc.garbage"
-                    " after _collect_standard() cleanup; not expected."
+                    'Wound up with %d items in gc.garbage'
+                    ' after _collect_standard() cleanup; not expected.'
                 ),
                 len(gc.garbage),
             )
 
         # Report some general stats on what we just did.
         from_last = (
-            ""
+            ''
             if self._last_collection_time is None
-            else f" from last {now - self._last_collection_time:.1f}s"
+            else f' from last {now - self._last_collection_time:.1f}s'
         )
         gc_log.log(
             loglevel,
-            "Explicit gc pass handled %d objects%s in %.3fs (total: %d).%s",
+            'Explicit gc pass handled %d objects%s in %.3fs (total: %d).%s',
             num_affected_objs,
             from_last,
             duration,
@@ -413,12 +417,12 @@ class GarbageCollectionSubsystem(AppSubsystem):
         # debugging output from Python itself will be the most useful
         # thing here.
         from_last = (
-            ""
+            ''
             if self._last_collection_time is None
-            else f" from last {now - self._last_collection_time:.1f}s"
+            else f' from last {now - self._last_collection_time:.1f}s'
         )
         gc_log.info(
-            "Explicit gc pass handled %d objects%s in %.3fs (total: %d).",
+            'Explicit gc pass handled %d objects%s in %.3fs (total: %d).',
             num_affected_objs,
             from_last,
             duration,
@@ -456,7 +460,9 @@ class GarbageCollectionSubsystem(AppSubsystem):
                 mode = self.Mode(configval)
             except ValueError:
                 if _babase.do_once():
-                    gc_log.warning("Invalid garbage-collection mode '%s'.", configval)
+                    gc_log.warning(
+                        "Invalid garbage-collection mode '%s'.", configval
+                    )
                 mode = self.Mode.STANDARD
 
         return mode
@@ -465,9 +471,9 @@ class GarbageCollectionSubsystem(AppSubsystem):
 # Show some inline extra bits for specific types (such
 # as type names for type objects).
 def _inline_extra(tpname: str, type_paths: list[str]) -> str:
-    if tpname == "type":
-        return " (" + ", ".join(sorted(type_paths)) + ")"
-    return ""
+    if tpname == 'type':
+        return ' (' + ', '.join(sorted(type_paths)) + ')'
+    return ''
 
 
 def _summarize_garbage(loglevel: int) -> str:
@@ -494,10 +500,10 @@ def _summarize_garbage(loglevel: int) -> str:
 
     for obj in gc.garbage:
         cls = type(obj)
-        if cls.__module__ == "builtins":
+        if cls.__module__ == 'builtins':
             tpname = cls.__qualname__
         else:
-            tpname = f"{cls.__module__}.{cls.__qualname__}"
+            tpname = f'{cls.__module__}.{cls.__qualname__}'
         objtypecounts[tpname] = objtypecounts.get(tpname, 0) + 1
 
         # Store specific objs for anything we're supposed to
@@ -509,11 +515,11 @@ def _summarize_garbage(loglevel: int) -> str:
             del objs
 
         # Store type-names for types to show inline.
-        if tpname == "type":
-            type_paths.append(f"{obj.__module__}.{obj.__qualname__}")
+        if tpname == 'type':
+            type_paths.append(f'{obj.__module__}.{obj.__qualname__}')
 
-    obj_summary = "\nObjects by type:" + "".join(
-        f"\n  {tpname}:" f" {tpcount}{_inline_extra(tpname, type_paths)}"
+    obj_summary = '\nObjects by type:' + ''.join(
+        f'\n  {tpname}:' f' {tpcount}{_inline_extra(tpname, type_paths)}'
         for tpname, tpcount in sorted(
             objtypecounts.items(),
             key=lambda i: (-i[1], i[0]),
@@ -524,31 +530,35 @@ def _summarize_garbage(loglevel: int) -> str:
         for i, obj in enumerate(objs):
             buffer = io.StringIO()
             printrefs(obj, file=buffer)
-            buffer_indented = "\n".join(
-                f"  {line}" for line in buffer.getvalue().splitlines()
+            buffer_indented = '\n'.join(
+                f'  {line}' for line in buffer.getvalue().splitlines()
             )
             obj_summary += (
-                f"\n"
-                f"Refs for {debug_obj_type} {i+1} of {len(objs)}:\n"
-                f"{buffer_indented}"
+                f'\n'
+                f'Refs for {debug_obj_type} {i+1} of {len(objs)}:\n'
+                f'{buffer_indented}'
             )
             if isinstance(obj, BaseException):
-                trace_str = "".join(
-                    traceback.format_exception(type(obj), obj, obj.__traceback__)
+                trace_str = ''.join(
+                    traceback.format_exception(
+                        type(obj), obj, obj.__traceback__
+                    )
                 )
-                trace_str = "\n".join(f"  {line}" for line in trace_str.splitlines())
+                trace_str = '\n'.join(
+                    f'  {line}' for line in trace_str.splitlines()
+                )
                 obj_summary += (
-                    f"\n"
-                    f"Stack for {debug_obj_type} {i+1} of {len(objs)}:\n"
-                    f"{trace_str}"
+                    f'\n'
+                    f'Stack for {debug_obj_type} {i+1} of {len(objs)}:\n'
+                    f'{trace_str}'
                 )
 
     # Include overview if this a warning message.
     if loglevel == logging.WARNING:
         obj_summary += (
-            "\nToo many objects garbage-collected"
-            " - try to reduce this.\n"
-            "See babase.GarbageCollectionSubsystem documentation"
-            " to learn how."
+            '\nToo many objects garbage-collected'
+            ' - try to reduce this.\n'
+            'See babase.GarbageCollectionSubsystem documentation'
+            ' to learn how.'
         )
     return obj_summary

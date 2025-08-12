@@ -31,11 +31,11 @@ class PurchaseWindow(bui.Window):
 
         if header_text is None:
             header_text = bui.Lstr(
-                resource="unlockThisText",
-                fallback_resource="unlockThisInTheStoreText",
+                resource='unlockThisText',
+                fallback_resource='unlockThisInTheStoreText',
             )
         if len(items) != 1:
-            raise ValueError("expected exactly 1 item")
+            raise ValueError('expected exactly 1 item')
         self._items = list(items)
         self._width = 580
         self._height = 520
@@ -48,17 +48,19 @@ class PurchaseWindow(bui.Window):
 
         super().__init__(
             root_widget=bui.containerwidget(
-                parent=bui.get_special_widget("overlay_stack"),
+                parent=bui.get_special_widget('overlay_stack'),
                 size=(self._width, self._height),
-                transition="in_scale",
-                toolbar_visibility="menu_store",
+                transition='in_scale',
+                toolbar_visibility='menu_store',
                 scale=(
                     1.2
                     if uiscale is bui.UIScale.SMALL
                     else 1.1 if uiscale is bui.UIScale.MEDIUM else 1.0
                 ),
                 scale_origin_stack_offset=scale_origin,
-                stack_offset=((0, -15) if uiscale is bui.UIScale.SMALL else (0, 0)),
+                stack_offset=(
+                    (0, -15) if uiscale is bui.UIScale.SMALL else (0, 0)
+                ),
             )
         )
         self._is_double = False
@@ -67,8 +69,8 @@ class PurchaseWindow(bui.Window):
             position=(self._width * 0.5, self._height - 30),
             size=(0, 0),
             text=header_text,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             maxwidth=self._width * 0.9 - 120,
             scale=1.2,
             color=(1, 0.8, 0.3, 1),
@@ -98,13 +100,13 @@ class PurchaseWindow(bui.Window):
         if self._is_double:
             pass  # not working
         else:
-            if self._items == ["pro"]:
+            if self._items == ['pro']:
                 price_str = plus.get_price(self._items[0])
                 pyoffs = -15
             else:
                 pyoffs = 0
                 price = self._price = plus.get_v1_account_misc_read_val(
-                    "price." + str(items[0]), -1
+                    'price.' + str(items[0]), -1
                 )
                 price_str = bui.charstr(bui.SpecialChar.TICKET) + str(price)
             self._price_text = bui.textwidget(
@@ -112,14 +114,16 @@ class PurchaseWindow(bui.Window):
                 position=(self._width * 0.5, 150 + pyoffs),
                 size=(0, 0),
                 text=price_str,
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 maxwidth=self._width * 0.9,
                 scale=1.4,
                 color=(0.2, 1, 0.2),
             )
 
-        self._update_timer = bui.AppTimer(1.0, bui.WeakCall(self._update), repeat=True)
+        self._update_timer = bui.AppTimer(
+            1.0, bui.WeakCall(self._update), repeat=True
+        )
 
         self._cancel_button = bui.buttonwidget(
             parent=self._root_widget,
@@ -128,7 +132,7 @@ class PurchaseWindow(bui.Window):
             scale=1.0,
             on_activate_call=self._cancel,
             autoselect=True,
-            label=bui.Lstr(resource="cancelText"),
+            label=bui.Lstr(resource='cancelText'),
         )
         self._purchase_button = bui.buttonwidget(
             parent=self._root_widget,
@@ -137,7 +141,7 @@ class PurchaseWindow(bui.Window):
             scale=1.0,
             on_activate_call=self._purchase,
             autoselect=True,
-            label=bui.Lstr(resource="store.purchaseText"),
+            label=bui.Lstr(resource='store.purchaseText'),
         )
 
         bui.containerwidget(
@@ -154,7 +158,7 @@ class PurchaseWindow(bui.Window):
         assert plus is not None
 
         # We go away if we see that our target item is owned.
-        if self._items == ["pro"]:
+        if self._items == ['pro']:
             assert bui.app.classic is not None
             if bui.app.classic.accounts.have_pro():
                 can_die = True
@@ -164,7 +168,7 @@ class PurchaseWindow(bui.Window):
                 can_die = True
 
         if can_die:
-            bui.containerwidget(edit=self._root_widget, transition="out_scale")
+            bui.containerwidget(edit=self._root_widget, transition='out_scale')
 
     def _purchase(self) -> None:
 
@@ -173,8 +177,8 @@ class PurchaseWindow(bui.Window):
         classic = bui.app.classic
         assert classic is not None
 
-        if self._items == ["pro"]:
-            plus.purchase("pro")
+        if self._items == ['pro']:
+            plus.purchase('pro')
         else:
             ticket_count: int | None
             try:
@@ -182,9 +186,9 @@ class PurchaseWindow(bui.Window):
             except Exception:
                 ticket_count = None
             if ticket_count is not None and ticket_count < self._price:
-                bui.getsound("error").play()
+                bui.getsound('error').play()
                 bui.screenmessage(
-                    bui.Lstr(resource="notEnoughTicketsText"),
+                    bui.Lstr(resource='notEnoughTicketsText'),
                     color=(1, 0, 0),
                 )
                 return
@@ -194,8 +198,8 @@ class PurchaseWindow(bui.Window):
 
                 plus.in_game_purchase(self._items[0], self._price)
 
-            bui.getsound("swish").play()
+            bui.getsound('swish').play()
             do_it()
 
     def _cancel(self) -> None:
-        bui.containerwidget(edit=self._root_widget, transition="out_scale")
+        bui.containerwidget(edit=self._root_widget, transition='out_scale')

@@ -10,6 +10,6 @@ from _batemplatefs import hello_again_world
 from batemplatefs._appsubsystem import TemplateFsAppSubsystem
 
 __all__ = [
-    "TemplateFsAppSubsystem",
-    "hello_again_world",
+    'TemplateFsAppSubsystem',
+    'hello_again_world',
 ]

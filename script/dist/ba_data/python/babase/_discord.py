@@ -85,28 +85,28 @@ class DiscordSubsystem(AppSubsystem):
         presence: dict[str, Any] = {}
         if state is not None:
             self.state = state
-            presence["state"] = state
+            presence['state'] = state
         if details is not None:
             self.details = details
-            presence["details"] = details
+            presence['details'] = details
         if start_timestamp is not None:
             self.start_timestamp = start_timestamp
-            presence["start_timestamp"] = start_timestamp
+            presence['start_timestamp'] = start_timestamp
         if end_timestamp is not None:
             self.end_timestamp = end_timestamp
-            presence["end_timestamp"] = end_timestamp
+            presence['end_timestamp'] = end_timestamp
         if large_image_key is not None:
             self.large_image_key = large_image_key
-            presence["large_image_key"] = large_image_key
+            presence['large_image_key'] = large_image_key
         if small_image_key is not None:
             self.small_image_key = small_image_key
-            presence["small_image_key"] = small_image_key
+            presence['small_image_key'] = small_image_key
         if large_image_text is not None:
             self.large_image_text = large_image_text
-            presence["large_image_text"] = large_image_text
+            presence['large_image_text'] = large_image_text
         if small_image_text is not None:
             self.small_image_text = small_image_text
-            presence["small_image_text"] = small_image_text
+            presence['small_image_text'] = small_image_text
 
         # Set party info if provided
         if party_id is not None:

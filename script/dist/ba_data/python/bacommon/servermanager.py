@@ -19,7 +19,7 @@ class ServerConfig:
     """Configuration for the server manager app (<appname>_server)."""
 
     # Name of our server in the public parties list.
-    party_name: str = "FFA"
+    party_name: str = 'FFA'
 
     # If True, your party will show up in the global public party list
     # Otherwise it will still be joinable via LAN or connecting by IP
@@ -79,7 +79,7 @@ class ServerConfig:
     # Options here are 'ffa' (free-for-all), 'teams' and 'coop'
     # (cooperative) This value is ignored if you supply a playlist_code
     # (see below).
-    session_type: str = "ffa"
+    session_type: str = 'ffa'
 
     # Playlist-code for teams or free-for-all mode sessions. To host
     # your own custom playlists, use the 'share' functionality in the
@@ -102,12 +102,12 @@ class ServerConfig:
 
     # The campaign used when in co-op session mode. Do
     # print(ba.app.campaigns) to see available campaign names.
-    coop_campaign: str = "Easy"
+    coop_campaign: str = 'Easy'
 
     # The level name within the campaign used in co-op session mode. For
     # campaign name FOO, do print(ba.app.campaigns['FOO'].levels) to see
     # available level names.
-    coop_level: str = "Onslaught Training"
+    coop_level: str = 'Onslaught Training'
 
     # Whether to enable telnet access.
     #
@@ -218,8 +218,8 @@ class StartServerModeCommand(ServerCommand):
 class ShutdownReason(Enum):
     """Reason a server is shutting down."""
 
-    NONE = "none"
-    RESTARTING = "restarting"
+    NONE = 'none'
+    RESTARTING = 'restarting'
 
 
 @dataclass

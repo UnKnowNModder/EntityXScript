@@ -32,7 +32,9 @@ class AboutGatherTab(GatherTab):
         plus = bui.app.plus
         assert plus is not None
 
-        try_tickets = plus.get_v1_account_misc_read_val("friendTryTickets", None)
+        try_tickets = plus.get_v1_account_misc_read_val(
+            'friendTryTickets', None
+        )
 
         show_message = True
         # Squish message as needed to get things to fit nicely at
@@ -64,23 +66,23 @@ class AboutGatherTab(GatherTab):
 
         party_button_label = bui.charstr(bui.SpecialChar.TOP_BUTTON)
         message = bui.Lstr(
-            resource="gatherWindow.aboutDescriptionText",
+            resource='gatherWindow.aboutDescriptionText',
             subs=[
-                ("${PARTY}", bui.charstr(bui.SpecialChar.PARTY_ICON)),
-                ("${BUTTON}", party_button_label),
+                ('${PARTY}', bui.charstr(bui.SpecialChar.PARTY_ICON)),
+                ('${BUTTON}', party_button_label),
             ],
         )
 
         if show_message_extra:
             message = bui.Lstr(
-                value="${A}\n\n${B}",
+                value='${A}\n\n${B}',
                 subs=[
-                    ("${A}", message),
+                    ('${A}', message),
                     (
-                        "${B}",
+                        '${B}',
                         bui.Lstr(
-                            resource="gatherWindow."
-                            "aboutDescriptionLocalMultiplayerExtraText"
+                            resource='gatherWindow.'
+                            'aboutDescriptionLocalMultiplayerExtraText'
                         ),
                     ),
                 ],
@@ -119,8 +121,8 @@ class AboutGatherTab(GatherTab):
                 size=(0, 0),
                 maxwidth=region_width * 0.9,
                 max_height=message_height,
-                h_align="center",
-                v_align="top",
+                h_align='center',
+                v_align='top',
                 text=message,
             )
             y -= message_height
@@ -135,12 +137,12 @@ class AboutGatherTab(GatherTab):
                 scale=0.6,
                 size=(0, 0),
                 maxwidth=region_width * 0.5,
-                h_align="right",
-                v_align="center",
+                h_align='right',
+                v_align='center',
                 flatness=1.0,
                 text=bui.Lstr(
-                    resource="gatherWindow.inviteAFriendText",
-                    subs=[("${COUNT}", str(try_tickets))],
+                    resource='gatherWindow.inviteAFriendText',
+                    subs=[('${COUNT}', str(try_tickets))],
                 ),
             )
             invite_button = bui.buttonwidget(
@@ -150,8 +152,8 @@ class AboutGatherTab(GatherTab):
                 color=(0.54, 0.42, 0.56),
                 textcolor=(0, 1, 0),
                 label=bui.Lstr(
-                    resource="gatherWindow.inviteFriendsText",
-                    fallback_resource="gatherWindow.getFriendInviteCodeText",
+                    resource='gatherWindow.inviteFriendsText',
+                    fallback_resource='gatherWindow.getFriendInviteCodeText',
                 ),
                 autoselect=True,
                 on_activate_call=bui.WeakCall(self._invite_to_try_press),
@@ -170,10 +172,10 @@ class AboutGatherTab(GatherTab):
                 scale=0.6,
                 size=(0, 0),
                 maxwidth=region_width * 0.5,
-                h_align="right",
-                v_align="center",
+                h_align='right',
+                v_align='center',
                 flatness=1.0,
-                text=bui.Lstr(resource="discordFriendsText"),
+                text=bui.Lstr(resource='discordFriendsText'),
             )
             discord_button = bui.buttonwidget(
                 parent=container,
@@ -181,10 +183,12 @@ class AboutGatherTab(GatherTab):
                 size=(230, 50),
                 color=(0.54, 0.42, 0.56),
                 textcolor=(0.6, 0.6, 1),
-                label=bui.Lstr(resource="discordJoinText"),
+                label=bui.Lstr(resource='discordJoinText'),
                 autoselect=True,
                 on_activate_call=bui.WeakCall(self._join_the_discord_press),
-                up_widget=(invite_button if invite_button is not None else tab_button),
+                up_widget=(
+                    invite_button if invite_button is not None else tab_button
+                ),
             )
             y -= discord_height
         else:
@@ -202,7 +206,7 @@ class AboutGatherTab(GatherTab):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() != "signed_in":
+        if plus.get_v1_account_state() != 'signed_in':
             show_sign_in_prompt()
             return
         handle_app_invites_press()

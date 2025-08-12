@@ -39,23 +39,25 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         from bascenev1lib.actor.image import Image
 
         bs.set_analytics_screen(
-            "FreeForAll Series Victory Screen"
+            'FreeForAll Series Victory Screen'
             if self._is_ffa
-            else "Teams Series Victory Screen"
+            else 'Teams Series Victory Screen'
         )
         assert bs.app.classic is not None
         if bs.app.ui_v1.uiscale is bs.UIScale.LARGE:
-            sval = bs.Lstr(resource="pressAnyKeyButtonPlayAgainText")
+            sval = bs.Lstr(resource='pressAnyKeyButtonPlayAgainText')
         else:
-            sval = bs.Lstr(resource="pressAnyButtonPlayAgainText")
+            sval = bs.Lstr(resource='pressAnyButtonPlayAgainText')
         self._show_up_next = False
         self._custom_continue_message = sval
         super().on_begin()
-        winning_sessionteam = self.settings_raw["winner"]
+        winning_sessionteam = self.settings_raw['winner']
 
         # Pause a moment before playing victory music.
         bs.timer(0.6, bs.WeakCall(self._play_victory_music))
-        bs.timer(4.4, bs.WeakCall(self._show_winner, self.settings_raw["winner"]))
+        bs.timer(
+            4.4, bs.WeakCall(self._show_winner, self.settings_raw['winner'])
+        )
         bs.timer(4.6, self._score_display_sound.play)
 
         # Score / Name / Player-record.
@@ -67,7 +69,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 if prec.player.in_game:
                     player_entries.append(
                         (
-                            prec.player.sessionteam.customdata["score"],
+                            prec.player.sessionteam.customdata['score'],
                             prec.getname(full=True),
                             prec,
                         )
@@ -77,8 +79,12 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 # Store some info for the top ffa player so we can
                 # show winner info even if they leave.
                 self._ffa_top_player_info = list(player_entries[0])
-                self._ffa_top_player_info[1] = self._ffa_top_player_info[2].getname()
-                self._ffa_top_player_info[2] = self._ffa_top_player_info[2].get_icon()
+                self._ffa_top_player_info[1] = self._ffa_top_player_info[
+                    2
+                ].getname()
+                self._ffa_top_player_info[2] = self._ffa_top_player_info[
+                    2
+                ].get_icon()
         else:
             for _pkey, prec in self.stats.get_records().items():
                 player_entries.append((prec.score, prec.name_full, prec))
@@ -89,21 +95,23 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         tval = 6.4
         t_incr = 0.12
 
-        always_use_first_to = bs.app.lang.get_resource("bestOfUseFirstToInstead")
+        always_use_first_to = bs.app.lang.get_resource(
+            'bestOfUseFirstToInstead'
+        )
 
         session = self.session
         if self._is_ffa:
             assert isinstance(session, bs.FreeForAllSession)
             txt = bs.Lstr(
-                value="${A}:",
+                value='${A}:',
                 subs=[
                     (
-                        "${A}",
+                        '${A}',
                         bs.Lstr(
-                            resource="firstToFinalText",
+                            resource='firstToFinalText',
                             subs=[
                                 (
-                                    "${COUNT}",
+                                    '${COUNT}',
                                     str(session.get_ffa_series_length()),
                                 )
                             ],
@@ -121,16 +129,18 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             #  with a wording that works everywhere.
             if always_use_first_to:
                 txt = bs.Lstr(
-                    value="${A}:",
+                    value='${A}:',
                     subs=[
                         (
-                            "${A}",
+                            '${A}',
                             bs.Lstr(
-                                resource="firstToFinalText",
+                                resource='firstToFinalText',
                                 subs=[
                                     (
-                                        "${COUNT}",
-                                        str(session.get_series_length() / 2 + 1),
+                                        '${COUNT}',
+                                        str(
+                                            session.get_series_length() / 2 + 1
+                                        ),
                                     )
                                 ],
                             ),
@@ -139,15 +149,15 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 )
             else:
                 txt = bs.Lstr(
-                    value="${A}:",
+                    value='${A}:',
                     subs=[
                         (
-                            "${A}",
+                            '${A}',
                             bs.Lstr(
-                                resource="bestOfFinalText",
+                                resource='bestOfFinalText',
                                 subs=[
                                     (
-                                        "${COUNT}",
+                                        '${COUNT}',
                                         str(session.get_series_length()),
                                     )
                                 ],
@@ -171,16 +181,16 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         win_score = (session.get_series_length() - 1) // 2 + 1
         lose_score = 0
         for team in self.teams:
-            if team.sessionteam.customdata["score"] != win_score:
-                lose_score = team.sessionteam.customdata["score"]
+            if team.sessionteam.customdata['score'] != win_score:
+                lose_score = team.sessionteam.customdata['score']
 
         if not self._is_ffa:
             Text(
                 bs.Lstr(
-                    resource="gamesToText",
+                    resource='gamesToText',
                     subs=[
-                        ("${WINCOUNT}", str(win_score)),
-                        ("${LOSECOUNT}", str(lose_score)),
+                        ('${WINCOUNT}', str(win_score)),
+                        ('${LOSECOUNT}', str(lose_score)),
                     ],
                 ),
                 color=(0.5, 0.5, 0.5, 1.0),
@@ -211,7 +221,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                     break
             if mvp is not None:
                 Text(
-                    bs.Lstr(resource="mostValuablePlayerText"),
+                    bs.Lstr(resource='mostValuablePlayerText'),
                     color=(0.5, 0.5, 0.5, 1.0),
                     v_align=Text.VAlign.CENTER,
                     maxwidth=300,
@@ -252,7 +262,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 most_kills = entry[2].kill_count
         if mvp is not None:
             Text(
-                bs.Lstr(resource="mostViolentPlayerText"),
+                bs.Lstr(resource='mostViolentPlayerText'),
                 color=(0.5, 0.5, 0.5, 1.0),
                 v_align=Text.VAlign.CENTER,
                 maxwidth=300,
@@ -263,13 +273,13 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             ).autoretain()
             Text(
                 bs.Lstr(
-                    value="(${A})",
+                    value='(${A})',
                     subs=[
                         (
-                            "${A}",
+                            '${A}',
                             bs.Lstr(
-                                resource="killsTallyText",
-                                subs=[("${COUNT}", str(most_kills))],
+                                resource='killsTallyText',
+                                subs=[('${COUNT}', str(most_kills))],
                             ),
                         )
                     ],
@@ -313,7 +323,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 most_killed = entry[2].killed_count
         if mkp is not None:
             Text(
-                bs.Lstr(resource="mostDestroyedPlayerText"),
+                bs.Lstr(resource='mostDestroyedPlayerText'),
                 color=(0.5, 0.5, 0.5, 1.0),
                 v_align=Text.VAlign.CENTER,
                 maxwidth=300,
@@ -324,13 +334,13 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             ).autoretain()
             Text(
                 bs.Lstr(
-                    value="(${A})",
+                    value='(${A})',
                     subs=[
                         (
-                            "${A}",
+                            '${A}',
                             bs.Lstr(
-                                resource="deathsTallyText",
-                                subs=[("${COUNT}", str(most_killed))],
+                                resource='deathsTallyText',
+                                subs=[('${COUNT}', str(most_killed))],
                             ),
                         )
                     ],
@@ -366,7 +376,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         # Now show individual scores.
         tdelay = tval
         Text(
-            bs.Lstr(resource="finalScoresText"),
+            bs.Lstr(resource='finalScoresText'),
             color=(0.5, 0.5, 0.5, 1.0),
             position=(ts_h_offs, ts_height / 2),
             transition=Text.Transition.IN_RIGHT,
@@ -381,7 +391,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             v_offs -= 40
             Text(
                 (
-                    str(prec.team.customdata["score"])
+                    str(prec.team.customdata['score'])
                     if self._is_ffa
                     else str(prec.score)
                 ),
@@ -455,7 +465,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 player_name = self._ffa_top_player_info[1]
             else:
                 icon = None
-                player_name = "Player Not Found"
+                player_name = 'Player Not Found'
 
             if icon is not None:
                 i = Image(
@@ -464,7 +474,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                     scale=(100, 100),
                 ).autoretain()
                 assert i.node
-                bs.animate(i.node, "opacity", {0.0: 0.0, 0.25: 1.0})
+                bs.animate(i.node, 'opacity', {0.0: 0.0, 0.25: 1.0})
 
             ZoomText(
                 bs.Lstr(value=player_name),
@@ -479,9 +489,9 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
 
         # Some languages say "FOO WINS" differently for teams vs players.
         if isinstance(self.session, bs.FreeForAllSession):
-            wins_resource = "seriesWinLine1PlayerText"
+            wins_resource = 'seriesWinLine1PlayerText'
         else:
-            wins_resource = "seriesWinLine1TeamText"
+            wins_resource = 'seriesWinLine1TeamText'
         wins_text = bs.Lstr(resource=wins_resource)
 
         # Temp - if these come up as the english default, fall-back to the
@@ -495,7 +505,7 @@ class TeamSeriesVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             maxwidth=250,
         ).autoretain()
         ZoomText(
-            bs.Lstr(resource="seriesWinLine2Text"),
+            bs.Lstr(resource='seriesWinLine2Text'),
             position=(0, -110 + offs_v),
             scale=1.0 * s_extra,
             color=team.color,

@@ -26,7 +26,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
         config: dict[str, Any] | None,
         completion_call: Callable[[dict[str, Any] | None, bui.MainWindow], Any],
         default_selection: str | None = None,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
         edit_info: dict[str, Any] | None = None,
     ):
@@ -55,16 +55,16 @@ class PlaylistEditGameWindow(bui.MainWindow):
         # on whether an existing config was passed to us.
         else:
             if config is None:
-                self._edit_info = {"editType": "add"}
+                self._edit_info = {'editType': 'add'}
             else:
-                self._edit_info = {"editType": "edit"}
+                self._edit_info = {'editType': 'edit'}
 
-        self._r = "gameSettingsWindow"
+        self._r = 'gameSettingsWindow'
 
         valid_maps = gametype.get_supported_maps(sessiontype)
         if not valid_maps:
-            bui.screenmessage(bui.Lstr(resource="noValidMapsErrorText"))
-            raise RuntimeError("No valid maps found.")
+            bui.screenmessage(bui.Lstr(resource='noValidMapsErrorText'))
+            raise RuntimeError('No valid maps found.')
 
         self._config = config
         self._settings_defs = gametype.get_available_settings(sessiontype)
@@ -81,23 +81,25 @@ class PlaylistEditGameWindow(bui.MainWindow):
         else:
             self._map = valid_maps[random.randrange(len(valid_maps))]
 
-        is_add = self._edit_info["editType"] == "add"
+        is_add = self._edit_info['editType'] == 'add'
 
         # If there's a valid map name in the existing config, use that.
         try:
             if (
                 config is not None
-                and "settings" in config
-                and "map" in config["settings"]
+                and 'settings' in config
+                and 'map' in config['settings']
             ):
-                filtered_map_name = get_filtered_map_name(config["settings"]["map"])
+                filtered_map_name = get_filtered_map_name(
+                    config['settings']['map']
+                )
                 if filtered_map_name in valid_maps:
                     self._map = filtered_map_name
         except Exception:
-            logging.exception("Error getting map for editor.")
+            logging.exception('Error getting map for editor.')
 
-        if config is not None and "settings" in config:
-            self._settings = config["settings"]
+        if config is not None and 'settings' in config:
+            self._settings = config['settings']
         else:
             self._settings = {}
 
@@ -118,7 +120,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
 
         map_tex_name = get_map_class(self._map).get_preview_texture_name()
         if map_tex_name is None:
-            raise RuntimeError(f"No map preview tex found for {self._map}.")
+            raise RuntimeError(f'No map preview tex found for {self._map}.')
         map_tex = bui.gettexture(map_tex_name)
 
         top_extra = 20 if uiscale is bui.UIScale.SMALL else 0
@@ -130,7 +132,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     if uiscale is bui.UIScale.SMALL
                     else 1.35 if uiscale is bui.UIScale.MEDIUM else 1.0
                 ),
-                stack_offset=((0, 0) if uiscale is bui.UIScale.SMALL else (0, 0)),
+                stack_offset=(
+                    (0, 0) if uiscale is bui.UIScale.SMALL else (0, 0)
+                ),
             ),
             transition=transition,
             origin_widget=origin_widget,
@@ -143,9 +147,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
             label=(
                 bui.charstr(bui.SpecialChar.BACK)
                 if is_add
-                else bui.Lstr(resource="cancelText")
+                else bui.Lstr(resource='cancelText')
             ),
-            button_type="backSmall" if is_add else None,
+            button_type='backSmall' if is_add else None,
             autoselect=True,
             scale=1.0 if is_add else 0.75,
             text_scale=1.3,
@@ -160,13 +164,13 @@ class PlaylistEditGameWindow(bui.MainWindow):
             scale=0.75,
             text_scale=1.3,
             label=(
-                bui.Lstr(resource=f"{self._r}.addGameText")
+                bui.Lstr(resource=f'{self._r}.addGameText')
                 if is_add
-                else bui.Lstr(resource="applyText")
+                else bui.Lstr(resource='applyText')
             ),
         )
 
-        pbtn = bui.get_special_widget("squad_button")
+        pbtn = bui.get_special_widget('squad_button')
         bui.widget(edit=add_button, right_widget=pbtn, up_widget=pbtn)
 
         bui.textwidget(
@@ -177,8 +181,8 @@ class PlaylistEditGameWindow(bui.MainWindow):
             color=bui.app.ui_v1.title_color,
             maxwidth=235,
             scale=1.1,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
         map_height = 100
@@ -225,10 +229,10 @@ class PlaylistEditGameWindow(bui.MainWindow):
             position=(h + 49, v - 63),
             size=(100, 30),
             maxwidth=110,
-            text=bui.Lstr(resource="mapText"),
-            h_align="left",
+            text=bui.Lstr(resource='mapText'),
+            h_align='left',
             color=(0.8, 0.8, 0.8, 1.0),
-            v_align="center",
+            v_align='center',
         )
 
         bui.imagewidget(
@@ -236,9 +240,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
             size=(256 * 0.7, 125 * 0.7),
             position=(h + 261 - 128 + 128.0 * 0.56, v - 90),
             texture=map_tex,
-            mesh_opaque=bui.getmesh("level_select_button_opaque"),
-            mesh_transparent=bui.getmesh("level_select_button_transparent"),
-            mask_texture=bui.gettexture("mapPreviewMask"),
+            mesh_opaque=bui.getmesh('level_select_button_opaque'),
+            mesh_transparent=bui.getmesh('level_select_button_transparent'),
+            mask_texture=bui.gettexture('mapPreviewMask'),
         )
         map_button = btn = bui.buttonwidget(
             parent=self._subcontainer,
@@ -246,7 +250,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
             position=(h + 448, v - 72),
             on_activate_call=bui.Call(self._select_map),
             scale=0.7,
-            label=bui.Lstr(resource="mapSelectText"),
+            label=bui.Lstr(resource='mapSelectText'),
         )
         widget_column.append([btn])
 
@@ -259,9 +263,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
             scale=0.55,
             maxwidth=256 * 0.7 * 0.8,
             text=get_map_display_string(self._map),
-            h_align="center",
+            h_align='center',
             color=(0.6, 1.0, 0.6, 1.0),
-            v_align="center",
+            v_align='center',
         )
         v -= map_height
 
@@ -274,12 +278,12 @@ class PlaylistEditGameWindow(bui.MainWindow):
             try:
                 if (
                     config is not None
-                    and "settings" in config
-                    and setting.name in config["settings"]
+                    and 'settings' in config
+                    and setting.name in config['settings']
                 ):
-                    value = value_type(config["settings"][setting.name])
+                    value = value_type(config['settings'][setting.name])
             except Exception:
-                logging.exception("Error getting game setting.")
+                logging.exception('Error getting game setting.')
 
             # Shove the starting value in there to start.
             self._settings[setting.name] = value
@@ -299,20 +303,20 @@ class PlaylistEditGameWindow(bui.MainWindow):
                         )
                     if not isinstance(choice[0], str):
                         raise TypeError(
-                            "First value for choice tuple must be a str; got: "
+                            'First value for choice tuple must be a str; got: '
                             + repr(choice)
                         )
                     if not isinstance(choice[1], value_type):
                         raise TypeError(
-                            "Choice type does not match default value; choice:"
+                            'Choice type does not match default value; choice:'
                             + repr(choice)
-                            + "; setting:"
+                            + '; setting:'
                             + repr(setting)
                         )
                 if value_type not in (int, float):
                     raise TypeError(
-                        "Choice type setting must have int or float default; "
-                        "got: " + repr(setting)
+                        'Choice type setting must have int or float default; '
+                        'got: ' + repr(setting)
                     )
 
                 # Start at the choice corresponding to the default if possible.
@@ -329,29 +333,31 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     size=(100, 30),
                     maxwidth=mw1,
                     text=name_translated,
-                    h_align="left",
+                    h_align='left',
                     color=(0.8, 0.8, 0.8, 1.0),
-                    v_align="center",
+                    v_align='center',
                 )
                 txt = bui.textwidget(
                     parent=self._subcontainer,
                     position=(h + 509 - 95, v),
                     size=(0, 28),
                     text=self._get_localized_setting_name(
-                        setting.choices[self._choice_selections[setting.name]][0]
+                        setting.choices[self._choice_selections[setting.name]][
+                            0
+                        ]
                     ),
                     editable=False,
                     color=(0.6, 1.0, 0.6, 1.0),
                     maxwidth=mw2,
-                    h_align="right",
-                    v_align="center",
+                    h_align='right',
+                    v_align='center',
                     padding=2,
                 )
                 btn1 = bui.buttonwidget(
                     parent=self._subcontainer,
                     position=(h + 509 - 50 - 1, v),
                     size=(28, 28),
-                    label="<",
+                    label='<',
                     autoselect=True,
                     on_activate_call=bui.Call(
                         self._choice_inc, setting.name, txt, setting, -1
@@ -362,7 +368,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     parent=self._subcontainer,
                     position=(h + 509 + 5, v),
                     size=(28, 28),
-                    label=">",
+                    label='>',
                     autoselect=True,
                     on_activate_call=bui.Call(
                         self._choice_inc, setting.name, txt, setting, 1
@@ -381,9 +387,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     position=(h + 50, v),
                     size=(100, 30),
                     text=name_translated,
-                    h_align="left",
+                    h_align='left',
                     color=(0.8, 0.8, 0.8, 1.0),
-                    v_align="center",
+                    v_align='center',
                     maxwidth=mw1,
                 )
                 txt = bui.textwidget(
@@ -394,15 +400,15 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     editable=False,
                     color=(0.6, 1.0, 0.6, 1.0),
                     maxwidth=mw2,
-                    h_align="right",
-                    v_align="center",
+                    h_align='right',
+                    v_align='center',
                     padding=2,
                 )
                 btn1 = bui.buttonwidget(
                     parent=self._subcontainer,
                     position=(h + 509 - 50 - 1, v),
                     size=(28, 28),
-                    label="-",
+                    label='-',
                     autoselect=True,
                     on_activate_call=bui.Call(
                         self._inc,
@@ -419,7 +425,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     parent=self._subcontainer,
                     position=(h + 509 + 5, v),
                     size=(28, 28),
-                    label="+",
+                    label='+',
                     autoselect=True,
                     on_activate_call=bui.Call(
                         self._inc,
@@ -441,9 +447,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     position=(h + 50, v),
                     size=(100, 30),
                     text=name_translated,
-                    h_align="left",
+                    h_align='left',
                     color=(0.8, 0.8, 0.8, 1.0),
-                    v_align="center",
+                    v_align='center',
                     maxwidth=mw1,
                 )
                 txt = bui.textwidget(
@@ -451,20 +457,20 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     position=(h + 509 - 95, v),
                     size=(0, 28),
                     text=(
-                        bui.Lstr(resource="onText")
+                        bui.Lstr(resource='onText')
                         if value
-                        else bui.Lstr(resource="offText")
+                        else bui.Lstr(resource='offText')
                     ),
                     editable=False,
                     color=(0.6, 1.0, 0.6, 1.0),
                     maxwidth=mw2,
-                    h_align="right",
-                    v_align="center",
+                    h_align='right',
+                    v_align='center',
                     padding=2,
                 )
                 cbw = bui.checkboxwidget(
                     parent=self._subcontainer,
-                    text="",
+                    text='',
                     position=(h + 505 - 50 - 5, v - 2),
                     size=(200, 30),
                     autoselect=True,
@@ -477,7 +483,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
                 widget_column.append([cbw])
 
             else:
-                raise TypeError(f"Invalid value type: {value_type}.")
+                raise TypeError(f'Invalid value type: {value_type}.')
 
         # Ok now wire up the column.
         try:
@@ -493,7 +499,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
                     bui.widget(edit=cwdg[0], up_widget=prev_widgets[0])
                 prev_widgets = cwdg
         except Exception:
-            logging.exception("Error wiring up game-settings-select widget column.")
+            logging.exception(
+                'Error wiring up game-settings-select widget column.'
+            )
 
         bui.buttonwidget(edit=add_button, on_activate_call=bui.Call(self._add))
         bui.containerwidget(
@@ -502,11 +510,13 @@ class PlaylistEditGameWindow(bui.MainWindow):
             start_button=add_button,
         )
 
-        if default_selection == "map":
+        if default_selection == 'map':
             bui.containerwidget(
                 edit=self._root_widget, selected_child=self._scrollwidget
             )
-            bui.containerwidget(edit=self._subcontainer, selected_child=map_button)
+            bui.containerwidget(
+                edit=self._subcontainer, selected_child=map_button
+            )
 
     @override
     def get_main_window_state(self) -> bui.MainWindowState:
@@ -532,7 +542,7 @@ class PlaylistEditGameWindow(bui.MainWindow):
         )
 
     def _get_localized_setting_name(self, name: str) -> bui.Lstr:
-        return bui.Lstr(translate=("settingNames", name))
+        return bui.Lstr(translate=('settingNames', name))
 
     def _select_map(self) -> None:
         # pylint: disable=cyclic-import
@@ -577,7 +587,9 @@ class PlaylistEditGameWindow(bui.MainWindow):
                 choices[self._choice_selections[setting_name]][0]
             ),
         )
-        self._settings[setting_name] = choices[self._choice_selections[setting_name]][1]
+        self._settings[setting_name] = choices[
+            self._choice_selections[setting_name]
+        ][1]
 
     def _cancel(self) -> None:
         self._completion_call(None, self)
@@ -588,15 +600,17 @@ class PlaylistEditGameWindow(bui.MainWindow):
         bui.textwidget(
             edit=widget,
             text=(
-                bui.Lstr(resource="onText") if value else bui.Lstr(resource="offText")
+                bui.Lstr(resource='onText')
+                if value
+                else bui.Lstr(resource='offText')
             ),
         )
         self._settings[setting_name] = value
 
     def _getconfig(self) -> dict[str, Any]:
         settings = copy.deepcopy(self._settings)
-        settings["map"] = self._map
-        return {"settings": settings}
+        settings['map'] = self._map
+        return {'settings': settings}
 
     def _add(self) -> None:
         self._completion_call(self._getconfig(), self)
@@ -622,5 +636,5 @@ class PlaylistEditGameWindow(bui.MainWindow):
         elif setting_type == int:
             bui.textwidget(edit=ctrl, text=str(int(val)))
         else:
-            raise TypeError("invalid vartype: " + str(setting_type))
+            raise TypeError('invalid vartype: ' + str(setting_type))
         self._settings[setting_name] = val

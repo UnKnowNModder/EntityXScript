@@ -31,7 +31,7 @@ class FlagState(Enum):
     HELD = 3
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -49,41 +49,41 @@ class Team(bs.Team[Player]):
 class KingOfTheHillGame(bs.TeamGameActivity[Player, Team]):
     """Game where a team wins by holding a 'hill' for a set amount of time."""
 
-    name = "King of the Hill"
-    description = "Secure the flag for a set length of time."
+    name = 'King of the Hill'
+    description = 'Secure the flag for a set length of time.'
     available_settings = [
         bs.IntSetting(
-            "Hold Time",
+            'Hold Time',
             min_value=10,
             default=30,
             increment=10,
         ),
         bs.IntChoiceSetting(
-            "Time Limit",
+            'Time Limit',
             choices=[
-                ("None", 0),
-                ("1 Minute", 60),
-                ("2 Minutes", 120),
-                ("5 Minutes", 300),
-                ("10 Minutes", 600),
-                ("20 Minutes", 1200),
+                ('None', 0),
+                ('1 Minute', 60),
+                ('2 Minutes', 120),
+                ('5 Minutes', 300),
+                ('10 Minutes', 600),
+                ('20 Minutes', 1200),
             ],
             default=0,
         ),
         bs.FloatChoiceSetting(
-            "Respawn Times",
+            'Respawn Times',
             choices=[
-                ("Shorter", 0.25),
-                ("Short", 0.5),
-                ("Normal", 1.0),
-                ("Long", 2.0),
-                ("Longer", 4.0),
+                ('Shorter', 0.25),
+                ('Short', 0.5),
+                ('Normal', 1.0),
+                ('Long', 2.0),
+                ('Longer', 4.0),
             ],
             default=1.0,
         ),
-        bs.BoolSetting("Epic Mode", default=False),
+        bs.BoolSetting('Epic Mode', default=False),
     ]
-    scoreconfig = bs.ScoreConfig(label="Time Held")
+    scoreconfig = bs.ScoreConfig(label='Time Held')
 
     @override
     @classmethod
@@ -96,48 +96,48 @@ class KingOfTheHillGame(bs.TeamGameActivity[Player, Team]):
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
         assert bs.app.classic is not None
-        return bs.app.classic.getmaps("king_of_the_hill")
+        return bs.app.classic.getmaps('king_of_the_hill')
 
     def __init__(self, settings: dict):
         super().__init__(settings)
         shared = SharedObjects.get()
         self._scoreboard = Scoreboard()
-        self._swipsound = bs.getsound("swip")
-        self._tick_sound = bs.getsound("tick")
+        self._swipsound = bs.getsound('swip')
+        self._tick_sound = bs.getsound('tick')
         self._countdownsounds = {
-            10: bs.getsound("announceTen"),
-            9: bs.getsound("announceNine"),
-            8: bs.getsound("announceEight"),
-            7: bs.getsound("announceSeven"),
-            6: bs.getsound("announceSix"),
-            5: bs.getsound("announceFive"),
-            4: bs.getsound("announceFour"),
-            3: bs.getsound("announceThree"),
-            2: bs.getsound("announceTwo"),
-            1: bs.getsound("announceOne"),
+            10: bs.getsound('announceTen'),
+            9: bs.getsound('announceNine'),
+            8: bs.getsound('announceEight'),
+            7: bs.getsound('announceSeven'),
+            6: bs.getsound('announceSix'),
+            5: bs.getsound('announceFive'),
+            4: bs.getsound('announceFour'),
+            3: bs.getsound('announceThree'),
+            2: bs.getsound('announceTwo'),
+            1: bs.getsound('announceOne'),
         }
         self._flag_pos: Sequence[float] | None = None
         self._flag_state: FlagState | None = None
         self._flag: Flag | None = None
         self._flag_light: bs.Node | None = None
         self._scoring_team: weakref.ref[Team] | None = None
-        self._hold_time = int(settings["Hold Time"])
-        self._time_limit = float(settings["Time Limit"])
-        self._epic_mode = bool(settings["Epic Mode"])
+        self._hold_time = int(settings['Hold Time'])
+        self._time_limit = float(settings['Time Limit'])
+        self._epic_mode = bool(settings['Epic Mode'])
         self._flag_region_material = bs.Material()
         self._flag_region_material.add_actions(
-            conditions=("they_have_material", shared.player_material),
+            conditions=('they_have_material', shared.player_material),
             actions=(
-                ("modify_part_collision", "collide", True),
-                ("modify_part_collision", "physical", False),
+                ('modify_part_collision', 'collide', True),
+                ('modify_part_collision', 'physical', False),
                 (
-                    "call",
-                    "at_connect",
+                    'call',
+                    'at_connect',
                     bs.Call(self._handle_player_flag_region_collide, True),
                 ),
                 (
-                    "call",
-                    "at_disconnect",
+                    'call',
+                    'at_disconnect',
                     bs.Call(self._handle_player_flag_region_collide, False),
                 ),
             ),
@@ -153,13 +153,13 @@ class KingOfTheHillGame(bs.TeamGameActivity[Player, Team]):
     def get_instance_description(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return "Secure the flag for ${ARG1} seconds.", self._hold_time
+        return 'Secure the flag for ${ARG1} seconds.', self._hold_time
 
     @override
     def get_instance_description_short(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return "secure the flag for ${ARG1} seconds", self._hold_time
+        return 'secure the flag for ${ARG1} seconds', self._hold_time
 
     @override
     def create_team(self, sessionteam: bs.SessionTeam) -> Team:
@@ -177,26 +177,28 @@ class KingOfTheHillGame(bs.TeamGameActivity[Player, Team]):
         bs.timer(1.0, self._tick, repeat=True)
         self._flag_state = FlagState.NEW
         Flag.project_stand(self._flag_pos)
-        self._flag = Flag(position=self._flag_pos, touchable=False, color=(1, 1, 1))
+        self._flag = Flag(
+            position=self._flag_pos, touchable=False, color=(1, 1, 1)
+        )
         self._flag_light = bs.newnode(
-            "light",
+            'light',
             attrs={
-                "position": self._flag_pos,
-                "intensity": 0.2,
-                "height_attenuated": False,
-                "radius": 0.4,
-                "color": (0.2, 0.2, 0.2),
+                'position': self._flag_pos,
+                'intensity': 0.2,
+                'height_attenuated': False,
+                'radius': 0.4,
+                'color': (0.2, 0.2, 0.2),
             },
         )
         # Flag region.
         flagmats = [self._flag_region_material, shared.region_material]
         bs.newnode(
-            "region",
+            'region',
             attrs={
-                "position": self._flag_pos,
-                "scale": (1.8, 1.8, 1.8),
-                "type": "sphere",
-                "materials": flagmats,
+                'position': self._flag_pos,
+                'scale': (1.8, 1.8, 1.8),
+                'type': 'sphere',
+                'materials': flagmats,
             },
         )
         self._update_scoreboard()
@@ -208,7 +210,9 @@ class KingOfTheHillGame(bs.TeamGameActivity[Player, Team]):
         # Give holding players points.
         for player in self.players:
             if player.time_at_flag > 0:
-                self.stats.player_scored(player, 3, screenmessage=False, display=False)
+                self.stats.player_scored(
+                    player, 3, screenmessage=False, display=False
+                )
         if self._scoring_team is None:
             scoring_team = None
         else:
@@ -217,7 +221,9 @@ class KingOfTheHillGame(bs.TeamGameActivity[Player, Team]):
             if scoring_team.time_remaining > 0:
                 self._tick_sound.play()
 
-            scoring_team.time_remaining = max(0, scoring_team.time_remaining - 1)
+            scoring_team.time_remaining = max(
+                0, scoring_team.time_remaining - 1
+            )
             self._update_scoreboard()
             if scoring_team.time_remaining > 0:
                 assert self._flag is not None

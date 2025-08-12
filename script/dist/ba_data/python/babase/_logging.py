@@ -44,8 +44,8 @@ def description_for_logger(logger: str) -> str | None:
         # Describe a few specific loggers here and also include our
         # client logger descriptions.
         _g_logger_descs = {
-            "root": "top level Python logger - use to adjust everything",
-            "asyncio": "Python's async/await functionality",
+            'root': 'top level Python logger - use to adjust everything',
+            'asyncio': 'Python\'s async/await functionality',
         }
         for clientlogger in ClientLoggerName:
             _g_logger_descs[clientlogger.value] = clientlogger.description

@@ -15,7 +15,7 @@ class PluginSettingsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
 
@@ -46,7 +46,9 @@ class PluginSettingsWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
+                    'menu_minimal'
+                    if uiscale is bui.UIScale.SMALL
+                    else 'menu_full'
                 ),
                 scale=scale,
             ),
@@ -57,7 +59,7 @@ class PluginSettingsWindow(bui.MainWindow):
         )
 
         if uiscale is bui.UIScale.SMALL:
-            self._back_button = bui.get_special_widget("back_button")
+            self._back_button = bui.get_special_widget('back_button')
             bui.containerwidget(
                 edit=self._root_widget, on_cancel_call=self.main_window_back
             )
@@ -69,10 +71,12 @@ class PluginSettingsWindow(bui.MainWindow):
                 scale=0.8,
                 autoselect=True,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type="backSmall",
+                button_type='backSmall',
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
+            bui.containerwidget(
+                edit=self._root_widget, cancel_button=self._back_button
+            )
 
         self._title_text = bui.textwidget(
             parent=self._root_widget,
@@ -81,11 +85,11 @@ class PluginSettingsWindow(bui.MainWindow):
                 self._yoffs - (55 if uiscale is bui.UIScale.SMALL else 10),
             ),
             size=(0, 0),
-            text=bui.Lstr(resource="pluginSettingsText"),
+            text=bui.Lstr(resource='pluginSettingsText'),
             maxwidth=230,
             color=bui.app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
         # Roughly center our few bits of content.
@@ -97,7 +101,7 @@ class PluginSettingsWindow(bui.MainWindow):
             position=(x, y),
             size=(350, 60),
             autoselect=True,
-            label=bui.Lstr(resource="pluginsEnableAllText"),
+            label=bui.Lstr(resource='pluginsEnableAllText'),
             text_scale=1.0,
             on_activate_call=lambda: ConfirmWindow(
                 action=self._enable_all_plugins,
@@ -110,7 +114,7 @@ class PluginSettingsWindow(bui.MainWindow):
             position=(x, y),
             size=(350, 60),
             autoselect=True,
-            label=bui.Lstr(resource="pluginsDisableAllText"),
+            label=bui.Lstr(resource='pluginsDisableAllText'),
             text_scale=1.0,
             on_activate_call=lambda: ConfirmWindow(
                 action=self._disable_all_plugins,
@@ -126,14 +130,16 @@ class PluginSettingsWindow(bui.MainWindow):
                 bui.app.plugins.AUTO_ENABLE_NEW_PLUGINS_CONFIG_KEY,
                 bui.app.plugins.AUTO_ENABLE_NEW_PLUGINS_DEFAULT,
             ),
-            text=bui.Lstr(resource="pluginsAutoEnableNewText"),
+            text=bui.Lstr(resource='pluginsAutoEnableNewText'),
             scale=1.0,
             maxwidth=308,
             on_value_change_call=self._update_value,
         )
 
         if uiscale is not bui.UIScale.SMALL:
-            bui.widget(edit=self._back_button, down_widget=self._enable_plugins_button)
+            bui.widget(
+                edit=self._back_button, down_widget=self._enable_plugins_button
+            )
 
         bui.widget(
             edit=self._disable_plugins_button,
@@ -159,25 +165,25 @@ class PluginSettingsWindow(bui.MainWindow):
 
     def _enable_all_plugins(self) -> None:
         cfg = bui.app.config
-        plugs: dict[str, dict] = cfg.setdefault("Plugins", {})
+        plugs: dict[str, dict] = cfg.setdefault('Plugins', {})
         for plug in plugs.values():
-            plug["enabled"] = True
+            plug['enabled'] = True
         cfg.apply_and_commit()
 
         bui.screenmessage(
-            bui.Lstr(resource="settingsWindowAdvanced.mustRestartText"),
+            bui.Lstr(resource='settingsWindowAdvanced.mustRestartText'),
             color=(1.0, 0.5, 0.0),
         )
 
     def _disable_all_plugins(self) -> None:
         cfg = bui.app.config
-        plugs: dict[str, dict] = cfg.setdefault("Plugins", {})
+        plugs: dict[str, dict] = cfg.setdefault('Plugins', {})
         for plug in plugs.values():
-            plug["enabled"] = False
+            plug['enabled'] = False
         cfg.apply_and_commit()
 
         bui.screenmessage(
-            bui.Lstr(resource="settingsWindowAdvanced.mustRestartText"),
+            bui.Lstr(resource='settingsWindowAdvanced.mustRestartText'),
             color=(1.0, 0.5, 0.0),
         )
 

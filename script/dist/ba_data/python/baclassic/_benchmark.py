@@ -33,24 +33,24 @@ def run_cpu_benchmark() -> None:
             super().__init__(depsets)
 
             # Store old graphics settings.
-            self._old_quality = babase.app.config.resolve("Graphics Quality")
+            self._old_quality = babase.app.config.resolve('Graphics Quality')
             cfg = babase.app.config
-            cfg["Graphics Quality"] = "Low"
+            cfg['Graphics Quality'] = 'Low'
             cfg.apply()
-            self.benchmark_type = "cpu"
+            self.benchmark_type = 'cpu'
             self.setactivity(bascenev1.newactivity(tutorial.TutorialActivity))
 
         def __del__(self) -> None:
             # When we're torn down, restore old graphics settings.
             cfg = babase.app.config
-            cfg["Graphics Quality"] = self._old_quality
+            cfg['Graphics Quality'] = self._old_quality
             cfg.apply()
 
         @override
         def on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
             return False
 
-    bascenev1.new_host_session(BenchmarkSession, benchmark_type="cpu")
+    bascenev1.new_host_session(BenchmarkSession, benchmark_type='cpu')
 
 
 @dataclass
@@ -63,8 +63,8 @@ class _StressTestArgs:
 
 
 def run_stress_test(
-    playlist_type: str = "Random",
-    playlist_name: str = "__default__",
+    playlist_type: str = 'Random',
+    playlist_name: str = '__default__',
     player_count: int = 8,
     round_duration: int = 30,
     attract_mode: bool = False,
@@ -108,11 +108,11 @@ def _start_stress_test(args: _StressTestArgs) -> None:
 
     appconfig = babase.app.config
     playlist_type = args.playlist_type
-    if playlist_type == "Random":
+    if playlist_type == 'Random':
         if random.random() < 0.5:
-            playlist_type = "Teams"
+            playlist_type = 'Teams'
         else:
-            playlist_type = "Free-For-All"
+            playlist_type = 'Free-For-All'
     if not args.attract_mode:
         babase.screenmessage(
             'Running Stress Test (listType="'
@@ -125,9 +125,9 @@ def _start_stress_test(args: _StressTestArgs) -> None:
     # Save where we are in the UI so we'll return there when done.
     classic.save_ui_state()
 
-    if playlist_type == "Teams":
-        appconfig["Team Tournament Playlist Selection"] = args.playlist_name
-        appconfig["Team Tournament Playlist Randomize"] = 1
+    if playlist_type == 'Teams':
+        appconfig['Team Tournament Playlist Selection'] = args.playlist_name
+        appconfig['Team Tournament Playlist Randomize'] = 1
         babase.apptimer(
             1.0,
             babase.Call(
@@ -136,8 +136,8 @@ def _start_stress_test(args: _StressTestArgs) -> None:
             ),
         )
     else:
-        appconfig["Free-for-All Playlist Selection"] = args.playlist_name
-        appconfig["Free-for-All Playlist Randomize"] = 1
+        appconfig['Free-for-All Playlist Selection'] = args.playlist_name
+        appconfig['Free-for-All Playlist Randomize'] = 1
         babase.apptimer(
             1.0,
             babase.Call(
@@ -163,7 +163,7 @@ def _update_attract_mode_test(args: _StressTestArgs) -> None:
 def _reset_stress_test(args: _StressTestArgs) -> None:
     _baclassic.set_stress_testing(False, args.player_count, False)
     if not args.attract_mode:
-        babase.screenmessage("Resetting stress test...")
+        babase.screenmessage('Resetting stress test...')
     session = bascenev1.get_foreground_host_session()
     assert session is not None
     session.end()
@@ -187,15 +187,15 @@ def run_media_reload_benchmark() -> None:
     def delay_add(start_time: float) -> None:
         def doit(start_time_2: float) -> None:
             babase.screenmessage(
-                babase.app.lang.get_resource("debugWindow.totalReloadTimeText").replace(
-                    "${TIME}", str(babase.apptime() - start_time_2)
-                )
+                babase.app.lang.get_resource(
+                    'debugWindow.totalReloadTimeText'
+                ).replace('${TIME}', str(babase.apptime() - start_time_2))
             )
             babase.print_load_info()
-            if babase.app.config.resolve("Texture Quality") != "High":
+            if babase.app.config.resolve('Texture Quality') != 'High':
                 babase.screenmessage(
                     babase.app.lang.get_resource(
-                        "debugWindow.reloadBenchmarkBestResultsText"
+                        'debugWindow.reloadBenchmarkBestResultsText'
                     ),
                     color=(1, 1, 0),
                 )

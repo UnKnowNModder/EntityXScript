@@ -23,7 +23,7 @@ class ShowURLWindow(bui.Window):
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height + 40),
-                transition="in_right",
+                transition='in_right',
                 scale=(
                     1.25
                     if uiscale is bui.UIScale.SMALL
@@ -36,9 +36,9 @@ class ShowURLWindow(bui.Window):
             position=(self._width * 0.5, self._height - 10),
             size=(0, 0),
             color=app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
-            text=bui.Lstr(resource="directBrowserToURLText"),
+            h_align='center',
+            v_align='center',
+            text=bui.Lstr(resource='directBrowserToURLText'),
             maxwidth=self._width * 0.95,
         )
         bui.textwidget(
@@ -47,8 +47,8 @@ class ShowURLWindow(bui.Window):
             size=(0, 0),
             scale=1.3,
             color=app.ui_v1.infotextcolor,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             text=address,
             maxwidth=self._width * 0.95,
         )
@@ -76,7 +76,7 @@ class ShowURLWindow(bui.Window):
                 ),
                 size=(button_width, 65),
                 autoselect=True,
-                label=bui.Lstr(resource="copyText"),
+                label=bui.Lstr(resource='copyText'),
                 on_activate_call=self._copy,
             )
             xoffs = 150
@@ -86,7 +86,7 @@ class ShowURLWindow(bui.Window):
             position=(self._width * 0.5 - button_width * 0.5 + xoffs, 20),
             size=(button_width, 65),
             autoselect=True,
-            label=bui.Lstr(resource="doneText"),
+            label=bui.Lstr(resource='doneText'),
             on_activate_call=self._done,
         )
         # we have no 'cancel' button but still want to be able to
@@ -100,7 +100,7 @@ class ShowURLWindow(bui.Window):
 
     def _copy(self) -> None:
         bui.clipboard_set_text(self._address)
-        bui.screenmessage(bui.Lstr(resource="copyConfirmText"), color=(0, 1, 0))
+        bui.screenmessage(bui.Lstr(resource='copyConfirmText'), color=(0, 1, 0))
 
     def _done(self) -> None:
-        bui.containerwidget(edit=self._root_widget, transition="out_left")
+        bui.containerwidget(edit=self._root_widget, transition='out_left')

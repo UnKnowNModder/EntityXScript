@@ -35,70 +35,74 @@ class Background(bs.Actor):
         self._session = weakref.ref(session)
         with session.context:
             self.node = bs.newnode(
-                "image",
+                'image',
                 delegate=self,
                 attrs={
-                    "fill_screen": True,
-                    "texture": bs.gettexture("bg"),
-                    "tilt_translate": -0.3,
-                    "has_alpha_channel": False,
-                    "color": (1, 1, 1),
+                    'fill_screen': True,
+                    'texture': bs.gettexture('bg'),
+                    'tilt_translate': -0.3,
+                    'has_alpha_channel': False,
+                    'color': (1, 1, 1),
                 },
             )
             if not start_faded:
                 bs.animate(
                     self.node,
-                    "opacity",
+                    'opacity',
                     {0.0: 0.0, self.fade_time: 1.0},
                     loop=False,
                 )
             if show_logo:
-                logo_texture = bs.gettexture("logo")
-                logo_mesh = bs.getmesh("logo")
-                logo_mesh_transparent = bs.getmesh("logoTransparent")
+                logo_texture = bs.gettexture('logo')
+                logo_mesh = bs.getmesh('logo')
+                logo_mesh_transparent = bs.getmesh('logoTransparent')
                 self.logo = bs.newnode(
-                    "image",
+                    'image',
                     owner=self.node,
                     attrs={
-                        "texture": logo_texture,
-                        "mesh_opaque": logo_mesh,
-                        "mesh_transparent": logo_mesh_transparent,
-                        "scale": (0.7, 0.7),
-                        "vr_depth": -250,
-                        "color": (0.15, 0.15, 0.15),
-                        "position": (0, 0),
-                        "tilt_translate": -0.05,
-                        "absolute_scale": False,
+                        'texture': logo_texture,
+                        'mesh_opaque': logo_mesh,
+                        'mesh_transparent': logo_mesh_transparent,
+                        'scale': (0.7, 0.7),
+                        'vr_depth': -250,
+                        'color': (0.15, 0.15, 0.15),
+                        'position': (0, 0),
+                        'tilt_translate': -0.05,
+                        'absolute_scale': False,
                     },
                 )
-                self.node.connectattr("opacity", self.logo, "opacity")
+                self.node.connectattr('opacity', self.logo, 'opacity')
                 # add jitter/pulse for a stop-motion-y look unless we're in VR
                 # in which case stillness is better
                 if not bs.app.env.vr:
-                    self.cmb = bs.newnode("combine", owner=self.node, attrs={"size": 2})
-                    for attr in ["input0", "input1"]:
+                    self.cmb = bs.newnode(
+                        'combine', owner=self.node, attrs={'size': 2}
+                    )
+                    for attr in ['input0', 'input1']:
                         bs.animate(
                             self.cmb,
                             attr,
                             {0.0: 0.693, 0.05: 0.7, 0.5: 0.693},
                             loop=True,
                         )
-                    self.cmb.connectattr("output", self.logo, "scale")
-                    cmb = bs.newnode("combine", owner=self.node, attrs={"size": 2})
-                    cmb.connectattr("output", self.logo, "position")
+                    self.cmb.connectattr('output', self.logo, 'scale')
+                    cmb = bs.newnode(
+                        'combine', owner=self.node, attrs={'size': 2}
+                    )
+                    cmb.connectattr('output', self.logo, 'position')
                     # Gen some random keys for that stop-motion-y look.
                     keys = {}
                     timeval = 0.0
                     for _i in range(10):
                         keys[timeval] = (random.random() - 0.5) * 0.0015
                         timeval += random.random() * 0.1
-                    bs.animate(cmb, "input0", keys, loop=True)
+                    bs.animate(cmb, 'input0', keys, loop=True)
                     keys = {}
                     timeval = 0.0
                     for _i in range(10):
                         keys[timeval] = (random.random() - 0.5) * 0.0015 + 0.05
                         timeval += random.random() * 0.1
-                    bs.animate(cmb, "input1", keys, loop=True)
+                    bs.animate(cmb, 'input1', keys, loop=True)
 
     @override
     def __del__(self) -> None:
@@ -117,7 +121,8 @@ class Background(bs.Actor):
             # Let's make sure that's the case.
             # (since otherwise we have no way to kill it)
             logging.exception(
-                "got None session on Background _die" " (and node still exists!)"
+                'got None session on Background _die'
+                ' (and node still exists!)'
             )
         elif session is not None:
             with session.context:
@@ -128,7 +133,7 @@ class Background(bs.Actor):
                     else:
                         bs.animate(
                             self.node,
-                            "opacity",
+                            'opacity',
                             {0.0: 1.0, self.fade_time: 0.0},
                             loop=False,
                         )

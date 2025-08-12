@@ -61,12 +61,20 @@ class PlusAppSubsystem(AppSubsystem):
         return _baplus.game_service_has_leaderboard(game, config)
 
     @staticmethod
-    def get_master_server_address(source: int = -1, version: int = 1) -> str:
+    def get_legacy_master_server_address() -> str:
+        """Return the address of the old master server.
+
+        :meta private:
+        """
+        return _baplus.get_legacy_master_server_address()
+
+    @staticmethod
+    def get_master_server_address() -> str:
         """Return the address of the master server.
 
         :meta private:
         """
-        return _baplus.get_master_server_address(source, version)
+        return _baplus.get_master_server_address()
 
     @staticmethod
     def get_classic_news_show() -> str:
@@ -167,7 +175,9 @@ class PlusAppSubsystem(AppSubsystem):
         return _baplus.purchase(item)
 
     @staticmethod
-    def report_achievement(achievement: str, pass_to_account: bool = True) -> None:
+    def report_achievement(
+        achievement: str, pass_to_account: bool = True
+    ) -> None:
         """:meta private:"""
         return _baplus.report_achievement(achievement, pass_to_account)
 
@@ -204,9 +214,9 @@ class PlusAppSubsystem(AppSubsystem):
         score: int | None,
         callback: Callable,
         *,
-        order: str = "increasing",
+        order: str = 'increasing',
         tournament_id: str | None = None,
-        score_type: str = "points",
+        score_type: str = 'points',
         campaign: str | None = None,
         level: str | None = None,
     ) -> None:
@@ -233,7 +243,9 @@ class PlusAppSubsystem(AppSubsystem):
         )
 
     @staticmethod
-    def tournament_query(callback: Callable[[dict | None], None], args: dict) -> None:
+    def tournament_query(
+        callback: Callable[[dict | None], None], args: dict
+    ) -> None:
         """:meta private:"""
         return _baplus.tournament_query(callback, args)
 
@@ -247,7 +259,7 @@ class PlusAppSubsystem(AppSubsystem):
 
     @staticmethod
     def show_game_service_ui(
-        show: str = "general",
+        show: str = 'general',
         game: str | None = None,
         game_version: str | None = None,
     ) -> None:

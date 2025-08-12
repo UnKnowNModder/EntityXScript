@@ -14,11 +14,11 @@ class InventoryWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
 
-        bui.set_analytics_screen("Help Window")
+        bui.set_analytics_screen('Help Window')
 
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
@@ -54,7 +54,7 @@ class InventoryWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    "menu_full" if uiscale is bui.UIScale.SMALL else "menu_full"
+                    'menu_full' if uiscale is bui.UIScale.SMALL else 'menu_full'
                 ),
                 scale=scale,
             ),
@@ -71,12 +71,12 @@ class InventoryWindow(bui.MainWindow):
                 yoffs - (50 if uiscale is bui.UIScale.SMALL else 30),
             ),
             size=(0, 0),
-            text=bui.Lstr(resource="inventoryText"),
+            text=bui.Lstr(resource='inventoryText'),
             color=bui.app.ui_v1.title_color,
             scale=0.9 if uiscale is bui.UIScale.SMALL else 1.0,
             maxwidth=(130 if uiscale is bui.UIScale.SMALL else 200),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
         if uiscale is bui.UIScale.SMALL:
@@ -90,7 +90,7 @@ class InventoryWindow(bui.MainWindow):
                 size=(60, 55),
                 scale=0.8,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type="backSmall",
+                button_type='backSmall',
                 extra_touch_border_scale=2.0,
                 autoselect=True,
                 on_activate_call=self.main_window_back,
@@ -103,9 +103,9 @@ class InventoryWindow(bui.MainWindow):
             position=(self._width * 0.5 - button_width * 0.5, yoffs - 200),
             autoselect=True,
             size=(button_width, 60),
-            label=bui.Lstr(resource="playerProfilesWindow.titleText"),
+            label=bui.Lstr(resource='playerProfilesWindow.titleText'),
             color=(0.55, 0.5, 0.6),
-            icon=bui.gettexture("cuteSpaz"),
+            icon=bui.gettexture('cuteSpaz'),
             textcolor=(0.75, 0.7, 0.8),
             on_activate_call=self._player_profiles_press,
         )
@@ -113,11 +113,11 @@ class InventoryWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(self._width * 0.5, yoffs - 250),
             size=(0, 0),
-            text=bui.Lstr(resource="moreSoonText"),
+            text=bui.Lstr(resource='moreSoonText'),
             scale=0.7,
             maxwidth=self._width * 0.9,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
     def _player_profiles_press(self) -> None:

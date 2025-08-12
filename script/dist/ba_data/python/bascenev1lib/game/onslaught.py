@@ -87,52 +87,52 @@ class Delay:
 class Preset(Enum):
     """Game presets we support."""
 
-    TRAINING = "training"
-    TRAINING_EASY = "training_easy"
-    ROOKIE = "rookie"
-    ROOKIE_EASY = "rookie_easy"
-    PRO = "pro"
-    PRO_EASY = "pro_easy"
-    UBER = "uber"
-    UBER_EASY = "uber_easy"
-    ENDLESS = "endless"
-    ENDLESS_TOURNAMENT = "endless_tournament"
+    TRAINING = 'training'
+    TRAINING_EASY = 'training_easy'
+    ROOKIE = 'rookie'
+    ROOKIE_EASY = 'rookie_easy'
+    PRO = 'pro'
+    PRO_EASY = 'pro_easy'
+    UBER = 'uber'
+    UBER_EASY = 'uber_easy'
+    ENDLESS = 'endless'
+    ENDLESS_TOURNAMENT = 'endless_tournament'
 
 
 @unique
 class Point(Enum):
     """Points on the map we can spawn at."""
 
-    LEFT_UPPER_MORE = "bot_spawn_left_upper_more"
-    LEFT_UPPER = "bot_spawn_left_upper"
-    TURRET_TOP_RIGHT = "bot_spawn_turret_top_right"
-    RIGHT_UPPER = "bot_spawn_right_upper"
-    TURRET_TOP_MIDDLE_LEFT = "bot_spawn_turret_top_middle_left"
-    TURRET_TOP_MIDDLE_RIGHT = "bot_spawn_turret_top_middle_right"
-    TURRET_TOP_LEFT = "bot_spawn_turret_top_left"
-    TOP_RIGHT = "bot_spawn_top_right"
-    TOP_LEFT = "bot_spawn_top_left"
-    TOP = "bot_spawn_top"
-    BOTTOM = "bot_spawn_bottom"
-    LEFT = "bot_spawn_left"
-    RIGHT = "bot_spawn_right"
-    RIGHT_UPPER_MORE = "bot_spawn_right_upper_more"
-    RIGHT_LOWER = "bot_spawn_right_lower"
-    RIGHT_LOWER_MORE = "bot_spawn_right_lower_more"
-    BOTTOM_RIGHT = "bot_spawn_bottom_right"
-    BOTTOM_LEFT = "bot_spawn_bottom_left"
-    TURRET_BOTTOM_RIGHT = "bot_spawn_turret_bottom_right"
-    TURRET_BOTTOM_LEFT = "bot_spawn_turret_bottom_left"
-    LEFT_LOWER = "bot_spawn_left_lower"
-    LEFT_LOWER_MORE = "bot_spawn_left_lower_more"
-    TURRET_TOP_MIDDLE = "bot_spawn_turret_top_middle"
-    BOTTOM_HALF_RIGHT = "bot_spawn_bottom_half_right"
-    BOTTOM_HALF_LEFT = "bot_spawn_bottom_half_left"
-    TOP_HALF_RIGHT = "bot_spawn_top_half_right"
-    TOP_HALF_LEFT = "bot_spawn_top_half_left"
+    LEFT_UPPER_MORE = 'bot_spawn_left_upper_more'
+    LEFT_UPPER = 'bot_spawn_left_upper'
+    TURRET_TOP_RIGHT = 'bot_spawn_turret_top_right'
+    RIGHT_UPPER = 'bot_spawn_right_upper'
+    TURRET_TOP_MIDDLE_LEFT = 'bot_spawn_turret_top_middle_left'
+    TURRET_TOP_MIDDLE_RIGHT = 'bot_spawn_turret_top_middle_right'
+    TURRET_TOP_LEFT = 'bot_spawn_turret_top_left'
+    TOP_RIGHT = 'bot_spawn_top_right'
+    TOP_LEFT = 'bot_spawn_top_left'
+    TOP = 'bot_spawn_top'
+    BOTTOM = 'bot_spawn_bottom'
+    LEFT = 'bot_spawn_left'
+    RIGHT = 'bot_spawn_right'
+    RIGHT_UPPER_MORE = 'bot_spawn_right_upper_more'
+    RIGHT_LOWER = 'bot_spawn_right_lower'
+    RIGHT_LOWER_MORE = 'bot_spawn_right_lower_more'
+    BOTTOM_RIGHT = 'bot_spawn_bottom_right'
+    BOTTOM_LEFT = 'bot_spawn_bottom_left'
+    TURRET_BOTTOM_RIGHT = 'bot_spawn_turret_bottom_right'
+    TURRET_BOTTOM_LEFT = 'bot_spawn_turret_bottom_left'
+    LEFT_LOWER = 'bot_spawn_left_lower'
+    LEFT_LOWER_MORE = 'bot_spawn_left_lower_more'
+    TURRET_TOP_MIDDLE = 'bot_spawn_turret_top_middle'
+    BOTTOM_HALF_RIGHT = 'bot_spawn_bottom_half_right'
+    BOTTOM_HALF_LEFT = 'bot_spawn_bottom_half_left'
+    TOP_HALF_RIGHT = 'bot_spawn_top_half_right'
+    TOP_HALF_LEFT = 'bot_spawn_top_half_left'
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -147,24 +147,25 @@ class Team(bs.Team[Player]):
 class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
     """Co-op game where players try to survive attacking waves of enemies."""
 
-    name = "Onslaught"
-    description = "Defeat all enemies."
+    name = 'Onslaught'
+    description = 'Defeat all enemies.'
 
     tips: list[str | bs.GameTip] = [
-        "Hold any button to run." "  (Trigger buttons work well if you have them)",
-        "Try tricking enemies into killing eachother or running off cliffs.",
-        "Try 'Cooking off' bombs for a second or two before throwing them.",
-        "It's easier to win with a friend or two helping.",
-        "If you stay in one place, you're toast. Run and dodge to survive..",
-        "Practice using your momentum to throw bombs more accurately.",
-        "Your punches do much more damage if you are running or spinning.",
+        'Hold any button to run.'
+        '  (Trigger buttons work well if you have them)',
+        'Try tricking enemies into killing eachother or running off cliffs.',
+        'Try \'Cooking off\' bombs for a second or two before throwing them.',
+        'It\'s easier to win with a friend or two helping.',
+        'If you stay in one place, you\'re toast. Run and dodge to survive..',
+        'Practice using your momentum to throw bombs more accurately.',
+        'Your punches do much more damage if you are running or spinning.',
     ]
 
     # Show messages when players die since it matters here.
     announce_player_deaths = True
 
     def __init__(self, settings: dict):
-        self._preset = Preset(settings.get("preset", "training"))
+        self._preset = Preset(settings.get('preset', 'training'))
         if self._preset in {
             Preset.TRAINING,
             Preset.TRAINING_EASY,
@@ -173,31 +174,31 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             Preset.ENDLESS,
             Preset.ENDLESS_TOURNAMENT,
         }:
-            settings["map"] = "Doom Shroom"
+            settings['map'] = 'Doom Shroom'
         else:
-            settings["map"] = "Courtyard"
+            settings['map'] = 'Courtyard'
 
         super().__init__(settings)
 
-        self._new_wave_sound = bs.getsound("scoreHit01")
-        self._winsound = bs.getsound("score")
-        self._cashregistersound = bs.getsound("cashRegister")
+        self._new_wave_sound = bs.getsound('scoreHit01')
+        self._winsound = bs.getsound('score')
+        self._cashregistersound = bs.getsound('cashRegister')
         self._a_player_has_been_hurt = False
         self._player_has_dropped_bomb = False
 
         # FIXME: should use standard map defs.
-        if settings["map"] == "Doom Shroom":
+        if settings['map'] == 'Doom Shroom':
             self._spawn_center = (0, 3, -5)
             self._tntspawnpos = (0.0, 3.0, -5.0)
             self._powerup_center = (0, 5, -3.6)
             self._powerup_spread = (6.0, 4.0)
-        elif settings["map"] == "Courtyard":
+        elif settings['map'] == 'Courtyard':
             self._spawn_center = (0, 3, -2)
             self._tntspawnpos = (0.0, 3.0, 2.1)
             self._powerup_center = (0, 5, -1.6)
             self._powerup_spread = (4.6, 2.7)
         else:
-            raise RuntimeError("Unsupported map: " + str(settings["map"]))
+            raise RuntimeError('Unsupported map: ' + str(settings['map']))
         self._scoreboard: Scoreboard | None = None
         self._game_over = False
         self._wavenum = 0
@@ -205,8 +206,8 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         self._score = 0
         self._time_bonus = 0
         self._spawn_info_text: bs.NodeActor | None = None
-        self._dingsound = bs.getsound("dingSmall")
-        self._dingsoundhigh = bs.getsound("dingSmallHigh")
+        self._dingsound = bs.getsound('dingSmall')
+        self._dingsoundhigh = bs.getsound('dingSmallHigh')
         self._have_tnt = False
         self._excluded_powerups: list[str] | None = None
         self._waves: list[Wave] = []
@@ -232,61 +233,61 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         # Show special landmine tip on rookie preset.
         if self._preset in {Preset.ROOKIE, Preset.ROOKIE_EASY}:
             # Show once per session only (then we revert to regular tips).
-            if not customdata.get("_showed_onslaught_landmine_tip", False):
-                customdata["_showed_onslaught_landmine_tip"] = True
+            if not customdata.get('_showed_onslaught_landmine_tip', False):
+                customdata['_showed_onslaught_landmine_tip'] = True
                 self.tips = [
                     bs.GameTip(
-                        "Land-mines are a good way to stop speedy enemies.",
-                        icon=bs.gettexture("powerupLandMines"),
-                        sound=bs.getsound("ding"),
+                        'Land-mines are a good way to stop speedy enemies.',
+                        icon=bs.gettexture('powerupLandMines'),
+                        sound=bs.getsound('ding'),
                     )
                 ]
 
         # Show special tnt tip on pro preset.
         if self._preset in {Preset.PRO, Preset.PRO_EASY}:
             # Show once per session only (then we revert to regular tips).
-            if not customdata.get("_showed_onslaught_tnt_tip", False):
-                customdata["_showed_onslaught_tnt_tip"] = True
+            if not customdata.get('_showed_onslaught_tnt_tip', False):
+                customdata['_showed_onslaught_tnt_tip'] = True
                 self.tips = [
                     bs.GameTip(
-                        "Take out a group of enemies by\n"
-                        "setting off a bomb near a TNT box.",
-                        icon=bs.gettexture("tnt"),
-                        sound=bs.getsound("ding"),
+                        'Take out a group of enemies by\n'
+                        'setting off a bomb near a TNT box.',
+                        icon=bs.gettexture('tnt'),
+                        sound=bs.getsound('ding'),
                     )
                 ]
 
         # Show special curse tip on uber preset.
         if self._preset in {Preset.UBER, Preset.UBER_EASY}:
             # Show once per session only (then we revert to regular tips).
-            if not customdata.get("_showed_onslaught_curse_tip", False):
-                customdata["_showed_onslaught_curse_tip"] = True
+            if not customdata.get('_showed_onslaught_curse_tip', False):
+                customdata['_showed_onslaught_curse_tip'] = True
                 self.tips = [
                     bs.GameTip(
-                        "Curse boxes turn you into a ticking time bomb.\n"
-                        "The only cure is to quickly grab a health-pack.",
-                        icon=bs.gettexture("powerupCurse"),
-                        sound=bs.getsound("ding"),
+                        'Curse boxes turn you into a ticking time bomb.\n'
+                        'The only cure is to quickly grab a health-pack.',
+                        icon=bs.gettexture('powerupCurse'),
+                        sound=bs.getsound('ding'),
                     )
                 ]
 
         self._spawn_info_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "position": (15, -130),
-                    "h_attach": "left",
-                    "v_attach": "top",
-                    "scale": 0.55,
-                    "color": (0.3, 0.8, 0.3, 1.0),
-                    "text": "",
+                    'position': (15, -130),
+                    'h_attach': 'left',
+                    'v_attach': 'top',
+                    'scale': 0.55,
+                    'color': (0.3, 0.8, 0.3, 1.0),
+                    'text': '',
                 },
             )
         )
         bs.setmusic(bs.MusicType.ONSLAUGHT)
 
         self._scoreboard = Scoreboard(
-            label=bs.Lstr(resource="scoreText"), score_split=0.5
+            label=bs.Lstr(resource='scoreText'), score_split=0.5
         )
 
     @override
@@ -303,7 +304,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             ControlsGuide(delay=3.0, lifespan=10.0, bright=True).autoretain()
 
             self._have_tnt = False
-            self._excluded_powerups = ["curse", "land_mines"]
+            self._excluded_powerups = ['curse', 'land_mines']
             self._waves = [
                 Wave(
                     base_angle=195,
@@ -321,7 +322,8 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                 ),
                 Wave(
                     base_angle=195,
-                    entries=[Spawn(BomberBotLite, spacing=10)] * (player_count + 1),
+                    entries=[Spawn(BomberBotLite, spacing=10)]
+                    * (player_count + 1),
                 ),
                 Wave(
                     base_angle=130,
@@ -340,7 +342,11 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                         ),
                         Spawn(BrawlerBotLite, spacing=5),
                         Spacing(30),
-                        (Spawn(BomberBotLite, spacing=5) if player_count > 3 else None),
+                        (
+                            Spawn(BomberBotLite, spacing=5)
+                            if player_count > 3
+                            else None
+                        ),
                         Spawn(BomberBotLite, spacing=5),
                         Spacing(30),
                         Spawn(BrawlerBotLite, spacing=5),
@@ -355,14 +361,18 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                     base_angle=195,
                     entries=[
                         Spawn(TriggerBot, spacing=90),
-                        (Spawn(TriggerBot, spacing=90) if player_count > 1 else None),
+                        (
+                            Spawn(TriggerBot, spacing=90)
+                            if player_count > 1
+                            else None
+                        ),
                     ],
                 ),
             ]
 
         elif self._preset in {Preset.ROOKIE, Preset.ROOKIE_EASY}:
             self._have_tnt = False
-            self._excluded_powerups = ["curse"]
+            self._excluded_powerups = ['curse']
             self._waves = [
                 Wave(
                     entries=[
@@ -384,7 +394,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                             else None
                         ),
                         (
-                            Spawn(BomberBotStaticLite, Point.TURRET_BOTTOM_RIGHT)
+                            Spawn(
+                                BomberBotStaticLite, Point.TURRET_BOTTOM_RIGHT
+                            )
                             if player_count > 2
                             else None
                         ),
@@ -461,13 +473,17 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             ]
 
         elif self._preset in {Preset.PRO, Preset.PRO_EASY}:
-            self._excluded_powerups = ["curse"]
+            self._excluded_powerups = ['curse']
             self._have_tnt = True
             self._waves = [
                 Wave(
                     base_angle=-50,
                     entries=[
-                        (Spawn(BrawlerBot, spacing=12) if player_count > 3 else None),
+                        (
+                            Spawn(BrawlerBot, spacing=12)
+                            if player_count > 3
+                            else None
+                        ),
                         Spawn(BrawlerBot, spacing=12),
                         Spawn(BomberBot, spacing=6),
                         (
@@ -475,15 +491,27 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                             if self._preset is Preset.PRO
                             else None
                         ),
-                        (Spawn(BomberBot, spacing=6) if player_count > 1 else None),
+                        (
+                            Spawn(BomberBot, spacing=6)
+                            if player_count > 1
+                            else None
+                        ),
                         Spawn(BrawlerBot, spacing=12),
-                        (Spawn(BrawlerBot, spacing=12) if player_count > 2 else None),
+                        (
+                            Spawn(BrawlerBot, spacing=12)
+                            if player_count > 2
+                            else None
+                        ),
                     ],
                 ),
                 Wave(
                     base_angle=180,
                     entries=[
-                        (Spawn(BrawlerBot, spacing=6) if player_count > 3 else None),
+                        (
+                            Spawn(BrawlerBot, spacing=6)
+                            if player_count > 3
+                            else None
+                        ),
                         (
                             Spawn(BrawlerBot, spacing=6)
                             if self._preset is Preset.PRO
@@ -491,14 +519,22 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                         ),
                         Spawn(BrawlerBot, spacing=6),
                         Spawn(ChargerBot, spacing=45),
-                        (Spawn(ChargerBot, spacing=45) if player_count > 1 else None),
+                        (
+                            Spawn(ChargerBot, spacing=45)
+                            if player_count > 1
+                            else None
+                        ),
                         Spawn(BrawlerBot, spacing=6),
                         (
                             Spawn(BrawlerBot, spacing=6)
                             if self._preset is Preset.PRO
                             else None
                         ),
-                        (Spawn(BrawlerBot, spacing=6) if player_count > 2 else None),
+                        (
+                            Spawn(BrawlerBot, spacing=6)
+                            if player_count > 2
+                            else None
+                        ),
                     ],
                 ),
                 Wave(
@@ -512,8 +548,16 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                             if self._preset is Preset.PRO
                             else None
                         ),
-                        (Spawn(TriggerBot, spacing=30) if player_count > 1 else None),
-                        (Spawn(TriggerBot, spacing=30) if player_count > 3 else None),
+                        (
+                            Spawn(TriggerBot, spacing=30)
+                            if player_count > 1
+                            else None
+                        ),
+                        (
+                            Spawn(TriggerBot, spacing=30)
+                            if player_count > 3
+                            else None
+                        ),
                         Spawn(ChargerBot, spacing=30),
                     ],
                 ),
@@ -527,8 +571,16 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                             else None
                         ),
                         Spawn(StickyBot, spacing=50),
-                        (Spawn(StickyBot, spacing=50) if player_count > 1 else None),
-                        (Spawn(StickyBot, spacing=50) if player_count > 3 else None),
+                        (
+                            Spawn(StickyBot, spacing=50)
+                            if player_count > 1
+                            else None
+                        ),
+                        (
+                            Spawn(StickyBot, spacing=50)
+                            if player_count > 3
+                            else None
+                        ),
                     ],
                 ),
                 Wave(
@@ -543,7 +595,11 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                         ),
                         Spawn(TriggerBot, spacing=72),
                         Spawn(TriggerBot, spacing=72),
-                        (Spawn(TriggerBot, spacing=36) if player_count > 2 else None),
+                        (
+                            Spawn(TriggerBot, spacing=36)
+                            if player_count > 2
+                            else None
+                        ),
                     ],
                 ),
                 Wave(
@@ -577,7 +633,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             arcade_or_demo = variant is vart.ARCADE or variant is vart.DEMO
 
             if arcade_or_demo:
-                ControlsGuide(delay=3.0, lifespan=10.0, bright=True).autoretain()
+                ControlsGuide(
+                    delay=3.0, lifespan=10.0, bright=True
+                ).autoretain()
 
             self._have_tnt = True
             self._excluded_powerups = []
@@ -585,11 +643,15 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                 Wave(
                     entries=[
                         (
-                            Spawn(BomberBotProStatic, Point.TURRET_TOP_MIDDLE_LEFT)
+                            Spawn(
+                                BomberBotProStatic, Point.TURRET_TOP_MIDDLE_LEFT
+                            )
                             if hard
                             else None
                         ),
-                        Spawn(BomberBotProStatic, Point.TURRET_TOP_MIDDLE_RIGHT),
+                        Spawn(
+                            BomberBotProStatic, Point.TURRET_TOP_MIDDLE_RIGHT
+                        ),
                         (
                             Spawn(BomberBotProStatic, Point.TURRET_TOP_LEFT)
                             if player_count > 2
@@ -622,7 +684,11 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                             else None
                         ),
                         Spawn(TriggerBotPro, Point.RIGHT_UPPER),
-                        (Spawn(TriggerBotPro, Point.RIGHT_LOWER) if hard else None),
+                        (
+                            Spawn(TriggerBotPro, Point.RIGHT_LOWER)
+                            if hard
+                            else None
+                        ),
                         (
                             Spawn(TriggerBotPro, Point.RIGHT_LOWER_MORE)
                             if player_count > 2
@@ -640,7 +706,11 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                             else None
                         ),
                         Spawn(ChargerBotProShielded, Point.BOTTOM_LEFT),
-                        (Spawn(ChargerBotProShielded, Point.TOP) if hard else None),
+                        (
+                            Spawn(ChargerBotProShielded, Point.TOP)
+                            if hard
+                            else None
+                        ),
                         Spawn(BomberBotProStatic, Point.TURRET_TOP_MIDDLE),
                     ]
                 ),
@@ -668,7 +738,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                         Spawn(BomberBotProStatic, Point.TURRET_BOTTOM_LEFT),
                         Spawn(BomberBotProStatic, Point.TURRET_BOTTOM_RIGHT),
                         (
-                            Spawn(BomberBotProStatic, Point.TURRET_TOP_MIDDLE_LEFT)
+                            Spawn(
+                                BomberBotProStatic, Point.TURRET_TOP_MIDDLE_LEFT
+                            )
                             if hard
                             else None
                         ),
@@ -691,7 +763,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             self._waves = []
 
         else:
-            raise RuntimeError(f"Invalid preset: {self._preset}")
+            raise RuntimeError(f'Invalid preset: {self._preset}')
 
         # FIXME: Should migrate to use setup_standard_powerup_drops().
 
@@ -699,10 +771,10 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         self._drop_powerups(
             standard_points=True,
             poweruptype=(
-                "curse"
+                'curse'
                 if self._preset in [Preset.UBER, Preset.UBER_EASY]
                 else (
-                    "land_mines"
+                    'land_mines'
                     if self._preset in [Preset.ROOKIE, Preset.ROOKIE_EASY]
                     else None
                 )
@@ -767,12 +839,16 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
 
                 # If we don't have enough dudes, kill the group with
                 # the biggest point value.
-                elif total_dudes < min_dudes and iteration != max_iterations - 1:
+                elif (
+                    total_dudes < min_dudes and iteration != max_iterations - 1
+                ):
                     self._delete_biggest_dist_entry(groups)
 
                 # If we've got too many dudes, kill the group with the
                 # smallest point value.
-                elif total_dudes > max_dudes and iteration != max_iterations - 1:
+                elif (
+                    total_dudes > max_dudes and iteration != max_iterations - 1
+                ):
                     self._delete_smallest_dist_entry(groups)
 
                 # Close enough.. we're done.
@@ -810,7 +886,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             diff = target_points - total_points
         return diff
 
-    def _delete_smallest_dist_entry(self, groups: list[list[tuple[int, int]]]) -> None:
+    def _delete_smallest_dist_entry(
+        self, groups: list[list[tuple[int, int]]]
+    ) -> None:
         smallest_value = 9999
         smallest_entry = None
         smallest_entry_group = None
@@ -824,7 +902,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         assert smallest_entry_group is not None
         smallest_entry_group.remove(smallest_entry)
 
-    def _delete_biggest_dist_entry(self, groups: list[list[tuple[int, int]]]) -> None:
+    def _delete_biggest_dist_entry(
+        self, groups: list[list[tuple[int, int]]]
+    ) -> None:
         biggest_value = 9999
         biggest_entry = None
         biggest_entry_group = None
@@ -838,7 +918,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             assert biggest_entry_group is not None
             biggest_entry_group.remove(biggest_entry)
 
-    def _delete_random_dist_entry(self, groups: list[list[tuple[int, int]]]) -> None:
+    def _delete_random_dist_entry(
+        self, groups: list[list[tuple[int, int]]]
+    ) -> None:
         entry_count = 0
         for group in groups:
             for _ in group:
@@ -873,7 +955,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         spaz.add_dropped_bomb_callback(self._handle_player_dropped_bomb)
         return spaz
 
-    def _handle_player_dropped_bomb(self, player: bs.Actor, bomb: bs.Actor) -> None:
+    def _handle_player_dropped_bomb(
+        self, player: bs.Actor, bomb: bs.Actor
+    ) -> None:
         del player, bomb  # Unused.
         self._player_has_dropped_bomb = True
 
@@ -900,7 +984,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             for i in range(len(points)):
                 bs.timer(
                     1.0 + i * 0.5,
-                    bs.WeakCall(self._drop_powerup, i, poweruptype if i == 0 else None),
+                    bs.WeakCall(
+                        self._drop_powerup, i, poweruptype if i == 0 else None
+                    ),
                 )
         else:
             point = (
@@ -911,7 +997,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                 ),
                 self._powerup_center[1],
                 self._powerup_center[2]
-                + random.uniform(-self._powerup_spread[1], self._powerup_spread[1]),
+                + random.uniform(
+                    -self._powerup_spread[1], self._powerup_spread[1]
+                ),
             )
 
             # Drop one random one somewhere.
@@ -924,7 +1012,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
 
     def do_end(self, outcome: str, delay: float = 0.0) -> None:
         """End the game with the specified outcome."""
-        if outcome == "defeat":
+        if outcome == 'defeat':
             self.fade_to_red()
         score: int | None
         if self._wavenum >= 2:
@@ -932,32 +1020,32 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
             fail_message = None
         else:
             score = None
-            fail_message = bs.Lstr(resource="reachWave2Text")
+            fail_message = bs.Lstr(resource='reachWave2Text')
         self.end(
             {
-                "outcome": outcome,
-                "score": score,
-                "fail_message": fail_message,
-                "playerinfos": self.initialplayerinfos,
+                'outcome': outcome,
+                'score': score,
+                'fail_message': fail_message,
+                'playerinfos': self.initialplayerinfos,
             },
             delay=delay,
         )
 
     def _award_completion_achievements(self) -> None:
         if self._preset in {Preset.TRAINING, Preset.TRAINING_EASY}:
-            self._award_achievement("Onslaught Training Victory", sound=False)
+            self._award_achievement('Onslaught Training Victory', sound=False)
             if not self._player_has_dropped_bomb:
-                self._award_achievement("Boxer", sound=False)
+                self._award_achievement('Boxer', sound=False)
         elif self._preset in {Preset.ROOKIE, Preset.ROOKIE_EASY}:
-            self._award_achievement("Rookie Onslaught Victory", sound=False)
+            self._award_achievement('Rookie Onslaught Victory', sound=False)
             if not self._a_player_has_been_hurt:
-                self._award_achievement("Flawless Victory", sound=False)
+                self._award_achievement('Flawless Victory', sound=False)
         elif self._preset in {Preset.PRO, Preset.PRO_EASY}:
-            self._award_achievement("Pro Onslaught Victory", sound=False)
+            self._award_achievement('Pro Onslaught Victory', sound=False)
             if not self._player_has_dropped_bomb:
-                self._award_achievement("Pro Boxer", sound=False)
+                self._award_achievement('Pro Boxer', sound=False)
         elif self._preset in {Preset.UBER, Preset.UBER_EASY}:
-            self._award_achievement("Uber Onslaught Victory", sound=False)
+            self._award_achievement('Uber Onslaught Victory', sound=False)
 
     def _update_waves(self) -> None:
         # If we have no living bots, go to the next wave.
@@ -1002,7 +1090,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
 
             if won:
                 self.show_zoom_message(
-                    bs.Lstr(resource="victoryText"), scale=1.0, duration=4.0
+                    bs.Lstr(resource='victoryText'), scale=1.0, duration=4.0
                 )
                 self.celebrate(20.0)
                 self._award_completion_achievements()
@@ -1016,7 +1104,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                 # Can't just pass delay to do_end because our extra bonuses
                 # haven't been added yet (once we call do_end the score
                 # gets locked in).
-                bs.timer(base_delay, bs.WeakCall(self.do_end, "victory"))
+                bs.timer(base_delay, bs.WeakCall(self.do_end, 'victory'))
                 return
 
             self._wavenum += 1
@@ -1037,20 +1125,20 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                         int(100 / len(self.initialplayerinfos)),
                         scale=1.4,
                         color=(0.6, 0.6, 1.0, 1.0),
-                        title=bs.Lstr(resource="completionBonusText"),
+                        title=bs.Lstr(resource='completionBonusText'),
                         screenmessage=False,
                     )
             except Exception:
-                logging.exception("error in _award_completion_bonus")
+                logging.exception('error in _award_completion_bonus')
 
     def _award_time_bonus(self, bonus: int) -> None:
         self._cashregistersound.play()
         PopupText(
             bs.Lstr(
-                value="+${A} ${B}",
+                value='+${A} ${B}',
                 subs=[
-                    ("${A}", str(bonus)),
-                    ("${B}", bs.Lstr(resource="timeBonusText")),
+                    ('${A}', str(bonus)),
+                    ('${B}', bs.Lstr(resource='timeBonusText')),
                 ],
             ),
             color=(1, 1, 0.5, 1),
@@ -1070,11 +1158,11 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                     self._flawless_bonus,
                     scale=1.2,
                     color=(0.6, 1.0, 0.6, 1.0),
-                    title=bs.Lstr(resource="flawlessWaveText"),
+                    title=bs.Lstr(resource='flawlessWaveText'),
                     screenmessage=False,
                 )
         except Exception:
-            logging.exception("error in _award_flawless_bonus")
+            logging.exception('error in _award_flawless_bonus')
 
     def _start_time_bonus_timer(self) -> None:
         self._time_bonus_timer = bs.Timer(
@@ -1086,26 +1174,26 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         assert self._spawn_info_text is not None
         assert self._spawn_info_text.node
         if not any(player.is_alive() for player in self.teams[0].players):
-            self._spawn_info_text.node.text = ""
+            self._spawn_info_text.node.text = ''
         else:
-            text: str | bs.Lstr = ""
+            text: str | bs.Lstr = ''
             for player in self.players:
                 if not player.is_alive() and (
                     self._preset in [Preset.ENDLESS, Preset.ENDLESS_TOURNAMENT]
                     or (player.respawn_wave <= len(self._waves))
                 ):
                     rtxt = bs.Lstr(
-                        resource="onslaughtRespawnText",
+                        resource='onslaughtRespawnText',
                         subs=[
-                            ("${PLAYER}", player.getname()),
-                            ("${WAVE}", str(player.respawn_wave)),
+                            ('${PLAYER}', player.getname()),
+                            ('${WAVE}', str(player.respawn_wave)),
                         ],
                     )
                     text = bs.Lstr(
-                        value="${A}${B}\n",
+                        value='${A}${B}\n',
                         subs=[
-                            ("${A}", text),
-                            ("${B}", rtxt),
+                            ('${A}', text),
+                            ('${B}', rtxt),
                         ],
                     )
             self._spawn_info_text.node.text = text
@@ -1114,7 +1202,10 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         # Respawn applicable players.
         if self._wavenum > 1:
             for player in self.players:
-                if not player.is_alive() and player.respawn_wave == self._wavenum:
+                if (
+                    not player.is_alive()
+                    and player.respawn_wave == self._wavenum
+                ):
                     self.spawn_player(player)
         self._update_player_spawn_info()
 
@@ -1189,10 +1280,10 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
     def _update_wave_ui_and_bonuses(self) -> None:
         self.show_zoom_message(
             bs.Lstr(
-                value="${A} ${B}",
+                value='${A} ${B}',
                 subs=[
-                    ("${A}", bs.Lstr(resource="waveText")),
-                    ("${B}", str(self._wavenum)),
+                    ('${A}', bs.Lstr(resource='waveText')),
+                    ('${B}', str(self._wavenum)),
                 ],
             ),
             scale=1.0,
@@ -1203,26 +1294,26 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         # Reset our time bonus.
         tbtcolor = (1, 1, 0, 1)
         tbttxt = bs.Lstr(
-            value="${A}: ${B}",
+            value='${A}: ${B}',
             subs=[
-                ("${A}", bs.Lstr(resource="timeBonusText")),
-                ("${B}", str(self._time_bonus)),
+                ('${A}', bs.Lstr(resource='timeBonusText')),
+                ('${B}', str(self._time_bonus)),
             ],
         )
         self._time_bonus_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "v_attach": "top",
-                    "h_attach": "center",
-                    "h_align": "center",
-                    "vr_depth": -30,
-                    "color": tbtcolor,
-                    "shadow": 1.0,
-                    "flatness": 1.0,
-                    "position": (0, -60),
-                    "scale": 0.8,
-                    "text": tbttxt,
+                    'v_attach': 'top',
+                    'h_attach': 'center',
+                    'h_align': 'center',
+                    'vr_depth': -30,
+                    'color': tbtcolor,
+                    'shadow': 1.0,
+                    'flatness': 1.0,
+                    'position': (0, -60),
+                    'scale': 0.8,
+                    'text': tbttxt,
                 },
             )
         )
@@ -1230,34 +1321,35 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         bs.timer(5.0, bs.WeakCall(self._start_time_bonus_timer))
         wtcolor = (1, 1, 1, 1)
         wttxt = bs.Lstr(
-            value="${A} ${B}",
+            value='${A} ${B}',
             subs=[
-                ("${A}", bs.Lstr(resource="waveText")),
+                ('${A}', bs.Lstr(resource='waveText')),
                 (
-                    "${B}",
+                    '${B}',
                     str(self._wavenum)
                     + (
-                        ""
-                        if self._preset in [Preset.ENDLESS, Preset.ENDLESS_TOURNAMENT]
-                        else ("/" + str(len(self._waves)))
+                        ''
+                        if self._preset
+                        in [Preset.ENDLESS, Preset.ENDLESS_TOURNAMENT]
+                        else ('/' + str(len(self._waves)))
                     ),
                 ),
             ],
         )
         self._wave_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "v_attach": "top",
-                    "h_attach": "center",
-                    "h_align": "center",
-                    "vr_depth": -10,
-                    "color": wtcolor,
-                    "shadow": 1.0,
-                    "flatness": 1.0,
-                    "position": (0, -40),
-                    "scale": 1.3,
-                    "text": wttxt,
+                    'v_attach': 'top',
+                    'h_attach': 'center',
+                    'h_align': 'center',
+                    'vr_depth': -10,
+                    'color': wtcolor,
+                    'shadow': 1.0,
+                    'flatness': 1.0,
+                    'position': (0, -40),
+                    'scale': 1.3,
+                    'text': wttxt,
                 },
             )
         )
@@ -1316,7 +1408,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
 
         # Make sure all lists have something in them
         if not all(bot_levels):
-            raise RuntimeError("Got empty bot level")
+            raise RuntimeError('Got empty bot level')
         return bot_levels
 
     def _add_entries_for_distribution_group(
@@ -1353,14 +1445,18 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         target_points = level * 3 - 2
         min_dudes = min(1 + level // 3, 10)
         max_dudes = min(10, level + 1)
-        max_level = 4 if level > 6 else (3 if level > 3 else (2 if level > 2 else 1))
+        max_level = (
+            4 if level > 6 else (3 if level > 3 else (2 if level > 2 else 1))
+        )
         group_count = 3
         distribution = self._get_distribution(
             target_points, min_dudes, max_dudes, group_count, max_level
         )
         all_entries: list[Spawn | Spacing | Delay | None] = []
         for group in distribution:
-            self._add_entries_for_distribution_group(group, bot_levels, all_entries)
+            self._add_entries_for_distribution_group(
+                group, bot_levels, all_entries
+            )
         angle_rand = random.random()
         if angle_rand > 0.75:
             base_angle = 130.0
@@ -1403,10 +1499,10 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         if self._time_bonus > 0 and self._time_bonus_text is not None:
             assert self._time_bonus_text.node
             self._time_bonus_text.node.text = bs.Lstr(
-                value="${A}: ${B}",
+                value='${A}: ${B}',
                 subs=[
-                    ("${A}", bs.Lstr(resource="timeBonusText")),
-                    ("${B}", str(self._time_bonus)),
+                    ('${A}', bs.Lstr(resource='timeBonusText')),
+                    ('${B}', str(self._time_bonus)),
                 ],
             )
         else:
@@ -1421,11 +1517,11 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         score = self._score
         if self._preset is Preset.ENDLESS:
             if score >= 500:
-                self._award_achievement("Onslaught Master")
+                self._award_achievement('Onslaught Master')
             if score >= 1000:
-                self._award_achievement("Onslaught Wizard")
+                self._award_achievement('Onslaught Wizard')
             if score >= 5000:
-                self._award_achievement("Onslaught God")
+                self._award_achievement('Onslaught God')
         assert self._scoreboard is not None
         self._scoreboard.set_team_value(self.teams[0], score, max_score=None)
 
@@ -1475,7 +1571,9 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
                     screenmessage=False,
                     importance=importance,
                 )
-                dingsound = self._dingsound if importance == 1 else self._dingsoundhigh
+                dingsound = (
+                    self._dingsound if importance == 1 else self._dingsoundhigh
+                )
                 dingsound.play(volume=0.6)
 
             # Normally we pull scores from the score-set, but if there's
@@ -1498,40 +1596,46 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
 
     def _handle_uber_kill_achievements(self, msg: SpazBotDiedMessage) -> None:
         # Uber mine achievement:
-        if msg.spazbot.last_attacked_type == ("explosion", "land_mine"):
+        if msg.spazbot.last_attacked_type == ('explosion', 'land_mine'):
             self._land_mine_kills += 1
             if self._land_mine_kills >= 6:
-                self._award_achievement("Gold Miner")
+                self._award_achievement('Gold Miner')
 
         # Uber tnt achievement:
-        if msg.spazbot.last_attacked_type == ("explosion", "tnt"):
+        if msg.spazbot.last_attacked_type == ('explosion', 'tnt'):
             self._tnt_kills += 1
             if self._tnt_kills >= 6:
-                bs.timer(0.5, bs.WeakCall(self._award_achievement, "TNT Terror"))
+                bs.timer(
+                    0.5, bs.WeakCall(self._award_achievement, 'TNT Terror')
+                )
 
     def _handle_pro_kill_achievements(self, msg: SpazBotDiedMessage) -> None:
         # TNT achievement:
-        if msg.spazbot.last_attacked_type == ("explosion", "tnt"):
+        if msg.spazbot.last_attacked_type == ('explosion', 'tnt'):
             self._tnt_kills += 1
             if self._tnt_kills >= 3:
                 bs.timer(
                     0.5,
-                    bs.WeakCall(self._award_achievement, "Boom Goes the Dynamite"),
+                    bs.WeakCall(
+                        self._award_achievement, 'Boom Goes the Dynamite'
+                    ),
                 )
 
     def _handle_rookie_kill_achievements(self, msg: SpazBotDiedMessage) -> None:
         # Land-mine achievement:
-        if msg.spazbot.last_attacked_type == ("explosion", "land_mine"):
+        if msg.spazbot.last_attacked_type == ('explosion', 'land_mine'):
             self._land_mine_kills += 1
             if self._land_mine_kills >= 3:
-                self._award_achievement("Mine Games")
+                self._award_achievement('Mine Games')
 
-    def _handle_training_kill_achievements(self, msg: SpazBotDiedMessage) -> None:
+    def _handle_training_kill_achievements(
+        self, msg: SpazBotDiedMessage
+    ) -> None:
         # Toss-off-map achievement:
-        if msg.spazbot.last_attacked_type == ("picked_up", "default"):
+        if msg.spazbot.last_attacked_type == ('picked_up', 'default'):
             self._throw_off_kills += 1
             if self._throw_off_kills >= 3:
-                self._award_achievement("Off You Go Then")
+                self._award_achievement('Off You Go Then')
 
     def _set_can_end_wave(self) -> None:
         self._can_end_wave = True
@@ -1544,7 +1648,7 @@ class OnslaughtGame(bs.CoopGameActivity[Player, Team]):
         assert self._bots is not None
         self._bots.final_celebrate()
         self._game_over = True
-        self.do_end("defeat", delay=2.0)
+        self.do_end('defeat', delay=2.0)
         bs.setmusic(None)
 
     def _checkroundover(self) -> None:

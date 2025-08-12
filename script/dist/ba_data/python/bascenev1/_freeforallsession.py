@@ -20,9 +20,9 @@ class FreeForAllSession(MultiTeamSession):
 
     use_teams = False
     use_team_colors = False
-    _playlist_selection_var = "Free-for-All Playlist Selection"
-    _playlist_randomize_var = "Free-for-All Playlist Randomize"
-    _playlists_var = "Free-for-All Playlists"
+    _playlist_selection_var = 'Free-for-All Playlist Selection'
+    _playlist_randomize_var = 'Free-for-All Playlist Randomize'
+    _playlists_var = 'Free-for-All Playlists'
 
     def get_ffa_point_awards(self) -> dict[int, int]:
         """Return the number of points awarded for different rankings.
@@ -47,7 +47,7 @@ class FreeForAllSession(MultiTeamSession):
         return point_awards
 
     def __init__(self) -> None:
-        babase.increment_analytics_count("Free-for-all session start")
+        babase.increment_analytics_count('Free-for-all session start')
         super().__init__()
 
     @override
@@ -68,7 +68,9 @@ class FreeForAllSession(MultiTeamSession):
         # call it a draw.
         if len(self.sessionplayers) > 1 and len(winners) < 2:
             self.setactivity(
-                _bascenev1.newactivity(DrawScoreScreenActivity, {"results": results})
+                _bascenev1.newactivity(
+                    DrawScoreScreenActivity, {'results': results}
+                )
             )
         else:
             # Award different point amounts based on number of players.
@@ -77,33 +79,33 @@ class FreeForAllSession(MultiTeamSession):
             for i, winner in enumerate(winners):
                 for team in winner.teams:
                     points = point_awards[i] if i in point_awards else 0
-                    team.customdata["previous_score"] = team.customdata["score"]
-                    team.customdata["score"] += points
+                    team.customdata['previous_score'] = team.customdata['score']
+                    team.customdata['score'] += points
 
             series_winners = [
                 team
                 for team in self.sessionteams
-                if team.customdata["score"] >= self._ffa_series_length
+                if team.customdata['score'] >= self._ffa_series_length
             ]
             series_winners.sort(
                 reverse=True,
-                key=lambda t: asserttype(t.customdata["score"], int),
+                key=lambda t: asserttype(t.customdata['score'], int),
             )
             if len(series_winners) == 1 or (
                 len(series_winners) > 1
-                and series_winners[0].customdata["score"]
-                != series_winners[1].customdata["score"]
+                and series_winners[0].customdata['score']
+                != series_winners[1].customdata['score']
             ):
                 self.setactivity(
                     _bascenev1.newactivity(
                         TeamSeriesVictoryScoreScreenActivity,
-                        {"winner": series_winners[0]},
+                        {'winner': series_winners[0]},
                     )
                 )
             else:
                 self.setactivity(
                     _bascenev1.newactivity(
                         FreeForAllVictoryScoreScreenActivity,
-                        {"results": results},
+                        {'results': results},
                     )
                 )

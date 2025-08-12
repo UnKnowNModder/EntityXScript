@@ -23,7 +23,7 @@ import bauiv1 as bui
 if TYPE_CHECKING:
     from typing import Any, Callable, Sequence
 
-MERCH_LINK_KEY = "Merch Link"
+MERCH_LINK_KEY = 'Merch Link'
 
 
 class StoreBrowserWindow(bui.MainWindow):
@@ -33,14 +33,14 @@ class StoreBrowserWindow(bui.MainWindow):
         """Our available tab types."""
 
         # EXTRAS = 'extras'
-        MAPS = "maps"
-        MINIGAMES = "minigames"
-        CHARACTERS = "characters"
-        ICONS = "icons"
+        MAPS = 'maps'
+        MINIGAMES = 'minigames'
+        CHARACTERS = 'characters'
+        ICONS = 'icons'
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
         show_tab: StoreBrowserWindow.TabID | None = None,
         minimal_toolbars: bool = False,
@@ -54,7 +54,7 @@ class StoreBrowserWindow(bui.MainWindow):
         assert app.classic is not None
         uiscale = app.ui_v1.uiscale
 
-        bui.set_analytics_screen("Store Window")
+        bui.set_analytics_screen('Store Window')
 
         self.button_infos: dict[str, dict[str, Any]] | None = None
         self.update_buttons_timer: bui.AppTimer | None = None
@@ -75,7 +75,7 @@ class StoreBrowserWindow(bui.MainWindow):
         # extra_top = 30 if uiscale is bui.UIScale.SMALL else 0
 
         self.request: Any = None
-        self._r = "store"
+        self._r = 'store'
         self._last_buy_time: float | None = None
 
         # Do some fancy math to fill all available screen area up to the
@@ -105,9 +105,9 @@ class StoreBrowserWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height),
                 toolbar_visibility=(
-                    "menu_store"
+                    'menu_store'
                     if (uiscale is bui.UIScale.SMALL or minimal_toolbars)
-                    else "menu_full"
+                    else 'menu_full'
                 ),
                 scale=scale,
             ),
@@ -124,7 +124,7 @@ class StoreBrowserWindow(bui.MainWindow):
             scale=1.1,
             autoselect=True,
             label=bui.charstr(SpecialChar.BACK),
-            button_type="backSmall",
+            button_type='backSmall',
             on_activate_call=self.main_window_back,
         )
 
@@ -137,8 +137,8 @@ class StoreBrowserWindow(bui.MainWindow):
             bui.containerwidget(edit=self._root_widget, cancel_button=btn)
 
         if (
-            app.classic.platform in ["mac", "ios"]
-            and app.classic.subplatform == "appstore"
+            app.classic.platform in ['mac', 'ios']
+            and app.classic.subplatform == 'appstore'
         ):
             bui.buttonwidget(
                 parent=self._root_widget,
@@ -149,7 +149,9 @@ class StoreBrowserWindow(bui.MainWindow):
                 color=(0.35, 0.3, 0.4),
                 selectable=False,
                 textcolor=(0.55, 0.5, 0.6),
-                label=bui.Lstr(resource="getTicketsWindow.restorePurchasesText"),
+                label=bui.Lstr(
+                    resource='getTicketsWindow.restorePurchasesText'
+                ),
             )
 
         bui.textwidget(
@@ -168,24 +170,24 @@ class StoreBrowserWindow(bui.MainWindow):
             size=(0, 0),
             color=app.ui_v1.title_color,
             scale=1.1 if uiscale is bui.UIScale.SMALL else 1.3,
-            h_align="left" if uiscale is bui.UIScale.SMALL else "center",
-            v_align="center",
-            text=bui.Lstr(resource="storeText"),
+            h_align='left' if uiscale is bui.UIScale.SMALL else 'center',
+            v_align='center',
+            text=bui.Lstr(resource='storeText'),
             maxwidth=100 if uiscale is bui.UIScale.SMALL else 290,
         )
 
         tabs_def = [
             # (self.TabID.EXTRAS, bui.Lstr(resource=f'{self._r}.extrasText')),
-            (self.TabID.MAPS, bui.Lstr(resource=f"{self._r}.mapsText")),
+            (self.TabID.MAPS, bui.Lstr(resource=f'{self._r}.mapsText')),
             (
                 self.TabID.MINIGAMES,
-                bui.Lstr(resource=f"{self._r}.miniGamesText"),
+                bui.Lstr(resource=f'{self._r}.miniGamesText'),
             ),
             (
                 self.TabID.CHARACTERS,
-                bui.Lstr(resource=f"{self._r}.charactersText"),
+                bui.Lstr(resource=f'{self._r}.charactersText'),
             ),
-            (self.TabID.ICONS, bui.Lstr(resource=f"{self._r}.iconsText")),
+            (self.TabID.ICONS, bui.Lstr(resource=f'{self._r}.iconsText')),
         ]
 
         tab_inset = 200 if uiscale is bui.UIScale.SMALL else 100
@@ -215,15 +217,15 @@ class StoreBrowserWindow(bui.MainWindow):
                 parent=self._root_widget,
                 position=(center[0] - rad * 1.1, center[1] - rad * 1.2),
                 size=(rad * 2.4, rad * 2.4),
-                texture=bui.gettexture("circleShadow"),
+                texture=bui.gettexture('circleShadow'),
                 color=(1, 0, 0),
             )
             txt = bui.textwidget(
                 parent=self._root_widget,
                 position=center,
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 maxwidth=1.4 * rad,
                 scale=0.6,
                 shadow=1.0,
@@ -235,15 +237,15 @@ class StoreBrowserWindow(bui.MainWindow):
                 position=(center[0] - rad, center[1] - rad),
                 size=(rad * 2, rad * 2),
                 draw_controller=button,
-                texture=bui.gettexture("circleZigZag"),
+                texture=bui.gettexture('circleZigZag'),
                 color=(0.5, 0, 1.0),
             )
             sale_title_text = bui.textwidget(
                 parent=self._root_widget,
                 position=(center[0], center[1] + 0.24 * rad),
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 draw_controller=button,
                 maxwidth=1.4 * rad,
                 scale=0.6,
@@ -255,8 +257,8 @@ class StoreBrowserWindow(bui.MainWindow):
                 parent=self._root_widget,
                 position=(center[0], center[1] - 0.29 * rad),
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 draw_controller=button,
                 maxwidth=1.4 * rad,
                 scale=0.4,
@@ -265,11 +267,11 @@ class StoreBrowserWindow(bui.MainWindow):
                 color=(0, 1, 0),
             )
             self._purchasable_count_widgets[tab_id] = {
-                "img": img,
-                "text": txt,
-                "sale_img": sale_img,
-                "sale_title_text": sale_title_text,
-                "sale_time_text": sale_time_text,
+                'img': img,
+                'text': txt,
+                'sale_img': sale_img,
+                'sale_title_text': sale_title_text,
+                'sale_time_text': sale_time_text,
             }
         self._tab_update_timer = bui.AppTimer(
             1.0, bui.WeakCall(self._update_tabs), repeat=True
@@ -281,13 +283,13 @@ class StoreBrowserWindow(bui.MainWindow):
             last_tab_button = self._tab_row.tabs[tabs_def[-1][0]].button
             bui.widget(
                 edit=first_tab_button,
-                left_widget=bui.get_special_widget("back_button"),
-                up_widget=bui.get_special_widget("back_button"),
+                left_widget=bui.get_special_widget('back_button'),
+                up_widget=bui.get_special_widget('back_button'),
             )
             bui.widget(
                 edit=last_tab_button,
-                up_widget=bui.get_special_widget("tickets_meter"),
-                right_widget=bui.get_special_widget("tickets_meter"),
+                up_widget=bui.get_special_widget('tickets_meter'),
+                right_widget=bui.get_special_widget('tickets_meter'),
             )
 
         # self._scroll_width = self._width - scroll_buffer_h
@@ -318,27 +320,27 @@ class StoreBrowserWindow(bui.MainWindow):
 
             if sale_time is not None:
                 bui.textwidget(
-                    edit=tab_data["sale_title_text"],
-                    text=bui.Lstr(resource="store.saleText"),
+                    edit=tab_data['sale_title_text'],
+                    text=bui.Lstr(resource='store.saleText'),
                 )
                 bui.textwidget(
-                    edit=tab_data["sale_time_text"],
+                    edit=tab_data['sale_time_text'],
                     text=bui.timestring(sale_time / 1000.0, centi=False),
                 )
-                bui.imagewidget(edit=tab_data["sale_img"], opacity=1.0)
+                bui.imagewidget(edit=tab_data['sale_img'], opacity=1.0)
                 count = 0
             else:
-                bui.textwidget(edit=tab_data["sale_title_text"], text="")
-                bui.textwidget(edit=tab_data["sale_time_text"], text="")
-                bui.imagewidget(edit=tab_data["sale_img"], opacity=0.0)
+                bui.textwidget(edit=tab_data['sale_title_text'], text='')
+                bui.textwidget(edit=tab_data['sale_time_text'], text='')
+                bui.imagewidget(edit=tab_data['sale_img'], opacity=0.0)
                 count = store.get_available_purchase_count(tab_id.value)
 
             if count > 0:
-                bui.textwidget(edit=tab_data["text"], text=str(count))
-                bui.imagewidget(edit=tab_data["img"], opacity=1.0)
+                bui.textwidget(edit=tab_data['text'], text=str(count))
+                bui.imagewidget(edit=tab_data['img'], opacity=1.0)
             else:
-                bui.textwidget(edit=tab_data["text"], text="")
-                bui.imagewidget(edit=tab_data["img"], opacity=0.0)
+                bui.textwidget(edit=tab_data['text'], text='')
+                bui.imagewidget(edit=tab_data['img'], opacity=0.0)
 
     def _set_tab(self, tab_id: TabID) -> None:
         if self._current_tab is tab_id:
@@ -347,7 +349,7 @@ class StoreBrowserWindow(bui.MainWindow):
 
         # We wanna preserve our current tab between runs.
         cfg = bui.app.config
-        cfg["Store Tab"] = tab_id.value
+        cfg['Store Tab'] = tab_id.value
         cfg.commit()
 
         # Update tab colors based on which is selected.
@@ -383,9 +385,9 @@ class StoreBrowserWindow(bui.MainWindow):
             position=(self._width * 0.5, self._height * 0.5),
             size=(0, 0),
             color=(1, 0.7, 1, 0.5),
-            h_align="center",
-            v_align="center",
-            text=bui.Lstr(resource=f"{self._r}.loadingText"),
+            h_align='center',
+            v_align='center',
+            text=bui.Lstr(resource=f'{self._r}.loadingText'),
             maxwidth=self._scroll_width * 0.9,
         )
 
@@ -399,61 +401,77 @@ class StoreBrowserWindow(bui.MainWindow):
         plus = bui.app.plus
         assert plus is not None
         if result is None:
-            bui.getsound("error").play()
+            bui.getsound('error').play()
             bui.screenmessage(
-                bui.Lstr(resource="internal.unavailableNoConnectionText"),
+                bui.Lstr(resource='internal.unavailableNoConnectionText'),
                 color=(1, 0, 0),
             )
         else:
             if is_ticket_purchase:
-                if result["allow"]:
-                    price = plus.get_v1_account_misc_read_val("price." + item, None)
-                    if price is None or not isinstance(price, int) or price <= 0:
+                if result['allow']:
+                    price = plus.get_v1_account_misc_read_val(
+                        'price.' + item, None
+                    )
+                    if (
+                        price is None
+                        or not isinstance(price, int)
+                        or price <= 0
+                    ):
                         print(
-                            "Error; got invalid local price of",
+                            'Error; got invalid local price of',
                             price,
-                            "for item",
+                            'for item',
                             item,
                         )
-                        bui.getsound("error").play()
+                        bui.getsound('error').play()
                     else:
-                        bui.getsound("click01").play()
+                        bui.getsound('click01').play()
                         plus.in_game_purchase(item, price)
                 else:
-                    if result["reason"] == "versionTooOld":
-                        bui.getsound("error").play()
+                    if result['reason'] == 'versionTooOld':
+                        bui.getsound('error').play()
                         bui.screenmessage(
-                            bui.Lstr(resource="getTicketsWindow.versionTooOldText"),
+                            bui.Lstr(
+                                resource='getTicketsWindow.versionTooOldText'
+                            ),
                             color=(1, 0, 0),
                         )
                     else:
-                        bui.getsound("error").play()
+                        bui.getsound('error').play()
                         bui.screenmessage(
-                            bui.Lstr(resource="getTicketsWindow.unavailableText"),
+                            bui.Lstr(
+                                resource='getTicketsWindow.unavailableText'
+                            ),
                             color=(1, 0, 0),
                         )
             # Real in-app purchase.
             else:
-                if result["allow"]:
+                if result['allow']:
                     plus.purchase(item)
                 else:
-                    if result["reason"] == "versionTooOld":
-                        bui.getsound("error").play()
+                    if result['reason'] == 'versionTooOld':
+                        bui.getsound('error').play()
                         bui.screenmessage(
-                            bui.Lstr(resource="getTicketsWindow.versionTooOldText"),
+                            bui.Lstr(
+                                resource='getTicketsWindow.versionTooOldText'
+                            ),
                             color=(1, 0, 0),
                         )
                     else:
-                        bui.getsound("error").play()
+                        bui.getsound('error').play()
                         bui.screenmessage(
-                            bui.Lstr(resource="getTicketsWindow.unavailableText"),
+                            bui.Lstr(
+                                resource='getTicketsWindow.unavailableText'
+                            ),
                             color=(1, 0, 0),
                         )
 
-    def _do_purchase_check(self, item: str, is_ticket_purchase: bool = False) -> None:
+    def _do_purchase_check(
+        self, item: str, is_ticket_purchase: bool = False
+    ) -> None:
         app = bui.app
         if app.classic is None:
-            logging.warning("_do_purchase_check() requires classic.")
+            logging.warning('_do_purchase_check() requires classic.')
             return
 
         # Here we ping the server to ask if it's valid for us to
@@ -461,14 +479,14 @@ class StoreBrowserWindow(bui.MainWindow):
         # paid locally.
 
         app.classic.master_server_v1_get(
-            "bsAccountPurchaseCheck",
+            'bsAccountPurchaseCheck',
             {
-                "item": item,
-                "platform": app.classic.platform,
-                "subplatform": app.classic.subplatform,
-                "version": app.env.engine_version,
-                "buildNumber": app.env.engine_build_number,
-                "purchaseType": "ticket" if is_ticket_purchase else "real",
+                'item': item,
+                'platform': app.classic.platform,
+                'subplatform': app.classic.subplatform,
+                'version': app.env.engine_version,
+                'buildNumber': app.env.engine_build_number,
+                'purchaseType': 'ticket' if is_ticket_purchase else 'real',
             },
             callback=bui.WeakCall(
                 self._purchase_check_result, item, is_ticket_purchase
@@ -491,8 +509,11 @@ class StoreBrowserWindow(bui.MainWindow):
         # Prevent pressing buy within a few seconds of the last press
         # (gives the buttons time to disable themselves and whatnot).
         curtime = bui.apptime()
-        if self._last_buy_time is not None and (curtime - self._last_buy_time) < 2.0:
-            bui.getsound("error").play()
+        if (
+            self._last_buy_time is not None
+            and (curtime - self._last_buy_time) < 2.0
+        ):
+            bui.getsound('error').play()
         else:
             if plus.accounts.primary is None:
                 show_sign_in_prompt()
@@ -500,45 +521,51 @@ class StoreBrowserWindow(bui.MainWindow):
                 self._last_buy_time = curtime
 
                 # Merch is a special case - just a link.
-                if item == "merch":
-                    url = bui.app.config.get("Merch Link")
+                if item == 'merch':
+                    url = bui.app.config.get('Merch Link')
                     if isinstance(url, str):
                         bui.open_url(url)
 
                 # Pro is an actual IAP, and the rest are ticket purchases.
-                elif item == "pro":
-                    bui.getsound("click01").play()
+                elif item == 'pro':
+                    bui.getsound('click01').play()
 
                     # Purchase either pro or pro_sale depending on whether
                     # there is a sale going on.
                     self._do_purchase_check(
-                        "pro"
-                        if store.get_available_sale_time("extras") is None
-                        else "pro_sale"
+                        'pro'
+                        if store.get_available_sale_time('extras') is None
+                        else 'pro_sale'
                     )
                 else:
-                    price = plus.get_v1_account_misc_read_val("price." + item, None)
+                    price = plus.get_v1_account_misc_read_val(
+                        'price.' + item, None
+                    )
                     our_tickets = classic.tickets
                     if price is not None and our_tickets < price:
-                        bui.getsound("error").play()
+                        bui.getsound('error').play()
                         bui.screenmessage(
-                            bui.Lstr(resource="notEnoughTicketsText"),
+                            bui.Lstr(resource='notEnoughTicketsText'),
                             color=(1, 0, 0),
                         )
                         # gettickets.show_get_tickets_prompt()
                     else:
 
                         def do_it() -> None:
-                            self._do_purchase_check(item, is_ticket_purchase=True)
+                            self._do_purchase_check(
+                                item, is_ticket_purchase=True
+                            )
 
-                        bui.getsound("swish").play()
+                        bui.getsound('swish').play()
                         ConfirmWindow(
                             bui.Lstr(
-                                resource="store.purchaseConfirmText",
+                                resource='store.purchaseConfirmText',
                                 subs=[
                                     (
-                                        "${ITEM}",
-                                        store.get_store_item_name_translated(item),
+                                        '${ITEM}',
+                                        store.get_store_item_name_translated(
+                                            item
+                                        ),
                                     )
                                 ],
                             ),
@@ -546,20 +573,20 @@ class StoreBrowserWindow(bui.MainWindow):
                             height=120,
                             action=do_it,
                             ok_text=bui.Lstr(
-                                resource="store.purchaseText",
-                                fallback_resource="okText",
+                                resource='store.purchaseText',
+                                fallback_resource='okText',
                             ),
                         )
 
     def _print_already_own(self, charname: str) -> None:
         bui.screenmessage(
             bui.Lstr(
-                resource=f"{self._r}.alreadyOwnText",
-                subs=[("${NAME}", charname)],
+                resource=f'{self._r}.alreadyOwnText',
+                subs=[('${NAME}', charname)],
             ),
             color=(1, 0, 0),
         )
-        bui.getsound("error").play()
+        bui.getsound('error').play()
 
     def update_buttons(self) -> None:
         """Update our buttons."""
@@ -579,28 +606,30 @@ class StoreBrowserWindow(bui.MainWindow):
         if not self._root_widget:
             return
 
-        sales_raw = plus.get_v1_account_misc_read_val("sales", {})
+        sales_raw = plus.get_v1_account_misc_read_val('sales', {})
         sales = {}
         try:
             # Look at the current set of sales; filter any with time remaining.
             for sale_item, sale_info in list(sales_raw.items()):
                 to_end = (
-                    datetime.datetime.fromtimestamp(sale_info["e"], datetime.UTC)
+                    datetime.datetime.fromtimestamp(
+                        sale_info['e'], datetime.UTC
+                    )
                     - utc_now()
                 ).total_seconds()
                 if to_end > 0:
                     sales[sale_item] = {
-                        "to_end": to_end,
-                        "original_price": sale_info["op"],
+                        'to_end': to_end,
+                        'original_price': sale_info['op'],
                     }
         except Exception:
-            logging.exception("Error parsing sales.")
+            logging.exception('Error parsing sales.')
 
         assert self.button_infos is not None
         for b_type, b_info in self.button_infos.items():
-            if b_type == "merch":
+            if b_type == 'merch':
                 purchased = False
-            elif b_type in ["upgrades.pro", "pro"]:
+            elif b_type in ['upgrades.pro', 'pro']:
                 assert bui.app.classic is not None
                 purchased = bui.app.classic.accounts.have_pro()
             else:
@@ -608,18 +637,18 @@ class StoreBrowserWindow(bui.MainWindow):
                 purchased = b_type in bui.app.classic.purchases
 
             sale_opacity = 0.0
-            sale_title_text: str | bui.Lstr = ""
-            sale_time_text: str | bui.Lstr = ""
+            sale_title_text: str | bui.Lstr = ''
+            sale_time_text: str | bui.Lstr = ''
 
             call: Callable | None
             if purchased:
                 title_color = (0.8, 0.7, 0.9, 1.0)
                 color = (0.63, 0.55, 0.78)
                 extra_image_opacity = 0.5
-                call = bui.WeakCall(self._print_already_own, b_info["name"])
-                price_text = ""
-                price_text_left = ""
-                price_text_right = ""
+                call = bui.WeakCall(self._print_already_own, b_info['name'])
+                price_text = ''
+                price_text_left = ''
+                price_text_right = ''
                 show_purchase_check = True
                 description_color: Sequence[float] = (0.4, 1.0, 0.4, 0.4)
                 description_color2: Sequence[float] = (0.0, 0.0, 0.0, 0.0)
@@ -628,51 +657,61 @@ class StoreBrowserWindow(bui.MainWindow):
                 title_color = (0.7, 0.9, 0.7, 1.0)
                 color = (0.4, 0.8, 0.1)
                 extra_image_opacity = 1.0
-                call = b_info["call"] if "call" in b_info else None
-                if b_type == "merch":
-                    price_text = ""
-                    price_text_left = ""
-                    price_text_right = ""
-                elif b_type in ["upgrades.pro", "pro"]:
-                    sale_time = store.get_available_sale_time("extras")
+                call = b_info['call'] if 'call' in b_info else None
+                if b_type == 'merch':
+                    price_text = ''
+                    price_text_left = ''
+                    price_text_right = ''
+                elif b_type in ['upgrades.pro', 'pro']:
+                    sale_time = store.get_available_sale_time('extras')
                     if sale_time is not None:
-                        priceraw = plus.get_price("pro")
-                        price_text_left = priceraw if priceraw is not None else "?"
-                        priceraw = plus.get_price("pro_sale")
-                        price_text_right = priceraw if priceraw is not None else "?"
+                        priceraw = plus.get_price('pro')
+                        price_text_left = (
+                            priceraw if priceraw is not None else '?'
+                        )
+                        priceraw = plus.get_price('pro_sale')
+                        price_text_right = (
+                            priceraw if priceraw is not None else '?'
+                        )
                         sale_opacity = 1.0
-                        price_text = ""
-                        sale_title_text = bui.Lstr(resource="store.saleText")
-                        sale_time_text = bui.timestring(sale_time / 1000.0, centi=False)
+                        price_text = ''
+                        sale_title_text = bui.Lstr(resource='store.saleText')
+                        sale_time_text = bui.timestring(
+                            sale_time / 1000.0, centi=False
+                        )
                     else:
-                        priceraw = plus.get_price("pro")
-                        price_text = priceraw if priceraw is not None else "?"
-                        price_text_left = ""
-                        price_text_right = ""
+                        priceraw = plus.get_price('pro')
+                        price_text = priceraw if priceraw is not None else '?'
+                        price_text_left = ''
+                        price_text_right = ''
                 else:
-                    price = plus.get_v1_account_misc_read_val("price." + b_type, 0)
+                    price = plus.get_v1_account_misc_read_val(
+                        'price.' + b_type, 0
+                    )
 
                     # Color the button differently if we cant afford this.
                     if plus.accounts.primary is not None:
                         if classic.tickets < price:
                             color = (0.6, 0.61, 0.6)
                     price_text = bui.charstr(bui.SpecialChar.TICKET) + str(
-                        plus.get_v1_account_misc_read_val("price." + b_type, "?")
+                        plus.get_v1_account_misc_read_val(
+                            'price.' + b_type, '?'
+                        )
                     )
-                    price_text_left = ""
-                    price_text_right = ""
+                    price_text_left = ''
+                    price_text_right = ''
 
                     # TESTING:
                     if b_type in sales:
                         sale_opacity = 1.0
                         price_text_left = bui.charstr(SpecialChar.TICKET) + str(
-                            sales[b_type]["original_price"]
+                            sales[b_type]['original_price']
                         )
                         price_text_right = price_text
-                        price_text = ""
-                        sale_title_text = bui.Lstr(resource="store.saleText")
+                        price_text = ''
+                        sale_title_text = bui.Lstr(resource='store.saleText')
                         sale_time_text = bui.timestring(
-                            sales[b_type]["to_end"], centi=False
+                            sales[b_type]['to_end'], centi=False
                         )
 
                 description_color = (0.5, 1.0, 0.5)
@@ -680,49 +719,65 @@ class StoreBrowserWindow(bui.MainWindow):
                 price_color = (0.2, 1, 0.2, 1.0)
                 show_purchase_check = False
 
-            if "title_text" in b_info:
-                bui.textwidget(edit=b_info["title_text"], color=title_color)
-            if "purchase_check" in b_info:
+            if 'title_text' in b_info:
+                bui.textwidget(edit=b_info['title_text'], color=title_color)
+            if 'purchase_check' in b_info:
                 bui.imagewidget(
-                    edit=b_info["purchase_check"],
+                    edit=b_info['purchase_check'],
                     opacity=1.0 if show_purchase_check else 0.0,
                 )
-            if "price_widget" in b_info:
+            if 'price_widget' in b_info:
                 bui.textwidget(
-                    edit=b_info["price_widget"],
+                    edit=b_info['price_widget'],
                     text=price_text,
                     color=price_color,
                 )
-            if "price_widget_left" in b_info:
-                bui.textwidget(edit=b_info["price_widget_left"], text=price_text_left)
-            if "price_widget_right" in b_info:
-                bui.textwidget(edit=b_info["price_widget_right"], text=price_text_right)
-            if "price_slash_widget" in b_info:
-                bui.imagewidget(edit=b_info["price_slash_widget"], opacity=sale_opacity)
-            if "sale_bg_widget" in b_info:
-                bui.imagewidget(edit=b_info["sale_bg_widget"], opacity=sale_opacity)
-            if "sale_title_widget" in b_info:
-                bui.textwidget(edit=b_info["sale_title_widget"], text=sale_title_text)
-            if "sale_time_widget" in b_info:
-                bui.textwidget(edit=b_info["sale_time_widget"], text=sale_time_text)
-            if "button" in b_info:
-                bui.buttonwidget(
-                    edit=b_info["button"], color=color, on_activate_call=call
+            if 'price_widget_left' in b_info:
+                bui.textwidget(
+                    edit=b_info['price_widget_left'], text=price_text_left
                 )
-            if "extra_backings" in b_info:
-                for bck in b_info["extra_backings"]:
-                    bui.imagewidget(edit=bck, color=color, opacity=extra_image_opacity)
-            if "extra_images" in b_info:
-                for img in b_info["extra_images"]:
+            if 'price_widget_right' in b_info:
+                bui.textwidget(
+                    edit=b_info['price_widget_right'], text=price_text_right
+                )
+            if 'price_slash_widget' in b_info:
+                bui.imagewidget(
+                    edit=b_info['price_slash_widget'], opacity=sale_opacity
+                )
+            if 'sale_bg_widget' in b_info:
+                bui.imagewidget(
+                    edit=b_info['sale_bg_widget'], opacity=sale_opacity
+                )
+            if 'sale_title_widget' in b_info:
+                bui.textwidget(
+                    edit=b_info['sale_title_widget'], text=sale_title_text
+                )
+            if 'sale_time_widget' in b_info:
+                bui.textwidget(
+                    edit=b_info['sale_time_widget'], text=sale_time_text
+                )
+            if 'button' in b_info:
+                bui.buttonwidget(
+                    edit=b_info['button'], color=color, on_activate_call=call
+                )
+            if 'extra_backings' in b_info:
+                for bck in b_info['extra_backings']:
+                    bui.imagewidget(
+                        edit=bck, color=color, opacity=extra_image_opacity
+                    )
+            if 'extra_images' in b_info:
+                for img in b_info['extra_images']:
                     bui.imagewidget(edit=img, opacity=extra_image_opacity)
-            if "extra_texts" in b_info:
-                for etxt in b_info["extra_texts"]:
+            if 'extra_texts' in b_info:
+                for etxt in b_info['extra_texts']:
                     bui.textwidget(edit=etxt, color=description_color)
-            if "extra_texts_2" in b_info:
-                for etxt in b_info["extra_texts_2"]:
+            if 'extra_texts_2' in b_info:
+                for etxt in b_info['extra_texts_2']:
                     bui.textwidget(edit=etxt, color=description_color2)
-            if "descriptionText" in b_info:
-                bui.textwidget(edit=b_info["descriptionText"], color=description_color)
+            if 'descriptionText' in b_info:
+                bui.textwidget(
+                    edit=b_info['descriptionText'], color=description_color
+                )
 
     def _on_response(self, data: dict[str, Any] | None) -> None:
 
@@ -739,9 +794,9 @@ class StoreBrowserWindow(bui.MainWindow):
                 scale=1.3,
                 transition_delay=0.1,
                 color=(1, 0.3, 0.3, 1.0),
-                h_align="center",
-                v_align="center",
-                text=bui.Lstr(resource=f"{self._r}.loadErrorText"),
+                h_align='center',
+                v_align='center',
+                text=bui.Lstr(resource=f'{self._r}.loadErrorText'),
                 maxwidth=self._scroll_width * 0.9,
             )
         else:
@@ -778,9 +833,9 @@ class StoreBrowserWindow(bui.MainWindow):
                     scale=1.3,
                     transition_delay=0.1,
                     color=(1, 1, 0.3, 1.0),
-                    h_align="center",
-                    v_align="center",
-                    text=bui.Lstr(resource=f"{self._r}.comingSoonText"),
+                    h_align='center',
+                    v_align='center',
+                    text=bui.Lstr(resource=f'{self._r}.comingSoonText'),
                     maxwidth=self._scroll_width * 0.9,
                 )
 
@@ -807,43 +862,45 @@ class StoreBrowserWindow(bui.MainWindow):
                 if sel == tab.button
             ]
             if sel == self._scrollwidget:
-                sel_name = "Scroll"
+                sel_name = 'Scroll'
             elif sel == self._back_button:
-                sel_name = "Back"
+                sel_name = 'Back'
             elif selected_tab_ids:
                 assert len(selected_tab_ids) == 1
-                sel_name = f"Tab:{selected_tab_ids[0].value}"
+                sel_name = f'Tab:{selected_tab_ids[0].value}'
             else:
-                raise ValueError(f"unrecognized selection '{sel}'")
+                raise ValueError(f'unrecognized selection \'{sel}\'')
             assert bui.app.classic is not None
             bui.app.ui_v1.window_states[type(self)] = {
-                "sel_name": sel_name,
+                'sel_name': sel_name,
             }
         except Exception:
-            logging.exception("Error saving state for %s.", self)
+            logging.exception('Error saving state for %s.', self)
 
     def _restore_state(self) -> None:
 
         try:
             sel: bui.Widget | None
             assert bui.app.classic is not None
-            sel_name = bui.app.ui_v1.window_states.get(type(self), {}).get("sel_name")
+            sel_name = bui.app.ui_v1.window_states.get(type(self), {}).get(
+                'sel_name'
+            )
             assert isinstance(sel_name, (str, type(None)))
 
             try:
-                current_tab = self.TabID(bui.app.config.get("Store Tab"))
+                current_tab = self.TabID(bui.app.config.get('Store Tab'))
             except ValueError:
                 current_tab = self.TabID.CHARACTERS
 
             if self._show_tab is not None:
                 current_tab = self._show_tab
-            if sel_name == "Back":
+            if sel_name == 'Back':
                 sel = self._back_button
-            elif sel_name == "Scroll":
+            elif sel_name == 'Scroll':
                 sel = self._scrollwidget
-            elif isinstance(sel_name, str) and sel_name.startswith("Tab:"):
+            elif isinstance(sel_name, str) and sel_name.startswith('Tab:'):
                 try:
-                    sel_tab_id = self.TabID(sel_name.split(":")[-1])
+                    sel_tab_id = self.TabID(sel_name.split(':')[-1])
                 except ValueError:
                     sel_tab_id = self.TabID.CHARACTERS
                 sel = self._tab_row.tabs[sel_tab_id].button
@@ -851,13 +908,16 @@ class StoreBrowserWindow(bui.MainWindow):
                 sel = self._tab_row.tabs[current_tab].button
 
             # If we were requested to show a tab, select it too.
-            if self._show_tab is not None and self._show_tab in self._tab_row.tabs:
+            if (
+                self._show_tab is not None
+                and self._show_tab in self._tab_row.tabs
+            ):
                 sel = self._tab_row.tabs[self._show_tab].button
             self._set_tab(current_tab)
             if sel is not None:
                 bui.containerwidget(edit=self._root_widget, selected_child=sel)
         except Exception:
-            logging.exception("Error restoring state for %s.", self)
+            logging.exception('Error restoring state for %s.', self)
 
 
 def _check_merch_availability_in_bg_thread() -> None:
@@ -893,7 +953,7 @@ def _check_merch_availability_in_bg_thread() -> None:
             pass
         except Exception:
             logging.warning(
-                "Unexpected error in merch-availability-check.", exc_info=True
+                'Unexpected error in merch-availability-check.', exc_info=True
             )
         time.sleep(1.1934)  # A bit randomized to avoid aliasing.
 
@@ -911,8 +971,8 @@ class _Store:
         self._store_window = store_window
         self._width = width
         store_data = cstore.get_store_layout()
-        self._tab = sdata["tab"]
-        self._sections = copy.deepcopy(store_data[sdata["tab"]])
+        self._tab = sdata['tab']
+        self._sections = copy.deepcopy(store_data[sdata['tab']])
         self._height: float | None = None
 
         assert bui.app.classic is not None
@@ -920,45 +980,49 @@ class _Store:
 
         # Pre-calc a few things and add them to store-data.
         for section in self._sections:
-            if self._tab == "characters":
-                dummy_name = "characters.foo"
-            elif self._tab == "extras":
-                dummy_name = "pro"
-            elif self._tab == "maps":
-                dummy_name = "maps.foo"
-            elif self._tab == "icons":
-                dummy_name = "icons.foo"
+            if self._tab == 'characters':
+                dummy_name = 'characters.foo'
+            elif self._tab == 'extras':
+                dummy_name = 'pro'
+            elif self._tab == 'maps':
+                dummy_name = 'maps.foo'
+            elif self._tab == 'icons':
+                dummy_name = 'icons.foo'
             else:
-                dummy_name = ""
-            section["button_size"] = cstore.get_store_item_display_size(dummy_name)
-            section["v_spacing"] = (
-                -25
-                if (self._tab == "extras" and uiscale is bui.UIScale.SMALL)
-                else -17 if self._tab == "characters" else 0
+                dummy_name = ''
+            section['button_size'] = cstore.get_store_item_display_size(
+                dummy_name
             )
-            if "title" not in section:
-                section["title"] = ""
-            section["x_offs"] = 0.0
+            section['v_spacing'] = (
+                -25
+                if (self._tab == 'extras' and uiscale is bui.UIScale.SMALL)
+                else -17 if self._tab == 'characters' else 0
+            )
+            if 'title' not in section:
+                section['title'] = ''
+            section['x_offs'] = 0.0
             # section['x_offs'] = (
             #     130
             #     if self._tab == 'extras'
             #     else 270 if self._tab == 'maps' else 0
             # )
-            section["y_offs"] = (
+            section['y_offs'] = (
                 20
                 if (
-                    self._tab == "extras"
+                    self._tab == 'extras'
                     and uiscale is bui.UIScale.SMALL
-                    and bui.app.config.get("Merch Link")
+                    and bui.app.config.get('Merch Link')
                 )
                 else (
                     55
-                    if (self._tab == "extras" and uiscale is bui.UIScale.SMALL)
-                    else -20 if self._tab == "icons" else 0
+                    if (self._tab == 'extras' and uiscale is bui.UIScale.SMALL)
+                    else -20 if self._tab == 'icons' else 0
                 )
             )
 
-    def instantiate(self, scrollwidget: bui.Widget, tab_button: bui.Widget) -> None:
+    def instantiate(
+        self, scrollwidget: bui.Widget, tab_button: bui.Widget
+    ) -> None:
         """Create the store."""
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
@@ -976,11 +1040,11 @@ class _Store:
 
         # Calc total height.
         for i, section in enumerate(self._sections):
-            if section["title"] != "":
+            if section['title'] != '':
                 assert self._height is not None
                 self._height += title_spacing
-            b_width, b_height = section["button_size"]
-            b_count = len(section["items"])
+            b_width, b_height = section['button_size']
+            b_count = len(section['items'])
             b_column_count = min(
                 b_count,
                 int(math.floor(self._width / (b_width + button_spacing))),
@@ -989,7 +1053,7 @@ class _Store:
             b_height_total = (
                 2 * button_border
                 + b_row_count * b_height
-                + (b_row_count - 1) * section["v_spacing"]
+                + (b_row_count - 1) * section['v_spacing']
             )
             self._height += b_height_total
 
@@ -1004,17 +1068,17 @@ class _Store:
         )
         v = self._height - 20
 
-        if self._tab == "characters":
+        if self._tab == 'characters':
             txt = bui.Lstr(
-                resource="store.howToSwitchCharactersText",
+                resource='store.howToSwitchCharactersText',
                 subs=[
                     (
-                        "${SETTINGS}",
-                        bui.Lstr(resource="inventoryText"),
+                        '${SETTINGS}',
+                        bui.Lstr(resource='inventoryText'),
                     ),
                     (
-                        "${PLAYER_PROFILES}",
-                        bui.Lstr(resource="playerProfilesWindow.titleText"),
+                        '${PLAYER_PROFILES}',
+                        bui.Lstr(resource='playerProfilesWindow.titleText'),
                     ),
                 ],
             )
@@ -1023,8 +1087,8 @@ class _Store:
                 text=txt,
                 size=(0, 0),
                 position=(self._width * 0.5, self._height - 28),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 color=(0.7, 1, 0.7, 0.4),
                 scale=0.7,
                 shadow=0,
@@ -1032,17 +1096,17 @@ class _Store:
                 maxwidth=700,
                 transition_delay=0.4,
             )
-        elif self._tab == "icons":
+        elif self._tab == 'icons':
             txt = bui.Lstr(
-                resource="store.howToUseIconsText",
+                resource='store.howToUseIconsText',
                 subs=[
                     (
-                        "${SETTINGS}",
-                        bui.Lstr(resource="mainMenu.settingsText"),
+                        '${SETTINGS}',
+                        bui.Lstr(resource='mainMenu.settingsText'),
                     ),
                     (
-                        "${PLAYER_PROFILES}",
-                        bui.Lstr(resource="playerProfilesWindow.titleText"),
+                        '${PLAYER_PROFILES}',
+                        bui.Lstr(resource='playerProfilesWindow.titleText'),
                     ),
                 ],
             )
@@ -1051,8 +1115,8 @@ class _Store:
                 text=txt,
                 size=(0, 0),
                 position=(self._width * 0.5, self._height - 28),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 color=(0.7, 1, 0.7, 0.4),
                 scale=0.7,
                 shadow=0,
@@ -1060,17 +1124,17 @@ class _Store:
                 maxwidth=700,
                 transition_delay=0.4,
             )
-        elif self._tab == "maps":
+        elif self._tab == 'maps':
             assert self._width is not None
             assert self._height is not None
-            txt = bui.Lstr(resource="store.howToUseMapsText")
+            txt = bui.Lstr(resource='store.howToUseMapsText')
             bui.textwidget(
                 parent=cnt2,
                 text=txt,
                 size=(0, 0),
                 position=(self._width * 0.5, self._height - 28),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 color=(0.7, 1, 0.7, 0.4),
                 scale=0.7,
                 shadow=0,
@@ -1084,7 +1148,7 @@ class _Store:
 
         delay = 0.3
         for section in self._sections:
-            if section["title"] != "":
+            if section['title'] != '':
                 bui.textwidget(
                     parent=cnt2,
                     position=(
@@ -1095,16 +1159,16 @@ class _Store:
                     scale=1.0,
                     transition_delay=delay,
                     color=(0.7, 0.9, 0.7, 1),
-                    h_align="center",
-                    v_align="center",
-                    text=bui.Lstr(resource=section["title"]),
+                    h_align='center',
+                    v_align='center',
+                    text=bui.Lstr(resource=section['title']),
                     maxwidth=self._width * 0.7,
                 )
                 v -= title_spacing
             delay = max(0.100, delay - 0.100)
             v -= button_border
-            b_width, b_height = section["button_size"]
-            b_count = len(section["items"])
+            b_width, b_height = section['button_size']
+            b_count = len(section['items'])
             b_column_count = min(
                 b_count,
                 int(math.floor(self._width / (b_width + button_spacing))),
@@ -1113,11 +1177,11 @@ class _Store:
             col = 0
             item: dict[str, Any]
             assert self._store_window.button_infos is not None
-            for i, item_name in enumerate(section["items"]):
+            for i, item_name in enumerate(section['items']):
                 item = self._store_window.button_infos[item_name] = {}
-                item["call"] = bui.WeakCall(self._store_window.buy, item_name)
-                boffs_h2 = section.get("x_offs", 0.0)
-                boffs_v2 = section.get("y_offs", 0.0)
+                item['call'] = bui.WeakCall(self._store_window.buy, item_name)
+                boffs_h2 = section.get('x_offs', 0.0)
+                boffs_v2 = section.get('y_offs', 0.0)
 
                 # Calc the diff between the space we use and
                 # the space available and nudge us right by
@@ -1142,7 +1206,7 @@ class _Store:
                     boffs_v2=boffs_v2,
                     delay=delay,
                 )
-                btn = item["button"]
+                btn = item['button']
                 delay = max(0.1, delay - 0.1)
                 this_row_buttons.append(btn)
 
@@ -1178,7 +1242,7 @@ class _Store:
                     col = 0
                     v -= b_height
                     if i < b_count - 1:
-                        v -= section["v_spacing"]
+                        v -= section['v_spacing']
 
             v -= button_border
 
@@ -1196,9 +1260,11 @@ class _Store:
 
 
 class _Request:
-    def __init__(self, window: StoreBrowserWindow, tab_id: StoreBrowserWindow.TabID):
+    def __init__(
+        self, window: StoreBrowserWindow, tab_id: StoreBrowserWindow.TabID
+    ):
         self._window = weakref.ref(window)
-        data = {"tab": tab_id.value}
+        data = {'tab': tab_id.value}
         bui.apptimer(0.1, bui.WeakCall(self._on_response, data))
 
     def _on_response(self, data: dict[str, Any] | None) -> None:
@@ -1221,7 +1287,7 @@ class _Request:
 # be kicking off work at module import time.
 if (
     bool(False)
-    and os.environ.get("BA_RUNNING_WITH_DUMMY_MODULES") != "1"
+    and os.environ.get('BA_RUNNING_WITH_DUMMY_MODULES') != '1'
     and bui.app.state is not bui.AppState.NOT_STARTED
 ):
     Thread(target=_check_merch_availability_in_bg_thread).start()

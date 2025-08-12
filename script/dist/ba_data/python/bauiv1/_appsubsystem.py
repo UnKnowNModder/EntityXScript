@@ -38,23 +38,23 @@ class UIV1AppSubsystem(babase.AppSubsystem):
     class RootUIElement(Enum):
         """Stuff provided by the root ui."""
 
-        MENU_BUTTON = "menu_button"
-        SQUAD_BUTTON = "squad_button"
-        ACCOUNT_BUTTON = "account_button"
-        SETTINGS_BUTTON = "settings_button"
-        INBOX_BUTTON = "inbox_button"
-        STORE_BUTTON = "store_button"
-        INVENTORY_BUTTON = "inventory_button"
-        ACHIEVEMENTS_BUTTON = "achievements_button"
-        GET_TOKENS_BUTTON = "get_tokens_button"
-        TICKETS_METER = "tickets_meter"
-        TOKENS_METER = "tokens_meter"
-        TROPHY_METER = "trophy_meter"
-        LEVEL_METER = "level_meter"
-        CHEST_SLOT_0 = "chest_slot_0"
-        CHEST_SLOT_1 = "chest_slot_1"
-        CHEST_SLOT_2 = "chest_slot_2"
-        CHEST_SLOT_3 = "chest_slot_3"
+        MENU_BUTTON = 'menu_button'
+        SQUAD_BUTTON = 'squad_button'
+        ACCOUNT_BUTTON = 'account_button'
+        SETTINGS_BUTTON = 'settings_button'
+        INBOX_BUTTON = 'inbox_button'
+        STORE_BUTTON = 'store_button'
+        INVENTORY_BUTTON = 'inventory_button'
+        ACHIEVEMENTS_BUTTON = 'achievements_button'
+        GET_TOKENS_BUTTON = 'get_tokens_button'
+        TICKETS_METER = 'tickets_meter'
+        TOKENS_METER = 'tokens_meter'
+        TROPHY_METER = 'trophy_meter'
+        LEVEL_METER = 'level_meter'
+        CHEST_SLOT_0 = 'chest_slot_0'
+        CHEST_SLOT_1 = 'chest_slot_1'
+        CHEST_SLOT_2 = 'chest_slot_2'
+        CHEST_SLOT_3 = 'chest_slot_3'
 
     def __init__(self) -> None:
         from bauiv1._uitypes import MainWindow
@@ -93,17 +93,17 @@ class UIV1AppSubsystem(babase.AppSubsystem):
 
         # Elements in our root UI will call anything here when
         # activated.
-        self.root_ui_calls: dict[UIV1AppSubsystem.RootUIElement, Callable[[], None]] = (
-            {}
-        )
+        self.root_ui_calls: dict[
+            UIV1AppSubsystem.RootUIElement, Callable[[], None]
+        ] = {}
 
     def _update_ui_scale(self) -> None:
         uiscalestr = babase.get_ui_scale()
-        if uiscalestr == "large":
+        if uiscalestr == 'large':
             self._uiscale = babase.UIScale.LARGE
-        elif uiscalestr == "medium":
+        elif uiscalestr == 'medium':
             self._uiscale = babase.UIScale.MEDIUM
-        elif uiscalestr == "small":
+        elif uiscalestr == 'small':
             self._uiscale = babase.UIScale.SMALL
         else:
             logging.error("Invalid UIScale '%s'.", uiscalestr)
@@ -171,18 +171,20 @@ class UIV1AppSubsystem(babase.AppSubsystem):
         # If we haven't grabbed initial uiscale or screen size for recreate
         # comparision purposes, this is a good time to do so.
         if self._last_win_recreate_screen_size is None:
-            self._last_win_recreate_screen_size = babase.get_virtual_screen_size()
+            self._last_win_recreate_screen_size = (
+                babase.get_virtual_screen_size()
+            )
         if self._last_win_recreate_uiscale is None:
             self._last_win_recreate_uiscale = babase.app.ui_v1.uiscale
 
         # Encourage migration to the new higher level nav calls.
         if not suppress_warning:
             warnings.warn(
-                "set_main_window() should usually not be called directly;"
-                " use the main_window_replace() or main_window_back()"
-                " methods on MainWindow objects for navigation instead."
-                " If you truly need to use set_main_window(),"
-                " pass suppress_warning=True to silence this warning.",
+                'set_main_window() should usually not be called directly;'
+                ' use the main_window_replace() or main_window_back()'
+                ' methods on MainWindow objects for navigation instead.'
+                ' If you truly need to use set_main_window(),'
+                ' pass suppress_warning=True to silence this warning.',
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -191,7 +193,7 @@ class UIV1AppSubsystem(babase.AppSubsystem):
         if not isinstance(window, MainWindow):
             raise RuntimeError(
                 f'set_main_window() now takes a MainWindow as its "window" arg.'
-                f" You passed a {type(window)}.",
+                f' You passed a {type(window)}.',
             )
         window_weakref = weakref.ref(window)
         window_widget = window.get_root_widget()
@@ -199,9 +201,9 @@ class UIV1AppSubsystem(babase.AppSubsystem):
         if not isinstance(from_window, MainWindow):
             if from_window is not None and not isinstance(from_window, bool):
                 raise RuntimeError(
-                    f"set_main_window() now takes a MainWindow or bool or None"
+                    f'set_main_window() now takes a MainWindow or bool or None'
                     f'as its "from_window" arg.'
-                    f" You passed a {type(from_window)}.",
+                    f' You passed a {type(from_window)}.',
                 )
 
         existing = self._main_window()
@@ -214,8 +216,8 @@ class UIV1AppSubsystem(babase.AppSubsystem):
                 or back_state.window_type is None
             ):
                 raise RuntimeError(
-                    "Provided back_state is incomplete."
-                    " Make sure to only pass fully-filled-out MainWindowStates."
+                    'Provided back_state is incomplete.'
+                    ' Make sure to only pass fully-filled-out MainWindowStates.'
                 )
 
         # If a top-level main-window is being set, complain if there already
@@ -223,8 +225,8 @@ class UIV1AppSubsystem(babase.AppSubsystem):
         if is_top_level:
             if existing:
                 logging.warning(
-                    "set_main_window() called with top-level window %s"
-                    " but found existing main-window %s.",
+                    'set_main_window() called with top-level window %s'
+                    ' but found existing main-window %s.',
                     window,
                     existing,
                 )
@@ -241,9 +243,9 @@ class UIV1AppSubsystem(babase.AppSubsystem):
                         caller_filename = caller_frame.filename
                         caller_line_number = caller_frame.lineno
                         logging.warning(
-                            "set_main_window() should be passed a"
+                            'set_main_window() should be passed a'
                             " 'from_window' value to help ensure proper"
-                            " UI behavior (%s line %i).",
+                            ' UI behavior (%s line %i).',
                             caller_filename,
                             caller_line_number,
                         )
@@ -256,8 +258,8 @@ class UIV1AppSubsystem(babase.AppSubsystem):
                         caller_line_number = caller_frame.lineno
                         logging.warning(
                             "set_main_window() was passed 'from_window' %s"
-                            " but existing main-menu-window is %s."
-                            " (%s line %i).",
+                            ' but existing main-menu-window is %s.'
+                            ' (%s line %i).',
                             from_window,
                             existing,
                             caller_filename,
@@ -265,7 +267,7 @@ class UIV1AppSubsystem(babase.AppSubsystem):
                         )
             except Exception:
                 # Prevent any bugs in these checks from causing problems.
-                logging.exception("Error checking from_window")
+                logging.exception('Error checking from_window')
 
         if is_back:
             # These values should only be passed for forward navigation.
@@ -303,13 +305,15 @@ class UIV1AppSubsystem(babase.AppSubsystem):
                     # as its the main one. Holler if that seems to not
                     # be happening.
                     logging.warning(
-                        "set_main_window: No old MainWindow found"
-                        " and is_top_level is False;"
-                        " this should not happen."
+                        'set_main_window: No old MainWindow found'
+                        ' and is_top_level is False;'
+                        ' this should not happen.'
                     )
                     window.main_window_back_state = None
                 else:
-                    window.main_window_back_state = self.save_main_window_state(oldwin)
+                    window.main_window_back_state = self.save_main_window_state(
+                        oldwin
+                    )
 
         self._main_window = window_weakref
         self._main_window_widget = window_widget
@@ -329,8 +333,8 @@ class UIV1AppSubsystem(babase.AppSubsystem):
             # Fallback; if we have a widget but no window, nuke the widget.
             if self._main_window_widget:
                 logging.error(
-                    "Have _main_window_widget but no main_window"
-                    " on clear_main_window; unexpected."
+                    'Have _main_window_widget but no main_window'
+                    ' on clear_main_window; unexpected.'
                 )
                 self._main_window_widget.delete()
 
@@ -358,7 +362,7 @@ class UIV1AppSubsystem(babase.AppSubsystem):
         """Restore UI to a saved state."""
         existing = self.get_main_window()
         if existing is not None:
-            raise RuntimeError("There is already a MainWindow.")
+            raise RuntimeError('There is already a MainWindow.')
 
         # Valid states should have a value here.
         assert state.is_top_level is not None
@@ -472,7 +476,7 @@ class UIV1AppSubsystem(babase.AppSubsystem):
 
         # Do the recreate.
         winstate = self.save_main_window_state(mainwindow)
-        self.clear_main_window(transition="instant")
+        self.clear_main_window(transition='instant')
         self.restore_main_window_state(winstate)
 
         # Store the size we created this for to avoid redundant

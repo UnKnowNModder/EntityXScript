@@ -36,19 +36,19 @@ class GameButton:
         sclx = 195.0
         scly = 195.0
 
-        campaignname, levelname = game.split(":")
+        campaignname, levelname = game.split(':')
 
         # Hack: The Last Stand doesn't actually exist in the easy
         # tourney. We just want it for display purposes. Map it to
         # the hard-mode version.
-        if game == "Easy:The Last Stand":
-            campaignname = "Default"
+        if game == 'Easy:The Last Stand':
+            campaignname = 'Default'
 
         rating: float | None
         campaign = bui.app.classic.getcampaign(campaignname)
         rating = campaign.getlevel(levelname).rating
 
-        if game == "Easy:The Last Stand":
+        if game == 'Easy:The Last Stand':
             rating = None
 
         if rating is None or rating == 0.0:
@@ -67,9 +67,9 @@ class GameButton:
             parent=parent,
             position=(x + 23, y + 4),
             size=(sclx, scly),
-            label="",
+            label='',
             on_activate_call=self._on_press,
-            button_type="square",
+            button_type='square',
             autoselect=True,
             on_select_call=bui.Call(window.sel_change, row, game),
         )
@@ -81,7 +81,9 @@ class GameButton:
             show_buffer_right=200,
         )
         if select:
-            bui.containerwidget(edit=parent, selected_child=btn, visible_child=btn)
+            bui.containerwidget(
+                edit=parent, selected_child=btn, visible_child=btn
+            )
         image_width = sclx * 0.85 * 0.75
         self._preview_widget = bui.imagewidget(
             parent=parent,
@@ -90,21 +92,25 @@ class GameButton:
             size=(image_width, image_width * 0.5),
             mesh_transparent=window.lsbt,
             mesh_opaque=window.lsbo,
-            texture=bui.gettexture(campaign.getlevel(levelname).preview_texture_name),
-            mask_texture=bui.gettexture("mapPreviewMask"),
+            texture=bui.gettexture(
+                campaign.getlevel(levelname).preview_texture_name
+            ),
+            mask_texture=bui.gettexture('mapPreviewMask'),
         )
 
         translated = campaign.getlevel(levelname).displayname
-        self._achievements = bui.app.classic.ach.achievements_for_coop_level(game)
+        self._achievements = bui.app.classic.ach.achievements_for_coop_level(
+            game
+        )
 
         self._name_widget = bui.textwidget(
             parent=parent,
             draw_controller=btn,
             position=(x + 20 + sclx * 0.5, y + scly - 27),
             size=(0, 0),
-            h_align="center",
+            h_align='center',
             text=translated,
-            v_align="center",
+            v_align='center',
             maxwidth=sclx * 0.76,
             scale=0.85,
         )
@@ -174,7 +180,7 @@ class GameButton:
             position=(x - 8 + sclx * 0.5, y + scly * 0.5 - 20),
             size=(60, 60),
             opacity=0.0,
-            texture=bui.gettexture("lock"),
+            texture=bui.gettexture('lock'),
         )
 
         # give a quasi-random update increment to spread the load..
@@ -207,13 +213,13 @@ class GameButton:
             return
 
         game = self._game
-        campaignname, levelname = game.split(":")
+        campaignname, levelname = game.split(':')
 
         # Hack - The Last Stand doesn't actually exist in the
         # easy tourney; we just want it for display purposes. Map it to
         # the hard-mode version.
-        if game == "Easy:The Last Stand":
-            campaignname = "Default"
+        if game == 'Easy:The Last Stand':
+            campaignname = 'Default'
 
         campaign = classic.getcampaign(campaignname)
 
@@ -229,7 +235,7 @@ class GameButton:
                     break
 
         # We never actually allow playing last-stand on easy mode.
-        if game == "Easy:The Last Stand":
+        if game == 'Easy:The Last Stand':
             unlocked = False
 
         # Hard-code games we haven't unlocked.
@@ -240,7 +246,7 @@ class GameButton:
         # Let's tint levels a slightly different color when easy mode
         # is selected.
         unlocked_color = (
-            (0.85, 0.95, 0.5) if game.startswith("Easy:") else (0.5, 0.7, 0.2)
+            (0.85, 0.95, 0.5) if game.startswith('Easy:') else (0.5, 0.7, 0.2)
         )
 
         bui.buttonwidget(
@@ -248,8 +254,12 @@ class GameButton:
             color=unlocked_color if unlocked else (0.5, 0.5, 0.5),
         )
 
-        bui.imagewidget(edit=self._lock_widget, opacity=0.0 if unlocked else 1.0)
-        bui.imagewidget(edit=self._preview_widget, opacity=1.0 if unlocked else 0.3)
+        bui.imagewidget(
+            edit=self._lock_widget, opacity=0.0 if unlocked else 1.0
+        )
+        bui.imagewidget(
+            edit=self._preview_widget, opacity=1.0 if unlocked else 0.3
+        )
         bui.textwidget(
             edit=self._name_widget,
             color=(0.8, 1.0, 0.8, 1.0) if unlocked else (0.7, 0.7, 0.7, 0.7),
@@ -269,6 +279,8 @@ class GameButton:
             bui.imagewidget(
                 edit=self._achievement_widgets[i][1],
                 opacity=(
-                    1.0 if (a_complete and unlocked) else 0.2 if a_complete else 0.0
+                    1.0
+                    if (a_complete and unlocked)
+                    else 0.2 if a_complete else 0.0
                 ),
             )

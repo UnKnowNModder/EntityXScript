@@ -14,7 +14,7 @@ class AchievementsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
@@ -28,7 +28,7 @@ class AchievementsWindow(bui.MainWindow):
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
 
-        self._width = 700 if uiscale is bui.UIScale.SMALL else 550
+        self._width = 800 if uiscale is bui.UIScale.SMALL else 550
         self._height = (
             450
             if uiscale is bui.UIScale.SMALL
@@ -64,7 +64,7 @@ class AchievementsWindow(bui.MainWindow):
                     # 'menu_minimal'
                     # if uiscale is bui.UIScale.SMALL
                     # else 'menu_full'
-                    "menu_full"
+                    'menu_full'
                 ),
                 scale=scale,
             ),
@@ -87,10 +87,12 @@ class AchievementsWindow(bui.MainWindow):
                 size=(60, 60),
                 scale=0.6,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type="backSmall",
+                button_type='backSmall',
                 on_activate_call=self.main_window_back,
             )
-            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
+            bui.containerwidget(
+                edit=self._root_widget, cancel_button=self._back_button
+            )
 
         achievements = bui.app.classic.ach.achievements
         num_complete = len([a for a in achievements if a.complete])
@@ -103,15 +105,15 @@ class AchievementsWindow(bui.MainWindow):
                 parent=self._root_widget,
                 position=(self._width * 0.5, yoffs - 42),
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 scale=0.6,
                 text=bui.Lstr(
-                    value="${A}: ${C}/${T}",
+                    value='${A}: ${C}/${T}',
                     subs=[
-                        ("${A}", bui.Lstr(resource="achievementsText")),
-                        ("${C}", str(num_complete)),
-                        ("${T}", str(len(achievements))),
+                        ('${A}', bui.Lstr(resource='achievementsText')),
+                        ('${C}', str(num_complete)),
+                        ('${T}', str(len(achievements))),
                     ],
                 ),
                 maxwidth=86,
@@ -125,14 +127,14 @@ class AchievementsWindow(bui.MainWindow):
                     yoffs - (42 if uiscale is bui.UIScale.SMALL else 30),
                 ),
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 scale=0.6,
                 text=bui.Lstr(
-                    resource="accountSettingsWindow.achievementProgressText",
+                    resource='accountSettingsWindow.achievementProgressText',
                     subs=[
-                        ("${COUNT}", str(num_complete)),
-                        ("${TOTAL}", str(len(achievements))),
+                        ('${COUNT}', str(num_complete)),
+                        ('${TOTAL}', str(len(achievements))),
                     ],
                 ),
                 maxwidth=180,
@@ -151,7 +153,7 @@ class AchievementsWindow(bui.MainWindow):
         if uiscale is bui.UIScale.SMALL:
             bui.widget(
                 edit=self._scrollwidget,
-                left_widget=bui.get_special_widget("back_button"),
+                left_widget=bui.get_special_widget('back_button'),
             )
 
         if uiscale is bui.UIScale.SMALL:
@@ -159,10 +161,13 @@ class AchievementsWindow(bui.MainWindow):
             blotchheight = 200.0
             bimg = bui.imagewidget(
                 parent=self._root_widget,
-                texture=bui.gettexture("uiAtlas"),
-                mesh_transparent=bui.getmesh("windowBGBlotch"),
+                texture=bui.gettexture('uiAtlas'),
+                mesh_transparent=bui.getmesh('windowBGBlotch'),
                 position=(
-                    self._width * 0.5 - scroll_width * 0.5 + 60.0 - blotchwidth * 0.5,
+                    self._width * 0.5
+                    - scroll_width * 0.5
+                    + 60.0
+                    - blotchwidth * 0.5,
                     scroll_bottom - blotchheight * 0.5,
                 ),
                 size=(blotchwidth, blotchheight),
@@ -172,10 +177,13 @@ class AchievementsWindow(bui.MainWindow):
             bui.widget(edit=bimg, depth_range=(0.9, 1.0))
             bimg = bui.imagewidget(
                 parent=self._root_widget,
-                texture=bui.gettexture("uiAtlas"),
-                mesh_transparent=bui.getmesh("windowBGBlotch"),
+                texture=bui.gettexture('uiAtlas'),
+                mesh_transparent=bui.getmesh('windowBGBlotch'),
                 position=(
-                    self._width * 0.5 + scroll_width * 0.5 - 60.0 - blotchwidth * 0.5,
+                    self._width * 0.5
+                    + scroll_width * 0.5
+                    - 60.0
+                    - blotchwidth * 0.5,
                     scroll_bottom - blotchheight * 0.5,
                 ),
                 size=(blotchwidth, blotchheight),
@@ -184,14 +192,16 @@ class AchievementsWindow(bui.MainWindow):
             )
             bui.widget(edit=bimg, depth_range=(0.9, 1.0))
 
-        bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
+        bui.containerwidget(
+            edit=self._root_widget, cancel_button=self._back_button
+        )
 
         incr = 36
         sub_width = scroll_width - 25
         sub_height = 85 + len(achievements) * incr
 
-        eq_rsrc = "coopSelectWindow.powerRankingPointsEqualsText"
-        pts_rsrc = "coopSelectWindow.powerRankingPointsText"
+        eq_rsrc = 'coopSelectWindow.powerRankingPointsEqualsText'
+        pts_rsrc = 'coopSelectWindow.powerRankingPointsText'
 
         self._subcontainer = bui.containerwidget(
             parent=self._scrollwidget,
@@ -212,8 +222,8 @@ class AchievementsWindow(bui.MainWindow):
                 shadow=0.0,
                 text=str(i + 1),
                 size=(0, 0),
-                h_align="right",
-                v_align="center",
+                h_align='right',
+                v_align='center',
             )
 
             bui.imagewidget(
@@ -237,7 +247,7 @@ class AchievementsWindow(bui.MainWindow):
                     ),
                     size=(28, 28),
                     color=(2, 1.4, 0),
-                    texture=bui.gettexture("achievementOutline"),
+                    texture=bui.gettexture('achievementOutline'),
                 )
             bui.textwidget(
                 parent=self._subcontainer,
@@ -249,8 +259,8 @@ class AchievementsWindow(bui.MainWindow):
                 color=(1, 1, 1) if complete else (1, 1, 1, 0.2),
                 text=ach.display_name,
                 size=(0, 0),
-                h_align="left",
-                v_align="center",
+                h_align='left',
+                v_align='center',
             )
 
             bui.textwidget(
@@ -262,11 +272,13 @@ class AchievementsWindow(bui.MainWindow):
                 shadow=0.0,
                 color=(0.83, 0.8, 0.85) if complete else (0.8, 0.8, 0.8, 0.2),
                 text=(
-                    ach.description_full_complete if complete else ach.description_full
+                    ach.description_full_complete
+                    if complete
+                    else ach.description_full
                 ),
                 size=(0, 0),
-                h_align="left",
-                v_align="center",
+                h_align='left',
+                v_align='center',
             )
             chest_type = ach.get_award_chest_type()
             chestdisplayinfo = CHEST_APPEARANCE_DISPLAY_INFOS.get(
@@ -297,10 +309,12 @@ class AchievementsWindow(bui.MainWindow):
                 flatness=1.0,
                 shadow=0.0,
                 scale=0.6,
-                text=bui.Lstr(resource=pts_rsrc, subs=[("${NUMBER}", str(pts))]),
+                text=bui.Lstr(
+                    resource=pts_rsrc, subs=[('${NUMBER}', str(pts))]
+                ),
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
             )
             if complete:
                 total_pts += pts
@@ -317,21 +331,21 @@ class AchievementsWindow(bui.MainWindow):
             flatness=1.0,
             shadow=0.0,
             text=bui.Lstr(
-                value="${A} ${B}",
+                value='${A} ${B}',
                 subs=[
-                    ("${A}", bui.Lstr(resource="coopSelectWindow.totalText")),
+                    ('${A}', bui.Lstr(resource='coopSelectWindow.totalText')),
                     (
-                        "${B}",
+                        '${B}',
                         bui.Lstr(
                             resource=eq_rsrc,
-                            subs=[("${NUMBER}", str(total_pts))],
+                            subs=[('${NUMBER}', str(total_pts))],
                         ),
                     ),
                 ],
             ),
             size=(0, 0),
-            h_align="right",
-            v_align="center",
+            h_align='right',
+            v_align='center',
         )
 
     @override

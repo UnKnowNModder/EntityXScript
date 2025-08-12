@@ -22,7 +22,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
 
         # Keep prev activity alive while we fade in.
         self.transition_time = 0.5
-        self._cymbal_sound = bs.getsound("cymbal")
+        self._cymbal_sound = bs.getsound('cymbal')
 
     @override
     def on_begin(self) -> None:
@@ -31,7 +31,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         from bascenev1lib.actor.text import Text
         from bascenev1lib.actor.image import Image
 
-        bs.set_analytics_screen("FreeForAll Score Screen")
+        bs.set_analytics_screen('FreeForAll Score Screen')
         super().on_begin()
 
         y_base = 100.0
@@ -46,7 +46,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         player_order_prev.sort(
             reverse=True,
             key=lambda p: (
-                p.team.sessionteam.customdata["previous_score"],
+                p.team.sessionteam.customdata['previous_score'],
                 p.getname(full=True),
             ),
         )
@@ -54,8 +54,8 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         player_order.sort(
             reverse=True,
             key=lambda p: (
-                p.team.sessionteam.customdata["score"],
-                p.team.sessionteam.customdata["score"],
+                p.team.sessionteam.customdata['score'],
+                p.team.sessionteam.customdata['score'],
                 p.getname(full=True),
             ),
         )
@@ -70,7 +70,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             delay3 += 1.5
 
         bs.timer(0.3, self._score_display_sound.play)
-        results = self.settings_raw["results"]
+        results = self.settings_raw['results']
         assert isinstance(results, bs.GameResults)
         self.show_player_scores(
             delay=0.001, results=results, scale=1.2, x_offset=-110.0
@@ -95,7 +95,9 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                     y_base + (y_offs + v_offs + 2.0) * scale,
                 ),
                 scale=scale * extrascale,
-                color=((1.0, 0.7, 0.3, 1.0) if highlight else (0.7, 0.7, 0.7, 0.7)),
+                color=(
+                    (1.0, 0.7, 0.3, 1.0) if highlight else (0.7, 0.7, 0.7, 0.7)
+                ),
                 h_align=Text.HAlign.RIGHT,
                 transition=Text.Transition.IN_LEFT,
                 transition_delay=tdelay + delay,
@@ -111,8 +113,8 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
         assert isinstance(session, bs.FreeForAllSession)
         title = Text(
             bs.Lstr(
-                resource="firstToSeriesText",
-                subs=[("${COUNT}", str(session.get_ffa_series_length()))],
+                resource='firstToSeriesText',
+                subs=[('${COUNT}', str(session.get_ffa_series_length()))],
             ),
             scale=1.05 * scale,
             position=(
@@ -133,7 +135,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             bs.WeakCall(
                 self._safe_animate,
                 title.position_combine,
-                "input0",
+                'input0',
                 {
                     0.0: ts_h_offs - 0.0 * scale,
                     transtime2: ts_h_offs - (0.0 + slide_amt) * scale,
@@ -161,7 +163,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     img.position_combine,
-                    "input1",
+                    'input1',
                     {
                         0: y_base + (v_offs + 15.0) * scale,
                         transtime: y_base + (v_offs_2 + 15.0) * scale,
@@ -173,7 +175,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     img.position_combine,
-                    "input0",
+                    'input0',
                     {
                         0: ts_h_offs - 72.0 * scale,
                         transtime2: ts_h_offs - (72.0 + slide_amt) * scale,
@@ -199,7 +201,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     txt.position_combine,
-                    "input1",
+                    'input1',
                     {
                         0: y_base + (v_offs + 15.0) * scale,
                         transtime: y_base + (v_offs_2 + 15.0) * scale,
@@ -211,7 +213,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     txt.position_combine,
-                    "input0",
+                    'input0',
                     {
                         0: ts_h_offs - 50.0 * scale,
                         transtime2: ts_h_offs - (50.0 + slide_amt) * scale,
@@ -220,7 +222,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             )
 
             txt_num = Text(
-                "#" + str(i + 1),
+                '#' + str(i + 1),
                 scale=0.55 * scale,
                 position=(
                     ts_h_offs - 95.0 * scale,
@@ -236,7 +238,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     txt_num.position_combine,
-                    "input0",
+                    'input0',
                     {
                         0: ts_h_offs - 95.0 * scale,
                         transtime2: ts_h_offs - (95.0 + slide_amt) * scale,
@@ -245,7 +247,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             )
 
             s_txt = _scoretxt(
-                str(player.team.sessionteam.customdata["previous_score"]),
+                str(player.team.sessionteam.customdata['previous_score']),
                 80,
                 0,
                 False,
@@ -257,7 +259,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     s_txt.position_combine,
-                    "input1",
+                    'input1',
                     {
                         0: y_base + (v_offs + 2.0) * scale,
                         transtime: y_base + (v_offs_2 + 2.0) * scale,
@@ -269,7 +271,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                 bs.WeakCall(
                     self._safe_animate,
                     s_txt.position_combine,
-                    "input0",
+                    'input0',
                     {
                         0: ts_h_offs + 80.0 * scale,
                         transtime2: ts_h_offs + (80.0 - slide_amt) * scale,
@@ -278,14 +280,14 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
             )
 
             score_change = (
-                player.team.sessionteam.customdata["score"]
-                - player.team.sessionteam.customdata["previous_score"]
+                player.team.sessionteam.customdata['score']
+                - player.team.sessionteam.customdata['previous_score']
             )
             if score_change > 0:
                 xval = 113
                 yval = 3.0
                 s_txt_2 = _scoretxt(
-                    "+" + str(score_change),
+                    '+' + str(score_change),
                     xval,
                     yval,
                     True,
@@ -298,7 +300,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                     bs.WeakCall(
                         self._safe_animate,
                         s_txt_2.position_combine,
-                        "input1",
+                        'input1',
                         {
                             0: y_base + (v_offs + yval + 2.0) * scale,
                             transtime: y_base + (v_offs_2 + yval + 2.0) * scale,
@@ -310,7 +312,7 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                     bs.WeakCall(
                         self._safe_animate,
                         s_txt_2.position_combine,
-                        "input0",
+                        'input0',
                         {
                             0: ts_h_offs + xval * scale,
                             transtime2: ts_h_offs + (xval - slide_amt) * scale,
@@ -318,13 +320,15 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                     ),
                 )
 
-                def _safesetattr(node: bs.Node | None, attr: str, value: Any) -> None:
+                def _safesetattr(
+                    node: bs.Node | None, attr: str, value: Any
+                ) -> None:
                     if node:
                         setattr(node, attr, value)
 
                 bs.timer(
                     tdelay + delay1,
-                    bs.Call(_safesetattr, s_txt.node, "color", (1, 1, 1, 1)),
+                    bs.Call(_safesetattr, s_txt.node, 'color', (1, 1, 1, 1)),
                 )
                 for j in range(score_change):
                     bs.timer(
@@ -332,9 +336,11 @@ class FreeForAllVictoryScoreScreenActivity(MultiTeamScoreScreenActivity):
                         bs.Call(
                             _safesetattr,
                             s_txt.node,
-                            "text",
+                            'text',
                             str(
-                                player.team.sessionteam.customdata["previous_score"]
+                                player.team.sessionteam.customdata[
+                                    'previous_score'
+                                ]
                                 + j
                                 + 1
                             ),

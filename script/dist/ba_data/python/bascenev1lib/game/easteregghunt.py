@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from typing import Any
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -43,19 +43,19 @@ class Team(bs.Team[Player]):
 class EasterEggHuntGame(bs.TeamGameActivity[Player, Team]):
     """A game where score is based on collecting eggs."""
 
-    name = "Easter Egg Hunt"
-    description = "Gather eggs!"
+    name = 'Easter Egg Hunt'
+    description = 'Gather eggs!'
     available_settings = [
-        bs.BoolSetting("Pro Mode", default=False),
-        bs.BoolSetting("Epic Mode", default=False),
+        bs.BoolSetting('Pro Mode', default=False),
+        bs.BoolSetting('Epic Mode', default=False),
     ]
-    scoreconfig = bs.ScoreConfig(label="Score", scoretype=bs.ScoreType.POINTS)
+    scoreconfig = bs.ScoreConfig(label='Score', scoretype=bs.ScoreType.POINTS)
 
     # We're currently hard-coded for one map.
     @override
     @classmethod
     def get_supported_maps(cls, sessiontype: type[bs.Session]) -> list[str]:
-        return ["Tower D"]
+        return ['Tower D']
 
     # We support teams, free-for-all, and co-op sessions.
     @override
@@ -72,18 +72,18 @@ class EasterEggHuntGame(bs.TeamGameActivity[Player, Team]):
         shared = SharedObjects.get()
         self._last_player_death_time = None
         self._scoreboard = Scoreboard()
-        self.egg_mesh = bs.getmesh("egg")
-        self.egg_tex_1 = bs.gettexture("eggTex1")
-        self.egg_tex_2 = bs.gettexture("eggTex2")
-        self.egg_tex_3 = bs.gettexture("eggTex3")
-        self._collect_sound = bs.getsound("powerup01")
-        self._pro_mode = settings.get("Pro Mode", False)
-        self._epic_mode = settings.get("Epic Mode", False)
+        self.egg_mesh = bs.getmesh('egg')
+        self.egg_tex_1 = bs.gettexture('eggTex1')
+        self.egg_tex_2 = bs.gettexture('eggTex2')
+        self.egg_tex_3 = bs.gettexture('eggTex3')
+        self._collect_sound = bs.getsound('powerup01')
+        self._pro_mode = settings.get('Pro Mode', False)
+        self._epic_mode = settings.get('Epic Mode', False)
         self._max_eggs = 1.0
         self.egg_material = bs.Material()
         self.egg_material.add_actions(
-            conditions=("they_have_material", shared.player_material),
-            actions=(("call", "at_connect", self._on_egg_player_collide),),
+            conditions=('they_have_material', shared.player_material),
+            actions=(('call', 'at_connect', self._on_egg_player_collide),),
         )
         self._eggs: list[Egg] = []
         self._update_timer: bs.Timer | None = None
@@ -144,9 +144,9 @@ class EasterEggHuntGame(bs.TeamGameActivity[Player, Team]):
         # who just left/etc.
         try:
             egg = collision.sourcenode.getdelegate(Egg, True)
-            player = collision.opposingnode.getdelegate(PlayerSpaz, True).getplayer(
-                Player, True
-            )
+            player = collision.opposingnode.getdelegate(
+                PlayerSpaz, True
+            ).getplayer(Player, True)
         except bs.NotFoundError:
             return
 
@@ -166,15 +166,15 @@ class EasterEggHuntGame(bs.TeamGameActivity[Player, Team]):
 
         # Create a flash.
         light = bs.newnode(
-            "light",
+            'light',
             attrs={
-                "position": egg.node.position,
-                "height_attenuated": False,
-                "radius": 0.1,
-                "color": (1, 1, 0),
+                'position': egg.node.position,
+                'height_attenuated': False,
+                'radius': 0.1,
+                'color': (1, 1, 0),
             },
         )
-        bs.animate(light, "intensity", {0: 0, 0.1: 1.0, 0.2: 0}, loop=False)
+        bs.animate(light, 'intensity', {0: 0, 0.1: 1.0, 0.2: 0}, loop=False)
         bs.timer(0.200, light.delete)
         egg.handlemessage(bs.DieMessage())
 
@@ -192,7 +192,7 @@ class EasterEggHuntGame(bs.TeamGameActivity[Player, Team]):
             # Occasionally spawn a land-mine in addition.
             if self._pro_mode and random.random() < 0.25:
                 mine = Bomb(
-                    position=(xpos, ypos, zpos), bomb_type="land_mine"
+                    position=(xpos, ypos, zpos), bomb_type='land_mine'
                 ).autoretain()
                 mine.arm()
             else:
@@ -267,20 +267,20 @@ class Egg(bs.Actor):
         ]
         mats = [shared.object_material, activity.egg_material]
         self.node = bs.newnode(
-            "prop",
+            'prop',
             delegate=self,
             attrs={
-                "mesh": activity.egg_mesh,
-                "color_texture": ctex,
-                "body": "capsule",
-                "reflection": "soft",
-                "mesh_scale": 0.5,
-                "body_scale": 0.6,
-                "density": 4.0,
-                "reflection_scale": [0.15],
-                "shadow_size": 0.6,
-                "position": self._spawn_pos,
-                "materials": mats,
+                'mesh': activity.egg_mesh,
+                'color_texture': ctex,
+                'body': 'capsule',
+                'reflection': 'soft',
+                'mesh_scale': 0.5,
+                'body_scale': 0.6,
+                'density': 4.0,
+                'reflection_scale': [0.15],
+                'shadow_size': 0.6,
+                'position': self._spawn_pos,
+                'materials': mats,
             },
         )
 
@@ -297,7 +297,7 @@ class Egg(bs.Actor):
             if self.node:
                 assert msg.force_direction is not None
                 self.node.handlemessage(
-                    "impulse",
+                    'impulse',
                     msg.pos[0],
                     msg.pos[1],
                     msg.pos[2],

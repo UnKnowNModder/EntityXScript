@@ -35,7 +35,9 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
     @override
     @classmethod
-    def supports_session_type(cls, sessiontype: type[bascenev1.Session]) -> bool:
+    def supports_session_type(
+        cls, sessiontype: type[bascenev1.Session]
+    ) -> bool:
         from bascenev1._coopsession import CoopSession
 
         return issubclass(sessiontype, CoopSession)
@@ -48,7 +50,7 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
         self._life_warning_beep: bascenev1.Actor | None = None
         self._life_warning_beep_timer: bascenev1.Timer | None = None
-        self._warn_beeps_sound = _bascenev1.getsound("warnBeeps")
+        self._warn_beeps_sound = _bascenev1.getsound('warnBeeps')
 
     @override
     def on_begin(self) -> None:
@@ -61,7 +63,9 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         arcade_or_demo = variant is vart.ARCADE or variant is vart.DEMO
 
         if not arcade_or_demo:
-            _bascenev1.timer(3.8, babase.WeakCall(self._show_remaining_achievements))
+            _bascenev1.timer(
+                3.8, babase.WeakCall(self._show_remaining_achievements)
+            )
 
         # Preload achievement images in case we get some.
         _bascenev1.timer(2.0, babase.WeakCall(self._preload_achievements))
@@ -72,11 +76,11 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         """
         Return the score unit this co-op game uses ('point', 'seconds', etc.)
         """
-        return "points"
+        return 'points'
 
     def _get_coop_level_name(self) -> str:
         assert self.session.campaign is not None
-        return self.session.campaign.name + ":" + str(self.settings_raw["name"])
+        return self.session.campaign.name + ':' + str(self.settings_raw['name'])
 
     def celebrate(self, duration: float) -> None:
         """Tells all existing player-controlled characters to celebrate.
@@ -116,7 +120,7 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         vrmode = babase.app.env.vr
         if achievements:
             Text(
-                babase.Lstr(resource="achievementsRemainingText"),
+                babase.Lstr(resource='achievementsRemainingText'),
                 host_only=True,
                 position=(ts_h_offs - 10 + 40, v_offs - 10),
                 transition=Text.Transition.FADE_IN,
@@ -139,7 +143,7 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
                     vval + v_offs,
                     0 + tdelay,
                     outdelay=1.3 if self.slow_motion else 4.0,
-                    style="in_game",
+                    style='in_game',
                 )
                 vval -= 55
 
@@ -157,7 +161,9 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         spaz.play_big_death_sound = True
         return spaz
 
-    def _award_achievement(self, achievement_name: str, sound: bool = True) -> None:
+    def _award_achievement(
+        self, achievement_name: str, sound: bool = True
+    ) -> None:
         """Award an achievement.
 
         Returns True if a banner will be shown;
@@ -167,7 +173,9 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         classic = babase.app.classic
         plus = babase.app.plus
         if classic is None or plus is None:
-            logging.warning("_award_achievement is a no-op without classic and plus.")
+            logging.warning(
+                '_award_achievement is a no-op without classic and plus.'
+            )
             return
 
         if achievement_name in self._achievements_awarded:
@@ -180,10 +188,10 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
         try:
             campaign = self.session.campaign
             assert campaign is not None
-            if ach.hard_mode_only and campaign.name == "Easy":
+            if ach.hard_mode_only and campaign.name == 'Easy':
                 return
         except Exception:
-            logging.exception("Error in _award_achievement.")
+            logging.exception('Error in _award_achievement.')
 
         # If we haven't awarded this one, check to see if we've got it.
         # If not, set it through the game service *and* add a transaction
@@ -196,7 +204,7 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
             # ...and to our account.
             plus.add_v1_account_transaction(
-                {"type": "ACHIEVEMENT", "name": achievement_name}
+                {'type': 'ACHIEVEMENT', 'name': achievement_name}
             )
 
             # Now bring up a celebration banner.
@@ -208,17 +216,17 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
         c_existing = self.globalsnode.tint
         cnode = _bascenev1.newnode(
-            "combine",
+            'combine',
             attrs={
-                "input0": c_existing[0],
-                "input1": c_existing[1],
-                "input2": c_existing[2],
-                "size": 3,
+                'input0': c_existing[0],
+                'input1': c_existing[1],
+                'input2': c_existing[2],
+                'size': 3,
             },
         )
-        _gameutils.animate(cnode, "input1", {0: c_existing[1], 2.0: 0})
-        _gameutils.animate(cnode, "input2", {0: c_existing[2], 2.0: 0})
-        cnode.connectattr("output", self.globalsnode, "tint")
+        _gameutils.animate(cnode, 'input1', {0: c_existing[1], 2.0: 0})
+        _gameutils.animate(cnode, 'input2', {0: c_existing[2], 2.0: 0})
+        cnode.connectattr('output', self.globalsnode, 'tint')
 
     def setup_low_life_warning_sound(self) -> None:
         """Set up a beeping noise to play when any players are near death."""
@@ -234,7 +242,7 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
             if player.is_alive():
                 # FIXME: Should abstract this instead of
                 #  reading hitpoints directly.
-                if getattr(player.actor, "hitpoints", 999) < 200:
+                if getattr(player.actor, 'hitpoints', 999) < 200:
                     should_beep = True
                     break
         if should_beep and self._life_warning_beep is None:
@@ -242,11 +250,11 @@ class CoopGameActivity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
 
             self._life_warning_beep = NodeActor(
                 _bascenev1.newnode(
-                    "sound",
+                    'sound',
                     attrs={
-                        "sound": self._warn_beeps_sound,
-                        "positional": False,
-                        "loop": True,
+                        'sound': self._warn_beeps_sound,
+                        'positional': False,
+                        'loop': True,
                     },
                 )
             )

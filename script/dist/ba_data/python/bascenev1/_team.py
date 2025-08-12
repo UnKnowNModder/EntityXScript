@@ -47,7 +47,7 @@ class SessionTeam:
     def __init__(
         self,
         team_id: int = 0,
-        name: babase.Lstr | str = "",
+        name: babase.Lstr | str = '',
         color: Sequence[float] = (1.0, 1.0, 1.0),
     ):
         self.id = team_id
@@ -98,11 +98,11 @@ class Team[PlayerT: bascenev1.Player]:
         # internal game logic. So complain loudly if we find one.
         if type(self).__eq__ is not object.__eq__:
             raise RuntimeError(
-                f"Team class {type(self)} defines an equality"
-                f" operator (__eq__) which will break internal"
-                f" logic. Please remove it.\n"
+                f'Team class {type(self)} defines an equality'
+                f' operator (__eq__) which will break internal'
+                f' logic. Please remove it.\n'
                 f'For dataclasses you can do "dataclass(eq=False)"'
-                f" in the class decorator."
+                f' in the class decorator.'
             )
 
         self.players = []
@@ -162,7 +162,7 @@ class Team[PlayerT: bascenev1.Player]:
         try:
             self.on_expire()
         except Exception:
-            logging.exception("Error in on_expire for %s.", self)
+            logging.exception('Error in on_expire for %s.', self)
 
         del self._customdata
         del self.players
@@ -186,7 +186,7 @@ class Team[PlayerT: bascenev1.Player]:
         raise babase.SessionTeamNotFoundError()
 
 
-class EmptyTeam(Team["bascenev1.EmptyPlayer"]):
+class EmptyTeam(Team['bascenev1.EmptyPlayer']):
     """An empty player for use by Activities that don't define one.
 
     bascenev1.Player and bascenev1.Team are 'Generic' types, and so

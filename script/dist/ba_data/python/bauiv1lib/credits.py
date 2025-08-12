@@ -20,13 +20,13 @@ class CreditsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-statements
 
-        bui.set_analytics_screen("Credits Window")
+        bui.set_analytics_screen('Credits Window')
 
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
@@ -55,12 +55,14 @@ class CreditsWindow(bui.MainWindow):
         scroll_height = target_height - 29
         scroll_y = yoffs - 58 - scroll_height
 
-        self._r = "creditsWindow"
+        self._r = 'creditsWindow'
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(width, height),
                 toolbar_visibility=(
-                    "menu_minimal" if uiscale is bui.UIScale.SMALL else "menu_full"
+                    'menu_minimal'
+                    if uiscale is bui.UIScale.SMALL
+                    else 'menu_full'
                 ),
                 scale=scale,
             ),
@@ -81,7 +83,7 @@ class CreditsWindow(bui.MainWindow):
                 size=(60, 48),
                 scale=0.8,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type="backSmall",
+                button_type='backSmall',
                 on_activate_call=self.main_window_back,
                 autoselect=True,
             )
@@ -96,11 +98,11 @@ class CreditsWindow(bui.MainWindow):
             size=(0, 0),
             scale=0.8 if uiscale is bui.UIScale.SMALL else 1.0,
             text=bui.Lstr(
-                resource=f"{self._r}.titleText",
-                subs=[("${APP_NAME}", bui.Lstr(resource="titleText"))],
+                resource=f'{self._r}.titleText',
+                subs=[('${APP_NAME}', bui.Lstr(resource='titleText'))],
             ),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             color=bui.app.ui_v1.title_color,
             maxwidth=scroll_width * 0.7,
         )
@@ -116,29 +118,31 @@ class CreditsWindow(bui.MainWindow):
 
         bui.widget(
             edit=scroll,
-            right_widget=bui.get_special_widget("squad_button"),
+            right_widget=bui.get_special_widget('squad_button'),
         )
         if uiscale is bui.UIScale.SMALL:
             bui.widget(
                 edit=scroll,
-                left_widget=bui.get_special_widget("back_button"),
+                left_widget=bui.get_special_widget('back_button'),
             )
 
         def _format_names(names2: Sequence[str], inset: float) -> str:
-            sval = ""
+            sval = ''
             # measure a series since there's overlaps and stuff..
-            space_width = bui.get_string_width(" " * 10, suppress_warning=True) / 10.0
+            space_width = (
+                bui.get_string_width(' ' * 10, suppress_warning=True) / 10.0
+            )
             spacing = 330.0
             col1 = inset
             col2 = col1 + spacing
             col3 = col2 + spacing
             line_width = 0.0
-            nline = ""
+            nline = ''
             for name in names2:
                 # move to the next column (or row) and print
                 if line_width > col3:
-                    sval += nline + "\n"
-                    nline = ""
+                    sval += nline + '\n'
+                    nline = ''
                     line_width = 0
 
                 if line_width > col2:
@@ -147,56 +151,62 @@ class CreditsWindow(bui.MainWindow):
                     target = col2
                 else:
                     target = col1
-                spacingstr = " " * int((target - line_width) / space_width)
+                spacingstr = ' ' * int((target - line_width) / space_width)
                 nline += spacingstr
                 nline += name
                 line_width = bui.get_string_width(nline, suppress_warning=True)
-            if nline != "":
-                sval += nline + "\n"
+            if nline != '':
+                sval += nline + '\n'
             return sval
 
-        sound_and_music = bui.Lstr(resource=f"{self._r}.songCreditText").evaluate()
+        sound_and_music = bui.Lstr(
+            resource=f'{self._r}.songCreditText'
+        ).evaluate()
         sound_and_music = sound_and_music.replace(
-            "${TITLE}", "'William Tell (Trumpet Entry)'"
+            '${TITLE}', "'William Tell (Trumpet Entry)'"
         )
         sound_and_music = sound_and_music.replace(
-            "${PERFORMER}", "The Apollo Symphony Orchestra"
+            '${PERFORMER}', 'The Apollo Symphony Orchestra'
         )
         sound_and_music = sound_and_music.replace(
-            "${PERFORMER}", "The Apollo Symphony Orchestra"
+            '${PERFORMER}', 'The Apollo Symphony Orchestra'
         )
-        sound_and_music = sound_and_music.replace("${COMPOSER}", "Gioacchino Rossini")
-        sound_and_music = sound_and_music.replace("${ARRANGER}", "Chris Worth")
-        sound_and_music = sound_and_music.replace("${PUBLISHER}", "BMI")
-        sound_and_music = sound_and_music.replace("${SOURCE}", "www.AudioSparx.com")
-        spc = "     "
-        sound_and_music = spc + sound_and_music.replace("\n", "\n" + spc)
+        sound_and_music = sound_and_music.replace(
+            '${COMPOSER}', 'Gioacchino Rossini'
+        )
+        sound_and_music = sound_and_music.replace('${ARRANGER}', 'Chris Worth')
+        sound_and_music = sound_and_music.replace('${PUBLISHER}', 'BMI')
+        sound_and_music = sound_and_music.replace(
+            '${SOURCE}', 'www.AudioSparx.com'
+        )
+        spc = '     '
+        sound_and_music = spc + sound_and_music.replace('\n', '\n' + spc)
         names = [
-            "HubOfTheUniverseProd",
-            "Jovica",
-            "LG",
-            "Leady",
-            "Percy Duke",
-            "PhreaKsAccount",
-            "Pogotron",
-            "Rock Savage",
-            "anamorphosis",
-            "benboncan",
-            "cdrk",
-            "chipfork",
-            "guitarguy1985",
-            "jascha",
-            "joedeshon",
-            "loofa",
-            "m_O_m",
-            "mich3d",
-            "sandyrb",
-            "shakaharu",
-            "sirplus",
-            "stickman",
-            "thanvannispen",
-            "virotic",
-            "zimbot",
+            'HubOfTheUniverseProd',
+            'Jovica',
+            'LG',
+            'Leady',
+            'Percy Duke',
+            'PhreaKsAccount',
+            'Pogotron',
+            'Rock Savage',
+            'anamorphosis',
+            'benboncan',
+            'cdrk',
+            'chipfork',
+            'guitarguy1985',
+            'jascha',
+            'joedeshon',
+            'loofa',
+            'm_O_m',
+            'mich3d',
+            'sandyrb',
+            'shakaharu',
+            'sirplus',
+            'stickman',
+            'thanvannispen',
+            'virotic',
+            'zimbot',
         ]
         names.sort(key=lambda x: x.lower())
         freesound_names = _format_names(names, 90)
@@ -205,17 +215,17 @@ class CreditsWindow(bui.MainWindow):
             with open(
                 os.path.join(
                     bui.app.env.data_directory,
-                    "ba_data",
-                    "data",
-                    "langdata.json",
+                    'ba_data',
+                    'data',
+                    'langdata.json',
                 ),
-                encoding="utf-8",
+                encoding='utf-8',
             ) as infile:
                 translation_contributors = json.loads(infile.read())[
-                    "translation_contributors"
+                    'translation_contributors'
                 ]
         except Exception:
-            logging.exception("Error reading translation contributors.")
+            logging.exception('Error reading translation contributors.')
             translation_contributors = []
 
         translation_names = _format_names(translation_contributors, 60)
@@ -225,87 +235,95 @@ class CreditsWindow(bui.MainWindow):
         # We can remove that limit once we drop support for GL ES2.. :-/
         # (or add mesh splitting under the hood)
         credits_text = (
-            "  "
-            + bui.Lstr(resource=f"{self._r}.codingGraphicsAudioText")
+            '  '
+            + bui.Lstr(resource=f'{self._r}.codingGraphicsAudioText')
             .evaluate()
-            .replace("${NAME}", "Eric Froemling")
-            + "\n"
-            "\n"
-            "  "
-            + bui.Lstr(resource=f"{self._r}.additionalAudioArtIdeasText")
+            .replace('${NAME}', 'Eric Froemling')
+            + '\n'
+            '\n'
+            '  '
+            + bui.Lstr(resource=f'{self._r}.additionalAudioArtIdeasText')
             .evaluate()
-            .replace("${NAME}", "Raphael Suter")
-            + "\n"
-            "\n"
-            "  " + bui.Lstr(resource=f"{self._r}.soundAndMusicText").evaluate() + "\n"
-            "\n" + sound_and_music + "\n"
-            "\n"
-            "     "
-            + bui.Lstr(resource=f"{self._r}.publicDomainMusicViaText")
+            .replace('${NAME}', 'Raphael Suter')
+            + '\n'
+            '\n'
+            '  '
+            + bui.Lstr(resource=f'{self._r}.soundAndMusicText').evaluate()
+            + '\n'
+            '\n' + sound_and_music + '\n'
+            '\n'
+            '     '
+            + bui.Lstr(resource=f'{self._r}.publicDomainMusicViaText')
             .evaluate()
-            .replace("${NAME}", "Musopen.com")
-            + "\n"
-            "        "
-            + bui.Lstr(resource=f"{self._r}.thanksEspeciallyToText")
+            .replace('${NAME}', 'Musopen.com')
+            + '\n'
+            '        '
+            + bui.Lstr(resource=f'{self._r}.thanksEspeciallyToText')
             .evaluate()
-            .replace("${NAME}", "the US Army, Navy, and Marine Bands")
-            + "\n"
-            "\n"
-            "     "
-            + bui.Lstr(resource=f"{self._r}.additionalMusicFromText")
+            .replace('${NAME}', 'the US Army, Navy, and Marine Bands')
+            + '\n'
+            '\n'
+            '     '
+            + bui.Lstr(resource=f'{self._r}.additionalMusicFromText')
             .evaluate()
-            .replace("${NAME}", "The YouTube Audio Library")
-            + "\n"
-            "\n"
-            "     "
-            + bui.Lstr(resource=f"{self._r}.soundsText")
+            .replace('${NAME}', 'The YouTube Audio Library')
+            + '\n'
+            '\n'
+            '     '
+            + bui.Lstr(resource=f'{self._r}.soundsText')
             .evaluate()
-            .replace("${SOURCE}", "Freesound.org")
-            + "\n"
-            "\n" + freesound_names + "\n"
-            "\n"
-            "  "
-            + bui.Lstr(resource=f"{self._r}.languageTranslationsText").evaluate()
-            + "\n"
-            "\n"
-            + "\n".join(translation_names.splitlines()[:146])
-            + "\n".join(translation_names.splitlines()[146:])
-            + "\n"
-            "\n"
-            "  Shout Out to Awesome Mods / Modders / Contributors:\n\n"
-            "     BombDash ModPack\n"
-            "     TheMikirog & SoK - BombSquad Joyride Modpack\n"
-            "     Mrmaxmeier - BombSquad-Community-Mod-Manager\n"
-            "     Ritiek Malhotra \n"
-            "     Dliwk\n"
-            "     vishal332008\n"
-            "     itsre3\n"
-            "     Drooopyyy\n"
-            "\n"
-            "  Holiday theme vector art designed by Freepik\n"
-            "\n"
-            "  " + bui.Lstr(resource=f"{self._r}.specialThanksText").evaluate() + "\n"
-            "\n"
-            "     Todd, Laura, and Robert Froemling\n"
-            "     "
-            + bui.Lstr(resource=f"{self._r}.allMyFamilyText")
+            .replace('${SOURCE}', 'Freesound.org')
+            + '\n'
+            '\n' + freesound_names + '\n'
+            '\n'
+            '  '
+            + bui.Lstr(
+                resource=f'{self._r}.languageTranslationsText'
+            ).evaluate()
+            + '\n'
+            '\n'
+            + '\n'.join(translation_names.splitlines()[:146])
+            + '\n'.join(translation_names.splitlines()[146:])
+            + '\n'
+            '\n'
+            '  Shout Out to Awesome Mods / Modders / Contributors:\n\n'
+            '     BombDash ModPack\n'
+            '     TheMikirog & SoK - BombSquad Joyride Modpack\n'
+            '     Mrmaxmeier - BombSquad-Community-Mod-Manager\n'
+            '     Ritiek Malhotra \n'
+            '     Dliwk\n'
+            '     vishal332008\n'
+            '     itsre3\n'
+            '     Drooopyyy\n'
+            '\n'
+            '  Holiday theme vector art designed by Freepik\n'
+            '\n'
+            '  '
+            + bui.Lstr(resource=f'{self._r}.specialThanksText').evaluate()
+            + '\n'
+            '\n'
+            '     Todd, Laura, and Robert Froemling\n'
+            '     '
+            + bui.Lstr(resource=f'{self._r}.allMyFamilyText')
             .evaluate()
-            .replace("\n", "\n     ")
-            + "\n"
-            "     "
-            + bui.Lstr(resource=f"{self._r}.whoeverInventedCoffeeText").evaluate()
-            + "\n"
-            "\n"
-            "  " + bui.Lstr(resource=f"{self._r}.legalText").evaluate() + "\n"
-            "\n"
-            "     "
-            + bui.Lstr(resource=f"{self._r}.softwareBasedOnText")
+            .replace('\n', '\n     ')
+            + '\n'
+            '     '
+            + bui.Lstr(
+                resource=f'{self._r}.whoeverInventedCoffeeText'
+            ).evaluate()
+            + '\n'
+            '\n'
+            '  ' + bui.Lstr(resource=f'{self._r}.legalText').evaluate() + '\n'
+            '\n'
+            '     '
+            + bui.Lstr(resource=f'{self._r}.softwareBasedOnText')
             .evaluate()
-            .replace("${NAME}", "the Khronos Group")
-            + "\n"
-            "\n"
-            "                                       "
-            "                      www.ballistica.net\n"
+            .replace('${NAME}', 'the Khronos Group')
+            + '\n'
+            '\n'
+            '                                       '
+            '                      www.ballistica.net\n'
         )
 
         txt = credits_text
@@ -333,8 +351,8 @@ class CreditsWindow(bui.MainWindow):
                 flatness=1.0,
                 size=(0, 0),
                 position=(0, self._sub_height - 20 + voffs),
-                h_align="left",
-                v_align="top",
+                h_align='left',
+                v_align='top',
                 text=bui.Lstr(value=line),
             )
             voffs -= line_height

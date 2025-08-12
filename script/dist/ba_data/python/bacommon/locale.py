@@ -28,48 +28,48 @@ class Locale(Enum):
     # where space is unimportant or humans might be writing these, go
     # with long-values which .
 
-    ENGLISH = "eng"
-    CHINESE = "chn"  # Obsolete
-    CHINESE_TRADITIONAL = "chn_tr"
-    CHINESE_SIMPLIFIED = "chn_sim"
-    PORTUGUESE = "prtg"  # Obsolete
-    PORTUGUESE_PORTUGAL = "prtg_pr"
-    PORTUGUESE_BRAZIL = "prtg_brz"
-    ARABIC = "arabc"
-    BELARUSSIAN = "blrs"
-    CROATIAN = "croat"
-    CZECH = "czch"
-    DANISH = "dnsh"
-    DUTCH = "dtch"
-    PIRATE_SPEAK = "pirate"
-    ESPERANTO = "esprnto"
-    FILIPINO = "filp"
-    FRENCH = "frnch"
-    GERMAN = "grmn"
-    GIBBERISH = "gibber"
-    GREEK = "greek"
-    HINDI = "hndi"
-    HUNGARIAN = "hngr"
-    INDONESIAN = "indnsn"
-    ITALIAN = "italn"
-    KOREAN = "kor"
-    MALAY = "mlay"
-    PERSIAN = "pers"
-    POLISH = "pol"
-    ROMANIAN = "rom"
-    RUSSIAN = "rusn"
-    SERBIAN = "srbn"
-    SPANISH = "spn"  # Obsolete
-    SPANISH_LATIN_AMERICA = "spn_lat"
-    SPANISH_SPAIN = "spn_spn"
-    SLOVAK = "slvk"
-    SWEDISH = "swed"
-    TAMIL = "taml"
-    THAI = "thai"
-    TURKISH = "turk"
-    UKRAINIAN = "ukrn"
-    VENETIAN = "venetn"
-    VIETNAMESE = "viet"
+    ENGLISH = 'eng'
+    CHINESE = 'chn'  # Obsolete
+    CHINESE_TRADITIONAL = 'chn_tr'
+    CHINESE_SIMPLIFIED = 'chn_sim'
+    PORTUGUESE = 'prtg'  # Obsolete
+    PORTUGUESE_PORTUGAL = 'prtg_pr'
+    PORTUGUESE_BRAZIL = 'prtg_brz'
+    ARABIC = 'arabc'
+    BELARUSSIAN = 'blrs'
+    CROATIAN = 'croat'
+    CZECH = 'czch'
+    DANISH = 'dnsh'
+    DUTCH = 'dtch'
+    PIRATE_SPEAK = 'pirate'
+    ESPERANTO = 'esprnto'
+    FILIPINO = 'filp'
+    FRENCH = 'frnch'
+    GERMAN = 'grmn'
+    GIBBERISH = 'gibber'
+    GREEK = 'greek'
+    HINDI = 'hndi'
+    HUNGARIAN = 'hngr'
+    INDONESIAN = 'indnsn'
+    ITALIAN = 'italn'
+    KOREAN = 'kor'
+    MALAY = 'mlay'
+    PERSIAN = 'pers'
+    POLISH = 'pol'
+    ROMANIAN = 'rom'
+    RUSSIAN = 'rusn'
+    SERBIAN = 'srbn'
+    SPANISH = 'spn'  # Obsolete
+    SPANISH_LATIN_AMERICA = 'spn_lat'
+    SPANISH_SPAIN = 'spn_spn'
+    SLOVAK = 'slvk'
+    SWEDISH = 'swed'
+    TAMIL = 'taml'
+    THAI = 'thai'
+    TURKISH = 'turk'
+    UKRAINIAN = 'ukrn'
+    VENETIAN = 'venetn'
+    VIETNAMESE = 'viet'
 
     # Note: We use if-statement chains here so we can use assert_never()
     # to ensure we cover all existing values. But we cache lookups so
@@ -89,89 +89,89 @@ class Locale(Enum):
         cls = type(self)
 
         if self is cls.ENGLISH:
-            return "English"
+            return 'English'
         if self is cls.CHINESE:
-            return "Chinese"
+            return 'Chinese'
         if self is cls.CHINESE_TRADITIONAL:
-            return "ChineseTraditional"
+            return 'ChineseTraditional'
         if self is cls.CHINESE_SIMPLIFIED:
-            return "ChineseSimplified"
+            return 'ChineseSimplified'
         if self is cls.PORTUGUESE:
-            return "Portuguese"
+            return 'Portuguese'
         if self is cls.PORTUGUESE_PORTUGAL:
-            return "PortuguesePortugal"
+            return 'PortuguesePortugal'
         if self is cls.PORTUGUESE_BRAZIL:
-            return "PortugueseBrazil"
+            return 'PortugueseBrazil'
         if self is cls.ARABIC:
-            return "Arabic"
+            return 'Arabic'
         if self is cls.BELARUSSIAN:
-            return "Belarussian"
+            return 'Belarussian'
         if self is cls.CROATIAN:
-            return "Croatian"
+            return 'Croatian'
         if self is cls.CZECH:
-            return "Czech"
+            return 'Czech'
         if self is cls.DANISH:
-            return "Danish"
+            return 'Danish'
         if self is cls.DUTCH:
-            return "Dutch"
+            return 'Dutch'
         if self is cls.PIRATE_SPEAK:
-            return "PirateSpeak"
+            return 'PirateSpeak'
         if self is cls.ESPERANTO:
-            return "Esperanto"
+            return 'Esperanto'
         if self is cls.FILIPINO:
-            return "Filipino"
+            return 'Filipino'
         if self is cls.FRENCH:
-            return "French"
+            return 'French'
         if self is cls.GERMAN:
-            return "German"
+            return 'German'
         if self is cls.GIBBERISH:
-            return "Gibberish"
+            return 'Gibberish'
         if self is cls.GREEK:
-            return "Greek"
+            return 'Greek'
         if self is cls.HINDI:
-            return "Hindi"
+            return 'Hindi'
         if self is cls.HUNGARIAN:
-            return "Hungarian"
+            return 'Hungarian'
         if self is cls.INDONESIAN:
-            return "Indonesian"
+            return 'Indonesian'
         if self is cls.ITALIAN:
-            return "Italian"
+            return 'Italian'
         if self is cls.KOREAN:
-            return "Korean"
+            return 'Korean'
         if self is cls.MALAY:
-            return "Malay"
+            return 'Malay'
         if self is cls.PERSIAN:
-            return "Persian"
+            return 'Persian'
         if self is cls.POLISH:
-            return "Polish"
+            return 'Polish'
         if self is cls.ROMANIAN:
-            return "Romanian"
+            return 'Romanian'
         if self is cls.RUSSIAN:
-            return "Russian"
+            return 'Russian'
         if self is cls.SERBIAN:
-            return "Serbian"
+            return 'Serbian'
         if self is cls.SPANISH:
-            return "Spanish"
+            return 'Spanish'
         if self is cls.SPANISH_LATIN_AMERICA:
-            return "SpanishLatinAmerica"
+            return 'SpanishLatinAmerica'
         if self is cls.SPANISH_SPAIN:
-            return "SpanishSpain"
+            return 'SpanishSpain'
         if self is cls.SLOVAK:
-            return "Slovak"
+            return 'Slovak'
         if self is cls.SWEDISH:
-            return "Swedish"
+            return 'Swedish'
         if self is cls.TAMIL:
-            return "Tamil"
+            return 'Tamil'
         if self is cls.THAI:
-            return "Thai"
+            return 'Thai'
         if self is cls.TURKISH:
-            return "Turkish"
+            return 'Turkish'
         if self is cls.UKRAINIAN:
-            return "Ukrainian"
+            return 'Ukrainian'
         if self is cls.VENETIAN:
-            return "Venetian"
+            return 'Venetian'
         if self is cls.VIETNAMESE:
-            return "Vietnamese"
+            return 'Vietnamese'
 
         # Make sure we've covered all cases.
         assert_never(self)
@@ -181,7 +181,7 @@ class Locale(Enum):
         """Given a long value, return a Locale."""
 
         # Build a map of long-values to locales on demand.
-        storekey = "_from_long_value"
+        storekey = '_from_long_value'
         fromvals: dict[str, Locale] | None = getattr(cls, storekey, None)
         if fromvals is None:
             fromvals = {val.long_value: val for val in cls}
@@ -206,89 +206,91 @@ class Locale(Enum):
         cls = type(self)
 
         if self is cls.ENGLISH:
-            return "English"
+            return 'English'
         if self is cls.CHINESE:
-            return "Chinese"
+            return 'Chinese'
         if self is cls.CHINESE_TRADITIONAL:
-            return "Chinese (Traditional)"
+            return 'Chinese (Traditional)'
         if self is cls.CHINESE_SIMPLIFIED:
-            return "Chinese (Simplified)"
+            return 'Chinese (Simplified)'
         if self is cls.PORTUGUESE:
-            return "Portuguese"
+            return 'Portuguese'
         if self is cls.PORTUGUESE_PORTUGAL:
-            return "Portuguese (Portugal)"
+            return 'Portuguese (Portugal)'
         if self is cls.PORTUGUESE_BRAZIL:
-            return "Portuguese (Brazil)"
+            return 'Portuguese (Brazil)'
         if self is cls.ARABIC:
-            return "Arabic"
+            return 'Arabic'
         if self is cls.BELARUSSIAN:
-            return "Belarussian"
+            return 'Belarussian'
         if self is cls.CROATIAN:
-            return "Croatian"
+            return 'Croatian'
         if self is cls.CZECH:
-            return "Czech"
+            return 'Czech'
         if self is cls.DANISH:
-            return "Danish"
+            return 'Danish'
         if self is cls.DUTCH:
-            return "Dutch"
+            return 'Dutch'
         if self is cls.PIRATE_SPEAK:
-            return "Pirate-Speak (English as spoken by a pirate)"
+            return 'Pirate-Speak (English as spoken by a pirate)'
         if self is cls.ESPERANTO:
-            return "Esperanto"
+            return 'Esperanto'
         if self is cls.FILIPINO:
-            return "Filipino"
+            return 'Filipino'
         if self is cls.FRENCH:
-            return "French"
+            return 'French'
         if self is cls.GERMAN:
-            return "German"
+            return 'German'
         if self is cls.GIBBERISH:
-            return "Gibberish (imaginary words vaguely" " reminiscent of English)"
+            return (
+                'Gibberish (imaginary words vaguely' ' reminiscent of English)'
+            )
         if self is cls.GREEK:
-            return "Greek"
+            return 'Greek'
         if self is cls.HINDI:
-            return "Hindi"
+            return 'Hindi'
         if self is cls.HUNGARIAN:
-            return "Hungarian"
+            return 'Hungarian'
         if self is cls.INDONESIAN:
-            return "Indonesian"
+            return 'Indonesian'
         if self is cls.ITALIAN:
-            return "Italian"
+            return 'Italian'
         if self is cls.KOREAN:
-            return "Korean"
+            return 'Korean'
         if self is cls.MALAY:
-            return "Malay"
+            return 'Malay'
         if self is cls.PERSIAN:
-            return "Persian"
+            return 'Persian'
         if self is cls.POLISH:
-            return "Polish"
+            return 'Polish'
         if self is cls.ROMANIAN:
-            return "Romanian"
+            return 'Romanian'
         if self is cls.RUSSIAN:
-            return "Russian"
+            return 'Russian'
         if self is cls.SERBIAN:
-            return "Serbian"
+            return 'Serbian'
         if self is cls.SPANISH:
-            return "Spanish"
+            return 'Spanish'
         if self is cls.SPANISH_LATIN_AMERICA:
-            return "Spanish (Latin America)"
+            return 'Spanish (Latin America)'
         if self is cls.SPANISH_SPAIN:
-            return "Spanish (Spain)"
+            return 'Spanish (Spain)'
         if self is cls.SLOVAK:
-            return "Slovak"
+            return 'Slovak'
         if self is cls.SWEDISH:
-            return "Swedish"
+            return 'Swedish'
         if self is cls.TAMIL:
-            return "Tamil"
+            return 'Tamil'
         if self is cls.THAI:
-            return "Thai"
+            return 'Thai'
         if self is cls.TURKISH:
-            return "Turkish"
+            return 'Turkish'
         if self is cls.UKRAINIAN:
-            return "Ukrainian"
+            return 'Ukrainian'
         if self is cls.VENETIAN:
-            return "Venetian"
+            return 'Venetian'
         if self is cls.VIETNAMESE:
-            return "Vietnamese"
+            return 'Vietnamese'
 
         # Make sure we've covered all cases.
         assert_never(self)
@@ -395,45 +397,45 @@ class LocaleResolved(Enum):
     trim as possible.
     """
 
-    ENGLISH = "eng"
-    CHINESE_TRADITIONAL = "chn_tr"
-    CHINESE_SIMPLIFIED = "chn_sim"
-    PORTUGUESE_PORTUGAL = "prtg_pr"
-    PORTUGUESE_BRAZIL = "prtg_brz"
-    ARABIC = "arabc"
-    BELARUSSIAN = "blrs"
-    CROATIAN = "croat"
-    CZECH = "czch"
-    DANISH = "dnsh"
-    DUTCH = "dtch"
-    PIRATE_SPEAK = "pirate"
-    ESPERANTO = "esprnto"
-    FILIPINO = "filp"
-    FRENCH = "frnch"
-    GERMAN = "grmn"
-    GIBBERISH = "gibber"
-    GREEK = "greek"
-    HINDI = "hndi"
-    HUNGARIAN = "hngr"
-    INDONESIAN = "indnsn"
-    ITALIAN = "italn"
-    KOREAN = "kor"
-    MALAY = "mlay"
-    PERSIAN = "pers"
-    POLISH = "pol"
-    ROMANIAN = "rom"
-    RUSSIAN = "rusn"
-    SERBIAN = "srbn"
-    SPANISH_LATIN_AMERICA = "spn_lat"
-    SPANISH_SPAIN = "spn_spn"
-    SLOVAK = "slvk"
-    SWEDISH = "swed"
-    TAMIL = "taml"
-    THAI = "thai"
-    TURKISH = "turk"
-    UKRAINIAN = "ukrn"
-    VENETIAN = "venetn"
-    VIETNAMESE = "viet"
+    ENGLISH = 'eng'
+    CHINESE_TRADITIONAL = 'chn_tr'
+    CHINESE_SIMPLIFIED = 'chn_sim'
+    PORTUGUESE_PORTUGAL = 'prtg_pr'
+    PORTUGUESE_BRAZIL = 'prtg_brz'
+    ARABIC = 'arabc'
+    BELARUSSIAN = 'blrs'
+    CROATIAN = 'croat'
+    CZECH = 'czch'
+    DANISH = 'dnsh'
+    DUTCH = 'dtch'
+    PIRATE_SPEAK = 'pirate'
+    ESPERANTO = 'esprnto'
+    FILIPINO = 'filp'
+    FRENCH = 'frnch'
+    GERMAN = 'grmn'
+    GIBBERISH = 'gibber'
+    GREEK = 'greek'
+    HINDI = 'hndi'
+    HUNGARIAN = 'hngr'
+    INDONESIAN = 'indnsn'
+    ITALIAN = 'italn'
+    KOREAN = 'kor'
+    MALAY = 'mlay'
+    PERSIAN = 'pers'
+    POLISH = 'pol'
+    ROMANIAN = 'rom'
+    RUSSIAN = 'rusn'
+    SERBIAN = 'srbn'
+    SPANISH_LATIN_AMERICA = 'spn_lat'
+    SPANISH_SPAIN = 'spn_spn'
+    SLOVAK = 'slvk'
+    SWEDISH = 'swed'
+    TAMIL = 'taml'
+    THAI = 'thai'
+    TURKISH = 'turk'
+    UKRAINIAN = 'ukrn'
+    VENETIAN = 'venetn'
+    VIETNAMESE = 'viet'
 
     # Note: We use if-statement chains here so we can use assert_never()
     # to ensure we cover all existing values. But we cache lookups so
@@ -554,85 +556,85 @@ class LocaleResolved(Enum):
         val: str | None = None
 
         if self is cls.ENGLISH:
-            val = "en"
+            val = 'en'
         elif self is cls.CHINESE_TRADITIONAL:
-            val = "zh-Hant"
+            val = 'zh-Hant'
         elif self is cls.CHINESE_SIMPLIFIED:
-            val = "zh-Hans"
+            val = 'zh-Hans'
         elif self is cls.PORTUGUESE_PORTUGAL:
-            val = "pt-PT"
+            val = 'pt-PT'
         elif self is cls.PORTUGUESE_BRAZIL:
-            val = "pt-BR"
+            val = 'pt-BR'
         elif self is cls.ARABIC:
-            val = "ar"
+            val = 'ar'
         elif self is cls.BELARUSSIAN:
-            val = "be"
+            val = 'be'
         elif self is cls.CROATIAN:
-            val = "hr"
+            val = 'hr'
         elif self is cls.CZECH:
-            val = "cs"
+            val = 'cs'
         elif self is cls.DANISH:
-            val = "da"
+            val = 'da'
         elif self is cls.DUTCH:
-            val = "nl"
+            val = 'nl'
         elif self is cls.PIRATE_SPEAK:
             # 'x' in BCP 47 denotes private-use values.
-            val = "en-x-pirate"
+            val = 'en-x-pirate'
         elif self is cls.ESPERANTO:
-            val = "eo"
+            val = 'eo'
         elif self is cls.FILIPINO:
-            val = "fil"
+            val = 'fil'
         elif self is cls.FRENCH:
-            val = "fr"
+            val = 'fr'
         elif self is cls.GERMAN:
-            val = "de"
+            val = 'de'
         elif self is cls.GIBBERISH:
             # 'x' in BCP 47 denotes private-use values.
-            val = "en-x-gibberish"
+            val = 'en-x-gibberish'
         elif self is cls.GREEK:
-            val = "el"
+            val = 'el'
         elif self is cls.HINDI:
-            val = "hi"
+            val = 'hi'
         elif self is cls.HUNGARIAN:
-            val = "hu"
+            val = 'hu'
         elif self is cls.INDONESIAN:
-            val = "id"
+            val = 'id'
         elif self is cls.ITALIAN:
-            val = "it"
+            val = 'it'
         elif self is cls.KOREAN:
-            val = "ko"
+            val = 'ko'
         elif self is cls.MALAY:
-            val = "ms"
+            val = 'ms'
         elif self is cls.PERSIAN:
-            val = "fa"
+            val = 'fa'
         elif self is cls.POLISH:
-            val = "pl"
+            val = 'pl'
         elif self is cls.ROMANIAN:
-            val = "ro"
+            val = 'ro'
         elif self is cls.RUSSIAN:
-            val = "ru"
+            val = 'ru'
         elif self is cls.SERBIAN:
-            val = "sr"
+            val = 'sr'
         elif self is cls.SPANISH_LATIN_AMERICA:
-            val = "es-419"
+            val = 'es-419'
         elif self is cls.SPANISH_SPAIN:
-            val = "es-ES"
+            val = 'es-ES'
         elif self is cls.SLOVAK:
-            val = "sk"
+            val = 'sk'
         elif self is cls.SWEDISH:
-            val = "sv"
+            val = 'sv'
         elif self is cls.TAMIL:
-            val = "ta"
+            val = 'ta'
         elif self is cls.THAI:
-            val = "th"
+            val = 'th'
         elif self is cls.TURKISH:
-            val = "tr"
+            val = 'tr'
         elif self is cls.UKRAINIAN:
-            val = "uk"
+            val = 'uk'
         elif self is cls.VENETIAN:
-            val = "vec"
+            val = 'vec'
         elif self is cls.VIETNAMESE:
-            val = "vi"
+            val = 'vi'
         else:
             # Make sure we cover all cases.
             assert_never(self)
@@ -646,7 +648,7 @@ class LocaleResolved(Enum):
         if lrcheck is not self:
             logging.warning(
                 'LocaleResolved.from_tag().resolved for "%s" yielded %s;'
-                " expected %s.",
+                ' expected %s.',
                 val,
                 lrcheck.name,
                 self.name,
@@ -668,11 +670,11 @@ class LocaleResolved(Enum):
 
         # POSIX locale strings can contain a dot followed by an
         # encoding. Strip that off.
-        tag2 = tag.split(".")[0]
+        tag2 = tag.split('.')[0]
 
         # Normalize things to lowercase and underscores (we should see
         # 'zh_HANT' and 'zh-Hant' as the same).
-        bits = [bit.lower() for bit in tag2.replace("-", "_").split("_")]
+        bits = [bit.lower() for bit in tag2.replace('-', '_').split('_')]
 
         if not bits or not bits[0]:
             raise ValueError(f'Invalid tag "{tag}".')
@@ -680,17 +682,17 @@ class LocaleResolved(Enum):
         lang = bits[0]
         extras = bits[1:]
 
-        if lang == "en":
-            if "x" in extras and "pirate" in extras:
+        if lang == 'en':
+            if 'x' in extras and 'pirate' in extras:
                 return cls.PIRATE_SPEAK
-            if "x" in extras and "gibberish" in extras:
+            if 'x' in extras and 'gibberish' in extras:
                 return cls.GIBBERISH
             return cls.ENGLISH
-        if lang == "zh":
+        if lang == 'zh':
             # With no extras, default to simplified.
-            if not extras or any(val in extras for val in ["hans", "cn", "sg"]):
+            if not extras or any(val in extras for val in ['hans', 'cn', 'sg']):
                 return cls.CHINESE_SIMPLIFIED
-            if any(val in extras for val in ["hant", "tw"]):
+            if any(val in extras for val in ['hant', 'tw']):
                 return cls.CHINESE_TRADITIONAL
 
             # Make noise if we come across something unexpected so we
@@ -703,11 +705,14 @@ class LocaleResolved(Enum):
                 fallback.name,
             )
             return fallback
-        if lang == "pt":
+        if lang == 'pt':
             # With no extras, default to Brazil.
-            if not extras or "br" in extras:
+            if not extras or 'br' in extras:
                 return cls.PORTUGUESE_BRAZIL
-            if any(val in extras for val in ["pt", "ao", "mz", "tl", "cv", "gw", "st"]):
+            if any(
+                val in extras
+                for val in ['pt', 'ao', 'mz', 'tl', 'cv', 'gw', 'st']
+            ):
                 return cls.PORTUGUESE_PORTUGAL
 
             # Make noise if we come across something unexpected so we
@@ -720,29 +725,29 @@ class LocaleResolved(Enum):
                 fallback.name,
             )
             return fallback
-        if lang == "es":
+        if lang == 'es':
             # With no extras, default to latin-america spanish.
             if not extras or any(
                 val in extras
                 for val in [
-                    "419",  # Latin America / Carribean region
-                    "mx",  # Mexico
-                    "ar",  # Argentina
-                    "co",  # Colombia
-                    "cl",  # Chile
-                    "pe",  # Peru
-                    "ve",  # Venezuela
-                    "cr",  # Costa Rica
-                    "pr",  # Puerto Rico
-                    "do",  # Dominican Republic
-                    "uy",  # Uruguay
-                    "ec",  # Ecuador
-                    "pa",  # Panama
-                    "bo",  # Bolivia
+                    '419',  # Latin America / Carribean region
+                    'mx',  # Mexico
+                    'ar',  # Argentina
+                    'co',  # Colombia
+                    'cl',  # Chile
+                    'pe',  # Peru
+                    've',  # Venezuela
+                    'cr',  # Costa Rica
+                    'pr',  # Puerto Rico
+                    'do',  # Dominican Republic
+                    'uy',  # Uruguay
+                    'ec',  # Ecuador
+                    'pa',  # Panama
+                    'bo',  # Bolivia
                 ]
             ):
                 return cls.SPANISH_LATIN_AMERICA
-            if "es" in extras:
+            if 'es' in extras:
                 return cls.SPANISH_SPAIN
 
             # Make noise if we come across something unexpected so we
@@ -755,69 +760,69 @@ class LocaleResolved(Enum):
                 fallback.name,
             )
             return fallback
-        if lang == "c":
+        if lang == 'c':
             # The C.UTF-8 is a minimal locale defined by POSIX we
             # sometimes run into.
             return cls.ENGLISH
-        if lang == "ar":
+        if lang == 'ar':
             return cls.ARABIC
-        if lang == "be":
+        if lang == 'be':
             return cls.BELARUSSIAN
-        if lang == "hr":
+        if lang == 'hr':
             return cls.CROATIAN
-        if lang == "cs":
+        if lang == 'cs':
             return cls.CZECH
-        if lang == "da":
+        if lang == 'da':
             return cls.DANISH
-        if lang == "nl":
+        if lang == 'nl':
             return cls.DUTCH
-        if lang == "eo":
+        if lang == 'eo':
             return cls.ESPERANTO
-        if lang == "fil":
+        if lang == 'fil':
             return cls.FILIPINO
-        if lang == "fr":
+        if lang == 'fr':
             return cls.FRENCH
-        if lang == "de":
+        if lang == 'de':
             return cls.GERMAN
-        if lang == "el":
+        if lang == 'el':
             return cls.GREEK
-        if lang == "hi":
+        if lang == 'hi':
             return cls.HINDI
-        if lang == "hu":
+        if lang == 'hu':
             return cls.HUNGARIAN
-        if lang == "id":
+        if lang == 'id':
             return cls.INDONESIAN
-        if lang == "it":
+        if lang == 'it':
             return cls.ITALIAN
-        if lang == "ko":
+        if lang == 'ko':
             return cls.KOREAN
-        if lang == "ms":
+        if lang == 'ms':
             return cls.MALAY
-        if lang == "fa":
+        if lang == 'fa':
             return cls.PERSIAN
-        if lang == "pl":
+        if lang == 'pl':
             return cls.POLISH
-        if lang == "ro":
+        if lang == 'ro':
             return cls.ROMANIAN
-        if lang == "ru":
+        if lang == 'ru':
             return cls.RUSSIAN
-        if lang == "sr":
+        if lang == 'sr':
             return cls.SERBIAN
-        if lang == "sk":
+        if lang == 'sk':
             return cls.SLOVAK
-        if lang == "sv":
+        if lang == 'sv':
             return cls.SWEDISH
-        if lang == "ta":
+        if lang == 'ta':
             return cls.TAMIL
-        if lang == "th":
+        if lang == 'th':
             return cls.THAI
-        if lang == "tr":
+        if lang == 'tr':
             return cls.TURKISH
-        if lang == "uk":
+        if lang == 'uk':
             return cls.UKRAINIAN
-        if lang == "vec":
+        if lang == 'vec':
             return cls.VENETIAN
-        if lang == "vi":
+        if lang == 'vi':
             return cls.VIETNAMESE
 
         # Make noise if we come across something unexpected so we can

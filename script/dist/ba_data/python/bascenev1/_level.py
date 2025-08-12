@@ -52,7 +52,7 @@ class Level:
 
         # So the game knows what the level is called.
         # Hmm; seems hacky; I think we should take this out.
-        settings["name"] = self._name
+        settings['name'] = self._name
         return settings
 
     @property
@@ -65,10 +65,16 @@ class Level:
         """The localized name for this level."""
         return babase.Lstr(
             translate=(
-                "coopLevelNames",
-                (self._displayname if self._displayname is not None else self._name),
+                'coopLevelNames',
+                (
+                    self._displayname
+                    if self._displayname is not None
+                    else self._name
+                ),
             ),
-            subs=[("${GAME}", self._gametype.get_display_string(self._settings))],
+            subs=[
+                ('${GAME}', self._gametype.get_display_string(self._settings))
+            ],
         )
 
     @property
@@ -89,14 +95,14 @@ class Level:
         a campaign.
         """
         if self._index is None:
-            raise RuntimeError("Level is not part of a Campaign")
+            raise RuntimeError('Level is not part of a Campaign')
         return self._index
 
     @property
     def complete(self) -> bool:
         """Whether this level has been completed."""
         config = self._get_config_dict()
-        val = config.get("Complete", False)
+        val = config.get('Complete', False)
         assert isinstance(val, bool)
         return val
 
@@ -107,12 +113,12 @@ class Level:
         assert isinstance(val, bool)
         if val != old_val:
             config = self._get_config_dict()
-            config["Complete"] = val
+            config['Complete'] = val
 
     def get_high_scores(self) -> dict:
         """Return the current high scores for this level."""
         config = self._get_config_dict()
-        high_scores_key = "High Scores" + self.get_score_version_string()
+        high_scores_key = 'High Scores' + self.get_score_version_string()
         if high_scores_key not in config:
             return {}
         return copy.deepcopy(config[high_scores_key])
@@ -120,7 +126,7 @@ class Level:
     def set_high_scores(self, high_scores: dict) -> None:
         """Set high scores for this level."""
         config = self._get_config_dict()
-        high_scores_key = "High Scores" + self.get_score_version_string()
+        high_scores_key = 'High Scores' + self.get_score_version_string()
         config[high_scores_key] = high_scores
 
     def get_score_version_string(self) -> str:
@@ -132,8 +138,8 @@ class Level:
         """
         if self._score_version_string is None:
             scorever = self._gametype.getscoreconfig().version
-            if scorever != "":
-                scorever = " " + scorever
+            if scorever != '':
+                scorever = ' ' + scorever
             self._score_version_string = scorever
         assert self._score_version_string is not None
         return self._score_version_string
@@ -141,7 +147,7 @@ class Level:
     @property
     def rating(self) -> float:
         """The current rating for this level."""
-        val = self._get_config_dict().get("Rating", 0.0)
+        val = self._get_config_dict().get('Rating', 0.0)
         assert isinstance(val, float)
         return val
 
@@ -149,7 +155,7 @@ class Level:
         """Set a rating for this level, replacing the old ONLY IF higher."""
         old_rating = self.rating
         config = self._get_config_dict()
-        config["Rating"] = max(old_rating, rating)
+        config['Rating'] = max(old_rating, rating)
 
     def _get_config_dict(self) -> dict[str, Any]:
         """Return/create the persistent state dict for this level.
@@ -159,10 +165,10 @@ class Level:
         """
         campaign = self.campaign
         if campaign is None:
-            raise RuntimeError("Level is not in a campaign.")
+            raise RuntimeError('Level is not in a campaign.')
         configdict = campaign.configdict
         val: dict[str, Any] = configdict.setdefault(
-            self._name, {"Rating": 0.0, "Complete": False}
+            self._name, {'Rating': 0.0, 'Complete': False}
         )
         assert isinstance(val, dict)
         return val

@@ -46,16 +46,16 @@ def get_player_profile_icon(profilename: str) -> str:
     appconfig = babase.app.config
     icon: str
     try:
-        is_global = appconfig["Player Profiles"][profilename]["global"]
+        is_global = appconfig['Player Profiles'][profilename]['global']
     except KeyError:
         is_global = False
     if is_global:
         try:
-            icon = appconfig["Player Profiles"][profilename]["icon"]
+            icon = appconfig['Player Profiles'][profilename]['icon']
         except KeyError:
             icon = babase.charstr(babase.SpecialChar.LOGO)
     else:
-        icon = ""
+        icon = ''
     return icon
 
 
@@ -65,7 +65,7 @@ def get_player_profile_colors(
     """Given a profile, return colors for them."""
     appconfig = babase.app.config
     if profiles is None:
-        profiles = appconfig["Player Profiles"]
+        profiles = appconfig['Player Profiles']
 
     # Special case: when being asked for a random color in kiosk mode,
     # always return default purple.
@@ -79,7 +79,7 @@ def get_player_profile_colors(
     else:
         try:
             assert profilename is not None
-            color = profiles[profilename]["color"]
+            color = profiles[profilename]['color']
         except (KeyError, AssertionError):
             # Key off name if possible.
             if profilename is None:
@@ -91,16 +91,19 @@ def get_player_profile_colors(
 
         try:
             assert profilename is not None
-            highlight = profiles[profilename]["highlight"]
+            highlight = profiles[profilename]['highlight']
         except (KeyError, AssertionError):
             # Key off name if possible.
             if profilename is None:
                 # Last 2 are grey and white; ignore those or we
                 # get lots of old-looking players.
-                highlight = PLAYER_COLORS[random.randrange(len(PLAYER_COLORS) - 2)]
+                highlight = PLAYER_COLORS[
+                    random.randrange(len(PLAYER_COLORS) - 2)
+                ]
             else:
                 highlight = PLAYER_COLORS[
-                    sum(ord(c) + 1 for c in profilename) % (len(PLAYER_COLORS) - 2)
+                    sum(ord(c) + 1 for c in profilename)
+                    % (len(PLAYER_COLORS) - 2)
                 ]
 
     return color, highlight

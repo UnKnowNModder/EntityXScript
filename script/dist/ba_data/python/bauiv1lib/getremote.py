@@ -37,33 +37,33 @@ class GetBSRemoteWindow(PopupWindow):
             position=(50, self._height - 30),
             size=(50, 50),
             scale=0.5,
-            label="",
+            label='',
             color=bg_color,
             on_activate_call=self._on_cancel_press,
             autoselect=True,
-            icon=bui.gettexture("crossOut"),
+            icon=bui.gettexture('crossOut'),
             iconscale=1.2,
         )
         bui.imagewidget(
             parent=self.root_widget,
             position=(self._width * 0.5 - 110, self._height * 0.67 - 110),
             size=(220, 220),
-            texture=bui.gettexture("multiplayerExamples"),
+            texture=bui.gettexture('multiplayerExamples'),
         )
         bui.textwidget(
             parent=self.root_widget,
             size=(0, 0),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             maxwidth=self._width * 0.9,
             position=(self._width * 0.5, 60),
             text=bui.Lstr(
-                resource="remoteAppInfoShortText",
+                resource='remoteAppInfoShortText',
                 subs=[
-                    ("${APP_NAME}", bui.Lstr(resource="titleText")),
+                    ('${APP_NAME}', bui.Lstr(resource='titleText')),
                     (
-                        "${REMOTE_APP_NAME}",
-                        bui.Lstr(resource="remote_app.app_name"),
+                        '${REMOTE_APP_NAME}',
+                        bui.Lstr(resource='remote_app.app_name'),
                     ),
                 ],
             ),
@@ -75,9 +75,9 @@ class GetBSRemoteWindow(PopupWindow):
     def _transition_out(self) -> None:
         if not self._transitioning_out:
             self._transitioning_out = True
-            bui.containerwidget(edit=self.root_widget, transition="out_scale")
+            bui.containerwidget(edit=self.root_widget, transition='out_scale')
 
     @override
     def on_popup_cancel(self) -> None:
-        bui.getsound("swish").play()
+        bui.getsound('swish').play()
         self._transition_out()

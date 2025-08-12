@@ -7,4 +7,4 @@ from __future__ import annotations
 
 def hello_world() -> None:
     """The usual example."""
-    print("HELLO WORLD FROM TemplateFs!")
+    print('HELLO WORLD FROM TemplateFs!')

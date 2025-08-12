@@ -65,7 +65,9 @@ class CoopJoinActivity(bs.JoinActivity):
         # Now list our remaining achievements for this level.
         assert self.session.campaign is not None
         assert isinstance(self.session, bs.CoopSession)
-        levelname = self.session.campaign.name + ":" + self.session.campaign_level_name
+        levelname = (
+            self.session.campaign.name + ':' + self.session.campaign_level_name
+        )
         ts_h_offs = 60
 
         variant = bs.app.env.variant
@@ -84,7 +86,7 @@ class CoopJoinActivity(bs.JoinActivity):
             vrmode = env.vr
             if have_achievements:
                 Text(
-                    bs.Lstr(resource="achievementsRemainingText"),
+                    bs.Lstr(resource='achievementsRemainingText'),
                     host_only=True,
                     position=(ts_h_offs - 10, vpos),
                     transition=Text.Transition.FADE_IN,
@@ -100,11 +102,11 @@ class CoopJoinActivity(bs.JoinActivity):
                 vpos -= 35
                 for ach in achievements:
                     delay += 0.05
-                    ach.create_display(hval, vpos, delay, style="in_game")
+                    ach.create_display(hval, vpos, delay, style='in_game')
                     vpos -= 55
                 if not achievements:
                     Text(
-                        bs.Lstr(resource="noAchievementsRemainingText"),
+                        bs.Lstr(resource='noAchievementsRemainingText'),
                         host_only=True,
                         position=(ts_h_offs + 15, vpos + 10),
                         transition=Text.Transition.FADE_IN,

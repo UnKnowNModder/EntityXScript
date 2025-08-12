@@ -51,12 +51,12 @@ class AppComponentSubsystem:
         # needed (would need to guard access to our implementations
         # dict).
         if not _babase.in_logic_thread():
-            raise RuntimeError("this must be called from the logic thread.")
+            raise RuntimeError('this must be called from the logic thread.')
 
         if not issubclass(implementation, baseclass):
             raise TypeError(
-                f"Implementation {implementation}"
-                f" is not a subclass of baseclass {baseclass}."
+                f'Implementation {implementation}'
+                f' is not a subclass of baseclass {baseclass}.'
             )
 
         self._implementations[baseclass] = implementation
@@ -75,7 +75,7 @@ class AppComponentSubsystem:
         base-class is returned.
         """
         if not _babase.in_logic_thread():
-            raise RuntimeError("this must be called from the logic thread.")
+            raise RuntimeError('this must be called from the logic thread.')
 
         del baseclass  # Unused.
 
@@ -94,7 +94,7 @@ class AppComponentSubsystem:
         runs will not result in additional callbacks.
         """
         if not _babase.in_logic_thread():
-            raise RuntimeError("this must be called from the logic thread.")
+            raise RuntimeError('this must be called from the logic thread.')
 
         self._change_callbacks.setdefault(baseclass, []).append(callback)
 

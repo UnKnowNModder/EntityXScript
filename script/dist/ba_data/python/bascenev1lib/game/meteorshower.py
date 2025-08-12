@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from typing import Any, Sequence
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -35,11 +35,11 @@ class Team(bs.Team[Player]):
 class MeteorShowerGame(bs.TeamGameActivity[Player, Team]):
     """Minigame involving dodging falling bombs."""
 
-    name = "Meteor Shower"
-    description = "Dodge the falling bombs."
-    available_settings = [bs.BoolSetting("Epic Mode", default=False)]
+    name = 'Meteor Shower'
+    description = 'Dodge the falling bombs.'
+    available_settings = [bs.BoolSetting('Epic Mode', default=False)]
     scoreconfig = bs.ScoreConfig(
-        label="Survived", scoretype=bs.ScoreType.MILLISECONDS, version="B"
+        label='Survived', scoretype=bs.ScoreType.MILLISECONDS, version='B'
     )
 
     # Print messages when players die (since its meaningful in this game).
@@ -53,7 +53,7 @@ class MeteorShowerGame(bs.TeamGameActivity[Player, Team]):
     @override
     @classmethod
     def get_supported_maps(cls, sessiontype: type[bs.Session]) -> list[str]:
-        return ["Rampage"]
+        return ['Rampage']
 
     # We support teams, free-for-all, and co-op sessions.
     @override
@@ -68,7 +68,7 @@ class MeteorShowerGame(bs.TeamGameActivity[Player, Team]):
     def __init__(self, settings: dict):
         super().__init__(settings)
 
-        self._epic_mode = settings.get("Epic Mode", False)
+        self._epic_mode = settings.get('Epic Mode', False)
         self._last_player_death_time: float | None = None
         self._meteor_time = 2.0
         self._timer: OnScreenTimer | None = None
@@ -197,10 +197,10 @@ class MeteorShowerGame(bs.TeamGameActivity[Player, Team]):
         # and debug things.
         loc_test = False
         if loc_test:
-            bs.newnode("locator", attrs={"position": (8, 6, -5.5)})
-            bs.newnode("locator", attrs={"position": (8, 6, -2.3)})
-            bs.newnode("locator", attrs={"position": (-7.3, 6, -5.5)})
-            bs.newnode("locator", attrs={"position": (-7.3, 6, -2.3)})
+            bs.newnode('locator', attrs={'position': (8, 6, -5.5)})
+            bs.newnode('locator', attrs={'position': (8, 6, -2.3)})
+            bs.newnode('locator', attrs={'position': (-7.3, 6, -5.5)})
+            bs.newnode('locator', attrs={'position': (-7.3, 6, -2.3)})
 
         # Drop several bombs in series.
         delay = 0.0
@@ -222,7 +222,9 @@ class MeteorShowerGame(bs.TeamGameActivity[Player, Team]):
             delay += 0.1
         self._set_meteor_timer()
 
-    def _drop_bomb(self, position: Sequence[float], velocity: Sequence[float]) -> None:
+    def _drop_bomb(
+        self, position: Sequence[float], velocity: Sequence[float]
+    ) -> None:
         Bomb(position=position, velocity=velocity).autoretain()
 
     def _decrement_meteor_time(self) -> None:

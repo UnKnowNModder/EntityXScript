@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from typing import Any, Sequence
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -43,79 +43,79 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
     kill you and become the chosen one themselves.
     """
 
-    name = "Chosen One"
+    name = 'Chosen One'
     description = (
-        "Be the chosen one for a length of time to win.\n"
-        "Kill the chosen one to become it."
+        'Be the chosen one for a length of time to win.\n'
+        'Kill the chosen one to become it.'
     )
     available_settings = [
         bs.IntSetting(
-            "Chosen One Time",
+            'Chosen One Time',
             min_value=10,
             default=30,
             increment=10,
         ),
-        bs.BoolSetting("Chosen One Gets Gloves", default=True),
-        bs.BoolSetting("Chosen One Gets Shield", default=False),
+        bs.BoolSetting('Chosen One Gets Gloves', default=True),
+        bs.BoolSetting('Chosen One Gets Shield', default=False),
         bs.IntChoiceSetting(
-            "Time Limit",
+            'Time Limit',
             choices=[
-                ("None", 0),
-                ("1 Minute", 60),
-                ("2 Minutes", 120),
-                ("5 Minutes", 300),
-                ("10 Minutes", 600),
-                ("20 Minutes", 1200),
+                ('None', 0),
+                ('1 Minute', 60),
+                ('2 Minutes', 120),
+                ('5 Minutes', 300),
+                ('10 Minutes', 600),
+                ('20 Minutes', 1200),
             ],
             default=0,
         ),
         bs.FloatChoiceSetting(
-            "Respawn Times",
+            'Respawn Times',
             choices=[
-                ("Shorter", 0.25),
-                ("Short", 0.5),
-                ("Normal", 1.0),
-                ("Long", 2.0),
-                ("Longer", 4.0),
+                ('Shorter', 0.25),
+                ('Short', 0.5),
+                ('Normal', 1.0),
+                ('Long', 2.0),
+                ('Longer', 4.0),
             ],
             default=1.0,
         ),
-        bs.BoolSetting("Epic Mode", default=False),
+        bs.BoolSetting('Epic Mode', default=False),
     ]
-    scoreconfig = bs.ScoreConfig(label="Time Held")
+    scoreconfig = bs.ScoreConfig(label='Time Held')
 
     @override
     @classmethod
     def get_supported_maps(cls, sessiontype: type[bs.Session]) -> list[str]:
         assert bs.app.classic is not None
-        return bs.app.classic.getmaps("keep_away")
+        return bs.app.classic.getmaps('keep_away')
 
     def __init__(self, settings: dict):
         super().__init__(settings)
         self._scoreboard = Scoreboard()
         self._chosen_one_player: Player | None = None
-        self._swipsound = bs.getsound("swip")
+        self._swipsound = bs.getsound('swip')
         self._countdownsounds: dict[int, bs.Sound] = {
-            10: bs.getsound("announceTen"),
-            9: bs.getsound("announceNine"),
-            8: bs.getsound("announceEight"),
-            7: bs.getsound("announceSeven"),
-            6: bs.getsound("announceSix"),
-            5: bs.getsound("announceFive"),
-            4: bs.getsound("announceFour"),
-            3: bs.getsound("announceThree"),
-            2: bs.getsound("announceTwo"),
-            1: bs.getsound("announceOne"),
+            10: bs.getsound('announceTen'),
+            9: bs.getsound('announceNine'),
+            8: bs.getsound('announceEight'),
+            7: bs.getsound('announceSeven'),
+            6: bs.getsound('announceSix'),
+            5: bs.getsound('announceFive'),
+            4: bs.getsound('announceFour'),
+            3: bs.getsound('announceThree'),
+            2: bs.getsound('announceTwo'),
+            1: bs.getsound('announceOne'),
         }
         self._flag_spawn_pos: Sequence[float] | None = None
         self._reset_region_material: bs.Material | None = None
         self._flag: Flag | None = None
         self._reset_region: bs.Node | None = None
-        self._epic_mode = bool(settings["Epic Mode"])
-        self._chosen_one_time = int(settings["Chosen One Time"])
-        self._time_limit = float(settings["Time Limit"])
-        self._chosen_one_gets_shield = bool(settings["Chosen One Gets Shield"])
-        self._chosen_one_gets_gloves = bool(settings["Chosen One Gets Gloves"])
+        self._epic_mode = bool(settings['Epic Mode'])
+        self._chosen_one_time = int(settings['Chosen One Time'])
+        self._time_limit = float(settings['Time Limit'])
+        self._chosen_one_gets_shield = bool(settings['Chosen One Gets Shield'])
+        self._chosen_one_gets_gloves = bool(settings['Chosen One Gets Gloves'])
 
         # Base class overrides
         self.slow_motion = self._epic_mode
@@ -127,7 +127,7 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
     def get_instance_description(self) -> str | Sequence:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        return "There can be only one."
+        return 'There can be only one.'
 
     @override
     def create_team(self, sessionteam: bs.SessionTeam) -> Team:
@@ -162,13 +162,13 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
         mat = self._reset_region_material = bs.Material()
         mat.add_actions(
             conditions=(
-                "they_have_material",
+                'they_have_material',
                 shared.player_material,
             ),
             actions=(
-                ("modify_part_collision", "collide", True),
-                ("modify_part_collision", "physical", False),
-                ("call", "at_connect", bs.WeakCall(self._handle_reset_collide)),
+                ('modify_part_collision', 'collide', True),
+                ('modify_part_collision', 'physical', False),
+                ('call', 'at_connect', bs.WeakCall(self._handle_reset_collide)),
             ),
         )
 
@@ -179,12 +179,12 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
         assert self._flag_spawn_pos is not None
         pos = self._flag_spawn_pos
         self._reset_region = bs.newnode(
-            "region",
+            'region',
             attrs={
-                "position": (pos[0], pos[1] + 0.75, pos[2]),
-                "scale": (0.5, 0.5, 0.5),
-                "type": "sphere",
-                "materials": [self._reset_region_material],
+                'position': (pos[0], pos[1] + 0.75, pos[2]),
+                'scale': (0.5, 0.5, 0.5),
+                'type': 'sphere',
+                'materials': [self._reset_region_material],
             },
         )
 
@@ -211,15 +211,15 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
 
     def _flash_flag_spawn(self) -> None:
         light = bs.newnode(
-            "light",
+            'light',
             attrs={
-                "position": self._flag_spawn_pos,
-                "color": (1, 1, 1),
-                "radius": 0.3,
-                "height_attenuated": False,
+                'position': self._flag_spawn_pos,
+                'color': (1, 1, 1),
+                'radius': 0.3,
+                'height_attenuated': False,
             },
         )
-        bs.animate(light, "intensity", {0: 0, 0.25: 0.5, 0.5: 0}, loop=True)
+        bs.animate(light, 'intensity', {0: 0, 0.25: 0.5, 0.5: 0}, loop=True)
         bs.timer(1.0, light.delete)
 
     def _tick(self) -> None:
@@ -228,18 +228,24 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
         if player is not None:
             # This shouldn't happen, but just in case.
             if not player.is_alive():
-                logging.error("got dead player as chosen one in _tick")
+                logging.error('got dead player as chosen one in _tick')
                 self._set_chosen_one_player(None)
             else:
                 scoring_team = player.team
-                self.stats.player_scored(player, 3, screenmessage=False, display=False)
+                self.stats.player_scored(
+                    player, 3, screenmessage=False, display=False
+                )
 
-                scoring_team.time_remaining = max(0, scoring_team.time_remaining - 1)
+                scoring_team.time_remaining = max(
+                    0, scoring_team.time_remaining - 1
+                )
 
                 # Show the count over their head
                 if scoring_team.time_remaining > 0:
                     if isinstance(player.actor, PlayerSpaz) and player.actor:
-                        player.actor.set_score_text(str(scoring_team.time_remaining))
+                        player.actor.set_score_text(
+                            str(scoring_team.time_remaining)
+                        )
 
                 self._update_scoreboard()
 
@@ -257,7 +263,7 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
             # (Chosen-one player ceasing to exist should
             # trigger on_player_leave which resets chosen-one)
             if self._chosen_one_player is not None:
-                logging.error("got nonexistent player as chosen one in _tick")
+                logging.error('got nonexistent player as chosen one in _tick')
                 self._set_chosen_one_player(None)
 
     @override
@@ -266,7 +272,9 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
 
         results = bs.GameResults()
         for team in self.teams:
-            results.set_team_score(team, self._chosen_one_time - team.time_remaining)
+            results.set_team_score(
+                team, self._chosen_one_time - team.time_remaining
+            )
         self.end(results=results, announce_delay=0)
 
     def _set_chosen_one_player(self, player: Player | None) -> None:
@@ -286,15 +294,15 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
             # Create a light to highlight the flag;
             # this will go away when the flag dies.
             bs.newnode(
-                "light",
+                'light',
                 owner=self._flag.node,
                 attrs={
-                    "position": self._flag_spawn_pos,
-                    "intensity": 0.6,
-                    "height_attenuated": False,
-                    "volume_intensity_scale": 0.1,
-                    "radius": 0.1,
-                    "color": (1.2, 1.2, 0.4),
+                    'position': self._flag_spawn_pos,
+                    'intensity': 0.6,
+                    'height_attenuated': False,
+                    'volume_intensity_scale': 0.1,
+                    'radius': 0.1,
+                    'color': (1.2, 1.2, 0.4),
                 },
             )
 
@@ -310,22 +318,25 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
                 self._chosen_one_player = player
 
                 if self._chosen_one_gets_shield:
-                    player.actor.handlemessage(bs.PowerupMessage("shield"))
+                    player.actor.handlemessage(bs.PowerupMessage('shield'))
                 if self._chosen_one_gets_gloves:
-                    player.actor.handlemessage(bs.PowerupMessage("punch"))
+                    player.actor.handlemessage(bs.PowerupMessage('punch'))
 
                 # Use a color that's partway between their team color
                 # and white.
-                color = [0.3 + c * 0.7 for c in bs.normalized_color(player.team.color)]
+                color = [
+                    0.3 + c * 0.7
+                    for c in bs.normalized_color(player.team.color)
+                ]
                 light = player.chosen_light = bs.NodeActor(
                     bs.newnode(
-                        "light",
+                        'light',
                         attrs={
-                            "intensity": 0.6,
-                            "height_attenuated": False,
-                            "volume_intensity_scale": 0.1,
-                            "radius": 0.13,
-                            "color": color,
+                            'intensity': 0.6,
+                            'height_attenuated': False,
+                            'volume_intensity_scale': 0.1,
+                            'radius': 0.13,
+                            'color': color,
                         },
                     )
                 )
@@ -333,12 +344,14 @@ class ChosenOneGame(bs.TeamGameActivity[Player, Team]):
                 assert light.node
                 bs.animate(
                     light.node,
-                    "intensity",
+                    'intensity',
                     {0: 1.0, 0.2: 0.4, 0.4: 1.0},
                     loop=True,
                 )
                 assert isinstance(player.actor, PlayerSpaz)
-                player.actor.node.connectattr("position", light.node, "position")
+                player.actor.node.connectattr(
+                    'position', light.node, 'position'
+                )
 
     @override
     def handlemessage(self, msg: Any) -> Any:

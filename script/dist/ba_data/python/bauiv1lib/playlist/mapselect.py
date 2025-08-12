@@ -25,7 +25,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
         config: dict[str, Any],
         edit_info: dict[str, Any],
         completion_call: Callable[[dict[str, Any] | None, bui.MainWindow], Any],
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
         select_get_more_maps_button: bool = False,
     ):
@@ -42,9 +42,11 @@ class PlaylistMapSelectWindow(bui.MainWindow):
         self._maps: list[tuple[str, bui.Texture]] = []
         self._selected_get_more_maps = False
         try:
-            self._previous_map = get_filtered_map_name(config["settings"]["map"])
+            self._previous_map = get_filtered_map_name(
+                config['settings']['map']
+            )
         except Exception:
-            self._previous_map = ""
+            self._previous_map = ''
 
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
@@ -65,7 +67,9 @@ class PlaylistMapSelectWindow(bui.MainWindow):
                     if uiscale is bui.UIScale.SMALL
                     else 1.3 if uiscale is bui.UIScale.MEDIUM else 1.0
                 ),
-                stack_offset=((0, 0) if uiscale is bui.UIScale.SMALL else (0, 0)),
+                stack_offset=(
+                    (0, 0) if uiscale is bui.UIScale.SMALL else (0, 0)
+                ),
             ),
             transition=transition,
             origin_widget=origin_widget,
@@ -78,7 +82,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
             scale=0.9,
             text_scale=1.0,
             autoselect=True,
-            label=bui.Lstr(resource="cancelText"),
+            label=bui.Lstr(resource='cancelText'),
             on_activate_call=self.main_window_back,
         )
 
@@ -90,16 +94,18 @@ class PlaylistMapSelectWindow(bui.MainWindow):
             maxwidth=260,
             scale=1.1,
             text=bui.Lstr(
-                resource="mapSelectTitleText",
-                subs=[("${GAME}", self._gametype.get_display_string())],
+                resource='mapSelectTitleText',
+                subs=[('${GAME}', self._gametype.get_display_string())],
             ),
             color=bui.app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
         v = height - 70 + yoffs
         self._scroll_width = width - (80 + 2 * x_inset)
-        self._scroll_height = height - (170 if uiscale is bui.UIScale.SMALL else 140)
+        self._scroll_height = height - (
+            170 if uiscale is bui.UIScale.SMALL else 140
+        )
 
         self._scrollwidget = bui.scrollwidget(
             parent=self._root_widget,
@@ -107,7 +113,9 @@ class PlaylistMapSelectWindow(bui.MainWindow):
             size=(self._scroll_width, self._scroll_height),
             border_opacity=0.4,
         )
-        bui.containerwidget(edit=self._root_widget, selected_child=self._scrollwidget)
+        bui.containerwidget(
+            edit=self._root_widget, selected_child=self._scrollwidget
+        )
         bui.containerwidget(edit=self._scrollwidget, claims_left_right=True)
 
         self._subcontainer: bui.Widget | None = None
@@ -155,8 +163,8 @@ class PlaylistMapSelectWindow(bui.MainWindow):
         if self._subcontainer is not None:
             self._subcontainer.delete()
 
-        mesh_opaque = bui.getmesh("level_select_button_opaque")
-        mesh_transparent = bui.getmesh("level_select_button_transparent")
+        mesh_opaque = bui.getmesh('level_select_button_opaque')
+        mesh_transparent = bui.getmesh('level_select_button_transparent')
 
         self._maps = []
         map_list = self._gametype.get_supported_maps(self._sessiontype)
@@ -176,7 +184,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
                 except Exception:
                     print(f'Invalid map preview texture: "{map_tex_name}".')
             else:
-                print("Error: no map preview texture for map:", mapname)
+                print('Error: no map preview texture for map:', mapname)
 
         count = len(self._maps)
         columns = 2
@@ -186,33 +194,37 @@ class PlaylistMapSelectWindow(bui.MainWindow):
         button_buffer_h = 16
         button_buffer_v = 19
         self._sub_width = self._scroll_width * 0.95
-        self._sub_height = 5 + rows * (button_height + 2 * button_buffer_v) + 100
+        self._sub_height = (
+            5 + rows * (button_height + 2 * button_buffer_v) + 100
+        )
         self._subcontainer = bui.containerwidget(
             parent=self._scrollwidget,
             size=(self._sub_width, self._sub_height),
             background=False,
         )
         index = 0
-        mask_texture = bui.gettexture("mapPreviewMask")
+        mask_texture = bui.gettexture('mapPreviewMask')
         h_offs = 130 if len(self._maps) == 1 else 0
         for y in range(rows):
             for x in range(columns):
                 pos = (
-                    x * (button_width + 2 * button_buffer_h) + button_buffer_h + h_offs,
+                    x * (button_width + 2 * button_buffer_h)
+                    + button_buffer_h
+                    + h_offs,
                     self._sub_height
                     - (y + 1) * (button_height + 2 * button_buffer_v)
                     + 12,
                 )
                 btn = bui.buttonwidget(
                     parent=self._subcontainer,
-                    button_type="square",
+                    button_type='square',
                     size=(button_width, button_height),
                     autoselect=True,
                     texture=self._maps[index][1],
                     mask_texture=mask_texture,
                     mesh_opaque=mesh_opaque,
                     mesh_transparent=mesh_transparent,
-                    label="",
+                    label='',
                     color=(1, 1, 1),
                     on_activate_call=bui.Call(
                         self._select_with_delay, self._maps[index][0]
@@ -226,7 +238,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
                 if x == columns - 1:
                     bui.widget(
                         edit=btn,
-                        right_widget=bui.get_special_widget("squad_button"),
+                        right_widget=bui.get_special_widget('squad_button'),
                     )
 
                 bui.widget(edit=btn, show_buffer_top=60, show_buffer_bottom=60)
@@ -245,8 +257,8 @@ class PlaylistMapSelectWindow(bui.MainWindow):
                     scale=0.5,
                     maxwidth=button_width,
                     draw_controller=btn,
-                    h_align="center",
-                    v_align="center",
+                    h_align='center',
+                    v_align='center',
                     color=(0.8, 0.8, 0.8, 0.8),
                 )
                 index += 1
@@ -259,7 +271,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
             parent=self._subcontainer,
             size=(self._sub_width * 0.8, 60),
             position=(self._sub_width * 0.1, 30),
-            label=bui.Lstr(resource="mapSelectGetMoreMapsText"),
+            label=bui.Lstr(resource='mapSelectGetMoreMapsText'),
             on_activate_call=self._on_store_press,
             color=(0.6, 0.53, 0.63),
             textcolor=(0.75, 0.7, 0.8),
@@ -282,7 +294,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() != "signed_in":
+        if plus.get_v1_account_state() != 'signed_in':
             show_sign_in_prompt()
             return
 
@@ -302,7 +314,7 @@ class PlaylistMapSelectWindow(bui.MainWindow):
         if not self.main_window_has_control():
             return
 
-        self._config["settings"]["map"] = map_name
+        self._config['settings']['map'] = map_name
         self.main_window_back()
 
     def _select_with_delay(self, map_name: str) -> None:

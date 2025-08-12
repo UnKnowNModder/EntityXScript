@@ -33,12 +33,22 @@ class LocaleSubsystem(AppSubsystem):
         # Calc our default locale based on the locale-tag provided by
         # the native layer.
         env = _babase.env()
-        ba_locale = env.get("ba_locale")
-        locale_tag = env.get("locale")
-        if not isinstance(ba_locale, str) or not isinstance(locale_tag, str):
-            applog.warning("Seem to be running in a dummy env; using en-US locale-tag.")
-            ba_locale = ""
-            locale_tag = "en-US"
+        ba_locale = env.get('ba_locale')
+        raw_locale_tag = env.get('locale')
+        if not isinstance(ba_locale, str) or not isinstance(
+            raw_locale_tag, str
+        ):
+            applog.warning(
+                'Seem to be running in a dummy env; using en-US locale-tag.'
+            )
+            ba_locale = ''
+            raw_locale_tag = 'en-US'
+
+        #: Raw locale string tag provided by the native layer. This will
+        #: be something in BCP 47 form (``en-US``) or POSIX locale form
+        #: (``en_US.UTF-8``). Generally you should use more well-defined
+        #: values such as :attr:`current_locale` instead of this.
+        self.raw_locale_tag: str = raw_locale_tag
 
         #: The default locale based on the current runtime environment
         #: and app capabilities. This locale will be used unless the user
@@ -53,13 +63,14 @@ class LocaleSubsystem(AppSubsystem):
                 have_valid_ba_locale = True
             except ValueError:
                 applog.error(
-                    'Invalid ba_locale "%s";' " will fall back to using locale tag.",
+                    'Invalid ba_locale "%s";'
+                    ' will fall back to using locale tag.',
                     ba_locale,
                 )
 
         # Otherwise calc Locale from a tag ('en-US', etc.)
         if not have_valid_ba_locale:
-            self.default_locale = LocaleResolved.from_tag(locale_tag).locale
+            self.default_locale = LocaleResolved.from_tag(raw_locale_tag).locale
 
         # If we can't properly display this default locale, set it to
         # English instead.
@@ -79,12 +90,14 @@ class LocaleSubsystem(AppSubsystem):
         # Look for a 'Lang' in app-config to override the default. We
         # expect this to be a Locale long-value such as
         # 'ChineseTraditional'.
-        lang = _babase.app.config.get("Lang")
+        lang = _babase.app.config.get('Lang')
         if lang is not None:
             try:
                 locale = Locale.from_long_value(lang)
             except ValueError:
-                applog.error('Invalid Lang "%s"; falling back to default.', lang)
+                applog.error(
+                    'Invalid Lang "%s"; falling back to default.', lang
+                )
         # Convert the locale to resolved and back again to make sure
         # we're loading a currently-supported one (for example this will
         # convert 'Spanish' to 'SpanishLatinAmerica').
@@ -103,7 +116,7 @@ class LocaleSubsystem(AppSubsystem):
     def current_locale(self) -> Locale:
         """The current locale for the app."""
         if self._current_locale is None:
-            raise RuntimeError("Locale is not set.")
+            raise RuntimeError('Locale is not set.')
         return self._current_locale
 
     @staticmethod

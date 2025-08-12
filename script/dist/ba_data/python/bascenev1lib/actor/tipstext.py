@@ -21,30 +21,32 @@ class TipsText(bs.Actor):
         self._tip_title_scale = 1.1
         self._offs_y = offs_y
         self.node = bs.newnode(
-            "text",
+            'text',
             delegate=self,
             attrs={
-                "text": "",
-                "scale": self._tip_scale,
-                "h_align": "left",
-                "maxwidth": 800,
-                "vr_depth": -20,
-                "v_align": "center",
-                "v_attach": "bottom",
+                'text': '',
+                'scale': self._tip_scale,
+                'h_align': 'left',
+                'maxwidth': 800,
+                'vr_depth': -20,
+                'v_align': 'center',
+                'v_attach': 'bottom',
             },
         )
-        tval = bs.Lstr(value="${A}:", subs=[("${A}", bs.Lstr(resource="tipText"))])
+        tval = bs.Lstr(
+            value='${A}:', subs=[('${A}', bs.Lstr(resource='tipText'))]
+        )
         self.title_node = bs.newnode(
-            "text",
+            'text',
             delegate=self,
             attrs={
-                "text": tval,
-                "scale": self._tip_title_scale,
-                "maxwidth": 122,
-                "h_align": "right",
-                "vr_depth": -20,
-                "v_align": "center",
-                "v_attach": "bottom",
+                'text': tval,
+                'scale': self._tip_title_scale,
+                'maxwidth': 122,
+                'h_align': 'right',
+                'vr_depth': -20,
+                'v_align': 'center',
+                'v_attach': 'bottom',
             },
         )
         self._message_duration = 10000
@@ -55,12 +57,12 @@ class TipsText(bs.Actor):
             repeat=True,
         )
         self._combine = bs.newnode(
-            "combine",
+            'combine',
             owner=self.node,
-            attrs={"input0": 1.0, "input1": 0.8, "input2": 1.0, "size": 4},
+            attrs={'input0': 1.0, 'input1': 0.8, 'input2': 1.0, 'size': 4},
         )
-        self._combine.connectattr("output", self.node, "color")
-        self._combine.connectattr("output", self.title_node, "color")
+        self._combine.connectattr('output', self.node, 'color')
+        self._combine.connectattr('output', self.title_node, 'color')
         self.change_phrase()
 
     def change_phrase(self) -> None:
@@ -69,10 +71,14 @@ class TipsText(bs.Actor):
 
         next_tip = bs.Lstr(
             translate=(
-                "tips",
-                (bs.app.classic.get_next_tip() if bs.app.classic is not None else ""),
+                'tips',
+                (
+                    bs.app.classic.get_next_tip()
+                    if bs.app.classic is not None
+                    else ''
+                ),
             ),
-            subs=[("${REMOTE_APP_NAME}", get_remote_app_name())],
+            subs=[('${REMOTE_APP_NAME}', get_remote_app_name())],
         )
         spc = self._message_spacing
         assert self.node
@@ -86,7 +92,7 @@ class TipsText(bs.Actor):
         }
         bs.animate(
             self._combine,
-            "input3",
+            'input3',
             {k / 1000.0: v * 0.5 for k, v in list(keys.items())},
         )
         self.node.text = next_tip

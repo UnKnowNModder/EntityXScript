@@ -18,7 +18,9 @@ if TYPE_CHECKING:
     import bascenev1
 
 
-class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyComponent):
+class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](
+    DependencyComponent
+):
     """Units of execution wrangled by a :class:`bascenev1.Session`.
 
     Examples of activities include games, score-screens, cutscenes, etc.
@@ -297,7 +299,9 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             with babase.ContextRef.empty():
                 self._expire()
         else:
-            raise RuntimeError(f"destroy() called when already expired for {self}.")
+            raise RuntimeError(
+                f'destroy() called when already expired for {self}.'
+            )
 
     def retain_actor(self, actor: bascenev1.Actor) -> None:
         """Add a strong-ref to a :class:`bascenev1.Actor` to this activity.
@@ -408,7 +412,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
 
         # Set up the globals node based on our settings.
         with self.context:
-            glb = self._globalsnode = _bascenev1.newnode("globals")
+            glb = self._globalsnode = _bascenev1.newnode('globals')
 
             # Now that it's going to be front and center,
             # set some global values based on what the activity wants.
@@ -426,7 +430,9 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
                 glb.vr_camera_offset = prev_globals.vr_camera_offset
             if self.inherits_vr_overlay_center and prev_globals is not None:
                 glb.vr_overlay_center = prev_globals.vr_overlay_center
-                glb.vr_overlay_center_enabled = prev_globals.vr_overlay_center_enabled
+                glb.vr_overlay_center_enabled = (
+                    prev_globals.vr_overlay_center_enabled
+                )
 
             # If they want to inherit tint from the previous self.
             if self.inherits_tint and prev_globals is not None:
@@ -448,7 +454,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 self.on_transition_in()
             except Exception:
-                logging.exception("Error in on_transition_in for %s.", self)
+                logging.exception('Error in on_transition_in for %s.', self)
 
         # Tell the C++ layer that this activity is the main one, so it uses
         # settings from our globals, directs various events to us, etc.
@@ -465,7 +471,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 self.on_transition_out()
             except Exception:
-                logging.exception("Error in on_transition_out for %s.", self)
+                logging.exception('Error in on_transition_out for %s.', self)
 
     def begin(self, session: bascenev1.Session) -> None:
         """Internal; Begin the activity.
@@ -495,7 +501,9 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             # activity launch; just wanna be sure that is intentional.
             self.on_begin()
 
-    def end(self, results: Any = None, delay: float = 0.0, force: bool = False) -> None:
+    def end(
+        self, results: Any = None, delay: float = 0.0, force: bool = False
+    ) -> None:
         """Commence activity shutdown and delivers results to the session.
 
         'delay' is the time delay before the Activity actually ends (in
@@ -544,7 +552,9 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
         assert team is not None
         sessionplayer.setactivity(self)
         with self.context:
-            sessionplayer.activityplayer = player = self.create_player(sessionplayer)
+            sessionplayer.activityplayer = player = self.create_player(
+                sessionplayer
+            )
             player.postinit(sessionplayer)
 
             assert player not in team.players
@@ -558,7 +568,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 self.on_player_join(player)
             except Exception:
-                logging.exception("Error in on_player_join for %s.", self)
+                logging.exception('Error in on_player_join for %s.', self)
 
     def remove_player(self, sessionplayer: bascenev1.SessionPlayer) -> None:
         """Remove a player from the activity while it is running.
@@ -584,11 +594,11 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 self.on_player_leave(player)
             except Exception:
-                logging.exception("Error in on_player_leave for %s.", self)
+                logging.exception('Error in on_player_leave for %s.', self)
             try:
                 player.leave()
             except Exception:
-                logging.exception("Error on leave for %s in %s.", player, self)
+                logging.exception('Error on leave for %s in %s.', player, self)
 
             self._reset_session_player_for_no_activity(sessionplayer)
 
@@ -613,7 +623,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 self.on_team_join(team)
             except Exception:
-                logging.exception("Error in on_team_join for %s.", self)
+                logging.exception('Error in on_team_join for %s.', self)
 
     def remove_team(self, sessionteam: bascenev1.SessionTeam) -> None:
         """Internal; remove a team from a running activity
@@ -635,11 +645,11 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 self.on_team_leave(team)
             except Exception:
-                logging.exception("Error in on_team_leave for %s.", self)
+                logging.exception('Error in on_team_leave for %s.', self)
             try:
                 team.leave()
             except Exception:
-                logging.exception("Error on leave for %s in %s.", team, self)
+                logging.exception('Error on leave for %s in %s.', team, self)
 
             sessionteam.activityteam = None
 
@@ -660,7 +670,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             sessionplayer.setnode(None)
         except Exception:
             logging.exception(
-                "Error resetting SessionPlayer node on %s for %s.",
+                'Error resetting SessionPlayer node on %s for %s.',
                 sessionplayer,
                 self,
             )
@@ -668,7 +678,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             sessionplayer.resetinput()
         except Exception:
             logging.exception(
-                "Error resetting SessionPlayer input on %s for %s.",
+                'Error resetting SessionPlayer input on %s for %s.',
                 sessionplayer,
                 self,
             )
@@ -695,17 +705,17 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             if not isinstance(self._playertype, type):
                 self._playertype = Player
                 print(
-                    f"ERROR: {type(self)} was not passed a Player"
-                    f" type argument; please explicitly pass bascenev1.Player"
-                    f" if you do not want to override it."
+                    f'ERROR: {type(self)} was not passed a Player'
+                    f' type argument; please explicitly pass bascenev1.Player'
+                    f' if you do not want to override it.'
                 )
             self._teamtype = type(self).__orig_bases__[-1].__args__[1]
             if not isinstance(self._teamtype, type):
                 self._teamtype = Team
                 print(
-                    f"ERROR: {type(self)} was not passed a Team"
-                    f" type argument; please explicitly pass bascenev1.Team"
-                    f" if you do not want to override it."
+                    f'ERROR: {type(self)} was not passed a Team'
+                    f' type argument; please explicitly pass bascenev1.Team'
+                    f' if you do not want to override it.'
                 )
         assert issubclass(self._playertype, Player)
         assert issubclass(self._teamtype, Team)
@@ -723,24 +733,24 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
         try:
             activity = activity_ref()
             print(
-                "ERROR: Activity is not dying when expected:",
+                'ERROR: Activity is not dying when expected:',
                 activity,
-                "(warning " + str(counter[0] + 1) + ")",
+                '(warning ' + str(counter[0] + 1) + ')',
             )
             print(
-                "This means something is still strong-referencing it.\n"
-                "Check out methods such as efro.debug.printrefs() to"
-                " help debug this sort of thing."
+                'This means something is still strong-referencing it.\n'
+                'Check out methods such as efro.debug.printrefs() to'
+                ' help debug this sort of thing.'
             )
             # Note: no longer calling gc.get_referrers() here because it's
             # usage can bork stuff. (see notes at top of efro.debug)
             counter[0] += 1
             if counter[0] == 4:
-                print("Killing app due to stuck activity... :-(")
+                print('Killing app due to stuck activity... :-(')
                 babase.quit()
 
         except Exception:
-            logging.exception("Error on _check_activity_death.")
+            logging.exception('Error on _check_activity_death.')
 
     def _expire(self) -> None:
         """Put the activity in a state where it can be garbage-collected.
@@ -754,12 +764,12 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
         try:
             self.on_expire()
         except Exception:
-            logging.exception("Error in Activity on_expire() for %s.", self)
+            logging.exception('Error in Activity on_expire() for %s.', self)
 
         try:
             self._customdata = None
         except Exception:
-            logging.exception("Error clearing customdata for %s.", self)
+            logging.exception('Error clearing customdata for %s.', self)
 
         # Don't want to be holding any delay-delete refs at this point.
         self._prune_delay_deletes()
@@ -774,7 +784,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
         try:
             self._activity_data.expire()
         except Exception:
-            logging.exception("Error expiring _activity_data for %s.", self)
+            logging.exception('Error expiring _activity_data for %s.', self)
 
     def _expire_actors(self) -> None:
         # Expire all Actors.
@@ -785,7 +795,9 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
                 try:
                     actor.on_expire()
                 except Exception:
-                    logging.exception("Error in Actor.on_expire() for %s.", actor_ref())
+                    logging.exception(
+                        'Error in Actor.on_expire() for %s.', actor_ref()
+                    )
 
     def _expire_players(self) -> None:
         # Issue warnings for any players that left the game but don't
@@ -802,7 +814,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 player.expire()
             except Exception:
-                logging.exception("Error expiring %s.", player)
+                logging.exception('Error expiring %s.', player)
 
             # Reset the SessionPlayer to a not-in-an-activity state.
             try:
@@ -813,7 +825,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
                 # until now whos underlying SessionPlayer left long ago...
                 pass
             except Exception:
-                logging.exception("Error expiring %s.", player)
+                logging.exception('Error expiring %s.', player)
 
     def _expire_teams(self) -> None:
         # Issue warnings for any teams that left the game but don't
@@ -830,7 +842,7 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
             try:
                 team.expire()
             except Exception:
-                logging.exception("Error expiring %s.", team)
+                logging.exception('Error expiring %s.', team)
 
             try:
                 sessionteam = team.sessionteam
@@ -842,14 +854,16 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
                 # player/team has left the game)
                 pass
             except Exception:
-                logging.exception("Error expiring Team %s.", team)
+                logging.exception('Error expiring Team %s.', team)
 
     def _prune_delay_deletes(self) -> None:
         self._delay_delete_players.clear()
         self._delay_delete_teams.clear()
 
         # Clear out any dead weak-refs.
-        self._teams_that_left = [t for t in self._teams_that_left if t() is not None]
+        self._teams_that_left = [
+            t for t in self._teams_that_left if t() is not None
+        ]
         self._players_that_left = [
             p for p in self._players_that_left if p() is not None
         ]
@@ -861,4 +875,6 @@ class Activity[PlayerT: bascenev1.Player, TeamT: bascenev1.Team](DependencyCompo
         self._actor_refs = [a for a in self._actor_refs if a.exists()]
 
         # Prune our weak refs once the Actor object has been freed.
-        self._actor_weak_refs = [a for a in self._actor_weak_refs if a() is not None]
+        self._actor_weak_refs = [
+            a for a in self._actor_weak_refs if a() is not None
+        ]

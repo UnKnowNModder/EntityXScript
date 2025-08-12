@@ -29,19 +29,19 @@ class Message:
         #: The default retry policy - disallow any retries since we
         #: assume it could lead to unintended effects on the server side
         #: if repeat messages come in.
-        DISALLOW = "disallow"
+        DISALLOW = 'disallow'
 
         #: Allow reasonable retry attempts for this message. By returning
         #: this value, a message acknowledges that there will be no bad
         #: effects if the server were to receive this message multiple
         #: times.
-        ALLOW = "allow"
+        ALLOW = 'allow'
 
         #: Like the :attr:`ALLOW` option, but retries may be attempted
         #: for a longer period of time. Using this too much may gum up
         #: servers, so limit its use to special cases on important
         #: messages and use regular :attr:`ALLOW` for all others.
-        ALLOW_EXTRA = "allow_extra"
+        ALLOW_EXTRA = 'allow_extra'
 
     @classmethod
     def get_response_types(cls) -> list[type[Response] | None]:
@@ -93,11 +93,11 @@ class ErrorSysResponse(SysResponse):
         Be aware that this data does not get serialized and only
         exists on the local object.
         """
-        setattr(self, "_sr_local_exception", exc)
+        setattr(self, '_sr_local_exception', exc)
 
     def get_local_exception(self) -> Exception | None:
         """Fetch a local attached exception."""
-        value = getattr(self, "_sr_local_exception", None)
+        value = getattr(self, '_sr_local_exception', None)
         assert isinstance(value, Exception | None)
         return value
 
@@ -110,8 +110,8 @@ class ErrorSysResponse(SysResponse):
         COMMUNICATION = 3
         REMOTE_COMMUNICATION = 4
 
-    error_message: Annotated[str, IOAttrs("m")]
-    error_type: Annotated[ErrorType, IOAttrs("e")] = ErrorType.REMOTE
+    error_message: Annotated[str, IOAttrs('m')]
+    error_type: Annotated[ErrorType, IOAttrs('e')] = ErrorType.REMOTE
 
 
 @ioprepped
@@ -129,7 +129,7 @@ class EmptySysResponse(SysResponse):
 class BoolResponse(Response):
     """A simple bool value response."""
 
-    value: Annotated[bool, IOAttrs("v")]
+    value: Annotated[bool, IOAttrs('v')]
 
 
 @ioprepped
@@ -137,4 +137,4 @@ class BoolResponse(Response):
 class StringResponse(Response):
     """A simple string value response."""
 
-    value: Annotated[str, IOAttrs("v")]
+    value: Annotated[str, IOAttrs('v')]

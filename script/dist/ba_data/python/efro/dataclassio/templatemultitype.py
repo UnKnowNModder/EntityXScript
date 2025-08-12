@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class TemplateMultiTypeTypeID(Enum):
     """Type ID for each of our subclasses."""
 
-    TEST = "test"
+    TEST = 'test'
 
 
 class TemplateMultiType(IOMultiType[TemplateMultiTypeTypeID]):
@@ -38,7 +38,9 @@ class TemplateMultiType(IOMultiType[TemplateMultiTypeTypeID]):
 
     @override
     @classmethod
-    def get_type(cls, type_id: TemplateMultiTypeTypeID) -> type[TemplateMultiType]:
+    def get_type(
+        cls, type_id: TemplateMultiTypeTypeID
+    ) -> type[TemplateMultiType]:
         """Return the subclass for each of our type-ids."""
         # pylint: disable=cyclic-import
 

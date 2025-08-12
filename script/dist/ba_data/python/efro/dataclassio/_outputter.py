@@ -66,7 +66,9 @@ class _Outputter:
         # it. This hopefully helps avoid unintentional data
         # modification/loss.
         if getattr(obj, LOSSY_ATTR, False):
-            raise ValueError("Object has been flagged as lossy; output is disallowed.")
+            raise ValueError(
+                'Object has been flagged as lossy; output is disallowed.'
+            )
 
         # For special extended data types, call their 'will_output' callback.
         # FIXME - should probably move this into _process_dataclass so it
@@ -74,9 +76,11 @@ class _Outputter:
         if isinstance(obj, IOExtendedData):
             obj.will_output()
 
-        return self._process_dataclass(type(obj), obj, "")
+        return self._process_dataclass(type(obj), obj, '')
 
-    def soft_default_check(self, value: Any, anntype: Any, fieldpath: str) -> None:
+    def soft_default_check(
+        self, value: Any, anntype: Any, fieldpath: str
+    ) -> None:
         """(internal)"""
         self._process_value(
             type(value),
@@ -90,14 +94,16 @@ class _Outputter:
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
-        prep = PrepSession(explicit=False).prep_dataclass(type(obj), recursion_level=0)
+        prep = PrepSession(explicit=False).prep_dataclass(
+            type(obj), recursion_level=0
+        )
         assert prep is not None
         fields = dataclasses.fields(obj)
         out: dict[str, Any] | None = {} if self._create else None
         for field in fields:
             fieldname = field.name
             if fieldpath:
-                subfieldpath = f"{fieldpath}.{fieldname}"
+                subfieldpath = f'{fieldpath}.{fieldname}'
             else:
                 subfieldpath = fieldname
             anntype = prep.annotations[fieldname]
@@ -128,13 +134,15 @@ class _Outputter:
                         continue
                 else:
                     raise RuntimeError(
-                        f"Field {fieldname} of {cls.__name__} has"
-                        f" no source of default values; store_default=False"
-                        f" cannot be set for it. (AND THIS SHOULD HAVE BEEN"
-                        f" CAUGHT IN PREP!)"
+                        f'Field {fieldname} of {cls.__name__} has'
+                        f' no source of default values; store_default=False'
+                        f' cannot be set for it. (AND THIS SHOULD HAVE BEEN'
+                        f' CAUGHT IN PREP!)'
                     )
 
-            outvalue = self._process_value(cls, subfieldpath, anntype, value, ioattrs)
+            outvalue = self._process_value(
+                cls, subfieldpath, anntype, value, ioattrs
+            )
             if self._create:
                 assert out is not None
                 storagename = (
@@ -150,9 +158,9 @@ class _Outputter:
             if isinstance(extra_attrs, dict):
                 if not _is_valid_for_codec(extra_attrs, self._codec):
                     raise TypeError(
-                        f"Extra attrs on '{fieldpath}' contains data type(s)"
-                        f" not supported by '{self._codec.value}' codec:"
-                        f" {extra_attrs}."
+                        f'Extra attrs on \'{fieldpath}\' contains data type(s)'
+                        f' not supported by \'{self._codec.value}\' codec:'
+                        f' {extra_attrs}.'
                     )
                 if self._create:
                     assert out is not None
@@ -167,20 +175,20 @@ class _Outputter:
             assert isinstance(type_id.value, str)
             if obj.get_type_cached(type_id) is not type(obj):
                 raise RuntimeError(
-                    f"dataclassio: object of type {type(obj)}"
-                    f" gives type-id {type_id} but that id gives type"
-                    f" {obj.get_type_cached(type_id)}."
-                    f" Something is out of sync."
+                    f'dataclassio: object of type {type(obj)}'
+                    f' gives type-id {type_id} but that id gives type'
+                    f' {obj.get_type_cached(type_id)}.'
+                    f' Something is out of sync.'
                 )
             if self._create:
                 assert out is not None
                 storagename = obj.get_type_id_storage_name()
                 if any(f.name == storagename for f in fields):
                     raise RuntimeError(
-                        f"dataclassio: {type(obj)} contains a"
+                        f'dataclassio: {type(obj)} contains a'
                         f" '{storagename}' field which clashes with"
-                        f" the type-id-storage-name of the IOMulticlass"
-                        f" it inherits from."
+                        f' the type-id-storage-name of the IOMulticlass'
+                        f' it inherits from.'
                     )
                 out[storagename] = type_id.value
 
@@ -204,10 +212,10 @@ class _Outputter:
         if origin is typing.Any:
             if not _is_valid_for_codec(value, self._codec):
                 raise TypeError(
-                    f"Invalid value type for '{fieldpath}';"
+                    f'Invalid value type for \'{fieldpath}\';'
                     f" 'Any' typed values must contain types directly"
-                    f" supported by the specified codec ({self._codec.name});"
-                    f" found '{type(value).__name__}' which is not."
+                    f' supported by the specified codec ({self._codec.name});'
+                    f' found \'{type(value).__name__}\' which is not.'
                 )
             return value if self._create else None
 
@@ -233,7 +241,11 @@ class _Outputter:
         if origin in SIMPLE_TYPES:
             if type(value) is not origin:
                 # Special case: if they want to coerce ints to floats, do so.
-                if self._coerce_to_float and origin is float and type(value) is int:
+                if (
+                    self._coerce_to_float
+                    and origin is float
+                    and type(value) is int
+                ):
                     return float(value) if self._create else None
                 _raise_type_error(fieldpath, type(value), (origin,))
             return value if self._create else None
@@ -241,7 +253,8 @@ class _Outputter:
         if origin is tuple:
             if not isinstance(value, tuple):
                 raise TypeError(
-                    f"Expected a tuple for {fieldpath};" f" found a {type(value)}"
+                    f'Expected a tuple for {fieldpath};'
+                    f' found a {type(value)}'
                 )
             childanntypes = typing.get_args(anntype)
 
@@ -249,23 +262,28 @@ class _Outputter:
             assert childanntypes
             if len(value) != len(childanntypes):
                 raise TypeError(
-                    f"Tuple at {fieldpath} contains"
-                    f" {len(value)} values; type specifies"
-                    f" {len(childanntypes)}."
+                    f'Tuple at {fieldpath} contains'
+                    f' {len(value)} values; type specifies'
+                    f' {len(childanntypes)}.'
                 )
             if self._create:
                 return [
-                    self._process_value(cls, fieldpath, childanntypes[i], x, ioattrs)
+                    self._process_value(
+                        cls, fieldpath, childanntypes[i], x, ioattrs
+                    )
                     for i, x in enumerate(value)
                 ]
             for i, x in enumerate(value):
-                self._process_value(cls, fieldpath, childanntypes[i], x, ioattrs)
+                self._process_value(
+                    cls, fieldpath, childanntypes[i], x, ioattrs
+                )
             return None
 
         if origin is list:
             if not isinstance(value, list):
                 raise TypeError(
-                    f"Expected a list for {fieldpath};" f" found a {type(value)}"
+                    f'Expected a list for {fieldpath};'
+                    f' found a {type(value)}'
                 )
 
             childanntypes = typing.get_args(anntype)
@@ -276,9 +294,9 @@ class _Outputter:
                 for i, child in enumerate(value):
                     if not _is_valid_for_codec(child, self._codec):
                         raise TypeError(
-                            f"Item {i} of {fieldpath} contains"
-                            f" data type(s) not supported by the specified"
-                            f" codec ({self._codec.name})."
+                            f'Item {i} of {fieldpath} contains'
+                            f' data type(s) not supported by the specified'
+                            f' codec ({self._codec.name}).'
                         )
                 # Hmm; should we do a copy here?
                 return value if self._create else None
@@ -290,7 +308,9 @@ class _Outputter:
             # If that type is a multi-type, we determine our type per-object.
             # Make sure we only pass actual types to issubclass; it will error
             # if we give it something like typing.Any.
-            if isinstance(childanntype, type) and issubclass(childanntype, IOMultiType):
+            if isinstance(childanntype, type) and issubclass(
+                childanntype, IOMultiType
+            ):
                 # In the multi-type case, we use each object's own type
                 # to do its conversion, but lets at least make sure each
                 # of those types inherits from the annotated multi-type
@@ -299,8 +319,8 @@ class _Outputter:
                     if not isinstance(x, childanntype):
                         raise ValueError(
                             f"Found a {type(x)} value under '{fieldpath}'."
-                            f" Everything must inherit from"
-                            f" {childanntype}."
+                            f' Everything must inherit from'
+                            f' {childanntype}.'
                         )
 
                 if self._create:
@@ -318,17 +338,21 @@ class _Outputter:
             # Normal non-multitype case; everything's got the same type.
             if self._create:
                 return [
-                    self._process_value(cls, fieldpath, childanntypes[0], x, ioattrs)
+                    self._process_value(
+                        cls, fieldpath, childanntypes[0], x, ioattrs
+                    )
                     for x in value
                 ]
             for x in value:
-                self._process_value(cls, fieldpath, childanntypes[0], x, ioattrs)
+                self._process_value(
+                    cls, fieldpath, childanntypes[0], x, ioattrs
+                )
             return None
 
         if origin is set:
             if not isinstance(value, set):
                 raise TypeError(
-                    f"Expected a set for {fieldpath};" f" found a {type(value)}"
+                    f'Expected a set for {fieldpath};' f' found a {type(value)}'
                 )
             childanntypes = typing.get_args(anntype)
 
@@ -337,9 +361,9 @@ class _Outputter:
                 for child in value:
                     if not _is_valid_for_codec(child, self._codec):
                         raise TypeError(
-                            f"Set at {fieldpath} contains"
-                            f" data type(s) not supported by the"
-                            f" specified codec ({self._codec.name})."
+                            f'Set at {fieldpath} contains'
+                            f' data type(s) not supported by the'
+                            f' specified codec ({self._codec.name}).'
                         )
                 # We output json-friendly values so this becomes a list.
                 # We need to sort the list so our output is
@@ -391,7 +415,9 @@ class _Outputter:
                 )
 
             for x in value:
-                self._process_value(cls, fieldpath, childanntypes[0], x, ioattrs)
+                self._process_value(
+                    cls, fieldpath, childanntypes[0], x, ioattrs
+                )
             return None
 
         if origin is dict:
@@ -400,7 +426,8 @@ class _Outputter:
         if dataclasses.is_dataclass(origin):
             if not isinstance(value, cast(Any, origin)):
                 raise TypeError(
-                    f"Expected a {origin} for {fieldpath};" f" found a {type(value)}."
+                    f'Expected a {origin} for {fieldpath};'
+                    f' found a {type(value)}.'
                 )
             return self._process_dataclass(cls, value, fieldpath)
 
@@ -414,7 +441,7 @@ class _Outputter:
             if not isinstance(value, origin):
                 raise ValueError(
                     f"Found a {type(value)} value at '{fieldpath}'."
-                    f" It is expected to inherit from {origin}."
+                    f' It is expected to inherit from {origin}.'
                 )
 
             return self._process_dataclass(cls, value, fieldpath)
@@ -422,7 +449,8 @@ class _Outputter:
         if issubclass(origin, Enum):
             if not isinstance(value, origin):
                 raise TypeError(
-                    f"Expected a {origin} for {fieldpath};" f" found a {type(value)}."
+                    f'Expected a {origin} for {fieldpath};'
+                    f' found a {type(value)}.'
                 )
             # At prep-time we verified that these enums had valid value
             # types, so we can blindly return it here.
@@ -431,7 +459,8 @@ class _Outputter:
         if issubclass(origin, datetime.datetime):
             if not isinstance(value, origin):
                 raise TypeError(
-                    f"Expected a {origin} for {fieldpath};" f" found a {type(value)}."
+                    f'Expected a {origin} for {fieldpath};'
+                    f' found a {type(value)}.'
                 )
             check_utc(value)
             if ioattrs is not None:
@@ -466,7 +495,8 @@ class _Outputter:
         if issubclass(origin, datetime.timedelta):
             if not isinstance(value, origin):
                 raise TypeError(
-                    f"Expected a {origin} for {fieldpath};" f" found a {type(value)}."
+                    f'Expected a {origin} for {fieldpath};'
+                    f' found a {type(value)}.'
                 )
             if ioattrs is not None:
                 float_times = ioattrs.float_times
@@ -484,15 +514,17 @@ class _Outputter:
         if origin is bytes:
             return self._process_bytes(cls, fieldpath, value)
 
-        raise TypeError(f"Field '{fieldpath}' of type '{anntype}' is unsupported here.")
+        raise TypeError(
+            f"Field '{fieldpath}' of type '{anntype}' is unsupported here."
+        )
 
     def _process_bytes(self, cls: type, fieldpath: str, value: bytes) -> Any:
         import base64
 
         if not isinstance(value, bytes):
             raise TypeError(
-                f"Expected bytes for {fieldpath} on {cls.__name__};"
-                f" found a {type(value)}."
+                f'Expected bytes for {fieldpath} on {cls.__name__};'
+                f' found a {type(value)}.'
             )
 
         if not self._create:
@@ -517,7 +549,7 @@ class _Outputter:
         # pylint: disable=too-many-branches
         if not isinstance(value, dict):
             raise TypeError(
-                f"Expected a dict for {fieldpath};" f" found a {type(value)}."
+                f'Expected a dict for {fieldpath};' f' found a {type(value)}.'
             )
         childtypes = typing.get_args(anntype)
         assert len(childtypes) in (0, 2)
@@ -529,11 +561,11 @@ class _Outputter:
                 value, self._codec
             ):
                 raise TypeError(
-                    f"Invalid value for Dict[Any, Any]"
-                    f" at '{fieldpath}' on {cls.__name__};"
-                    f" all keys and values must be directly compatible"
-                    f" with the specified codec ({self._codec.name})"
-                    f" when dict type is Any."
+                    f'Invalid value for Dict[Any, Any]'
+                    f' at \'{fieldpath}\' on {cls.__name__};'
+                    f' all keys and values must be directly compatible'
+                    f' with the specified codec ({self._codec.name})'
+                    f' when dict type is Any.'
                 )
             return value if self._create else None
 
@@ -547,11 +579,13 @@ class _Outputter:
             for key, val in value.items():
                 if not isinstance(key, str):
                     raise TypeError(
-                        f"Got invalid key type {type(key)} for"
-                        f" dict key at '{fieldpath}' on {cls.__name__};"
-                        f" expected {keyanntype}."
+                        f'Got invalid key type {type(key)} for'
+                        f' dict key at \'{fieldpath}\' on {cls.__name__};'
+                        f' expected {keyanntype}.'
                     )
-                outval = self._process_value(cls, fieldpath, valanntype, val, ioattrs)
+                outval = self._process_value(
+                    cls, fieldpath, valanntype, val, ioattrs
+                )
                 if self._create:
                     assert out is not None
                     out[key] = outval
@@ -561,11 +595,13 @@ class _Outputter:
             for key, val in value.items():
                 if not isinstance(key, int):
                     raise TypeError(
-                        f"Got invalid key type {type(key)} for"
-                        f" dict key at '{fieldpath}' on {cls.__name__};"
-                        f" expected an int."
+                        f'Got invalid key type {type(key)} for'
+                        f' dict key at \'{fieldpath}\' on {cls.__name__};'
+                        f' expected an int.'
                     )
-                outval = self._process_value(cls, fieldpath, valanntype, val, ioattrs)
+                outval = self._process_value(
+                    cls, fieldpath, valanntype, val, ioattrs
+                )
                 if self._create:
                     assert out is not None
                     out[str(key)] = outval
@@ -574,15 +610,17 @@ class _Outputter:
             for key, val in value.items():
                 if not isinstance(key, keyanntype):
                     raise TypeError(
-                        f"Got invalid key type {type(key)} for"
-                        f" dict key at '{fieldpath}' on {cls.__name__};"
-                        f" expected a {keyanntype}."
+                        f'Got invalid key type {type(key)} for'
+                        f' dict key at \'{fieldpath}\' on {cls.__name__};'
+                        f' expected a {keyanntype}.'
                     )
-                outval = self._process_value(cls, fieldpath, valanntype, val, ioattrs)
+                outval = self._process_value(
+                    cls, fieldpath, valanntype, val, ioattrs
+                )
                 if self._create:
                     assert out is not None
                     out[str(key.value)] = outval
         else:
-            raise RuntimeError(f"Unhandled dict out-key-type {keyanntype}")
+            raise RuntimeError(f'Unhandled dict out-key-type {keyanntype}')
 
         return out

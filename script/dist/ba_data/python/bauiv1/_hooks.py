@@ -145,7 +145,7 @@ def quit_window(quit_type: babase.QuitType) -> None:
     from babase import app
 
     if app.classic is None:
-        logging.exception("Classic not present.")
+        logging.exception('Classic not present.')
         return
 
     app.classic.quit_window(quit_type)
@@ -155,7 +155,7 @@ def show_url_window(address: str) -> None:
     from babase import app
 
     if app.classic is None:
-        logging.exception("Classic not present.")
+        logging.exception('Classic not present.')
         return
 
     app.classic.show_url_window(address)
@@ -167,11 +167,11 @@ def double_transition_out_warning() -> None:
     caller_filename = caller_frame.filename
     caller_line_number = caller_frame.lineno
     logging.warning(
-        "ContainerWidget was set to transition out twice;"
-        " this often implies buggy code (%s line %s).\n"
-        " Generally you should check the value of"
-        " _root_widget.transitioning_out and perform no actions if that"
-        " is True.",
+        'ContainerWidget was set to transition out twice;'
+        ' this often implies buggy code (%s line %s).\n'
+        ' Generally you should check the value of'
+        ' _root_widget.transitioning_out and perform no actions if that'
+        ' is True.',
         caller_filename,
         caller_line_number,
     )

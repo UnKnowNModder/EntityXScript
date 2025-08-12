@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, override
 from threading import RLock
 
 from efro.threadpool import ThreadPoolExecutorEx
+from efro.util import strip_exception_tracebacks
 
 import _babase
 from babase._discord import DiscordSubsystem
@@ -86,7 +87,7 @@ class App:
 
         # Hack for docs-generation: we can be imported with dummy modules
         # instead of our actual binary ones, but we don't function.
-        if os.environ.get("BA_RUNNING_WITH_DUMMY_MODULES") == "1":
+        if os.environ.get('BA_RUNNING_WITH_DUMMY_MODULES') == '1':
             return
 
         self._subsystems: list[AppSubsystem] = []
@@ -107,7 +108,7 @@ class App:
         #: loops we create so that everything shares the same single set
         #: of worker threads.
         self.threadpool: ThreadPoolExecutorEx = ThreadPoolExecutorEx(
-            thread_name_prefix="baworker",
+            thread_name_prefix='baworker',
             initializer=self._thread_pool_thread_init,
         )
 
@@ -117,16 +118,24 @@ class App:
         )
 
         #: Locale related functionality.
-        self.locale: LocaleSubsystem = self.register_subsystem(LocaleSubsystem())
+        self.locale: LocaleSubsystem = self.register_subsystem(
+            LocaleSubsystem()
+        )
 
         #: Language related functionality.
-        self.lang: LanguageSubsystem = self.register_subsystem(LanguageSubsystem())
+        self.lang: LanguageSubsystem = self.register_subsystem(
+            LanguageSubsystem()
+        )
 
         #: Subsystem for wrangling plugins.
-        self.plugins: PluginSubsystem = self.register_subsystem(PluginSubsystem())
+        self.plugins: PluginSubsystem = self.register_subsystem(
+            PluginSubsystem()
+        )
 
         #: Subsystem for discord functionality
-        self.discord: DiscordSubsystem = self.register_subsystem(DiscordSubsystem())
+        self.discord: DiscordSubsystem = self.register_subsystem(
+            DiscordSubsystem()
+        )
 
         #: Subsystem for wrangling metadata.
         self.meta: MetadataSubsystem = MetadataSubsystem()
@@ -257,8 +266,8 @@ class App:
         """
         if self._mode_selector is None:
             raise RuntimeError(
-                "mode_selector cannot be used until the app reaches"
-                " the running state."
+                'mode_selector cannot be used until the app reaches'
+                ' the running state.'
             )
         return self._mode_selector
 
@@ -274,8 +283,13 @@ class App:
                 logging.error(
                     "Error in async task '%s'.", task.get_name(), exc_info=exc
                 )
+                # We're done with the exception, so let's rip out its
+                # tracebacks to try and avoid the need for cyclic
+                # garbage collection.
+                strip_exception_tracebacks(exc)
+
         except Exception:
-            logging.exception("Error reporting async task error.")
+            logging.exception('Error reporting async task error.')
 
         self._asyncio_tasks.remove(task)
 
@@ -307,7 +321,7 @@ class App:
                     # we're doing the loading, so this is a dependency
                     # loop. Not good.
                     raise RuntimeError(
-                        f"Subsystem dependency loop detected for {ssname}"
+                        f'Subsystem dependency loop detected for {ssname}'
                     )
                 # Must be an instantiated subsystem. Noice.
                 return val
@@ -333,7 +347,7 @@ class App:
     def classic(self) -> ClassicAppSubsystem | None:
         """Our classic subsystem (if available)."""
         return self._get_subsystem_property(
-            "classic", self._create_classic_subsystem
+            'classic', self._create_classic_subsystem
         )  # type: ignore
 
     @staticmethod
@@ -346,14 +360,14 @@ class App:
         except ImportError:
             return None
         except Exception:
-            logging.exception("Error importing baclassic.")
+            logging.exception('Error importing baclassic.')
             return None
 
     @property
     def plus(self) -> PlusAppSubsystem | None:
         """Our plus subsystem (if available)."""
         return self._get_subsystem_property(
-            "plus", self._create_plus_subsystem
+            'plus', self._create_plus_subsystem
         )  # type: ignore
 
     @staticmethod
@@ -366,14 +380,14 @@ class App:
         except ImportError:
             return None
         except Exception:
-            logging.exception("Error importing baplus.")
+            logging.exception('Error importing baplus.')
             return None
 
     @property
     def ui_v1(self) -> UIV1AppSubsystem:
         """Our ui_v1 subsystem (always available)."""
         return self._get_subsystem_property(
-            "ui_v1", self._create_ui_v1_subsystem
+            'ui_v1', self._create_ui_v1_subsystem
         )  # type: ignore
 
     @staticmethod
@@ -404,7 +418,9 @@ class App:
         # on_app_running().
 
         if self._subsystem_registration_ended:
-            raise RuntimeError("Subsystems can no longer be registered at this point.")
+            raise RuntimeError(
+                'Subsystems can no longer be registered at this point.'
+            )
         assert not any(s is subsystem for s in self._subsystems)
         self._subsystems.append(subsystem)
         return subsystem
@@ -429,7 +445,7 @@ class App:
         ):
             stname = self.state.name
             raise RuntimeError(
-                f"Cannot add shutdown tasks with current state {stname}."
+                f'Cannot add shutdown tasks with current state {stname}.'
             )
         self._shutdown_tasks.append(coro)
 
@@ -575,14 +591,16 @@ class App:
         assert _babase.in_logic_thread()
 
         appname = _babase.appname()
-        if url.startswith(f"{appname}://code/"):
-            code = url.replace(f"{appname}://code/", "")
+        if url.startswith(f'{appname}://code/'):
+            code = url.replace(f'{appname}://code/', '')
             if self.classic is not None:
                 self.classic.accounts.add_pending_promo_code(code)
         else:
             try:
-                _babase.screenmessage(Lstr(resource="errorText"), color=(1, 0, 0))
-                _babase.getsimplesound("error").play()
+                _babase.screenmessage(
+                    Lstr(resource='errorText'), color=(1, 0, 0)
+                )
+                _babase.getsimplesound('error').play()
             except ImportError:
                 pass
 
@@ -629,7 +647,7 @@ class App:
                 subsystem.on_ui_scale_change()
             except Exception:
                 logging.exception(
-                    "Error in on_ui_scale_change() for subsystem %s.", subsystem
+                    'Error in on_ui_scale_change() for subsystem %s.', subsystem
                 )
 
     def on_screen_size_change(self) -> None:
@@ -646,7 +664,7 @@ class App:
                 subsystem.on_screen_size_change()
             except Exception:
                 logging.exception(
-                    "Error in on_screen_size_change() for subsystem %s.",
+                    'Error in on_screen_size_change() for subsystem %s.',
                     subsystem,
                 )
 
@@ -658,14 +676,14 @@ class App:
         try:
             # Ask the selector what app-mode to use for this intent.
             if self.mode_selector is None:
-                raise RuntimeError("No AppModeSelector set.")
+                raise RuntimeError('No AppModeSelector set.')
 
             modetype: type[AppMode] | None
 
             # Special case - for testing we may force a specific
             # app-mode to handle this intent instead of going through our
             # usual selector.
-            forced_mode_type = getattr(intent, "_force_app_mode_handler", None)
+            forced_mode_type = getattr(intent, '_force_app_mode_handler', None)
             if isinstance(forced_mode_type, type) and issubclass(
                 forced_mode_type, AppMode
             ):
@@ -680,16 +698,17 @@ class App:
 
             if modetype is None:
                 raise RuntimeError(
-                    f"No app-mode found to handle app-intent" f" type {type(intent)}."
+                    f'No app-mode found to handle app-intent'
+                    f' type {type(intent)}.'
                 )
 
             # Make sure the app-mode the selector gave us *actually*
             # supports the intent.
             if not modetype.can_handle_intent(intent):
                 raise RuntimeError(
-                    f"Intent {intent} cannot be handled by AppMode type"
-                    f" {modetype} (selector {self.mode_selector}"
-                    f" incorrectly thinks that it can be)."
+                    f'Intent {intent} cannot be handled by AppMode type'
+                    f' {modetype} (selector {self.mode_selector}'
+                    f' incorrectly thinks that it can be).'
                 )
 
             # Ok; seems legit. Now instantiate the mode if necessary and
@@ -702,7 +721,7 @@ class App:
                 from_other_thread=True,
             )
         except Exception:
-            logging.exception("Error setting app intent to %s.", intent)
+            logging.exception('Error setting app intent to %s.', intent)
             _babase.pushcall(
                 partial(self._display_set_intent_error, intent),
                 from_other_thread=True,
@@ -726,7 +745,9 @@ class App:
                 try:
                     self._mode.on_deactivate()
                 except Exception:
-                    logging.exception("Error deactivating app-mode %s.", self._mode)
+                    logging.exception(
+                        'Error deactivating app-mode %s.', self._mode
+                    )
 
             # Reset all subsystems. We assume subsystems won't be added
             # at this point so we can use the list directly.
@@ -735,14 +756,16 @@ class App:
                 try:
                     subsystem.reset()
                 except Exception:
-                    logging.exception("Error in reset() for subsystem %s.", subsystem)
+                    logging.exception(
+                        'Error in reset() for subsystem %s.', subsystem
+                    )
 
             self._mode = mode
             try:
                 mode.on_activate()
             except Exception:
                 # Hmm; what should we do in this case?...
-                logging.exception("Error activating app-mode %s.", mode)
+                logging.exception('Error activating app-mode %s.', mode)
 
             # Let the world know when we first have an app-mode; certain
             # app stuff such as input processing can proceed at that
@@ -753,15 +776,17 @@ class App:
         try:
             mode.handle_intent(intent)
         except Exception:
-            logging.exception("Error handling intent %s in app-mode %s.", intent, mode)
+            logging.exception(
+                'Error handling intent %s in app-mode %s.', intent, mode
+            )
 
     def _display_set_intent_error(self, intent: AppIntent) -> None:
         """Show the *user* something went wrong setting an intent."""
         from babase._language import Lstr
 
         del intent
-        _babase.screenmessage(Lstr(resource="errorText"), color=(1, 0, 0))
-        _babase.getsimplesound("error").play()
+        _babase.screenmessage(Lstr(resource='errorText'), color=(1, 0, 0))
+        _babase.getsimplesound('error').play()
 
     def _on_initing(self) -> None:
         """Called when the app enters the initing state.
@@ -829,7 +854,7 @@ class App:
                 subsystem.on_app_loading()
             except Exception:
                 logging.exception(
-                    "Error in on_app_loading() for subsystem %s.", subsystem
+                    'Error in on_app_loading() for subsystem %s.', subsystem
                 )
 
         # Normally plus tells us when initial sign-in is done. If plus
@@ -878,7 +903,7 @@ class App:
                 subsystem.on_app_running()
             except Exception:
                 logging.exception(
-                    "Error in on_app_running() for subsystem %s.", subsystem
+                    'Error in on_app_running() for subsystem %s.', subsystem
                 )
 
         # Cut off new subsystem additions at this point.
@@ -897,7 +922,7 @@ class App:
     def _apply_app_config(self) -> None:
         assert _babase.in_logic_thread()
 
-        lifecyclelog.info("apply-app-config")
+        lifecyclelog.info('apply-app-config')
 
         # If multiple apply calls have been made, only actually apply
         # once.
@@ -914,7 +939,7 @@ class App:
                 subsystem.apply_app_config()
             except Exception:
                 logging.exception(
-                    "Error in apply_app_config() for subsystem %s.",
+                    'Error in apply_app_config() for subsystem %s.',
                     subsystem,
                 )
 
@@ -929,7 +954,7 @@ class App:
         if self._native_shutdown_complete_called:
             if self.state is not AppState.SHUTDOWN_COMPLETE:
                 self.state = AppState.SHUTDOWN_COMPLETE
-                lifecyclelog.info("app-state is now %s", self.state.name)
+                lifecyclelog.info('app-state is now %s', self.state.name)
                 self._on_shutdown_complete()
 
         # Shutdown trumps all. Though we can't start shutting down until
@@ -939,15 +964,15 @@ class App:
             # Entering shutdown state:
             if self.state is not AppState.SHUTTING_DOWN:
                 self.state = AppState.SHUTTING_DOWN
-                applog.info("Shutting down...")
-                lifecyclelog.info("app-state is now %s", self.state.name)
+                applog.info('Shutting down...')
+                lifecyclelog.info('app-state is now %s', self.state.name)
                 self._on_shutting_down()
 
         elif self._native_suspended:
             # Entering suspended state:
             if self.state is not AppState.SUSPENDED:
                 self.state = AppState.SUSPENDED
-                lifecyclelog.info("app-state is now %s", self.state.name)
+                lifecyclelog.info('app-state is now %s', self.state.name)
                 self._on_suspend()
         else:
             # Leaving suspended state:
@@ -958,7 +983,7 @@ class App:
             if self._initial_sign_in_completed and self._meta_scan_completed:
                 if self.state != AppState.RUNNING:
                     self.state = AppState.RUNNING
-                    lifecyclelog.info("app-state is now %s", self.state.name)
+                    lifecyclelog.info('app-state is now %s', self.state.name)
                     if not self._called_on_running:
                         self._called_on_running = True
                         self._on_running()
@@ -967,7 +992,7 @@ class App:
             elif self._init_completed:
                 if self.state is not AppState.LOADING:
                     self.state = AppState.LOADING
-                    lifecyclelog.info("app-state is now %s", self.state.name)
+                    lifecyclelog.info('app-state is now %s', self.state.name)
                     if not self._called_on_loading:
                         self._called_on_loading = True
                         self._on_loading()
@@ -976,7 +1001,7 @@ class App:
             elif self._native_bootstrapping_completed:
                 if self.state is not AppState.INITING:
                     self.state = AppState.INITING
-                    lifecyclelog.info("app-state is now %s", self.state.name)
+                    lifecyclelog.info('app-state is now %s', self.state.name)
                     if not self._called_on_initing:
                         self._called_on_initing = True
                         self._on_initing()
@@ -985,12 +1010,13 @@ class App:
             elif self._native_start_called:
                 if self.state is not AppState.NATIVE_BOOTSTRAPPING:
                     self.state = AppState.NATIVE_BOOTSTRAPPING
-                    lifecyclelog.info("app-state is now %s", self.state.name)
+                    lifecyclelog.info('app-state is now %s', self.state.name)
             else:
                 # Only logical possibility left is NOT_STARTED, in which
                 # case we should not be getting called.
                 logging.warning(
-                    "App._update_state called while in %s state;" " should not happen.",
+                    'App._update_state called while in %s state;'
+                    ' should not happen.',
                     self.state.value,
                     stack_info=True,
                 )
@@ -1005,9 +1031,11 @@ class App:
                     # Note: Mypy currently complains if we don't take
                     # this return value, but we don't actually need to.
                     # https://github.com/python/mypy/issues/15036
-                    _ = task_group.create_task(self._run_shutdown_task(task_coro))
+                    _ = task_group.create_task(
+                        self._run_shutdown_task(task_coro)
+                    )
         except* Exception:
-            logging.exception("Unexpected error(s) in shutdown.")
+            logging.exception('Unexpected error(s) in shutdown.')
 
         # Note: ideally we should run this directly here, but currently
         # it does some legacy stuff which blocks, so running it here
@@ -1016,7 +1044,9 @@ class App:
         # this to a direct call.
         _babase.pushcall(_babase.complete_shutdown)
 
-    async def _run_shutdown_task(self, coro: Coroutine[None, None, None]) -> None:
+    async def _run_shutdown_task(
+        self, coro: Coroutine[None, None, None]
+    ) -> None:
         """Run a shutdown task; report errors and abort if taking too long."""
         import asyncio
 
@@ -1024,7 +1054,7 @@ class App:
         try:
             await asyncio.wait_for(task, self.SHUTDOWN_TASK_TIMEOUT_SECONDS)
         except Exception:
-            logging.exception("Error in shutdown task (%s).", coro)
+            logging.exception('Error in shutdown task (%s).', coro)
 
     def _on_suspend(self) -> None:
         """Called when the app goes to a suspended state."""
@@ -1036,7 +1066,7 @@ class App:
                 subsystem.on_app_suspend()
             except Exception:
                 logging.exception(
-                    "Error in on_app_suspend() for subsystem %s.", subsystem
+                    'Error in on_app_suspend() for subsystem %s.', subsystem
                 )
 
     def _on_unsuspend(self) -> None:
@@ -1050,7 +1080,7 @@ class App:
                 subsystem.on_app_unsuspend()
             except Exception:
                 logging.exception(
-                    "Error in on_app_unsuspend() for subsystem %s.", subsystem
+                    'Error in on_app_unsuspend() for subsystem %s.', subsystem
                 )
 
     def _on_shutting_down(self) -> None:
@@ -1064,7 +1094,7 @@ class App:
                 subsystem.on_app_shutdown()
             except Exception:
                 logging.exception(
-                    "Error in on_app_shutdown() for subsystem %s.", subsystem
+                    'Error in on_app_shutdown() for subsystem %s.', subsystem
                 )
 
         # Now kick off any async shutdown task(s).
@@ -1083,7 +1113,7 @@ class App:
                 self._mode.on_deactivate()
             except Exception:
                 logging.exception(
-                    "Error deactivating app-mode %s at app shutdown.",
+                    'Error deactivating app-mode %s at app shutdown.',
                     self._mode,
                 )
             self._mode = None
@@ -1095,7 +1125,7 @@ class App:
                 subsystem.on_app_shutdown_complete()
             except Exception:
                 logging.exception(
-                    "Error in on_app_shutdown_complete() for subsystem %s.",
+                    'Error in on_app_shutdown_complete() for subsystem %s.',
                     subsystem,
                 )
 
@@ -1104,14 +1134,15 @@ class App:
 
         # Spin and wait for anything blocking shutdown to complete.
         starttime = _babase.apptime()
-        lifecyclelog.info("shutdown-suppress-wait begin")
+        lifecyclelog.info('shutdown-suppress-wait begin')
         while _babase.shutdown_suppress_count() > 0:
             await asyncio.sleep(0.001)
-        lifecyclelog.info("shutdown-suppress-wait end")
+        lifecyclelog.info('shutdown-suppress-wait end')
         duration = _babase.apptime() - starttime
         if duration > 1.0:
             logging.warning(
-                "Shutdown-suppressions lasted longer than ideal " "(%.2f seconds).",
+                'Shutdown-suppressions lasted longer than ideal '
+                '(%.2f seconds).',
                 duration,
             )
 
@@ -1119,7 +1150,7 @@ class App:
         import asyncio
 
         # Kick off a short fade and give it time to complete.
-        lifecyclelog.info("fade-and-shutdown-graphics begin")
+        lifecyclelog.info('fade-and-shutdown-graphics begin')
         fade_done = False
 
         starttime = time.monotonic()
@@ -1141,7 +1172,7 @@ class App:
             await asyncio.sleep(0.03)
             # Fallback trigger in case fade never calls back.
             if time.monotonic() - starttime > 2.0:
-                lifecyclelog.warning("fade_screen took too long; cutting off.")
+                lifecyclelog.warning('fade_screen took too long; cutting off.')
                 fade_done = True
 
         # Now tell the graphics system to go down and wait until it has
@@ -1149,24 +1180,24 @@ class App:
         _babase.graphics_shutdown_begin()
         while not _babase.graphics_shutdown_is_complete():
             await asyncio.sleep(0.01)
-        lifecyclelog.info("fade-and-shutdown-graphics end")
+        lifecyclelog.info('fade-and-shutdown-graphics end')
 
     async def _fade_and_shutdown_audio(self) -> None:
         import asyncio
 
         # Tell the audio system to go down and give it a bit of
         # time to do so gracefully.
-        lifecyclelog.info("fade-and-shutdown-audio begin")
+        lifecyclelog.info('fade-and-shutdown-audio begin')
         _babase.audio_shutdown_begin()
         await asyncio.sleep(0.15)
         while not _babase.audio_shutdown_is_complete():
             await asyncio.sleep(0.01)
-        lifecyclelog.info("fade-and-shutdown-audio end")
+        lifecyclelog.info('fade-and-shutdown-audio end')
 
     def _thread_pool_thread_init(self) -> None:
         # Help keep things clear in profiling tools/etc.
         self._pool_thread_count += 1
-        _babase.set_thread_name(f"ballistica worker-{self._pool_thread_count}")
+        _babase.set_thread_name(f'ballistica worker-{self._pool_thread_count}')
 
 
 class AppState(Enum):

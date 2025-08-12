@@ -19,11 +19,11 @@ class SecureDataChecker:
     """Verifies data as being signed by our master server."""
 
     # Time period this checker is valid for.
-    starttime: Annotated[datetime.datetime, IOAttrs("s")]
-    endtime: Annotated[datetime.datetime, IOAttrs("e")]
+    starttime: Annotated[datetime.datetime, IOAttrs('s')]
+    endtime: Annotated[datetime.datetime, IOAttrs('e')]
 
     # Current set of public keys.
-    publickeys: Annotated[list[bytes], IOAttrs("k")]
+    publickeys: Annotated[list[bytes], IOAttrs('k')]
 
     def check(self, data: bytes, signature: bytes) -> bool:
         """Verify data, returning True if successful.
@@ -39,9 +39,9 @@ class SecureDataChecker:
 
         # Make sure we seem valid based on local time.
         if now < self.starttime:
-            raise RuntimeError("SecureDataChecker starttime is in the future.")
+            raise RuntimeError('SecureDataChecker starttime is in the future.')
         if now > self.endtime:
-            raise RuntimeError("SecureDataChecker endtime is in the past.")
+            raise RuntimeError('SecureDataChecker endtime is in the past.')
 
         # Try our keys from newest to oldest. Most stuff will be using
         # the newest key so this should be most efficient.

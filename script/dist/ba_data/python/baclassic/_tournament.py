@@ -27,15 +27,15 @@ def get_tournament_prize_strings(
     # pylint: disable=too-many-locals
     from bascenev1 import get_trophy_string
 
-    range1 = entry.get("prizeRange1")
-    range2 = entry.get("prizeRange2")
-    range3 = entry.get("prizeRange3")
-    prize1 = entry.get("prize1")
-    prize2 = entry.get("prize2")
-    prize3 = entry.get("prize3")
-    trophy_type_1 = entry.get("prizeTrophy1")
-    trophy_type_2 = entry.get("prizeTrophy2")
-    trophy_type_3 = entry.get("prizeTrophy3")
+    range1 = entry.get('prizeRange1')
+    range2 = entry.get('prizeRange2')
+    range3 = entry.get('prizeRange3')
+    prize1 = entry.get('prize1')
+    prize2 = entry.get('prize2')
+    prize3 = entry.get('prize3')
+    trophy_type_1 = entry.get('prizeTrophy1')
+    trophy_type_2 = entry.get('prizeTrophy2')
+    trophy_type_3 = entry.get('prizeTrophy3')
     out_vals = []
     for rng, ticket_prize, trophy_type in (
         (range1, prize1, trophy_type_1),
@@ -43,15 +43,15 @@ def get_tournament_prize_strings(
         (range3, prize3, trophy_type_3),
     ):
         prval = (
-            ""
+            ''
             if rng is None
             else (
-                ("#" + str(rng[0]))
+                ('#' + str(rng[0]))
                 if (rng[0] == rng[1])
-                else ("#" + str(rng[0]) + "-" + str(rng[1]))
+                else ('#' + str(rng[0]) + '-' + str(rng[1]))
             )
         )
-        pvval = ""
+        pvval = ''
         if trophy_type is not None:
             pvval += get_trophy_string(trophy_type)
 
@@ -71,14 +71,14 @@ def set_tournament_prize_chest_image(
 ) -> None:
     """Set image attrs representing a tourney prize chest."""
     ranges = [
-        entry.get("prizeRange1"),
-        entry.get("prizeRange2"),
-        entry.get("prizeRange3"),
+        entry.get('prizeRange1'),
+        entry.get('prizeRange2'),
+        entry.get('prizeRange3'),
     ]
     chests = [
-        entry.get("prizeChest1"),
-        entry.get("prizeChest2"),
-        entry.get("prizeChest3"),
+        entry.get('prizeChest1'),
+        entry.get('prizeChest2'),
+        entry.get('prizeChest3'),
     ]
 
     assert 0 <= index < 3
@@ -113,14 +113,14 @@ def create_in_game_tournament_prize_image(
     from bascenev1lib.actor.image import Image
 
     ranges = [
-        entry.get("prizeRange1"),
-        entry.get("prizeRange2"),
-        entry.get("prizeRange3"),
+        entry.get('prizeRange1'),
+        entry.get('prizeRange2'),
+        entry.get('prizeRange3'),
     ]
     chests = [
-        entry.get("prizeChest1"),
-        entry.get("prizeChest2"),
-        entry.get("prizeChest3"),
+        entry.get('prizeChest1'),
+        entry.get('prizeChest2'),
+        entry.get('prizeChest3'),
     ]
 
     # If tourney doesn't include this prize, no-op.
@@ -138,11 +138,13 @@ def create_in_game_tournament_prize_image(
         # Provide magical extended dict version of texture that Image
         # actor supports.
         texture={
-            "texture": bascenev1.gettexture(chestdisplayinfo.texclosed),
-            "tint_texture": bascenev1.gettexture(chestdisplayinfo.texclosedtint),
-            "tint_color": chestdisplayinfo.tint,
-            "tint2_color": chestdisplayinfo.tint2,
-            "mask_texture": None,
+            'texture': bascenev1.gettexture(chestdisplayinfo.texclosed),
+            'tint_texture': bascenev1.gettexture(
+                chestdisplayinfo.texclosedtint
+            ),
+            'tint_color': chestdisplayinfo.tint,
+            'tint2_color': chestdisplayinfo.tint2,
+            'mask_texture': None,
         },
         color=chestdisplayinfo.color + (1.0,),
         position=position,

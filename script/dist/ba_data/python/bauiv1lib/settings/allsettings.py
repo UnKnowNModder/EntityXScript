@@ -18,7 +18,7 @@ class AllSettingsWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-locals
@@ -27,12 +27,12 @@ class AllSettingsWindow(bui.MainWindow):
         # have a visual hitch when the user taps them.
         bui.app.threadpool.submit_no_wait(self._preload_modules)
 
-        bui.set_analytics_screen("Settings Window")
+        bui.set_analytics_screen('Settings Window')
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
         width = 1000 if uiscale is bui.UIScale.SMALL else 900
         height = 800 if uiscale is bui.UIScale.SMALL else 450
-        self._r = "settingsWindow"
+        self._r = 'settingsWindow'
 
         uiscale = bui.app.ui_v1.uiscale
 
@@ -68,9 +68,9 @@ class AllSettingsWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(width, height),
                 toolbar_visibility=(
-                    "menu_minimal"
+                    'menu_minimal'
                     if (uiscale is bui.UIScale.SMALL and not bui.in_main_menu())
-                    else "menu_full"
+                    else 'menu_full'
                 ),
                 scale=scale,
             ),
@@ -94,7 +94,7 @@ class AllSettingsWindow(bui.MainWindow):
                 scale=0.8,
                 text_scale=1.2,
                 label=bui.charstr(bui.SpecialChar.BACK),
-                button_type="backSmall",
+                button_type='backSmall',
                 on_activate_call=self.main_window_back,
             )
             bui.containerwidget(edit=self._root_widget, cancel_button=btn)
@@ -103,10 +103,10 @@ class AllSettingsWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(0, yoffs - (70 if uiscale is bui.UIScale.SMALL else 60)),
             size=(width, 25),
-            text=bui.Lstr(resource=f"{self._r}.titleText"),
+            text=bui.Lstr(resource=f'{self._r}.titleText'),
             color=bui.app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             scale=1.1,
             maxwidth=130,
         )
@@ -120,7 +120,11 @@ class AllSettingsWindow(bui.MainWindow):
 
         # This looks more visualy balanced slid down a bit (except in
         # small mode when we're showing full toolbars around it).
-        ynudge = 0.0 if uiscale is bui.UIScale.SMALL and bui.in_main_menu() else -20.0
+        ynudge = (
+            0.0
+            if uiscale is bui.UIScale.SMALL and bui.in_main_menu()
+            else -20.0
+        )
         y = height * 0.5 - bheight * 0.5 + ynudge
 
         def _button(
@@ -139,8 +143,8 @@ class AllSettingsWindow(bui.MainWindow):
                 autoselect=True,
                 position=(x, y),
                 size=(bwidth, bheight),
-                button_type="square",
-                label="",
+                button_type='square',
+                label='',
                 on_activate_call=call,
             )
             bui.textwidget(
@@ -149,8 +153,8 @@ class AllSettingsWindow(bui.MainWindow):
                 position=(x + bwidth * 0.5, y + bheight * 0.25),
                 maxwidth=bwidth * 0.7,
                 size=(0, 0),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 draw_controller=btn,
                 color=(0.7, 0.9, 0.7, 1.0),
             )
@@ -169,9 +173,9 @@ class AllSettingsWindow(bui.MainWindow):
 
         self._controllers_button = _button(
             position=(x, y),
-            label=bui.Lstr(resource=f"{self._r}.controllersText"),
+            label=bui.Lstr(resource=f'{self._r}.controllersText'),
             call=self._do_controllers,
-            texture=bui.gettexture("controllerIcon"),
+            texture=bui.gettexture('controllerIcon'),
             imgsize=150,
             imgoffs=(-2.0, 2.0),
         )
@@ -179,9 +183,9 @@ class AllSettingsWindow(bui.MainWindow):
 
         self._graphics_button = _button(
             position=(x, y),
-            label=bui.Lstr(resource=f"{self._r}.graphicsText"),
+            label=bui.Lstr(resource=f'{self._r}.graphicsText'),
             call=self._do_graphics,
-            texture=bui.gettexture("graphicsIcon"),
+            texture=bui.gettexture('graphicsIcon'),
             imgsize=135,
             imgoffs=(0, 4.0),
         )
@@ -189,9 +193,9 @@ class AllSettingsWindow(bui.MainWindow):
 
         self._audio_button = _button(
             position=(x, y),
-            label=bui.Lstr(resource=f"{self._r}.audioText"),
+            label=bui.Lstr(resource=f'{self._r}.audioText'),
             call=self._do_audio,
-            texture=bui.gettexture("audioIcon"),
+            texture=bui.gettexture('audioIcon'),
             imgsize=150,
             color=(1, 1, 0),
         )
@@ -199,9 +203,9 @@ class AllSettingsWindow(bui.MainWindow):
 
         self._advanced_button = _button(
             position=(x, y),
-            label=bui.Lstr(resource=f"{self._r}.advancedText"),
+            label=bui.Lstr(resource=f'{self._r}.advancedText'),
             call=self._do_advanced,
-            texture=bui.gettexture("advancedIcon"),
+            texture=bui.gettexture('advancedIcon'),
             imgsize=150,
             color=(0.8, 0.95, 1),
             imgoffs=(0, 5.0),
@@ -212,13 +216,13 @@ class AllSettingsWindow(bui.MainWindow):
         if bool(False):
             # Left from our leftmost button should go to back button.
             if self._back_button is None:
-                bbtn = bui.get_special_widget("back_button")
+                bbtn = bui.get_special_widget('back_button')
                 bui.widget(edit=self._controllers_button, left_widget=bbtn)
 
             # Right from our rightmost widget should go to squad button.
             bui.widget(
                 edit=self._advanced_button,
-                right_widget=bui.get_special_widget("squad_button"),
+                right_widget=bui.get_special_widget('squad_button'),
             )
 
         self._restore_state()
@@ -278,7 +282,9 @@ class AllSettingsWindow(bui.MainWindow):
         if not self.main_window_has_control():
             return
 
-        self.main_window_replace(AudioSettingsWindow(origin_widget=self._audio_button))
+        self.main_window_replace(
+            AudioSettingsWindow(origin_widget=self._audio_button)
+        )
 
     def _do_advanced(self) -> None:
         # pylint: disable=cyclic-import
@@ -296,40 +302,42 @@ class AllSettingsWindow(bui.MainWindow):
         try:
             sel = self._root_widget.get_selected_child()
             if sel == self._controllers_button:
-                sel_name = "Controllers"
+                sel_name = 'Controllers'
             elif sel == self._graphics_button:
-                sel_name = "Graphics"
+                sel_name = 'Graphics'
             elif sel == self._audio_button:
-                sel_name = "Audio"
+                sel_name = 'Audio'
             elif sel == self._advanced_button:
-                sel_name = "Advanced"
+                sel_name = 'Advanced'
             elif sel == self._back_button:
-                sel_name = "Back"
+                sel_name = 'Back'
             else:
-                raise ValueError(f"unrecognized selection '{sel}'")
+                raise ValueError(f'unrecognized selection \'{sel}\'')
             assert bui.app.classic is not None
-            bui.app.ui_v1.window_states[type(self)] = {"sel_name": sel_name}
+            bui.app.ui_v1.window_states[type(self)] = {'sel_name': sel_name}
         except Exception:
-            logging.exception("Error saving state for %s.", self)
+            logging.exception('Error saving state for %s.', self)
 
     def _restore_state(self) -> None:
         try:
             assert bui.app.classic is not None
-            sel_name = bui.app.ui_v1.window_states.get(type(self), {}).get("sel_name")
+            sel_name = bui.app.ui_v1.window_states.get(type(self), {}).get(
+                'sel_name'
+            )
             sel: bui.Widget | None
-            if sel_name == "Controllers":
+            if sel_name == 'Controllers':
                 sel = self._controllers_button
-            elif sel_name == "Graphics":
+            elif sel_name == 'Graphics':
                 sel = self._graphics_button
-            elif sel_name == "Audio":
+            elif sel_name == 'Audio':
                 sel = self._audio_button
-            elif sel_name == "Advanced":
+            elif sel_name == 'Advanced':
                 sel = self._advanced_button
-            elif sel_name == "Back":
+            elif sel_name == 'Back':
                 sel = self._back_button
             else:
                 sel = self._controllers_button
             if sel is not None:
                 bui.containerwidget(edit=self._root_widget, selected_child=sel)
         except Exception:
-            logging.exception("Error restoring state for %s.", self)
+            logging.exception('Error restoring state for %s.', self)

@@ -27,10 +27,10 @@ class PopupWindow:
         focus_position: tuple[float, float] = (0, 0),
         focus_size: tuple[float, float] | None = None,
         toolbar_visibility: Literal[
-            "inherit",
-            "menu_minimal_no_back",
-            "menu_store_no_back",
-        ] = "menu_minimal_no_back",
+            'inherit',
+            'menu_minimal_no_back',
+            'menu_store_no_back',
+        ] = 'menu_minimal_no_back',
         edge_buffer_scale: float = 1.0,
     ):
         # pylint: disable=too-many-locals
@@ -76,19 +76,23 @@ class PopupWindow:
         # focus area. ..now calc the difference between the center of our
         # focus area and the center of our window to come up with the
         # offset we'll need to plug in to the window
-        x_offs = ((focus_position[0] + focus_size[0] * 0.5) - (size[0] * 0.5)) * scale
-        y_offs = ((focus_position[1] + focus_size[1] * 0.5) - (size[1] * 0.5)) * scale
+        x_offs = (
+            (focus_position[0] + focus_size[0] * 0.5) - (size[0] * 0.5)
+        ) * scale
+        y_offs = (
+            (focus_position[1] + focus_size[1] * 0.5) - (size[1] * 0.5)
+        ) * scale
 
         # NOTE: We do NOT need to suppress main-window-recreates here
         # (like regular windows do) since we are always in the overlay
         # stack and thus aren't affected by main-window recreation.
 
         self.root_widget = bui.containerwidget(
-            transition="in_scale",
+            transition='in_scale',
             scale=scale,
             toolbar_visibility=toolbar_visibility,
             size=size,
-            parent=bui.get_special_widget("overlay_stack"),
+            parent=bui.get_special_widget('overlay_stack'),
             stack_offset=(x_fin - x_offs, y_fin - y_offs),
             scale_origin_stack_offset=(position[0], position[1]),
             on_outside_click_call=self.on_popup_cancel,
@@ -148,7 +152,7 @@ class PopupMenuWindow(PopupWindow):
         self._choices_disabled = list(choices_disabled)
         self._done_building = False
         if not choices:
-            raise TypeError("Must pass at least one choice")
+            raise TypeError('Must pass at least one choice')
         self._width = width
         self._scale = scale
         if len(choices) > 8:
@@ -190,7 +194,9 @@ class PopupMenuWindow(PopupWindow):
 
         # Init parent class - this will rescale and reposition things as
         # needed and create our root widget.
-        super().__init__(position, size=(self._width, self._height), scale=self._scale)
+        super().__init__(
+            position, size=(self._width, self._height), scale=self._scale
+        )
 
         if self._use_scroll:
             self._scrollwidget = bui.scrollwidget(
@@ -238,9 +244,9 @@ class PopupMenuWindow(PopupWindow):
                 maxwidth=maxwidth,
                 text=choice_display_name,
                 on_activate_call=self._activate,
-                v_align="center",
+                v_align='center',
                 selectable=(not inactive),
-                glow_type="uniform",
+                glow_type='uniform',
             )
             if choice == self._current_choice:
                 bui.containerwidget(
@@ -258,7 +264,7 @@ class PopupMenuWindow(PopupWindow):
             self._current_choice = self._choices[index]
 
     def _activate(self) -> None:
-        bui.getsound("swish").play()
+        bui.getsound('swish').play()
         bui.apptimer(0.05, self._transition_out)
         delegate = self._getdelegate()
         if delegate is not None:
@@ -280,12 +286,12 @@ class PopupMenuWindow(PopupWindow):
             delegate = self._getdelegate()
             if delegate is not None:
                 delegate.popup_menu_closing(self)
-            bui.containerwidget(edit=self.root_widget, transition="out_scale")
+            bui.containerwidget(edit=self.root_widget, transition='out_scale')
 
     @override
     def on_popup_cancel(self) -> None:
         if not self._transitioning_out:
-            bui.getsound("swish").play()
+            bui.getsound('swish').play()
         self._transition_out()
 
 
@@ -330,7 +336,7 @@ class PopupMenu:
             current_choice = None
         self._choices = list(choices)
         if not choices:
-            raise TypeError("no choices given")
+            raise TypeError('no choices given')
         self._choices_display = list(choices_display)
         self._choices_disabled = list(choices_disabled)
         self._width = width
@@ -342,7 +348,7 @@ class PopupMenu:
         self._position = position
         self._parent = parent
         if not choices:
-            raise TypeError("Must pass at least one choice")
+            raise TypeError('Must pass at least one choice')
         self._parent = parent
         self._button_size = button_size
 
@@ -352,7 +358,7 @@ class PopupMenu:
             autoselect=autoselect,
             size=self._button_size,
             scale=1.0,
-            label="",
+            label='',
             on_activate_call=lambda: bui.apptimer(0, self._make_popup),
         )
         self._on_value_change_call = None  # Don't wanna call for initial set.

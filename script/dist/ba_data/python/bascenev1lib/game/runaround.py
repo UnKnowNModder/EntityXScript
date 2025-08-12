@@ -50,22 +50,22 @@ if TYPE_CHECKING:
 class Preset(Enum):
     """Play presets."""
 
-    ENDLESS = "endless"
-    ENDLESS_TOURNAMENT = "endless_tournament"
-    PRO = "pro"
-    PRO_EASY = "pro_easy"
-    UBER = "uber"
-    UBER_EASY = "uber_easy"
-    TOURNAMENT = "tournament"
-    TOURNAMENT_UBER = "tournament_uber"
+    ENDLESS = 'endless'
+    ENDLESS_TOURNAMENT = 'endless_tournament'
+    PRO = 'pro'
+    PRO_EASY = 'pro_easy'
+    UBER = 'uber'
+    UBER_EASY = 'uber_easy'
+    TOURNAMENT = 'tournament'
+    TOURNAMENT_UBER = 'tournament_uber'
 
 
 class Point(Enum):
     """Where we can spawn stuff and the corresponding map attr name."""
 
-    BOTTOM_LEFT = "bot_spawn_bottom_left"
-    BOTTOM_RIGHT = "bot_spawn_bottom_right"
-    START = "bot_spawn_start"
+    BOTTOM_LEFT = 'bot_spawn_bottom_left'
+    BOTTOM_RIGHT = 'bot_spawn_bottom_right'
+    START = 'bot_spawn_start'
 
 
 @dataclass
@@ -92,7 +92,7 @@ class Wave:
     entries: list[Spawn | Spacing | None]
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
     def __init__(self) -> None:
@@ -107,12 +107,12 @@ class Team(bs.Team[Player]):
 class RunaroundGame(bs.CoopGameActivity[Player, Team]):
     """Game involving trying to bomb bots as they walk through the map."""
 
-    name = "Runaround"
-    description = "Prevent enemies from reaching the exit."
+    name = 'Runaround'
+    description = 'Prevent enemies from reaching the exit.'
     tips = [
-        "Jump just as you're throwing to get bombs up to the highest levels.",
-        "No, you can't get up on the ledge. You have to throw bombs.",
-        "Whip back and forth to get more distance on your throws..",
+        'Jump just as you\'re throwing to get bombs up to the highest levels.',
+        'No, you can\'t get up on the ledge. You have to throw bombs.',
+        'Whip back and forth to get more distance on your throws..',
     ]
     default_music = bs.MusicType.MARCHING
 
@@ -134,36 +134,36 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
     }
 
     def __init__(self, settings: dict):
-        settings["map"] = "Tower D"
+        settings['map'] = 'Tower D'
         super().__init__(settings)
         shared = SharedObjects.get()
-        self._preset = Preset(settings.get("preset", "pro"))
+        self._preset = Preset(settings.get('preset', 'pro'))
 
-        self._player_death_sound = bs.getsound("playerDeath")
-        self._new_wave_sound = bs.getsound("scoreHit01")
-        self._winsound = bs.getsound("score")
-        self._cashregistersound = bs.getsound("cashRegister")
-        self._bad_guy_score_sound = bs.getsound("shieldDown")
-        self._heart_tex = bs.gettexture("heart")
-        self._heart_mesh_opaque = bs.getmesh("heartOpaque")
-        self._heart_mesh_transparent = bs.getmesh("heartTransparent")
+        self._player_death_sound = bs.getsound('playerDeath')
+        self._new_wave_sound = bs.getsound('scoreHit01')
+        self._winsound = bs.getsound('score')
+        self._cashregistersound = bs.getsound('cashRegister')
+        self._bad_guy_score_sound = bs.getsound('shieldDown')
+        self._heart_tex = bs.gettexture('heart')
+        self._heart_mesh_opaque = bs.getmesh('heartOpaque')
+        self._heart_mesh_transparent = bs.getmesh('heartTransparent')
 
         self._a_player_has_been_killed = False
-        self._spawn_center = self._map_type.defs.points["spawn1"][0:3]
-        self._tntspawnpos = self._map_type.defs.points["tnt_loc"][0:3]
-        self._powerup_center = self._map_type.defs.boxes["powerup_region"][0:3]
+        self._spawn_center = self._map_type.defs.points['spawn1'][0:3]
+        self._tntspawnpos = self._map_type.defs.points['tnt_loc'][0:3]
+        self._powerup_center = self._map_type.defs.boxes['powerup_region'][0:3]
         self._powerup_spread = (
-            self._map_type.defs.boxes["powerup_region"][6] * 0.5,
-            self._map_type.defs.boxes["powerup_region"][8] * 0.5,
+            self._map_type.defs.boxes['powerup_region'][6] * 0.5,
+            self._map_type.defs.boxes['powerup_region'][8] * 0.5,
         )
 
         self._score_region_material = bs.Material()
         self._score_region_material.add_actions(
-            conditions=("they_have_material", shared.player_material),
+            conditions=('they_have_material', shared.player_material),
             actions=(
-                ("modify_part_collision", "collide", True),
-                ("modify_part_collision", "physical", False),
-                ("call", "at_connect", self._handle_reached_end),
+                ('modify_part_collision', 'collide', True),
+                ('modify_part_collision', 'physical', False),
+                ('call', 'at_connect', self._handle_reached_end),
             ),
         )
 
@@ -176,8 +176,8 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._score = 0
         self._time_bonus = 0
         self._score_region: bs.Actor | None = None
-        self._dingsound = bs.getsound("dingSmall")
-        self._dingsoundhigh = bs.getsound("dingSmallHigh")
+        self._dingsound = bs.getsound('dingSmall')
+        self._dingsoundhigh = bs.getsound('dingSmallHigh')
         self._exclude_powerups: list[str] | None = None
         self._have_tnt: bool | None = None
         self._waves: list[Wave] | None = None
@@ -202,16 +202,16 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
 
         super().on_transition_in()
         self._scoreboard = Scoreboard(
-            label=bs.Lstr(resource="scoreText"), score_split=0.5
+            label=bs.Lstr(resource='scoreText'), score_split=0.5
         )
         self._score_region = bs.NodeActor(
             bs.newnode(
-                "region",
+                'region',
                 attrs={
-                    "position": self.map.defs.boxes["score_region"][0:3],
-                    "scale": self.map.defs.boxes["score_region"][6:9],
-                    "type": "box",
-                    "materials": [self._score_region_material],
+                    'position': self.map.defs.boxes['score_region'][0:3],
+                    'scale': self.map.defs.boxes['score_region'][6:9],
+                    'type': 'box',
+                    'materials': [self._score_region_material],
                 },
             )
         )
@@ -223,7 +223,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         hard = self._preset not in {Preset.PRO_EASY, Preset.UBER_EASY}
 
         if self._preset in {Preset.PRO, Preset.PRO_EASY, Preset.TOURNAMENT}:
-            self._exclude_powerups = ["curse"]
+            self._exclude_powerups = ['curse']
             self._have_tnt = True
             self._waves = [
                 Wave(
@@ -421,12 +421,16 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                             point=Point.BOTTOM_LEFT,
                         ),
                         (
-                            Spawn(TriggerBotProShielded, point=Point.BOTTOM_RIGHT)
+                            Spawn(
+                                TriggerBotProShielded, point=Point.BOTTOM_RIGHT
+                            )
                             if hard
                             else None
                         ),
                         (
-                            Spawn(TriggerBotProShielded, point=Point.BOTTOM_RIGHT)
+                            Spawn(
+                                TriggerBotProShielded, point=Point.BOTTOM_RIGHT
+                            )
                             if player_count > 2
                             else None
                         ),
@@ -492,15 +496,15 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
 
         self._lives_bg = bs.NodeActor(
             bs.newnode(
-                "image",
+                'image',
                 attrs={
-                    "texture": self._heart_tex,
-                    "mesh_opaque": self._heart_mesh_opaque,
-                    "mesh_transparent": self._heart_mesh_transparent,
-                    "attach": "topRight",
-                    "scale": (90, 90),
-                    "position": (-110 + l_offs, -50),
-                    "color": (1, 0.2, 0.2),
+                    'texture': self._heart_tex,
+                    'mesh_opaque': self._heart_mesh_opaque,
+                    'mesh_transparent': self._heart_mesh_transparent,
+                    'attach': 'topRight',
+                    'scale': (90, 90),
+                    'position': (-110 + l_offs, -50),
+                    'color': (1, 0.2, 0.2),
                 },
             )
         )
@@ -509,18 +513,18 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         vrmode = bs.app.env.vr
         self._lives_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "v_attach": "top",
-                    "h_attach": "right",
-                    "h_align": "center",
-                    "color": (1, 1, 1, 1) if vrmode else (0.8, 0.8, 0.8, 1.0),
-                    "flatness": 1.0 if vrmode else 0.5,
-                    "shadow": 1.0 if vrmode else 0.5,
-                    "vr_depth": 10,
-                    "position": (-113 + l_offs, -69),
-                    "scale": 1.3,
-                    "text": str(self._lives),
+                    'v_attach': 'top',
+                    'h_attach': 'right',
+                    'h_align': 'center',
+                    'color': (1, 1, 1, 1) if vrmode else (0.8, 0.8, 0.8, 1.0),
+                    'flatness': 1.0 if vrmode else 0.5,
+                    'shadow': 1.0 if vrmode else 0.5,
+                    'vr_depth': 10,
+                    'position': (-113 + l_offs, -69),
+                    'scale': 1.3,
+                    'text': str(self._lives),
                 },
             )
         )
@@ -536,11 +540,13 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         pos = spaz.node.position
         self._bad_guy_score_sound.play(position=pos)
         light = bs.newnode(
-            "light", attrs={"position": pos, "radius": 0.5, "color": (1, 0, 0)}
+            'light', attrs={'position': pos, 'radius': 0.5, 'color': (1, 0, 0)}
         )
-        bs.animate(light, "intensity", {0.0: 0, 0.1: 1, 0.5: 0}, loop=False)
+        bs.animate(light, 'intensity', {0.0: 0, 0.1: 1, 0.5: 0}, loop=False)
         bs.timer(1.0, light.delete)
-        spaz.handlemessage(bs.DieMessage(immediate=True, how=bs.DeathType.REACHED_GOAL))
+        spaz.handlemessage(
+            bs.DieMessage(immediate=True, how=bs.DeathType.REACHED_GOAL)
+        )
 
         if self._lives > 0:
             self._lives -= 1
@@ -574,7 +580,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                     bs.Call(
                         _safesetattr,
                         self._lives_text.node,
-                        "color",
+                        'color',
                         (1, 0, 0, 1.0),
                     ),
                 )
@@ -582,7 +588,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                 assert self._lives_bg.node
                 bs.timer(
                     delay,
-                    bs.Call(_safesetattr, self._lives_bg.node, "opacity", 0.5),
+                    bs.Call(_safesetattr, self._lives_bg.node, 'opacity', 0.5),
                 )
                 delay += 0.125
                 bs.timer(
@@ -590,13 +596,13 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                     bs.Call(
                         _safesetattr,
                         self._lives_text.node,
-                        "color",
+                        'color',
                         (1.0, 1.0, 0.0, 1.0),
                     ),
                 )
                 bs.timer(
                     delay,
-                    bs.Call(_safesetattr, self._lives_bg.node, "opacity", 1.0),
+                    bs.Call(_safesetattr, self._lives_bg.node, 'opacity', 1.0),
                 )
                 delay += 0.125
             bs.timer(
@@ -604,7 +610,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                 bs.Call(
                     _safesetattr,
                     self._lives_text.node,
-                    "color",
+                    'color',
                     (0.8, 0.8, 0.8, 1.0),
                 ),
             )
@@ -652,7 +658,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         # giving out land-mine powerups. (prevents players from waiting
         # around for them on purpose and filling the map up)
         if bs.time() - self._last_wave_end_time > 60.0:
-            extra_excludes = ["land_mines"]
+            extra_excludes = ['land_mines']
         else:
             extra_excludes = []
 
@@ -661,7 +667,9 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
             for i in range(len(points)):
                 bs.timer(
                     1.0 + i * 0.5,
-                    bs.Call(self._drop_powerup, i, force_first if i == 0 else None),
+                    bs.Call(
+                        self._drop_powerup, i, force_first if i == 0 else None
+                    ),
                 )
         else:
             pos = (
@@ -672,7 +680,9 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                 ),
                 self._powerup_center[1],
                 self._powerup_center[2]
-                + random.uniform(-self._powerup_spread[1], self._powerup_spread[1]),
+                + random.uniform(
+                    -self._powerup_spread[1], self._powerup_spread[1]
+                ),
             )
 
             # drop one random one somewhere..
@@ -688,14 +698,14 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
     def end_game(self) -> None:
         # (Pylint Bug?) pylint: disable=missing-function-docstring
 
-        bs.pushcall(bs.Call(self.do_end, "defeat"))
+        bs.pushcall(bs.Call(self.do_end, 'defeat'))
         bs.setmusic(None)
         self._player_death_sound.play()
 
     def do_end(self, outcome: str) -> None:
         """End the game now with the provided outcome."""
 
-        if outcome == "defeat":
+        if outcome == 'defeat':
             delay = 2.0
             self.fade_to_red()
         else:
@@ -707,15 +717,15 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
             fail_message = None
         else:
             score = None
-            fail_message = bs.Lstr(resource="reachWave2Text")
+            fail_message = bs.Lstr(resource='reachWave2Text')
 
         self.end(
             delay=delay,
             results={
-                "outcome": outcome,
-                "score": score,
-                "fail_message": fail_message,
-                "playerinfos": self.initialplayerinfos,
+                'outcome': outcome,
+                'score': score,
+                'fail_message': fail_message,
+                'playerinfos': self.initialplayerinfos,
             },
         )
 
@@ -759,21 +769,27 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
             if won:
                 # Completion achievements:
                 if self._preset in {Preset.PRO, Preset.PRO_EASY}:
-                    self._award_achievement("Pro Runaround Victory", sound=False)
+                    self._award_achievement(
+                        'Pro Runaround Victory', sound=False
+                    )
                     if self._lives == self._start_lives:
-                        self._award_achievement("The Wall", sound=False)
+                        self._award_achievement('The Wall', sound=False)
                     if not self._player_has_picked_up_powerup:
-                        self._award_achievement("Precision Bombing", sound=False)
+                        self._award_achievement(
+                            'Precision Bombing', sound=False
+                        )
                 elif self._preset in {Preset.UBER, Preset.UBER_EASY}:
-                    self._award_achievement("Uber Runaround Victory", sound=False)
+                    self._award_achievement(
+                        'Uber Runaround Victory', sound=False
+                    )
                     if self._lives == self._start_lives:
-                        self._award_achievement("The Great Wall", sound=False)
+                        self._award_achievement('The Great Wall', sound=False)
                     if not self._a_player_has_been_killed:
-                        self._award_achievement("Stayin' Alive", sound=False)
+                        self._award_achievement('Stayin\' Alive', sound=False)
 
                 # Give remaining players some points and have them celebrate.
                 self.show_zoom_message(
-                    bs.Lstr(resource="victoryText"), scale=1.0, duration=4.0
+                    bs.Lstr(resource='victoryText'), scale=1.0, duration=4.0
                 )
 
                 self.celebrate(10.0)
@@ -785,7 +801,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                 bs.cameraflash()
                 bs.setmusic(bs.MusicType.VICTORY)
                 self._game_over = True
-                bs.timer(base_delay, bs.Call(self.do_end, "victory"))
+                bs.timer(base_delay, bs.Call(self.do_end, 'victory'))
                 return
 
             self._wavenum += 1
@@ -801,10 +817,10 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._cashregistersound.play()
         PopupText(
             bs.Lstr(
-                value="+${A} ${B}",
+                value='+${A} ${B}',
                 subs=[
-                    ("${A}", str(bonus)),
-                    ("${B}", bs.Lstr(resource="completionBonusText")),
+                    ('${A}', str(bonus)),
+                    ('${B}', bs.Lstr(resource='completionBonusText')),
                 ],
             ),
             color=(0.7, 0.7, 1.0, 1),
@@ -819,10 +835,10 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._cashregistersound.play()
         PopupText(
             bs.Lstr(
-                value="+${A} ${B}",
+                value='+${A} ${B}',
                 subs=[
-                    ("${A}", str(bonus)),
-                    ("${B}", bs.Lstr(resource="livesBonusText")),
+                    ('${A}', str(bonus)),
+                    ('${B}', bs.Lstr(resource='livesBonusText')),
                 ],
             ),
             color=(0.7, 1.0, 0.3, 1),
@@ -836,10 +852,10 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._cashregistersound.play()
         PopupText(
             bs.Lstr(
-                value="+${A} ${B}",
+                value='+${A} ${B}',
                 subs=[
-                    ("${A}", str(bonus)),
-                    ("${B}", bs.Lstr(resource="timeBonusText")),
+                    ('${A}', str(bonus)),
+                    ('${B}', bs.Lstr(resource='timeBonusText')),
                 ],
             ),
             color=(1, 1, 0.5, 1),
@@ -854,10 +870,10 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._cashregistersound.play()
         PopupText(
             bs.Lstr(
-                value="+${A} ${B}",
+                value='+${A} ${B}',
                 subs=[
-                    ("${A}", str(self._flawless_bonus)),
-                    ("${B}", bs.Lstr(resource="perfectWaveText")),
+                    ('${A}', str(self._flawless_bonus)),
+                    ('${B}', bs.Lstr(resource='perfectWaveText')),
                 ],
             ),
             color=(1, 1, 0.2, 1),
@@ -870,7 +886,9 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._update_scores()
 
     def _start_time_bonus_timer(self) -> None:
-        self._time_bonus_timer = bs.Timer(1.0, self._update_time_bonus, repeat=True)
+        self._time_bonus_timer = bs.Timer(
+            1.0, self._update_time_bonus, repeat=True
+        )
 
     def _start_next_wave(self) -> None:
         # FIXME: Need to split this up.
@@ -879,10 +897,10 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         # pylint: disable=too-many-statements
         self.show_zoom_message(
             bs.Lstr(
-                value="${A} ${B}",
+                value='${A} ${B}',
                 subs=[
-                    ("${A}", bs.Lstr(resource="waveText")),
-                    ("${B}", str(self._wavenum)),
+                    ('${A}', bs.Lstr(resource='waveText')),
+                    ('${B}', str(self._wavenum)),
                 ],
             ),
             scale=1.0,
@@ -910,13 +928,19 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
             if level > 5:
                 spaz_types += [(TriggerBotPro, 7.5)] * (1 + (level - 5) // 7)
             if level > 2:
-                spaz_types += [(BomberBotProShielded, 8.0)] * (1 + (level - 2) // 6)
+                spaz_types += [(BomberBotProShielded, 8.0)] * (
+                    1 + (level - 2) // 6
+                )
             if level > 6:
-                spaz_types += [(TriggerBotProShielded, 12.0)] * (1 + (level - 6) // 5)
+                spaz_types += [(TriggerBotProShielded, 12.0)] * (
+                    1 + (level - 6) // 5
+                )
             if level > 1:
                 spaz_types += [(ChargerBot, 10.0)] * (1 + (level - 1) // 4)
             if level > 7:
-                spaz_types += [(ChargerBotProShielded, 15.0)] * (1 + (level - 7) // 3)
+                spaz_types += [(ChargerBotProShielded, 15.0)] * (
+                    1 + (level - 7) // 3
+                )
 
             # Bot type, their effect on target points.
             defender_types: list[tuple[type[SpazBot], float]] = [
@@ -994,8 +1018,12 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                     )
 
                 # Add defenders.
-                defender_type1 = defender_types[random.randrange(len(defender_types))]
-                defender_type2 = defender_types[random.randrange(len(defender_types))]
+                defender_type1 = defender_types[
+                    random.randrange(len(defender_types))
+                ]
+                defender_type2 = defender_types[
+                    random.randrange(len(defender_types))
+                ]
                 defender1 = defender2 = None
                 if (
                     (group == 0)
@@ -1012,7 +1040,9 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                         )
 
                 spaz_type = spaz_types[random.randrange(len(spaz_types))]
-                member_count = max(1, int(round(this_target_point_s / spaz_type[1])))
+                member_count = max(
+                    1, int(round(this_target_point_s / spaz_type[1]))
+                )
                 for i, _member in enumerate(range(member_count)):
                     if path == 4:
                         this_path = i % 3  # Looping forward.
@@ -1098,26 +1128,26 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         self._flawless_bonus = this_flawless_bonus
         assert self._time_bonus_mult is not None
         txtval = bs.Lstr(
-            value="${A}: ${B}",
+            value='${A}: ${B}',
             subs=[
-                ("${A}", bs.Lstr(resource="timeBonusText")),
-                ("${B}", str(int(self._time_bonus * self._time_bonus_mult))),
+                ('${A}', bs.Lstr(resource='timeBonusText')),
+                ('${B}', str(int(self._time_bonus * self._time_bonus_mult))),
             ],
         )
         self._time_bonus_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "v_attach": "top",
-                    "h_attach": "center",
-                    "h_align": "center",
-                    "color": (1, 1, 0.0, 1),
-                    "shadow": 1.0,
-                    "vr_depth": -30,
-                    "flatness": 1.0,
-                    "position": (0, -60),
-                    "scale": 0.8,
-                    "text": txtval,
+                    'v_attach': 'top',
+                    'h_attach': 'center',
+                    'h_align': 'center',
+                    'color': (1, 1, 0.0, 1),
+                    'shadow': 1.0,
+                    'vr_depth': -30,
+                    'flatness': 1.0,
+                    'position': (0, -60),
+                    'scale': 0.8,
+                    'text': txtval,
                 },
             )
         )
@@ -1128,36 +1158,37 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         # dropping land-mines powerups at some point (otherwise a crafty
         # player could fill the whole map with them)
         self._last_wave_end_time = bs.Time(bs.time() + t_sec)
-        totalwaves = str(len(self._waves)) if self._waves is not None else "??"
+        totalwaves = str(len(self._waves)) if self._waves is not None else '??'
         txtval = bs.Lstr(
-            value="${A} ${B}",
+            value='${A} ${B}',
             subs=[
-                ("${A}", bs.Lstr(resource="waveText")),
+                ('${A}', bs.Lstr(resource='waveText')),
                 (
-                    "${B}",
+                    '${B}',
                     str(self._wavenum)
                     + (
-                        ""
-                        if self._preset in {Preset.ENDLESS, Preset.ENDLESS_TOURNAMENT}
-                        else f"/{totalwaves}"
+                        ''
+                        if self._preset
+                        in {Preset.ENDLESS, Preset.ENDLESS_TOURNAMENT}
+                        else f'/{totalwaves}'
                     ),
                 ),
             ],
         )
         self._wave_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "v_attach": "top",
-                    "h_attach": "center",
-                    "h_align": "center",
-                    "vr_depth": -10,
-                    "color": (1, 1, 1, 1),
-                    "shadow": 1.0,
-                    "flatness": 1.0,
-                    "position": (0, -40),
-                    "scale": 1.3,
-                    "text": txtval,
+                    'v_attach': 'top',
+                    'h_attach': 'center',
+                    'h_align': 'center',
+                    'vr_depth': -10,
+                    'color': (1, 1, 1, 1),
+                    'shadow': 1.0,
+                    'flatness': 1.0,
+                    'position': (0, -40),
+                    'scale': 1.3,
+                    'text': txtval,
                 },
             )
         )
@@ -1169,8 +1200,8 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         spaz.update_callback = self._update_bot
 
         # Tack some custom attrs onto the spaz.
-        setattr(spaz, "r_walk_row", path)
-        setattr(spaz, "r_walk_speed", self._get_bot_speed(spaz_type))
+        setattr(spaz, 'r_walk_row', path)
+        setattr(spaz, 'r_walk_speed', self._get_bot_speed(spaz_type))
 
     def add_bot_at_point(
         self,
@@ -1198,11 +1229,11 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
             assert self._time_bonus_text.node
             assert self._time_bonus_mult
             self._time_bonus_text.node.text = bs.Lstr(
-                value="${A}: ${B}",
+                value='${A}: ${B}',
                 subs=[
-                    ("${A}", bs.Lstr(resource="timeBonusText")),
+                    ('${A}', bs.Lstr(resource='timeBonusText')),
                     (
-                        "${B}",
+                        '${B}',
                         str(int(self._time_bonus * self._time_bonus_mult)),
                     ),
                 ],
@@ -1217,11 +1248,11 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         score = self._score
         if self._preset is Preset.ENDLESS:
             if score >= 500:
-                self._award_achievement("Runaround Master")
+                self._award_achievement('Runaround Master')
             if score >= 1000:
-                self._award_achievement("Runaround Wizard")
+                self._award_achievement('Runaround Wizard')
             if score >= 2000:
-                self._award_achievement("Runaround God")
+                self._award_achievement('Runaround God')
 
         assert self._scoreboard is not None
         self._scoreboard.set_team_value(self.teams[0], score, max_score=None)
@@ -1236,8 +1267,8 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         assert bot.node
 
         # FIXME: Do this in a type safe way.
-        r_walk_speed: float = getattr(bot, "r_walk_speed")
-        r_walk_row: int = getattr(bot, "r_walk_row")
+        r_walk_speed: float = getattr(bot, 'r_walk_speed')
+        r_walk_row: int = getattr(bot, 'r_walk_row')
 
         speed = r_walk_speed
         pos = bot.node.position
@@ -1245,7 +1276,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
 
         # Bots in row 1 attempt the high road..
         if r_walk_row == 1:
-            if bs.is_point_in_box(pos, boxes["b4"]):
+            if bs.is_point_in_box(pos, boxes['b4']):
                 bot.node.move_up_down = speed
                 bot.node.move_left_right = 0
                 bot.node.run = 0.0
@@ -1253,41 +1284,41 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
 
         # Row 1 and 2 bots attempt the middle road..
         if r_walk_row in [1, 2]:
-            if bs.is_point_in_box(pos, boxes["b1"]):
+            if bs.is_point_in_box(pos, boxes['b1']):
                 bot.node.move_up_down = speed
                 bot.node.move_left_right = 0
                 bot.node.run = 0.0
                 return True
 
         # All bots settle for the third row.
-        if bs.is_point_in_box(pos, boxes["b7"]):
+        if bs.is_point_in_box(pos, boxes['b7']):
             bot.node.move_up_down = speed
             bot.node.move_left_right = 0
             bot.node.run = 0.0
             return True
-        if bs.is_point_in_box(pos, boxes["b2"]):
+        if bs.is_point_in_box(pos, boxes['b2']):
             bot.node.move_up_down = -speed
             bot.node.move_left_right = 0
             bot.node.run = 0.0
             return True
-        if bs.is_point_in_box(pos, boxes["b3"]):
+        if bs.is_point_in_box(pos, boxes['b3']):
             bot.node.move_up_down = -speed
             bot.node.move_left_right = 0
             bot.node.run = 0.0
             return True
-        if bs.is_point_in_box(pos, boxes["b5"]):
+        if bs.is_point_in_box(pos, boxes['b5']):
             bot.node.move_up_down = -speed
             bot.node.move_left_right = 0
             bot.node.run = 0.0
             return True
-        if bs.is_point_in_box(pos, boxes["b6"]):
+        if bs.is_point_in_box(pos, boxes['b6']):
             bot.node.move_up_down = speed
             bot.node.move_left_right = 0
             bot.node.run = 0.0
             return True
         if (
-            bs.is_point_in_box(pos, boxes["b8"])
-            and not bs.is_point_in_box(pos, boxes["b9"])
+            bs.is_point_in_box(pos, boxes['b8'])
+            and not bs.is_point_in_box(pos, boxes['b9'])
         ) or pos == (0.0, 0.0, 0.0):
             # Default to walking right if we're still in the walking area.
             bot.node.move_left_right = speed
@@ -1332,7 +1363,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                     assert msg.spazbot.node
                     target = msg.spazbot.node.position
                 except Exception:
-                    logging.exception("Error getting SpazBotDied target.")
+                    logging.exception('Error getting SpazBotDied target.')
                     target = None
                 try:
                     if msg.killerplayer:
@@ -1345,11 +1376,13 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
                             importance=importance,
                         )
                         dingsound = (
-                            self._dingsound if importance == 1 else self._dingsoundhigh
+                            self._dingsound
+                            if importance == 1
+                            else self._dingsoundhigh
                         )
                         dingsound.play(volume=0.6)
                 except Exception:
-                    logging.exception("Error on SpazBotDiedMessage.")
+                    logging.exception('Error on SpazBotDiedMessage.')
 
             # Normally we pull scores from the score-set, but if there's no
             # player lets be explicit.
@@ -1364,7 +1397,9 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
     def _get_bot_speed(self, bot_type: type[SpazBot]) -> float:
         speed = self._bot_speed_map.get(bot_type)
         if speed is None:
-            raise TypeError("Invalid bot type to _get_bot_speed(): " + str(bot_type))
+            raise TypeError(
+                'Invalid bot type to _get_bot_speed(): ' + str(bot_type)
+            )
         return speed
 
     def _set_can_end_wave(self) -> None:
@@ -1381,7 +1416,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
         if status:
             bs.animate_array(
                 heart,
-                "scale",
+                'scale',
                 2,
                 {
                     0: (90, 90),
@@ -1402,7 +1437,7 @@ class RunaroundGame(bs.CoopGameActivity[Player, Team]):
             # issue with a cast(). This should go away with scenev2/etc.
             bs.animate_array(
                 heart,
-                "scale",
+                'scale',
                 2,
                 {
                     0.0: cast(Sequence[float], heart.scale),

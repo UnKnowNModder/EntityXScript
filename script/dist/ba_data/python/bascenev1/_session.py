@@ -143,13 +143,16 @@ class Session:
                 else:
                     missing_info = [(d.cls, d.config) for d in exc.deps]
                     raise RuntimeError(
-                        f"Missing non-asset dependencies: {missing_info}"
+                        f'Missing non-asset dependencies: {missing_info}'
                     ) from exc
 
         # Throw a combined exception if we found anything missing.
         if missing_asset_packages:
             raise DependencyError(
-                [Dependency(AssetPackage, set_id) for set_id in missing_asset_packages]
+                [
+                    Dependency(AssetPackage, set_id)
+                    for set_id in missing_asset_packages
+                ]
             )
 
         # Ok; looks like our dependencies check out.
@@ -171,7 +174,9 @@ class Session:
         self.sessionplayers = []
         self.min_players = min_players
         self.max_players = (
-            max_players if _max_players_override is None else _max_players_override
+            max_players
+            if _max_players_override is None
+            else _max_players_override
         )
         self.submit_score = submit_score
 
@@ -186,22 +191,26 @@ class Session:
         self._wants_to_end = False
         self._ending = False
         self._activity_should_end_immediately = False
-        self._activity_should_end_immediately_results: bascenev1.GameResults | None = (
-            None
-        )
+        self._activity_should_end_immediately_results: (
+            bascenev1.GameResults | None
+        ) = None
         self._activity_should_end_immediately_delay = 0.0
 
         # Create static teams if we're using them.
         if self.use_teams:
             if team_names is None:
-                raise RuntimeError("use_teams is True but team_names not provided.")
+                raise RuntimeError(
+                    'use_teams is True but team_names not provided.'
+                )
             if team_colors is None:
-                raise RuntimeError("use_teams is True but team_colors not provided.")
+                raise RuntimeError(
+                    'use_teams is True but team_colors not provided.'
+                )
             if len(team_colors) != len(team_names):
                 raise RuntimeError(
-                    f"Got {len(team_names)} team_names"
-                    f" and {len(team_colors)} team_colors;"
-                    f" these numbers must match."
+                    f'Got {len(team_names)} team_names'
+                    f' and {len(team_colors)} team_colors;'
+                    f' these numbers must match.'
                 )
             for i, color in enumerate(team_colors):
                 team = SessionTeam(
@@ -215,13 +224,13 @@ class Session:
                     with self.context:
                         self.on_team_join(team)
                 except Exception:
-                    logging.exception("Error in on_team_join for %s.", self)
+                    logging.exception('Error in on_team_join for %s.', self)
 
         self.lobby = Lobby()
         self.stats = Stats()
 
         # Instantiate our session globals node which will apply its settings.
-        self._sessionglobalsnode = _bascenev1.newnode("sessionglobals")
+        self._sessionglobalsnode = _bascenev1.newnode('sessionglobals')
 
         # Rejoin cooldown stuff.
         self._players_on_wait: dict = {}
@@ -241,7 +250,9 @@ class Session:
             raise babase.NodeNotFoundError()
         return node
 
-    def should_allow_mid_activity_joins(self, activity: bascenev1.Activity) -> bool:
+    def should_allow_mid_activity_joins(
+        self, activity: bascenev1.Activity
+    ) -> bool:
         """Ask ourself if we should allow joins during an Activity.
 
         Note that for a join to be allowed, both the session and
@@ -264,11 +275,11 @@ class Session:
             if len(self.sessionplayers) >= self.max_players >= 0:
                 # Print a rejection message *only* to the client trying to
                 # join (prevents spamming everyone else in the game).
-                _bascenev1.getsound("error").play()
+                _bascenev1.getsound('error').play()
                 _bascenev1.broadcastmessage(
                     babase.Lstr(
-                        resource="playerLimitReachedText",
-                        subs=[("${COUNT}", str(self.max_players))],
+                        resource='playerLimitReachedText',
+                        subs=[('${COUNT}', str(self.max_players))],
                     ),
                     color=(0.8, 0.0, 0.0),
                     clients=[player.inputdevice.client_id],
@@ -282,15 +293,19 @@ class Session:
             leave_time = self._players_on_wait.get(identifier)
             if leave_time:
                 diff = str(
-                    math.ceil(_g_player_rejoin_cooldown - babase.apptime() + leave_time)
+                    math.ceil(
+                        _g_player_rejoin_cooldown
+                        - babase.apptime()
+                        + leave_time
+                    )
                 )
                 _bascenev1.broadcastmessage(
                     babase.Lstr(
                         translate=(
-                            "serverResponses",
-                            "You can join in ${COUNT} seconds.",
+                            'serverResponses',
+                            'You can join in ${COUNT} seconds.',
                         ),
-                        subs=[("${COUNT}", diff)],
+                        subs=[('${COUNT}', diff)],
                     ),
                     color=(1, 1, 0),
                     clients=[player.inputdevice.client_id],
@@ -299,7 +314,7 @@ class Session:
                 return False
             self._player_requested_identifiers[player.id] = identifier
 
-        _bascenev1.getsound("dripity").play()
+        _bascenev1.getsound('dripity').play()
         return True
 
     def on_player_leave(self, sessionplayer: bascenev1.SessionPlayer) -> None:
@@ -307,11 +322,12 @@ class Session:
 
         if sessionplayer not in self.sessionplayers:
             print(
-                "ERROR: Session.on_player_leave called" " for player not in our list."
+                'ERROR: Session.on_player_leave called'
+                ' for player not in our list.'
             )
             return
 
-        _bascenev1.getsound("playerLeft").play()
+        _bascenev1.getsound('playerLeft').play()
 
         activity = self._activity_weak()
 
@@ -331,18 +347,28 @@ class Session:
                 try:
                     self.lobby.remove_chooser(sessionplayer)
                 except Exception:
-                    logging.exception("Error in Lobby.remove_chooser().")
+                    logging.exception('Error in Lobby.remove_chooser().')
         else:
             # Ok, they've already entered the game. Remove them from
             # teams/activities/etc.
             sessionteam = sessionplayer.sessionteam
             assert sessionteam is not None
 
+            _bascenev1.broadcastmessage(
+                babase.Lstr(
+                    resource='playerLeftText',
+                    subs=[('${PLAYER}', sessionplayer.getname(full=True))],
+                )
+            )
+
             # Remove them from their SessionTeam.
             if sessionplayer in sessionteam.players:
                 sessionteam.players.remove(sessionplayer)
             else:
-                print("SessionPlayer not found in SessionTeam" " in on_player_leave.")
+                print(
+                    'SessionPlayer not found in SessionTeam'
+                    ' in on_player_leave.'
+                )
 
             # Grab their activity-specific player instance.
             player = sessionplayer.activityplayer
@@ -353,7 +379,7 @@ class Session:
                 if player in activity.players:
                     activity.remove_player(sessionplayer)
                 else:
-                    print("Player not found in Activity in on_player_leave.")
+                    print('Player not found in Activity in on_player_leave.')
 
             # If we're a non-team session, remove their team too.
             if not self.use_teams:
@@ -377,7 +403,7 @@ class Session:
             if sessionteam.activityteam in activity.teams:
                 activity.remove_team(sessionteam)
             else:
-                print("Team not found in Activity in on_player_leave.")
+                print('Team not found in Activity in on_player_leave.')
 
         # And then from the Session.
         with self.context:
@@ -386,14 +412,16 @@ class Session:
                     self.sessionteams.remove(sessionteam)
                     self.on_team_leave(sessionteam)
                 except Exception:
-                    logging.exception("Error in on_team_leave for Session %s.", self)
+                    logging.exception(
+                        'Error in on_team_leave for Session %s.', self
+                    )
             else:
-                print("Team no in Session teams in on_player_leave.")
+                print('Team no in Session teams in on_player_leave.')
             try:
                 sessionteam.leave()
             except Exception:
                 logging.exception(
-                    "Error clearing sessiondata for team %s in session %s.",
+                    'Error clearing sessiondata for team %s in session %s.',
                     sessionteam,
                     self,
                 )
@@ -421,7 +449,7 @@ class Session:
                 if since_last < 30.0:
                     return
                 logging.error(
-                    "_launch_end_session_activity called twice (since_last=%s)",
+                    '_launch_end_session_activity called twice (since_last=%s)',
                     since_last,
                 )
             self._launch_end_session_activity_time = curtime
@@ -496,7 +524,7 @@ class Session:
         def __init__(self, session: Session) -> None:
             self._session = session
             if session._in_set_activity:
-                raise RuntimeError("Session.setactivity() called recursively.")
+                raise RuntimeError('Session.setactivity() called recursively.')
             self._session._in_set_activity = True
 
         def __del__(self) -> None:
@@ -523,18 +551,20 @@ class Session:
             return
 
         if activity is self._activity_retained:
-            logging.error("Activity set to already-current activity.")
+            logging.error('Activity set to already-current activity.')
             return
 
         if self._next_activity is not None:
             raise RuntimeError(
-                "Activity switch already in progress (to "
+                'Activity switch already in progress (to '
                 + str(self._next_activity)
-                + ")"
+                + ')'
             )
 
         prev_activity = self._activity_retained
-        prev_globals = prev_activity.globalsnode if prev_activity is not None else None
+        prev_globals = (
+            prev_activity.globalsnode if prev_activity is not None else None
+        )
 
         # Let the activity do its thing.
         activity.transition_in(prev_globals)
@@ -591,8 +621,8 @@ class Session:
                 self.on_activity_end(activity, results)
         except Exception:
             logging.error(
-                "Error in on_activity_end() for session %s"
-                " activity %s with results %s",
+                'Error in on_activity_end() for session %s'
+                ' activity %s with results %s',
                 self,
                 activity,
                 results,
@@ -610,7 +640,7 @@ class Session:
             with self.context:
                 result = self.on_player_request(sessionplayer)
         except Exception:
-            logging.exception("Error in on_player_request for %s.", self)
+            logging.exception('Error in on_player_request for %s.', self)
             result = False
 
         # If they said yes, add the player to the lobby.
@@ -620,11 +650,13 @@ class Session:
                 try:
                     self.lobby.add_chooser(sessionplayer)
                 except Exception:
-                    logging.exception("Error in lobby.add_chooser().")
+                    logging.exception('Error in lobby.add_chooser().')
 
         return result
 
-    def on_activity_end(self, activity: bascenev1.Activity, results: Any) -> None:
+    def on_activity_end(
+        self, activity: bascenev1.Activity, results: Any
+    ) -> None:
         """Called when the current activity has ended.
 
         The session should look at the results and start another
@@ -638,7 +670,7 @@ class Session:
         """
         if self._next_activity is None:
             # Should this ever happen?
-            logging.error("begin_next_activity() called with no _next_activity")
+            logging.error('begin_next_activity() called with no _next_activity')
             return
 
         # We store both a weak and a strong ref to the new activity;
@@ -676,7 +708,7 @@ class Session:
         # when would we have a session and a chooser with players but no
         # active activity?
         if activity is None:
-            print("_on_player_ready called with no activity.")
+            print('_on_player_ready called with no activity.')
             return
 
         # In joining-activities, we wait till all choosers are ready
@@ -696,19 +728,21 @@ class Session:
             else:
                 _bascenev1.broadcastmessage(
                     babase.Lstr(
-                        resource="notEnoughPlayersText",
-                        subs=[("${COUNT}", str(min_players))],
+                        resource='notEnoughPlayersText',
+                        subs=[('${COUNT}', str(min_players))],
                     ),
                     color=(1, 1, 0),
                 )
-                _bascenev1.getsound("error").play()
+                _bascenev1.getsound('error').play()
 
         # Otherwise just add players on the fly.
         else:
             self._add_chosen_player(chooser)
             lobby.remove_chooser(chooser.getplayer())
 
-    def transitioning_out_activity_was_freed(self, can_show_ad_on_death: bool) -> None:
+    def transitioning_out_activity_was_freed(
+        self, can_show_ad_on_death: bool
+    ) -> None:
         """(internal)
 
         :meta private:
@@ -732,12 +766,15 @@ class Session:
             else:
                 babase.pushcall(self.begin_next_activity)
 
-    def _add_chosen_player(self, chooser: bascenev1.Chooser) -> bascenev1.SessionPlayer:
+    def _add_chosen_player(
+        self, chooser: bascenev1.Chooser
+    ) -> bascenev1.SessionPlayer:
         from bascenev1._team import SessionTeam
 
         sessionplayer = chooser.getplayer()
         assert sessionplayer in self.sessionplayers, (
-            "SessionPlayer not found in session " "player-list after chooser selection."
+            'SessionPlayer not found in session '
+            'player-list after chooser selection.'
         )
 
         activity = self._activity_weak()
@@ -749,7 +786,9 @@ class Session:
 
         # We can pass it to the current activity if it has already begun
         # (otherwise it'll get passed once begin is called).
-        pass_to_activity = activity.has_begun() and not activity.is_joining_activity
+        pass_to_activity = (
+            activity.has_begun() and not activity.is_joining_activity
+        )
 
         # However, if we're not allowing mid-game joins, don't actually pass;
         # just announce the arrival and say they'll partake next round.
@@ -759,6 +798,16 @@ class Session:
                 and self.should_allow_mid_activity_joins(activity)
             ):
                 pass_to_activity = False
+                with self.context:
+                    _bascenev1.broadcastmessage(
+                        babase.Lstr(
+                            resource='playerDelayedJoinText',
+                            subs=[
+                                ('${PLAYER}', sessionplayer.getname(full=True))
+                            ],
+                        ),
+                        color=(0, 1, 0),
+                    )
 
         # If we're a non-team session, each player gets their own team.
         # (keeps mini-game coding simpler if we can always deal with teams).
@@ -780,7 +829,7 @@ class Session:
                 try:
                     self.on_team_join(sessionteam)
                 except Exception:
-                    logging.exception("Error in on_team_join for %s.", self)
+                    logging.exception('Error in on_team_join for %s.', self)
 
             # Add player's team to the Activity.
             if pass_to_activity:

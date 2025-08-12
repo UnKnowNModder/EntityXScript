@@ -17,7 +17,7 @@ def dataclass_diff(obj1: Any, obj2: Any) -> str:
     Both must be of the exact same type.
     """
     diff = _diff(obj1, obj2, 2)
-    return "  <no differences>" if diff == "" else diff
+    return '  <no differences>' if diff == '' else diff
 
 
 class DataclassDiff:
@@ -42,11 +42,11 @@ def _diff(obj1: Any, obj2: Any, indent: int) -> str:
     assert dataclasses.is_dataclass(obj2)
     if type(obj1) is not type(obj2):
         raise TypeError(
-            f"Passed objects are not of the same"
-            f" type ({type(obj1)} and {type(obj2)})."
+            f'Passed objects are not of the same'
+            f' type ({type(obj1)} and {type(obj2)}).'
         )
     bits: list[str] = []
-    indentstr = " " * indent
+    indentstr = ' ' * indent
     fields = dataclasses.fields(obj1)
     for field in fields:
         fieldname = field.name
@@ -60,13 +60,13 @@ def _diff(obj1: Any, obj2: Any, indent: int) -> str:
             and type(val1) is type(val2)
         ):
             diff = _diff(val1, val2, indent + 2)
-            if diff != "":
-                bits.append(f"{indentstr}{fieldname}:")
+            if diff != '':
+                bits.append(f'{indentstr}{fieldname}:')
                 bits.append(diff)
 
         # For all else just do a single line
         # (perhaps we could improve on this for other complex types)
         else:
             if val1 != val2:
-                bits.append(f"{indentstr}{fieldname}: {val1} -> {val2}")
-    return "\n".join(bits)
+                bits.append(f'{indentstr}{fieldname}: {val1} -> {val2}')
+    return '\n'.join(bits)

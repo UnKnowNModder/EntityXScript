@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from efro.message._message import SysResponse
 
 # Use a single logger for all message stuff.
-logger = logging.getLogger("efro.message")
+logger = logging.getLogger('efro.message')
 
 
 class MessageReceiver:
@@ -63,12 +63,17 @@ class MessageReceiver:
     def __init__(self, protocol: MessageProtocol) -> None:
         self.protocol = protocol
         self._handlers: dict[type[Message], Callable] = {}
-        self._decode_filter_call: Callable[[Any, dict, Message], None] | None = None
+        self._decode_filter_call: (
+            Callable[[Any, dict, Message], None] | None
+        ) = None
         self._encode_filter_call: (
-            Callable[[Any, Message | None, Response | SysResponse, dict], None] | None
+            Callable[[Any, Message | None, Response | SysResponse, dict], None]
+            | None
         ) = None
 
-    def register_handler(self, call: Callable[[Any, Message], Response | None]) -> None:
+    def register_handler(
+        self, call: Callable[[Any, Message], Response | None]
+    ) -> None:
         """Register a handler call.
 
         The message type handled by the call is determined by its
@@ -84,10 +89,11 @@ class MessageReceiver:
         sig = inspect.getfullargspec(call)
 
         # The provided callable should be a method taking one 'msg' arg.
-        expectedsig = ["self", "msg"]
+        expectedsig = ['self', 'msg']
         if sig.args != expectedsig:
             raise ValueError(
-                f"Expected callable signature of {expectedsig};" f" got {sig.args}"
+                f'Expected callable signature of {expectedsig};'
+                f' got {sig.args}'
             )
 
         # Check annotation types to determine what message types we
@@ -99,14 +105,14 @@ class MessageReceiver:
         # localns={'Union': Union})
         anns = get_type_hints(call)
 
-        msgtype = anns.get("msg")
+        msgtype = anns.get('msg')
         if not isinstance(msgtype, type):
             raise TypeError(
                 f'expected a type for "msg" annotation; got {type(msgtype)}.'
             )
         assert issubclass(msgtype, Message)
 
-        ret = anns.get("return")
+        ret = anns.get('return')
         responsetypes: tuple[type[Any] | None, ...]
 
         # Return types can be a single type or a union of types.
@@ -114,13 +120,14 @@ class MessageReceiver:
             targs = get_args(ret)
             if not all(isinstance(a, (type, type(None))) for a in targs):
                 raise TypeError(
-                    f'expected only types for "return" annotation;' f" got {targs}."
+                    f'expected only types for "return" annotation;'
+                    f' got {targs}.'
                 )
             responsetypes = targs
         else:
             if not isinstance(ret, (type, type(None))):
                 raise TypeError(
-                    f"expected one or more types for"
+                    f'expected one or more types for'
                     f' "return" annotation; got a {type(ret)}.'
                 )
             # This seems like maybe a mypy bug. Appeared after adding
@@ -129,7 +136,9 @@ class MessageReceiver:
 
         # This will contain NoneType for empty return cases, but we
         # expect it to be None.
-        responsetypes = tuple(None if r is type(None) else r for r in responsetypes)
+        responsetypes = tuple(
+            None if r is type(None) else r for r in responsetypes
+        )
 
         # Make sure our protocol has this message type registered and
         # our return types exactly match. (Technically we could return a
@@ -139,19 +148,22 @@ class MessageReceiver:
 
         if msgtype not in registered_types:
             raise TypeError(
-                f"Message type {msgtype} is not registered" f" in this Protocol."
+                f'Message type {msgtype} is not registered'
+                f' in this Protocol.'
             )
 
         if msgtype in self._handlers:
-            raise TypeError(f"Message type {msgtype} already has a registered handler.")
+            raise TypeError(
+                f'Message type {msgtype} already has a registered handler.'
+            )
 
         # Make sure the responses exactly matches what the message
         # expects.
         if set(responsetypes) != set(msgtype.get_response_types()):
             raise TypeError(
-                f"Provided response types {responsetypes} do not"
-                f" match the set expected by message type {msgtype}: "
-                f"({msgtype.get_response_types()})"
+                f'Provided response types {responsetypes} do not'
+                f' match the set expected by message type {msgtype}: '
+                f'({msgtype.get_response_types()})'
             )
 
         # Ok; we're good!
@@ -172,7 +184,9 @@ class MessageReceiver:
 
     def encode_filter_method(
         self,
-        call: Callable[[Any, Message | None, Response | SysResponse, dict], None],
+        call: Callable[
+            [Any, Message | None, Response | SysResponse, dict], None
+        ],
     ) -> Callable[[Any, Message | None, Response, dict], None]:
         """Function decorator for defining an encode filter.
 
@@ -190,8 +204,8 @@ class MessageReceiver:
                 continue
             if msgtype not in self._handlers:
                 msg = (
-                    f"Protocol message type {msgtype} is not handled"
-                    f" by receiver type {type(self)}."
+                    f'Protocol message type {msgtype} is not handled'
+                    f' by receiver type {type(self)}.'
                 )
                 if log_only:
                     logger.error(msg)
@@ -222,7 +236,9 @@ class MessageReceiver:
 
         assert isinstance(response, Response | None)
         # (user should never explicitly return error-responses)
-        assert response is None or type(response) in message.get_response_types()
+        assert (
+            response is None or type(response) in message.get_response_types()
+        )
 
         # A return value of None equals EmptySysResponse.
         out_response: Response | SysResponse
@@ -233,7 +249,9 @@ class MessageReceiver:
 
         response_dict = self.protocol.response_to_dict(out_response)
         if self._encode_filter_call is not None:
-            self._encode_filter_call(bound_obj, message, out_response, response_dict)
+            self._encode_filter_call(
+                bound_obj, message, out_response, response_dict
+            )
         return self.protocol.encode_dict(response_dict)
 
     def encode_error_response(
@@ -243,7 +261,9 @@ class MessageReceiver:
         response, dolog = self.protocol.error_to_response(exc)
         response_dict = self.protocol.response_to_dict(response)
         if self._encode_filter_call is not None:
-            self._encode_filter_call(bound_obj, message, response, response_dict)
+            self._encode_filter_call(
+                bound_obj, message, response, response_dict
+            )
         return self.protocol.encode_dict(response_dict), dolog
 
     def handle_raw_message(
@@ -263,27 +283,31 @@ class MessageReceiver:
             msgtype = type(msg_decoded)
             handler = self._handlers.get(msgtype)
             if handler is None:
-                raise RuntimeError(f"Got unhandled message type: {msgtype}.")
+                raise RuntimeError(f'Got unhandled message type: {msgtype}.')
             response = handler(bound_obj, msg_decoded)
             assert isinstance(response, Response | None)
             return self.encode_user_response(bound_obj, msg_decoded, response)
 
         except Exception as exc:
-            if raise_unregistered and isinstance(exc, UnregisteredMessageIDError):
+            if raise_unregistered and isinstance(
+                exc, UnregisteredMessageIDError
+            ):
                 raise
-            rstr, dolog = self.encode_error_response(bound_obj, msg_decoded, exc)
+            rstr, dolog = self.encode_error_response(
+                bound_obj, msg_decoded, exc
+            )
             if dolog:
                 if msg_decoded is not None:
                     msgtype = type(msg_decoded)
                     logger.exception(
-                        "Error handling %s.%s message.",
+                        'Error handling %s.%s message.',
                         msgtype.__module__,
                         msgtype.__qualname__,
                     )
                 else:
                     logger.exception(
-                        "Error handling raw efro.message"
-                        " (likely a message format incompatibility): %s.",
+                        'Error handling raw efro.message'
+                        ' (likely a message format incompatibility): %s.',
                         msg,
                     )
             # We're done with the exception, so strip its tracebacks to
@@ -312,11 +336,13 @@ class MessageReceiver:
             msgtype = type(msg_decoded)
             handler = self._handlers.get(msgtype)
             if handler is None:
-                raise RuntimeError(f"Got unhandled message type: {msgtype}.")
+                raise RuntimeError(f'Got unhandled message type: {msgtype}.')
             handler_awaitable = handler(bound_obj, msg_decoded)
 
         except Exception as exc:
-            if raise_unregistered and isinstance(exc, UnregisteredMessageIDError):
+            if raise_unregistered and isinstance(
+                exc, UnregisteredMessageIDError
+            ):
                 raise
             return self._handle_raw_message_async_error(
                 bound_obj, msg, msg_decoded, exc
@@ -339,7 +365,7 @@ class MessageReceiver:
             if msg_decoded is not None:
                 msgtype = type(msg_decoded)
                 logger.exception(
-                    "Error handling %s.%s message.",
+                    'Error handling %s.%s message.',
                     msgtype.__module__,
                     msgtype.__qualname__,
                     # We need to explicitly provide the exception here,
@@ -349,8 +375,8 @@ class MessageReceiver:
                 )
             else:
                 logger.exception(
-                    "Error handling raw async efro.message"
-                    " (likely a message format incompatibility): %s.",
+                    'Error handling raw async efro.message'
+                    ' (likely a message format incompatibility): %s.',
                     msg_raw,
                     # We need to explicitly provide the exception here,
                     # otherwise it shows up at None. I assume related to

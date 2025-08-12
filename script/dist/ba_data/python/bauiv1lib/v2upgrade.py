@@ -23,7 +23,7 @@ class V2UpgradeWindow(bui.Window):
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(self._width, self._height + 40),
-                transition="in_right",
+                transition='in_right',
                 scale=(
                     1.25
                     if uiscale is bui.UIScale.SMALL
@@ -31,18 +31,18 @@ class V2UpgradeWindow(bui.Window):
                 ),
             )
         )
-        bui.getsound("error").play()
+        bui.getsound('error').play()
 
         bui.textwidget(
             parent=self._root_widget,
             position=(self._width * 0.5, self._height - 46),
             size=(0, 0),
             color=app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             text=bui.Lstr(
-                resource="deviceAccountUpgradeText",
-                subs=[("${NAME}", login_name)],
+                resource='deviceAccountUpgradeText',
+                subs=[('${NAME}', login_name)],
             ),
             maxwidth=self._width * 0.95,
         )
@@ -52,12 +52,12 @@ class V2UpgradeWindow(bui.Window):
             size=(0, 0),
             scale=0.8,
             color=(0.7, 0.8, 0.7),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             text=(
                 bui.charstr(bui.SpecialChar.LOCAL_ACCOUNT)
                 + login_name
-                + "    ---->    "
+                + '    ---->    '
                 + bui.charstr(bui.SpecialChar.V2_LOGO)
                 + login_name
             ),
@@ -70,7 +70,7 @@ class V2UpgradeWindow(bui.Window):
             position=(20, 25),
             size=(button_width, 65),
             autoselect=True,
-            label=bui.Lstr(resource="notNowText"),
+            label=bui.Lstr(resource='notNowText'),
             on_activate_call=self._done,
         )
 
@@ -79,7 +79,7 @@ class V2UpgradeWindow(bui.Window):
             position=(self._width * 0.5 - button_width * 0.5, 25),
             size=(button_width, 65),
             autoselect=True,
-            label=bui.Lstr(resource="whatIsThisText"),
+            label=bui.Lstr(resource='whatIsThisText'),
             color=(0.55, 0.5, 0.6),
             textcolor=(0.75, 0.7, 0.8),
             on_activate_call=show_what_is_v2_page,
@@ -90,7 +90,7 @@ class V2UpgradeWindow(bui.Window):
             position=(self._width - button_width - 20, 25),
             size=(button_width, 65),
             autoselect=True,
-            label=bui.Lstr(resource="upgradeText"),
+            label=bui.Lstr(resource='upgradeText'),
             on_activate_call=self._upgrade_press,
         )
 
@@ -108,13 +108,13 @@ class V2UpgradeWindow(bui.Window):
         # user over to a browser to do the upgrade. This hopefully
         # makes it more clear when they come back that they need to
         # sign in with the 'BombSquad account' option.
-        bui.containerwidget(edit=self._root_widget, transition="out_left")
+        bui.containerwidget(edit=self._root_widget, transition='out_left')
         plus.sign_out_v1()
-        bamasteraddr = plus.get_master_server_address(version=2)
-        bui.open_url(f"{bamasteraddr}/v2uda/{self._code}")
+        bamasteraddr = plus.get_master_server_address()
+        bui.open_url(f'{bamasteraddr}/v2uda/{self._code}')
 
     def _done(self) -> None:
-        bui.containerwidget(edit=self._root_widget, transition="out_left")
+        bui.containerwidget(edit=self._root_widget, transition='out_left')
 
 
 def show_what_is_v2_page() -> None:
@@ -122,5 +122,5 @@ def show_what_is_v2_page() -> None:
     plus = bui.app.plus
     assert plus is not None
 
-    bamasteraddr = plus.get_master_server_address(version=2)
-    bui.open_url(f"{bamasteraddr}/whatisv2")
+    bamasteraddr = plus.get_master_server_address()
+    bui.open_url(f'{bamasteraddr}/whatisv2')

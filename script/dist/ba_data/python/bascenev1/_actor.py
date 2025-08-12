@@ -95,7 +95,9 @@ class Actor:
             if not self.expired:
                 self.handlemessage(DieMessage())
         except Exception:
-            logging.exception("Error in bascenev1.Actor.__del__() for %s.", self)
+            logging.exception(
+                'Error in bascenev1.Actor.__del__() for %s.', self
+            )
 
     def handlemessage(self, msg: Any) -> Any:
         """General message handling; can be passed any message object."""
@@ -198,10 +200,14 @@ class Actor:
     # Overloads to convey our exact return type depending on 'doraise' value.
 
     @overload
-    def getactivity(self, doraise: Literal[True] = True) -> bascenev1.Activity: ...
+    def getactivity(
+        self, doraise: Literal[True] = True
+    ) -> bascenev1.Activity: ...
 
     @overload
-    def getactivity(self, doraise: Literal[False]) -> bascenev1.Activity | None: ...
+    def getactivity(
+        self, doraise: Literal[False]
+    ) -> bascenev1.Activity | None: ...
 
     def getactivity(self, doraise: bool = True) -> bascenev1.Activity | None:
         """Return the activity this actor is associated with.

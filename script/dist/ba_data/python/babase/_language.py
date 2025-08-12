@@ -47,10 +47,12 @@ class LanguageSubsystem(AppSubsystem):
         may differ from locale if the user sets a language, etc.)
         """
         env = _babase.env()
-        locale = env.get("locale")
+        locale = env.get('locale')
         if not isinstance(locale, str):
-            applog.warning("Seem to be running in a dummy env; returning en_US locale.")
-            locale = "en_US"
+            applog.warning(
+                'Seem to be running in a dummy env; returning en_US locale.'
+            )
+            locale = 'en_US'
         return locale
 
     @property
@@ -61,7 +63,7 @@ class LanguageSubsystem(AppSubsystem):
         automatically based on locale or other factors.
         """
         if self._language is None:
-            raise RuntimeError("App language is not yet set.")
+            raise RuntimeError('App language is not yet set.')
 
         return self._language
 
@@ -74,9 +76,9 @@ class LanguageSubsystem(AppSubsystem):
         changes can be made to it and observed live.
         """
         print(
-            f"Language test mode enabled."
-            f" Will fetch and apply '{langid}' every 5 seconds,"
-            f" so you can see your changes live."
+            f'Language test mode enabled.'
+            f' Will fetch and apply \'{langid}\' every 5 seconds,'
+            f' so you can see your changes live.'
         )
         self._test_timer = _babase.AppTimer(
             5.0, partial(self._update_test_language, langid), repeat=True
@@ -89,11 +91,11 @@ class LanguageSubsystem(AppSubsystem):
         if response is None:
             return
         self.setlanguage(response)
-        print(f"Fetched and applied {langid}.")
+        print(f'Fetched and applied {langid}.')
 
     def _update_test_language(self, langid: str) -> None:
         if _babase.app.classic is None:
-            raise RuntimeError("This requires classic.")
+            raise RuntimeError('This requires classic.')
 
         # Only do this during normal running operation.
         appstate = _babase.app.state
@@ -101,8 +103,8 @@ class LanguageSubsystem(AppSubsystem):
             return
 
         _babase.app.classic.master_server_v1_get(
-            "bsLangGet",
-            {"lang": langid, "format": "json"},
+            'bsLangGet',
+            {'lang': langid, 'format': 'json'},
             partial(self._on_test_lang_response, langid),
         )
 
@@ -125,7 +127,7 @@ class LanguageSubsystem(AppSubsystem):
         assert _babase.in_logic_thread()
 
         cfg = _babase.app.config
-        cur_language = cfg.get("Lang", None)
+        cur_language = cfg.get('Lang', None)
 
         if ignore_redundant and language == self._language:
             return
@@ -133,18 +135,18 @@ class LanguageSubsystem(AppSubsystem):
         with open(
             os.path.join(
                 _babase.app.env.data_directory,
-                "ba_data",
-                "data",
-                "languages",
-                "english.json",
+                'ba_data',
+                'data',
+                'languages',
+                'english.json',
             ),
-            encoding="utf-8",
+            encoding='utf-8',
         ) as infile:
             lenglishvalues = json.loads(infile.read())
 
         # Special case - passing a complete dict for testing.
         if isinstance(language, dict):
-            self._language = "Custom"
+            self._language = 'Custom'
             lmodvalues = language
             switched = False
             print_change = False
@@ -158,7 +160,7 @@ class LanguageSubsystem(AppSubsystem):
                 #     if 'Lang' in cfg:
                 #         del cfg['Lang']  # Clear it out for default.
                 # else:
-                cfg["Lang"] = language
+                cfg['Lang'] = language
                 cfg.commit()
                 switched = True
             else:
@@ -168,22 +170,23 @@ class LanguageSubsystem(AppSubsystem):
             # if language is None:
             #     language = self.default_language
             try:
-                if language == "English":
+                if language == 'English':
                     lmodvalues = None
                 else:
                     lmodfile = os.path.join(
                         _babase.app.env.data_directory,
-                        "ba_data",
-                        "data",
-                        "languages",
-                        language.lower() + ".json",
+                        'ba_data',
+                        'data',
+                        'languages',
+                        language.lower() + '.json',
                     )
-                    with open(lmodfile, encoding="utf-8") as infile:
+                    with open(lmodfile, encoding='utf-8') as infile:
                         lmodvalues = json.loads(infile.read())
             except Exception:
                 applog.exception("Error importing language '%s'.", language)
                 _babase.screenmessage(
-                    f"Error setting language to '{language}';" f" see log for details.",
+                    f"Error setting language to '{language}';"
+                    f' see log for details.',
                     color=(1, 0, 0),
                 )
                 switched = False
@@ -212,32 +215,38 @@ class LanguageSubsystem(AppSubsystem):
         # Pass some keys/values in for low level code to use; start with
         # everything in their 'internal' section.
         internal_vals = [
-            v for v in list(lfull["internal"].items()) if isinstance(v[1], str)
+            v for v in list(lfull['internal'].items()) if isinstance(v[1], str)
         ]
 
         # Cherry-pick various other values to include.
         # (should probably get rid of the 'internal' section
         # and do everything this way)
         for value in [
-            "replayNameDefaultText",
-            "replayWriteErrorText",
-            "replayVersionErrorText",
-            "replayReadErrorText",
+            'replayNameDefaultText',
+            'replayWriteErrorText',
+            'replayVersionErrorText',
+            'replayReadErrorText',
         ]:
             internal_vals.append((value, lfull[value]))
-        internal_vals.append(("axisText", lfull["configGamepadWindow"]["axisText"]))
-        internal_vals.append(("buttonText", lfull["buttonText"]))
+        internal_vals.append(
+            ('axisText', lfull['configGamepadWindow']['axisText'])
+        )
+        internal_vals.append(('buttonText', lfull['buttonText']))
         lmerged = self._language_merged
         assert lmerged is not None
-        random_names = [n.strip() for n in lmerged["randomPlayerNamesText"].split(",")]
-        random_names = [n for n in random_names if n != ""]
+        random_names = [
+            n.strip() for n in lmerged['randomPlayerNamesText'].split(',')
+        ]
+        random_names = [n for n in random_names if n != '']
         _babase.set_internal_language_keys(internal_vals, random_names)
         if switched and print_change:
             assert isinstance(language, str)
             _babase.screenmessage(
                 Lstr(
-                    resource="languageSetText",
-                    subs=[("${LANGUAGE}", Lstr(translate=("languages", language)))],
+                    resource='languageSetText',
+                    subs=[
+                        ('${LANGUAGE}', Lstr(translate=('languages', language)))
+                    ],
                 ),
                 color=(0, 1, 0),
             )
@@ -263,14 +272,14 @@ class LanguageSubsystem(AppSubsystem):
                 try:
                     if _babase.do_once():
                         applog.warning(
-                            "get_resource() called before language"
-                            " set; falling back to english."
+                            'get_resource() called before language'
+                            ' set; falling back to english.'
                         )
                     self.setlanguage(
-                        "English", print_change=False, store_to_config=False
+                        'English', print_change=False, store_to_config=False
                     )
                 except Exception:
-                    applog.exception("Error setting fallback english language.")
+                    applog.exception('Error setting fallback english language.')
                     raise
 
             # If they provided a fallback_resource value, try the
@@ -279,7 +288,7 @@ class LanguageSubsystem(AppSubsystem):
             if fallback_resource is not None:
                 try:
                     values = self._language_target
-                    splits = resource.split(".")
+                    splits = resource.split('.')
                     dicts = splits[:-1]
                     key = splits[-1]
                     for dct in dicts:
@@ -294,7 +303,7 @@ class LanguageSubsystem(AppSubsystem):
                     #  the merged dict?
                     try:
                         values = self._language_merged
-                        splits = fallback_resource.split(".")
+                        splits = fallback_resource.split('.')
                         dicts = splits[:-1]
                         key = splits[-1]
                         for dct in dicts:
@@ -314,7 +323,7 @@ class LanguageSubsystem(AppSubsystem):
                         pass
 
             values = self._language_merged
-            splits = resource.split(".")
+            splits = resource.split('.')
             dicts = splits[:-1]
             key = splits[-1]
             for dct in dicts:
@@ -332,7 +341,9 @@ class LanguageSubsystem(AppSubsystem):
 
             if fallback_value is not None:
                 return fallback_value
-            raise _error.NotFoundError(f"Resource not found: '{resource}'") from None
+            raise _error.NotFoundError(
+                f"Resource not found: '{resource}'"
+            ) from None
 
     def translate(
         self,
@@ -350,20 +361,20 @@ class LanguageSubsystem(AppSubsystem):
           across multiple clients in multiple languages simultaneously.
         """
         try:
-            translated = self.get_resource("translations")[category][strval]
+            translated = self.get_resource('translations')[category][strval]
         except Exception as exc:
             if raise_exceptions:
                 raise
             if print_errors:
                 print(
                     (
-                        "Translate error: category='"
+                        'Translate error: category=\''
                         + category
-                        + "' name='"
+                        + '\' name=\''
                         + strval
-                        + "' exc="
+                        + '\' exc='
                         + str(exc)
-                        + ""
+                        + ''
                     )
                 )
             translated = None
@@ -379,7 +390,7 @@ class LanguageSubsystem(AppSubsystem):
         """Return whether a char is in the custom unicode range we use."""
         assert isinstance(char, str)
         if len(char) != 1:
-            raise ValueError("Invalid Input; must be length 1")
+            raise ValueError('Invalid Input; must be length 1')
         return 0xE000 <= ord(char) <= 0xF8FF
 
 
@@ -459,15 +470,15 @@ class Lstr:
 
     # This class is used a lot in UI stuff and doesn't need to be
     # flexible, so let's optimize its performance a bit.
-    __slots__ = ["args"]
+    __slots__ = ['args']
 
     @overload
     def __init__(
         self,
         *,
         resource: str,
-        fallback_resource: str = "",
-        fallback_value: str = "",
+        fallback_resource: str = '',
+        fallback_value: str = '',
         subs: Sequence[tuple[str, str | Lstr]] | None = None,
     ) -> None:
         """Create an Lstr from a string resource."""
@@ -493,7 +504,7 @@ class Lstr:
     def __init__(self, *args: Any, **keywds: Any) -> None:
         # pylint: disable=too-many-branches
         if args:
-            raise TypeError("Lstr accepts only keyword arguments")
+            raise TypeError('Lstr accepts only keyword arguments')
 
         #: Basically just stores the exact args passed. However if Lstr
         #: values were passed for subs, they are replaced with that
@@ -501,48 +512,48 @@ class Lstr:
         self.args = keywds
         our_type = type(self)
 
-        if isinstance(self.args.get("value"), our_type):
+        if isinstance(self.args.get('value'), our_type):
             raise TypeError("'value' must be a regular string; not an Lstr")
 
-        if "subs" in keywds:
-            subs = keywds.get("subs")
+        if 'subs' in keywds:
+            subs = keywds.get('subs')
             subs_filtered = []
             if subs is not None:
-                for key, value in keywds["subs"]:
+                for key, value in keywds['subs']:
                     if isinstance(value, our_type):
                         subs_filtered.append((key, value.args))
                     else:
                         subs_filtered.append((key, value))
-            self.args["subs"] = subs_filtered
+            self.args['subs'] = subs_filtered
 
         # As of protocol 31 we support compact key names ('t' instead of
         # 'translate', etc). Convert as needed.
-        if "translate" in keywds:
-            keywds["t"] = keywds["translate"]
-            del keywds["translate"]
-        if "resource" in keywds:
-            keywds["r"] = keywds["resource"]
-            del keywds["resource"]
-        if "value" in keywds:
-            keywds["v"] = keywds["value"]
-            del keywds["value"]
-        if "fallback" in keywds:
+        if 'translate' in keywds:
+            keywds['t'] = keywds['translate']
+            del keywds['translate']
+        if 'resource' in keywds:
+            keywds['r'] = keywds['resource']
+            del keywds['resource']
+        if 'value' in keywds:
+            keywds['v'] = keywds['value']
+            del keywds['value']
+        if 'fallback' in keywds:
             if _babase.do_once():
                 applog.error(
                     'Deprecated "fallback" arg passed to Lstr(); use '
                     'either "fallback_resource" or "fallback_value".'
                 )
-            keywds["f"] = keywds["fallback"]
-            del keywds["fallback"]
-        if "fallback_resource" in keywds:
-            keywds["f"] = keywds["fallback_resource"]
-            del keywds["fallback_resource"]
-        if "subs" in keywds:
-            keywds["s"] = keywds["subs"]
-            del keywds["subs"]
-        if "fallback_value" in keywds:
-            keywds["fv"] = keywds["fallback_value"]
-            del keywds["fallback_value"]
+            keywds['f'] = keywds['fallback']
+            del keywds['fallback']
+        if 'fallback_resource' in keywds:
+            keywds['f'] = keywds['fallback_resource']
+            del keywds['fallback_resource']
+        if 'subs' in keywds:
+            keywds['s'] = keywds['subs']
+            del keywds['subs']
+        if 'fallback_value' in keywds:
+            keywds['fv'] = keywds['fallback_value']
+            del keywds['fallback_value']
 
     def evaluate(self) -> str:
         """Evaluate to a flat string in the current language.
@@ -560,24 +571,24 @@ class Lstr:
         be reasonable to replace it with a raw string value, perform
         string manipulation on it, etc.
         """
-        return bool("v" in self.args and not self.args.get("s", []))
+        return bool('v' in self.args and not self.args.get('s', []))
 
     def _get_json(self) -> str:
         try:
-            return json.dumps(self.args, separators=(",", ":"))
+            return json.dumps(self.args, separators=(',', ':'))
         except Exception:
             from babase import _error
 
-            applog.exception("_get_json failed for %s.", self.args)
-            return "JSON_ERR"
+            applog.exception('_get_json failed for %s.', self.args)
+            return 'JSON_ERR'
 
     @override
     def __str__(self) -> str:
-        return f"<ba.Lstr: {self._get_json()}>"
+        return f'<ba.Lstr: {self._get_json()}>'
 
     @override
     def __repr__(self) -> str:
-        return f"<ba.Lstr: {self._get_json()}>"
+        return f'<ba.Lstr: {self._get_json()}>'
 
     @staticmethod
     def from_json(json_string: str) -> babase.Lstr:
@@ -585,7 +596,7 @@ class Lstr:
 
         Does no validation.
         """
-        lstr = Lstr(value="")
+        lstr = Lstr(value='')
         lstr.args = json.loads(json_string)
         return lstr
 
@@ -599,13 +610,18 @@ def _add_to_attr_dict(dst: AttrDict, src: dict) -> None:
                 dst_dict = dst[key] = AttrDict()
             if not isinstance(dst_dict, AttrDict):
                 raise RuntimeError(
-                    "language key '" + key + "' is defined both as a dict and value"
+                    "language key '"
+                    + key
+                    + "' is defined both as a dict and value"
                 )
             _add_to_attr_dict(dst_dict, value)
         else:
             if not isinstance(value, (float, int, bool, str, str, type(None))):
                 raise TypeError(
-                    "invalid value type for res '" + key + "': " + str(type(value))
+                    "invalid value type for res '"
+                    + key
+                    + "': "
+                    + str(type(value))
                 )
             dst[key] = value
 

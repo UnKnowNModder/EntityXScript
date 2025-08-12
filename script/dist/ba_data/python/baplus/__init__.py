@@ -23,9 +23,9 @@ from baplus._appsubsystem import PlusAppSubsystem
 from baplus._ads import AdsSubsystem
 
 __all__ = [
-    "AdsSubsystem",
-    "CloudSubsystem",
-    "PlusAppSubsystem",
+    'AdsSubsystem',
+    'CloudSubsystem',
+    'PlusAppSubsystem',
 ]
 
 # Sanity check: we want to keep ballistica's dependencies and
@@ -33,10 +33,11 @@ __all__ = [
 # modules to make sure they never directly or indirectly import us
 # before their own execs complete.
 if __debug__:
-    for _mdl in "babase", "_babase":
-        if not hasattr(__import__(_mdl), "_REACHED_END_OF_MODULE"):
+    for _mdl in 'babase', '_babase':
+        if not hasattr(__import__(_mdl), '_REACHED_END_OF_MODULE'):
             logging.warning(
-                "%s was imported before %s finished importing;" " should not happen.",
+                '%s was imported before %s finished importing;'
+                ' should not happen.',
                 __name__,
                 _mdl,
             )

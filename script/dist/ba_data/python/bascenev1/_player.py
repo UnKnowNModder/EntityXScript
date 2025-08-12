@@ -77,15 +77,15 @@ class Player[TeamT: bascenev1.Team]:
         # internal game logic. So complain loudly if we find one.
         if type(self).__eq__ is not object.__eq__:
             raise RuntimeError(
-                f"Player class {type(self)} defines an equality"
-                f" operator (__eq__) which will break internal"
-                f" logic. Please remove it.\n"
+                f'Player class {type(self)} defines an equality'
+                f' operator (__eq__) which will break internal'
+                f' logic. Please remove it.\n'
                 f'For dataclasses you can do "dataclass(eq=False)"'
-                f" in the class decorator."
+                f' in the class decorator.'
             )
 
         self.actor = None
-        self.character = ""
+        self.character = ''
         self._nodeactor: bascenev1.NodeActor | None = None
         self._sessionplayer = sessionplayer
         self.character = sessionplayer.character
@@ -99,7 +99,9 @@ class Player[TeamT: bascenev1.Team]:
         self._customdata = {}
         self._expired = False
         self._postinited = True
-        node = _bascenev1.newnode("player", attrs={"playerID": sessionplayer.id})
+        node = _bascenev1.newnode(
+            'player', attrs={'playerID': sessionplayer.id}
+        )
         self._nodeactor = NodeActor(node)
         sessionplayer.setnode(node)
 
@@ -116,7 +118,7 @@ class Player[TeamT: bascenev1.Team]:
                 self.actor.handlemessage(DieMessage(how=DeathType.LEFT_GAME))
             self.actor = None
         except Exception:
-            logging.exception("Error killing actor on leave for %s.", self)
+            logging.exception('Error killing actor on leave for %s.', self)
         self._nodeactor = None
         del self._team
         del self._customdata
@@ -133,7 +135,7 @@ class Player[TeamT: bascenev1.Team]:
         try:
             self.on_expire()
         except Exception:
-            logging.exception("Error in on_expire for %s.", self)
+            logging.exception('Error in on_expire for %s.', self)
 
         self._nodeactor = None
         self.actor = None
@@ -269,7 +271,7 @@ class Player[TeamT: bascenev1.Team]:
         return self.exists()
 
 
-class EmptyPlayer(Player["bascenev1.EmptyTeam"]):
+class EmptyPlayer(Player['bascenev1.EmptyTeam']):
     """An empty player for use by Activities that don't need to define one.
 
     bascenev1.Player and bascenev1.Team are 'Generic' types, and so passing

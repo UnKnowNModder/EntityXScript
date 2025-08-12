@@ -12,11 +12,11 @@ class DiscordWindow(bui.Window):
 
     def __init__(
         self,
-        transition: str = "in_right",
+        transition: str = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         if bui.app.classic is None:
-            raise RuntimeError("This requires classic support.")
+            raise RuntimeError('This requires classic support.')
 
         app = bui.app
         assert app.classic is not None
@@ -24,11 +24,11 @@ class DiscordWindow(bui.Window):
         # If they provided an origin-widget, scale up from that.
         scale_origin: tuple[float, float] | None
         if origin_widget is not None:
-            self._transition_out = "out_scale"
+            self._transition_out = 'out_scale'
             scale_origin = origin_widget.get_screen_space_center()
-            transition = "in_scale"
+            transition = 'in_scale'
         else:
-            self._transition_out = "out_right"
+            self._transition_out = 'out_right'
             scale_origin = None
 
         uiscale = bui.app.ui_v1.uiscale
@@ -40,7 +40,7 @@ class DiscordWindow(bui.Window):
             root_widget=bui.containerwidget(
                 size=(self._width, self._height + top_extra),
                 transition=transition,
-                toolbar_visibility="menu_minimal",
+                toolbar_visibility='menu_minimal',
                 scale_origin_stack_offset=scale_origin,
                 scale=(
                     1.6
@@ -52,7 +52,9 @@ class DiscordWindow(bui.Window):
         )
 
         if uiscale is bui.UIScale.SMALL:
-            bui.containerwidget(edit=self._root_widget, on_cancel_call=self._do_back)
+            bui.containerwidget(
+                edit=self._root_widget, on_cancel_call=self._do_back
+            )
             self._back_button = None
         else:
             self._back_button = bui.buttonwidget(
@@ -61,21 +63,23 @@ class DiscordWindow(bui.Window):
                 size=(140, 60),
                 scale=0.8,
                 autoselect=True,
-                label=bui.Lstr(resource="backText"),
-                button_type="back",
+                label=bui.Lstr(resource='backText'),
+                button_type='back',
                 on_activate_call=self._do_back,
             )
-            bui.containerwidget(edit=self._root_widget, cancel_button=self._back_button)
+            bui.containerwidget(
+                edit=self._root_widget, cancel_button=self._back_button
+            )
 
         # Do we need to translate 'Discord'? Or is that always the name?
         self._title_text = bui.textwidget(
             parent=self._root_widget,
             position=(0, self._height - 52),
             size=(self._width, 25),
-            text="Discord",
+            text='Discord',
             color=app.ui_v1.title_color,
-            h_align="center",
-            v_align="top",
+            h_align='center',
+            v_align='top',
         )
 
         min_size = min(self._width - 25, self._height - 25)
@@ -83,7 +87,7 @@ class DiscordWindow(bui.Window):
             parent=self._root_widget,
             position=(40, -15),
             size=(min_size, min_size),
-            texture=bui.gettexture("discordServer"),
+            texture=bui.gettexture('discordServer'),
         )
 
         # Hmm should we translate this? The discord server is mostly
@@ -92,15 +96,15 @@ class DiscordWindow(bui.Window):
         bui.textwidget(
             parent=self._root_widget,
             position=(self._width / 2 - 60, self._height - 100),
-            text="We have our own Discord server where you can:\n- Find new"
-            " friends and people to play with\n- Participate in Office"
-            " Hours/Coffee with Eric\n- Share mods, plugins, art, and"
-            " memes\n- Report bugs and make feature suggestions\n"
-            "- Troubleshoot issues",
+            text='We have our own Discord server where you can:\n- Find new'
+            ' friends and people to play with\n- Participate in Office'
+            ' Hours/Coffee with Eric\n- Share mods, plugins, art, and'
+            ' memes\n- Report bugs and make feature suggestions\n'
+            '- Troubleshoot issues',
             maxwidth=(self._width - 10) / 2,
             color=(1, 1, 1, 1),
-            h_align="left",
-            v_align="top",
+            h_align='left',
+            v_align='top',
         )
 
         bui.buttonwidget(
@@ -108,18 +112,20 @@ class DiscordWindow(bui.Window):
             position=(self._width / 2 - 30, 20),
             size=(self._width / 2 - 60, 60),
             autoselect=True,
-            label=bui.Lstr(resource="discordJoinText"),
+            label=bui.Lstr(resource='discordJoinText'),
             text_scale=1.0,
-            on_activate_call=bui.Call(bui.open_url, "https://ballistica.net/discord"),
+            on_activate_call=bui.Call(
+                bui.open_url, 'https://ballistica.net/discord'
+            ),
         )
 
         if self._back_button is not None:
             bui.buttonwidget(
                 edit=self._back_button,
-                button_type="backSmall",
+                button_type='backSmall',
                 size=(60, 60),
                 label=bui.charstr(bui.SpecialChar.BACK),
             )
 
     def _do_back(self) -> None:
-        bui.containerwidget(edit=self._root_widget, transition="out_scale")
+        bui.containerwidget(edit=self._root_widget, transition='out_scale')

@@ -21,22 +21,22 @@ class SendInfoWindow(bui.MainWindow):
         self,
         modal: bool = False,
         legacy_code_mode: bool = False,
-        transition: str | None = "in_scale",
+        transition: str | None = 'in_scale',
         origin_widget: bui.Widget | None = None,
     ):
         self._legacy_code_mode = legacy_code_mode
 
         # Need to wrangle our own transition-out in modal mode.
         if origin_widget is not None:
-            self._transition_out = "out_scale"
+            self._transition_out = 'out_scale'
         else:
-            self._transition_out = "out_right"
+            self._transition_out = 'out_right'
 
         width = 450 if legacy_code_mode else 600
         height = 200 if legacy_code_mode else 300
 
         self._modal = modal
-        self._r = "promoCodeWindow"
+        self._r = 'promoCodeWindow'
 
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
@@ -44,9 +44,9 @@ class SendInfoWindow(bui.MainWindow):
             root_widget=bui.containerwidget(
                 size=(width, height),
                 toolbar_visibility=(
-                    "menu_minimal_no_back"
+                    'menu_minimal_no_back'
                     if uiscale is bui.UIScale.SMALL or modal
-                    else "menu_full"
+                    else 'menu_full'
                 ),
                 scale=(
                     2.0
@@ -63,11 +63,11 @@ class SendInfoWindow(bui.MainWindow):
             scale=0.5,
             position=(40, height - 40),
             size=(60, 60),
-            label="",
+            label='',
             on_activate_call=self._do_back,
             autoselect=True,
             color=(0.55, 0.5, 0.6),
-            icon=bui.gettexture("crossOut"),
+            icon=bui.gettexture('crossOut'),
             iconscale=1.2,
         )
 
@@ -79,14 +79,14 @@ class SendInfoWindow(bui.MainWindow):
             v -= 20
             bui.textwidget(
                 parent=self._root_widget,
-                text=bui.Lstr(resource="sendInfoDescriptionText"),
+                text=bui.Lstr(resource='sendInfoDescriptionText'),
                 maxwidth=width * 0.9,
                 position=(width * 0.5, v),
                 color=(0.7, 0.7, 0.7, 1.0),
                 size=(0, 0),
                 scale=0.8,
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
             )
             v -= 20
 
@@ -110,13 +110,15 @@ class SendInfoWindow(bui.MainWindow):
             parent=self._root_widget,
             text=bui.Lstr(
                 resource=(
-                    f"{self._r}.codeText" if legacy_code_mode else "descriptionText"
+                    f'{self._r}.codeText'
+                    if legacy_code_mode
+                    else 'descriptionText'
                 )
             ),
             position=(22, v),
             color=(0.8, 0.8, 0.8, 1.0),
             size=(90, 30),
-            h_align="right",
+            h_align='right',
             maxwidth=100,
         )
         v -= 8
@@ -125,14 +127,16 @@ class SendInfoWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(125, v),
             size=(280 if legacy_code_mode else 380, 46),
-            text="",
-            h_align="left",
-            v_align="center",
+            text='',
+            h_align='left',
+            v_align='center',
             max_chars=64,
             color=(0.9, 0.9, 0.9, 1.0),
             description=bui.Lstr(
                 resource=(
-                    f"{self._r}.codeText" if legacy_code_mode else "descriptionText"
+                    f'{self._r}.codeText'
+                    if legacy_code_mode
+                    else 'descriptionText'
                 )
             ),
             editable=True,
@@ -149,7 +153,7 @@ class SendInfoWindow(bui.MainWindow):
             size=(b_width, 60),
             scale=1.0,
             label=bui.Lstr(
-                resource="submitText", fallback_resource=f"{self._r}.enterText"
+                resource='submitText', fallback_resource=f'{self._r}.enterText'
             ),
             on_activate_call=self._do_enter,
         )
@@ -192,7 +196,9 @@ class SendInfoWindow(bui.MainWindow):
         if not self._root_widget or self._root_widget.transitioning_out:
             return
 
-        bui.containerwidget(edit=self._root_widget, transition=self._transition_out)
+        bui.containerwidget(
+            edit=self._root_widget, transition=self._transition_out
+        )
 
     def _activate_enter_button(self) -> None:
         self._enter_button.activate()
@@ -211,7 +217,9 @@ class SendInfoWindow(bui.MainWindow):
             # no-op if our underlying widget is dead or on its way out.
             if not self._root_widget or self._root_widget.transitioning_out:
                 return
-            bui.containerwidget(edit=self._root_widget, transition=self._transition_out)
+            bui.containerwidget(
+                edit=self._root_widget, transition=self._transition_out
+            )
         else:
             # no-op if we're not in control.
             if not self.main_window_has_control():
@@ -221,17 +229,17 @@ class SendInfoWindow(bui.MainWindow):
         # Used for things like unlocking shared playlists or linking
         # accounts: talk directly to V1 server via transactions.
         if self._legacy_code_mode:
-            if plus.get_v1_account_state() != "signed_in":
+            if plus.get_v1_account_state() != 'signed_in':
                 bui.screenmessage(
-                    bui.Lstr(resource="notSignedInErrorText"), color=(1, 0, 0)
+                    bui.Lstr(resource='notSignedInErrorText'), color=(1, 0, 0)
                 )
-                bui.getsound("error").play()
+                bui.getsound('error').play()
             else:
                 plus.add_v1_account_transaction(
                     {
-                        "type": "PROMO_CODE",
-                        "expire_time": time.time() + 5,
-                        "code": description,
+                        'type': 'PROMO_CODE',
+                        'expire_time': time.time() + 5,
+                        'code': description,
                     }
                 )
                 plus.run_v1_account_transactions()
@@ -249,10 +257,10 @@ async def _send_info(description: str) -> None:
         # Don't allow *anything* if our V2 transport connection isn't up.
         if not plus.cloud.connected:
             bui.screenmessage(
-                bui.Lstr(resource="internal.unavailableNoConnectionText"),
+                bui.Lstr(resource='internal.unavailableNoConnectionText'),
                 color=(1, 0, 0),
             )
-            bui.getsound("error").play()
+            bui.getsound('error').play()
             return
 
         # Ship to V2 server, with or without account info.
@@ -262,7 +270,9 @@ async def _send_info(description: str) -> None:
                     SendInfoMessage(description)
                 )
         else:
-            response = await plus.cloud.send_message_async(SendInfoMessage(description))
+            response = await plus.cloud.send_message_async(
+                SendInfoMessage(description)
+            )
 
         # Support simple message printing from v2 server.
         if response.message is not None:
@@ -273,20 +283,20 @@ async def _send_info(description: str) -> None:
             return
 
         # Ok; V2 didn't handle it. Try V1 if we're signed in there.
-        if plus.get_v1_account_state() != "signed_in":
+        if plus.get_v1_account_state() != 'signed_in':
             bui.screenmessage(
-                bui.Lstr(resource="notSignedInErrorText"), color=(1, 0, 0)
+                bui.Lstr(resource='notSignedInErrorText'), color=(1, 0, 0)
             )
-            bui.getsound("error").play()
+            bui.getsound('error').play()
             return
 
         # Push it along to v1 as an old style code. Allow v2 response to
         # sub in its own code.
         plus.add_v1_account_transaction(
             {
-                "type": "PROMO_CODE",
-                "expire_time": time.time() + 5,
-                "code": (
+                'type': 'PROMO_CODE',
+                'expire_time': time.time() + 5,
+                'code': (
                     description
                     if response.legacy_code is None
                     else response.legacy_code
@@ -295,6 +305,6 @@ async def _send_info(description: str) -> None:
         )
         plus.run_v1_account_transactions()
     except Exception:
-        logging.exception("Error sending promo code.")
-        bui.screenmessage("Error sending code (see log).", color=(1, 0, 0))
-        bui.getsound("error").play()
+        logging.exception('Error sending promo code.')
+        bui.screenmessage('Error sending code (see log).', color=(1, 0, 0))
+        bui.getsound('error').play()

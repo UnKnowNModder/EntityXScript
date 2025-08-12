@@ -47,7 +47,7 @@ class SpawnInfo:
     dincrease: float
 
 
-class Player(bs.Player["Team"]):
+class Player(bs.Player['Team']):
     """Our player type for this game."""
 
 
@@ -58,11 +58,11 @@ class Team(bs.Team[Player]):
 class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
     """Slow motion how-long-can-you-last game."""
 
-    name = "The Last Stand"
-    description = "Final glorious epic slow motion battle to the death."
+    name = 'The Last Stand'
+    description = 'Final glorious epic slow motion battle to the death.'
     tips = [
-        "This level never ends, but a high score here\n"
-        "will earn you eternal respect throughout the world."
+        'This level never ends, but a high score here\n'
+        'will earn you eternal respect throughout the world.'
     ]
 
     # Show messages when players die since it matters here.
@@ -74,22 +74,22 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
     default_music = bs.MusicType.EPIC
 
     def __init__(self, settings: dict):
-        settings["map"] = "Rampage"
+        settings['map'] = 'Rampage'
         super().__init__(settings)
-        self._new_wave_sound = bs.getsound("scoreHit01")
-        self._winsound = bs.getsound("score")
-        self._cashregistersound = bs.getsound("cashRegister")
+        self._new_wave_sound = bs.getsound('scoreHit01')
+        self._winsound = bs.getsound('score')
+        self._cashregistersound = bs.getsound('cashRegister')
         self._spawn_center = (0, 5.5, -4.14)
         self._tntspawnpos = (0, 5.5, -6)
         self._powerup_center = (0, 7, -4.14)
         self._powerup_spread = (7, 2)
-        self._preset = str(settings.get("preset", "default"))
+        self._preset = str(settings.get('preset', 'default'))
         self._excludepowerups: list[str] = []
         self._scoreboard: Scoreboard | None = None
         self._score = 0
         self._bots = SpazBotSet()
-        self._dingsound = bs.getsound("dingSmall")
-        self._dingsoundhigh = bs.getsound("dingSmallHigh")
+        self._dingsound = bs.getsound('dingSmall')
+        self._dingsoundhigh = bs.getsound('dingSmallHigh')
         self._tntspawner: TNTSpawner | None = None
         self._bot_update_interval: float | None = None
         self._bot_update_timer: bs.Timer | None = None
@@ -118,7 +118,7 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
         super().on_transition_in()
         bs.timer(1.3, self._new_wave_sound.play)
         self._scoreboard = Scoreboard(
-            label=bs.Lstr(resource="scoreText"), score_split=0.5
+            label=bs.Lstr(resource='scoreText'), score_split=0.5
         )
 
     @override
@@ -131,7 +131,9 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
         bs.timer(0.001, bs.WeakCall(self._start_bot_updates))
         self.setup_low_life_warning_sound()
         self._update_scores()
-        self._tntspawner = TNTSpawner(position=self._tntspawnpos, respawn_time=10.0)
+        self._tntspawner = TNTSpawner(
+            position=self._tntspawnpos, respawn_time=10.0
+        )
 
     @override
     def spawn_player(self, player: Player) -> bs.Actor:
@@ -182,7 +184,9 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
             for i in range(len(pts)):
                 bs.timer(
                     1.0 + i * 0.5,
-                    bs.WeakCall(self._drop_powerup, i, force_first if i == 0 else None),
+                    bs.WeakCall(
+                        self._drop_powerup, i, force_first if i == 0 else None
+                    ),
                 )
         else:
             drop_pt = (
@@ -193,7 +197,9 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
                 ),
                 self._powerup_center[1],
                 self._powerup_center[2]
-                + random.uniform(-self._powerup_spread[1], self._powerup_spread[1]),
+                + random.uniform(
+                    -self._powerup_spread[1], self._powerup_spread[1]
+                ),
             )
 
             # Drop one random one somewhere.
@@ -206,14 +212,14 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
 
     def do_end(self, outcome: str) -> None:
         """End the game."""
-        if outcome == "defeat":
+        if outcome == 'defeat':
             self.fade_to_red()
         self.end(
             delay=2.0,
             results={
-                "outcome": outcome,
-                "score": self._score,
-                "playerinfos": self.initialplayerinfos,
+                'outcome': outcome,
+                'score': self._score,
+                'playerinfos': self.initialplayerinfos,
             },
         )
 
@@ -237,7 +243,7 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
                     assert player.actor.node
                     playerpts.append(player.actor.node.position)
             except Exception:
-                logging.exception("Error updating bots.")
+                logging.exception('Error updating bots.')
         for i in range(3):
             for playerpt in playerpts:
                 dists[i] += abs(playerpt[0] - botspawnpts[i][0])
@@ -283,13 +289,13 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
         score = self._score
 
         # Achievements apply to the default preset only.
-        if self._preset == "default":
+        if self._preset == 'default':
             if score >= 250:
-                self._award_achievement("Last Stand Master")
+                self._award_achievement('Last Stand Master')
             if score >= 500:
-                self._award_achievement("Last Stand Wizard")
+                self._award_achievement('Last Stand Wizard')
             if score >= 1000:
-                self._award_achievement("Last Stand God")
+                self._award_achievement('Last Stand God')
         assert self._scoreboard is not None
         self._scoreboard.set_team_value(self.teams[0], score, max_score=None)
 
@@ -320,7 +326,9 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
                     screenmessage=False,
                     importance=importance,
                 )
-                diesound = self._dingsound if importance == 1 else self._dingsoundhigh
+                diesound = (
+                    self._dingsound if importance == 1 else self._dingsoundhigh
+                )
                 diesound.play(volume=0.6)
 
             # Normally we pull scores from the score-set, but if there's no
@@ -338,7 +346,7 @@ class TheLastStandGame(bs.CoopGameActivity[Player, Team]):
         # Tell our bots to celebrate just to rub it in.
         self._bots.final_celebrate()
         bs.setmusic(None)
-        bs.pushcall(bs.WeakCall(self.do_end, "defeat"))
+        bs.pushcall(bs.WeakCall(self.do_end, 'defeat'))
 
     def _checkroundover(self) -> None:
         """End the round if conditions are met."""

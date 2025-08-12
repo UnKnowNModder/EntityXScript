@@ -31,10 +31,10 @@ class MultiTeamJoinActivity(bs.JoinActivity):
         # Show info about the next up game.
         self._next_up_text = Text(
             bs.Lstr(
-                value="${1} ${2}",
+                value='${1} ${2}',
                 subs=[
-                    ("${1}", bs.Lstr(resource="upFirstText")),
-                    ("${2}", session.get_next_game_description()),
+                    ('${1}', bs.Lstr(resource='upFirstText')),
+                    ('${2}', session.get_next_game_description()),
                 ],
             ),
             h_attach=Text.HAttach.CENTER,
@@ -53,7 +53,8 @@ class MultiTeamJoinActivity(bs.JoinActivity):
         if isinstance(bs.getsession(), bs.DualTeamSession):
             team_names = [team.name for team in bs.getsession().sessionteams]
             team_colors = [
-                tuple(team.color) + (0.5,) for team in bs.getsession().sessionteams
+                tuple(team.color) + (0.5,)
+                for team in bs.getsession().sessionteams
             ]
             if len(team_names) == 2:
                 for i in range(2):
@@ -70,11 +71,11 @@ class MultiTeamJoinActivity(bs.JoinActivity):
 
         Text(
             bs.Lstr(
-                resource="mustInviteFriendsText",
+                resource='mustInviteFriendsText',
                 subs=[
                     (
-                        "${GATHER}",
-                        bs.Lstr(resource="gatherWindow.titleText"),
+                        '${GATHER}',
+                        bs.Lstr(resource='gatherWindow.titleText'),
                     )
                 ],
             ),

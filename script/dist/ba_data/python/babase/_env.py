@@ -45,36 +45,36 @@ def on_native_module_import() -> None:
 
         # Also let's name the log-handler thread to help in profiling.
         envconfig.log_handler.call_in_thread(
-            lambda: _babase.set_thread_name("ballistica logging")
+            lambda: _babase.set_thread_name('ballistica logging')
         )
 
     pre_env = _babase.pre_env()
 
     # Give a soft warning if we're being used with a different binary
     # version than we were built for.
-    running_build: int = pre_env["build_number"]
+    running_build: int = pre_env['build_number']
     assert isinstance(running_build, int)
 
     if running_build != baenv.TARGET_BALLISTICA_BUILD:
         logging.error(
-            "These scripts are meant to be used with"
-            " Ballistica build %d, but you are running build %d."
+            'These scripts are meant to be used with'
+            ' Ballistica build %d, but you are running build %d.'
             " This is likely to cause problems. Module path: '%s'.",
             baenv.TARGET_BALLISTICA_BUILD,
             running_build,
             __file__,
         )
 
-    debug_build = pre_env["debug_build"]
+    debug_build = pre_env['debug_build']
 
     # We expect dev_mode on in debug builds and off otherwise;
     # make noise if that's not the case.
     if debug_build != sys.flags.dev_mode:
         logging.warning(
-            "Ballistica was built with debug-mode %s"
-            " but Python is running with dev-mode %s;"
-            " this mismatch may cause problems."
-            " See https://docs.python.org/3/library/devmode.html",
+            'Ballistica was built with debug-mode %s'
+            ' but Python is running with dev-mode %s;'
+            ' this mismatch may cause problems.'
+            ' See https://docs.python.org/3/library/devmode.html',
             debug_build,
             sys.flags.dev_mode,
         )
@@ -101,9 +101,9 @@ def on_main_thread_start_app() -> None:
     # If we were unable to set paths earlier, complain now.
     if baenv.did_paths_set_fail():
         logging.warning(
-            "Ballistica Python paths have not been set. This may cause"
-            " problems. To ensure paths are set, run baenv.configure()"
-            " BEFORE importing any Ballistica modules."
+            'Ballistica Python paths have not been set. This may cause'
+            ' problems. To ensure paths are set, run baenv.configure()'
+            ' BEFORE importing any Ballistica modules.'
         )
 
     # Set up interrupt-signal handling.
@@ -118,13 +118,13 @@ def on_main_thread_start_app() -> None:
     # builds except for in __main__. However this is a key way to
     # communicate api changes to modders and most modders are running
     # release builds so its good to have this on everywhere.
-    warnings.simplefilter("default", DeprecationWarning)
+    warnings.simplefilter('default', DeprecationWarning)
 
     # Set up our garbage collection stuff.
     _babase.app.gc.set_initial_mode()
 
-    if os.environ.get("BA_GC_DEBUG_LEAK") == "1":
-        print("ENABLING GC DEBUG LEAK CHECKS", file=sys.stderr)
+    if os.environ.get('BA_GC_DEBUG_LEAK') == '1':
+        print('ENABLING GC DEBUG LEAK CHECKS', file=sys.stderr)
         gc.set_debug(gc.DEBUG_LEAK)
 
     # pylint: disable=c-extension-no-member
@@ -136,7 +136,7 @@ def on_main_thread_start_app() -> None:
         # if they did since Note that these don't
         # exist in the first place for our monolithic builds which don't
         # use site.py.
-        for attr in ("quit", "exit"):
+        for attr in ('quit', 'exit'):
             if hasattr(__main__.__builtins__, attr):
                 delattr(__main__.__builtins__, attr)
 
@@ -160,7 +160,7 @@ def on_main_thread_start_app() -> None:
     # thread; previously the various asyncio bg thread loops were
     # working fine (maybe something caused them to default to selector
     # in that case?..
-    if sys.platform == "win32" and bool(False):
+    if sys.platform == 'win32' and bool(False):
         import asyncio
 
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -175,7 +175,7 @@ def _pycache_upkeep() -> None:
     try:
         _do_pycache_upkeep()
     except Exception:
-        cachelog.exception("Error in pycache upkeep.")
+        cachelog.exception('Error in pycache upkeep.')
 
 
 def _do_pycache_upkeep() -> None:
@@ -216,10 +216,10 @@ def _do_pycache_upkeep() -> None:
         if appstate is appstate_t.RUNNING:
             time_in_running_state += sleep_inc
         if should_abort():
-            cachelog.debug("Aborting pycache update early due to app shutdown.")
+            cachelog.debug('Aborting pycache update early due to app shutdown.')
             return
 
-    cachelog.info("Running pycache upkeep...")
+    cachelog.info('Running pycache upkeep...')
 
     # Measure time from when we actually start working.
     starttime = time.monotonic()
@@ -238,14 +238,14 @@ def _do_pycache_upkeep() -> None:
     # Skip over particular dirnames; namely stuff in stdlib we're very
     # unlikely to ever use. This shaves off quite a bit of work.
     skip_dirs = {
-        "test",
-        "email",
-        "__pycache__",
-        "idlelib",
-        "tkinter",
-        "turtledemo",
-        "unittest",
-        "encodings",
+        'test',
+        'email',
+        '__pycache__',
+        'idlelib',
+        'tkinter',
+        'turtledemo',
+        'unittest',
+        'encodings',
     }
 
     # We do lots of stuff and if everything spits an error it's gonna
@@ -256,9 +256,9 @@ def _do_pycache_upkeep() -> None:
     def complain(msg: str) -> None:
         nonlocal complained
         if complained:
-            cachelog.debug("(repeat) Error updating pycache dir: %s", msg)
+            cachelog.debug('(repeat) Error updating pycache dir: %s', msg)
             return
-        cachelog.warning("Error updating pycache dir: %s", msg)
+        cachelog.warning('Error updating pycache dir: %s', msg)
 
     # Build a dict of dst pyc paths mapped to src py paths and
     # src py modtimes.
@@ -271,7 +271,7 @@ def _do_pycache_upkeep() -> None:
             # into them.
             dnames[:] = [d for d in dnames if d not in skip_dirs]
             for fname in fnames:
-                if not fname.endswith(".py"):
+                if not fname.endswith('.py'):
                     continue
                 srcpath = os.path.join(dpath, fname)
                 dstpath = importlib.util.cache_from_source(srcpath)
@@ -279,17 +279,20 @@ def _do_pycache_upkeep() -> None:
                 entries[dstpath] = (srcpath, srcmodtime)
 
                 if should_abort():
-                    cachelog.debug("Aborting pycache update early due to app shutdown.")
+                    cachelog.debug(
+                        'Aborting pycache update early due to app shutdown.'
+                    )
                     return
 
-    pycdir = os.path.join(env.cache_directory, "pyc")
+    pycdir = os.path.join(env.cache_directory, 'pyc')
 
     # Sanity test: make sure these pyc paths appear to be under our
     # designated cache dir.
     for entry in entries:
         if not entry.startswith(pycdir):
             complain(
-                f"pyc target {entry}" f" does not start with expected prefix {pycdir}."
+                f'pyc target {entry}'
+                f' does not start with expected prefix {pycdir}.'
             )
 
         # Just check the first.
@@ -297,7 +300,7 @@ def _do_pycache_upkeep() -> None:
 
     def _has_py_source(path: str) -> bool:
         """Does this .pyc path have an associated existing .py file?"""
-        if not path.endswith(".pyc"):
+        if not path.endswith('.pyc'):
             return False
         try:
             srcpath = importlib.util.source_from_cache(fullpath)
@@ -305,7 +308,7 @@ def _do_pycache_upkeep() -> None:
             # Have gotten reports of failures here on a file named
             # hook-mitmproxy.addons.onboardingapp.cpython-313.pyc'
             # (found in site-packages on a linux install).
-            if "expected only 2 or 3 dots" in str(exc):
+            if 'expected only 2 or 3 dots' in str(exc):
                 pass
             else:
                 complain(f'Error looking for py src for "{path}": {exc}')
@@ -348,7 +351,9 @@ def _do_pycache_upkeep() -> None:
                 and not _has_py_source(fullpath)
             ):
                 try:
-                    cachelog.debug("pycache-upkeep: pruning file '%s'.", fullpath)
+                    cachelog.debug(
+                        'pycache-upkeep: pruning file \'%s\'.', fullpath
+                    )
                     os.unlink(fullpath)
                 except Exception as exc:
                     complain(f'Failed to delete file "{fullpath}": {exc}')
@@ -365,7 +370,7 @@ def _do_pycache_upkeep() -> None:
     for dstpath, (srcpath, srcmtime) in entries.items():
         if not os.path.exists(dstpath) or srcmtime > os.path.getmtime(dstpath):
             try:
-                cachelog.debug("pycache-upkeep: precompiling '%s'.", srcpath)
+                cachelog.debug('pycache-upkeep: precompiling \'%s\'.', srcpath)
                 py_compile.compile(srcpath, doraise=True)
 
                 # Sleep a bit to limit speed to roughly 100/second max.
@@ -385,15 +390,17 @@ def _do_pycache_upkeep() -> None:
                         dstpath
                     ) or srcmtime > os.path.getmtime(dstpath)
                     if still_out_of_date:
-                        complain(f"Error precompiling {fullpath}: {exc}")
+                        complain(f'Error precompiling {fullpath}: {exc}')
                         assert complained
 
             if should_abort():
-                cachelog.debug("Aborting pycache update early due to app shutdown.")
+                cachelog.debug(
+                    'Aborting pycache update early due to app shutdown.'
+                )
                 return
 
     duration = time.monotonic() - starttime
-    cachelog.info("Pycache upkeep completed in %.3fs.", duration)
+    cachelog.info('Pycache upkeep completed in %.3fs.', duration)
 
 
 def on_app_state_initing() -> None:
@@ -432,7 +439,8 @@ def interpreter_shutdown_sanity_checks() -> None:
         # down after us; we expect it to still be around.
         if (
             env_config.log_handler is not None
-            and thread is env_config.log_handler._thread  # pylint: disable=W0212
+            and thread
+            is env_config.log_handler._thread  # pylint: disable=W0212
         ):
             continue
 
@@ -448,17 +456,17 @@ def interpreter_shutdown_sanity_checks() -> None:
 
     if warn_threads:
         applog.warning(
-            "%s",
-            "\n ".join(
+            '%s',
+            '\n '.join(
                 [
-                    f"{len(warn_threads)}"
-                    f" unexpected thread(s) still running at"
-                    f" Python shutdown:"
+                    f'{len(warn_threads)}'
+                    f' unexpected thread(s) still running at'
+                    f' Python shutdown:'
                 ]
                 + [str(t) for t in warn_threads]
             )
-            + "\nThreads should spin themselves down at app shutdown"
-            " (see App.add_shutdown_task()).",
+            + '\nThreads should spin themselves down at app shutdown'
+            ' (see App.add_shutdown_task()).',
         )
 
 
@@ -481,8 +489,8 @@ def _feed_logs_to_babase(log_handler: LogHandler) -> None:
         # stdout/stderr log messages that babase.app.log_handler creates
         # for us. We should retire or upgrade this system at some point.
         if entry.level.value >= LogLevel.WARNING.value or entry.name in (
-            "stdout",
-            "stderr",
+            'stdout',
+            'stderr',
         ):
             _babase.v1_cloud_log(entry.message)
 
@@ -505,7 +513,7 @@ class _CustomHelper:
 
     @override
     def __repr__(self) -> str:
-        return "Type help(object) for help about object."
+        return 'Type help(object) for help about object.'
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         # We get an ugly error importing pydoc on our embedded platforms
@@ -520,7 +528,7 @@ class _CustomHelper:
         try:
             # This errors once but seems to run cleanly after, so let's
             # get the error out of the way.
-            sysconfig.get_path("stdlib")
+            sysconfig.get_path('stdlib')
         except ModuleNotFoundError:
             pass
 
@@ -532,8 +540,8 @@ class _CustomHelper:
         pydoc.pager = pydoc.plainpager
         if not args and not kwds:
             print(
-                "Interactive help is not available in this environment.\n"
-                "Type help(object) for help about object."
+                'Interactive help is not available in this environment.\n'
+                'Type help(object) for help about object.'
             )
             return None
         return pydoc.help(*args, **kwds)

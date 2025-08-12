@@ -13,13 +13,13 @@ class CoopLevelLockedWindow(bui.Window):
     def __init__(self, name: bui.Lstr, dep_name: bui.Lstr):
         width = 550.0
         height = 250.0
-        lock_tex = bui.gettexture("lock")
+        lock_tex = bui.gettexture('lock')
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
         super().__init__(
             root_widget=bui.containerwidget(
                 size=(width, height),
-                transition="in_right",
+                transition='in_right',
                 scale=(
                     1.7
                     if uiscale is bui.UIScale.SMALL
@@ -31,9 +31,11 @@ class CoopLevelLockedWindow(bui.Window):
             parent=self._root_widget,
             position=(150 - 20, height * 0.63),
             size=(0, 0),
-            h_align="left",
-            v_align="center",
-            text=bui.Lstr(resource="levelIsLockedText", subs=[("${LEVEL}", name)]),
+            h_align='left',
+            v_align='center',
+            text=bui.Lstr(
+                resource='levelIsLockedText', subs=[('${LEVEL}', name)]
+            ),
             maxwidth=400,
             color=(1, 0.8, 0.3, 1),
             scale=1.1,
@@ -42,11 +44,11 @@ class CoopLevelLockedWindow(bui.Window):
             parent=self._root_widget,
             position=(150 - 20, height * 0.48),
             size=(0, 0),
-            h_align="left",
-            v_align="center",
+            h_align='left',
+            v_align='center',
             text=bui.Lstr(
-                resource="levelMustBeCompletedFirstText",
-                subs=[("${LEVEL}", dep_name)],
+                resource='levelMustBeCompletedFirstText',
+                subs=[('${LEVEL}', dep_name)],
             ),
             maxwidth=400,
             color=bui.app.ui_v1.infotextcolor,
@@ -63,13 +65,13 @@ class CoopLevelLockedWindow(bui.Window):
             parent=self._root_widget,
             position=((width - 140) / 2, 30),
             size=(140, 50),
-            label=bui.Lstr(resource="okText"),
+            label=bui.Lstr(resource='okText'),
             on_activate_call=self._ok,
         )
         bui.containerwidget(
             edit=self._root_widget, selected_child=btn, start_button=btn
         )
-        bui.getsound("error").play()
+        bui.getsound('error').play()
 
     def _ok(self) -> None:
-        bui.containerwidget(edit=self._root_widget, transition="out_left")
+        bui.containerwidget(edit=self._root_widget, transition='out_left')

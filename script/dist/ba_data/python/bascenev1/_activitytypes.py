@@ -91,11 +91,13 @@ class JoinActivity(Activity[EmptyPlayer, EmptyTeam]):
         from bascenev1lib.actor.background import Background
 
         super().on_transition_in()
-        self._background = Background(fade_time=0.5, start_faded=True, show_logo=True)
+        self._background = Background(
+            fade_time=0.5, start_faded=True, show_logo=True
+        )
         self._tips_text = TipsText()
         setmusic(MusicType.CHAR_SELECT)
         self._join_info = self.session.lobby.create_join_info()
-        babase.set_analytics_screen("Joining Screen")
+        babase.set_analytics_screen('Joining Screen')
 
 
 class TransitionActivity(Activity[EmptyPlayer, EmptyTeam]):
@@ -122,7 +124,9 @@ class TransitionActivity(Activity[EmptyPlayer, EmptyTeam]):
         from bascenev1lib.actor.background import Background
 
         super().on_transition_in()
-        self._background = Background(fade_time=0.5, start_faded=False, show_logo=False)
+        self._background = Background(
+            fade_time=0.5, start_faded=False, show_logo=False
+        )
 
     @override
     def on_begin(self) -> None:
@@ -167,7 +171,9 @@ class ScoreScreenActivity(Activity[EmptyPlayer, EmptyTeam]):
 
         # If we're still kicking at the end of our assign-delay, assign this
         # guy's input to trigger us.
-        _bascenev1.timer(time_till_assign, babase.WeakCall(self._safe_assign, player))
+        _bascenev1.timer(
+            time_till_assign, babase.WeakCall(self._safe_assign, player)
+        )
 
     @override
     def on_transition_in(self) -> None:
@@ -175,7 +181,9 @@ class ScoreScreenActivity(Activity[EmptyPlayer, EmptyTeam]):
         from bascenev1lib.actor.background import Background
 
         super().on_transition_in()
-        self._background = Background(fade_time=0.5, start_faded=False, show_logo=True)
+        self._background = Background(
+            fade_time=0.5, start_faded=False, show_logo=True
+        )
         if self._default_show_tips:
             self._tips_text = TipsText()
         setmusic(self.default_music)
@@ -194,9 +202,9 @@ class ScoreScreenActivity(Activity[EmptyPlayer, EmptyTeam]):
         if babase.app.ui_v1.uiscale is babase.UIScale.LARGE:
             # FIXME: Need a better way to determine whether we've probably
             #  got a keyboard.
-            sval = babase.Lstr(resource="pressAnyKeyButtonText")
+            sval = babase.Lstr(resource='pressAnyKeyButtonText')
         else:
-            sval = babase.Lstr(resource="pressAnyButtonText")
+            sval = babase.Lstr(resource='pressAnyButtonText')
 
         Text(
             (
@@ -224,7 +232,9 @@ class ScoreScreenActivity(Activity[EmptyPlayer, EmptyTeam]):
             and babase.app.classic.server is not None
             and self._server_transitioning is None
         ):
-            self._server_transitioning = babase.app.classic.server.handle_transition()
+            self._server_transitioning = (
+                babase.app.classic.server.handle_transition()
+            )
             assert isinstance(self._server_transitioning, bool)
 
         # If server-mode is handling this, don't do anything ourself.

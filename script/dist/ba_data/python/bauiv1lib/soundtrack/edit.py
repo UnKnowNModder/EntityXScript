@@ -21,16 +21,16 @@ class SoundtrackEditWindow(bui.MainWindow):
     def __init__(
         self,
         existing_soundtrack: str | dict[str, Any] | None,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         # pylint: disable=too-many-statements
         # pylint: disable=too-many-locals
 
         appconfig = bui.app.config
-        self._r = "editSoundtrackWindow"
-        self._folder_tex = bui.gettexture("folder")
-        self._file_tex = bui.gettexture("file")
+        self._r = 'editSoundtrackWindow'
+        self._folder_tex = bui.gettexture('folder')
+        self._file_tex = bui.gettexture('file')
         assert bui.app.classic is not None
         uiscale = bui.app.ui_v1.uiscale
         self._width = 1200 if uiscale is bui.UIScale.SMALL else 648
@@ -82,7 +82,7 @@ class SoundtrackEditWindow(bui.MainWindow):
             position=(x_inset + 10, yoffs - 60),
             size=(160, 60),
             autoselect=True,
-            label=bui.Lstr(resource="cancelText"),
+            label=bui.Lstr(resource='cancelText'),
             scale=0.8,
         )
         save_button = bui.buttonwidget(
@@ -95,7 +95,7 @@ class SoundtrackEditWindow(bui.MainWindow):
             ),
             autoselect=True,
             size=(160, 60),
-            label=bui.Lstr(resource="saveText"),
+            label=bui.Lstr(resource='saveText'),
             scale=0.8,
         )
         bui.widget(edit=save_button, left_widget=cancel_button)
@@ -107,19 +107,19 @@ class SoundtrackEditWindow(bui.MainWindow):
             text=bui.Lstr(
                 resource=self._r
                 + (
-                    ".editSoundtrackText"
+                    '.editSoundtrackText'
                     if existing_soundtrack is not None
-                    else ".newSoundtrackText"
+                    else '.newSoundtrackText'
                 )
             ),
             color=bui.app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             maxwidth=270,
         )
         v = yoffs - 110
-        if "Soundtracks" not in appconfig:
-            appconfig["Soundtracks"] = {}
+        if 'Soundtracks' not in appconfig:
+            appconfig['Soundtracks'] = {}
 
         self._soundtrack_name: str | None
         self._existing_soundtrack = existing_soundtrack
@@ -128,18 +128,20 @@ class SoundtrackEditWindow(bui.MainWindow):
             # if they passed just a name, pull info from that soundtrack
             if isinstance(existing_soundtrack, str):
                 self._soundtrack = copy.deepcopy(
-                    appconfig["Soundtracks"][existing_soundtrack]
+                    appconfig['Soundtracks'][existing_soundtrack]
                 )
                 self._soundtrack_name = existing_soundtrack
                 self._existing_soundtrack_name = existing_soundtrack
                 self._last_edited_song_type = None
             else:
                 # Otherwise they can pass info on an in-progress edit.
-                self._soundtrack = existing_soundtrack["soundtrack"]
-                self._soundtrack_name = existing_soundtrack["name"]
-                self._existing_soundtrack_name = existing_soundtrack["existing_name"]
+                self._soundtrack = existing_soundtrack['soundtrack']
+                self._soundtrack_name = existing_soundtrack['name']
+                self._existing_soundtrack_name = existing_soundtrack[
+                    'existing_name'
+                ]
                 self._last_edited_song_type = existing_soundtrack[
-                    "last_edited_song_type"
+                    'last_edited_song_type'
                 ]
         else:
             self._soundtrack_name = None
@@ -149,28 +151,28 @@ class SoundtrackEditWindow(bui.MainWindow):
 
         bui.textwidget(
             parent=self._root_widget,
-            text=bui.Lstr(resource=f"{self._r}.nameText"),
+            text=bui.Lstr(resource=f'{self._r}.nameText'),
             maxwidth=80,
             scale=0.8,
             position=(105 + x_inset, v + 19),
             color=(0.8, 0.8, 0.8, 0.5),
             size=(0, 0),
-            h_align="right",
-            v_align="center",
+            h_align='right',
+            v_align='center',
         )
 
         # if there's no initial value, find a good initial unused name
         if existing_soundtrack is None:
             i = 1
             st_name_text = bui.Lstr(
-                resource=f"{self._r}.newSoundtrackNameText"
+                resource=f'{self._r}.newSoundtrackNameText'
             ).evaluate()
-            if "${COUNT}" not in st_name_text:
+            if '${COUNT}' not in st_name_text:
                 # make sure we insert number *somewhere*
-                st_name_text = st_name_text + " ${COUNT}"
+                st_name_text = st_name_text + ' ${COUNT}'
             while True:
-                self._soundtrack_name = st_name_text.replace("${COUNT}", str(i))
-                if self._soundtrack_name not in appconfig["Soundtracks"]:
+                self._soundtrack_name = st_name_text.replace('${COUNT}', str(i))
+                if self._soundtrack_name not in appconfig['Soundtracks']:
                     break
                 i += 1
 
@@ -179,11 +181,11 @@ class SoundtrackEditWindow(bui.MainWindow):
             position=(120 + x_inset, v - 5),
             size=(self._width - (160 + 2 * x_inset), 43),
             text=self._soundtrack_name,
-            h_align="left",
-            v_align="center",
+            h_align='left',
+            v_align='center',
             max_chars=32,
             autoselect=True,
-            description=bui.Lstr(resource=f"{self._r}.nameText"),
+            description=bui.Lstr(resource=f'{self._r}.nameText'),
             editable=True,
             padding=4,
             on_return_press_call=self._do_it_with_sound,
@@ -226,10 +228,10 @@ class SoundtrackEditWindow(bui.MainWindow):
         # Pull this out of self here; if we do it in the lambda we'll
         # keep our window alive due to the 'self' reference.
         existing_soundtrack = {
-            "name": self._soundtrack_name,
-            "existing_name": self._existing_soundtrack_name,
-            "soundtrack": self._soundtrack,
-            "last_edited_song_type": self._last_edited_song_type,
+            'name': self._soundtrack_name,
+            'existing_name': self._existing_soundtrack_name,
+            'soundtrack': self._soundtrack,
+            'last_edited_song_type': self._last_edited_song_type,
         }
 
         return bui.BasicMainWindowState(
@@ -245,30 +247,30 @@ class SoundtrackEditWindow(bui.MainWindow):
             widget.delete()
 
         types = [
-            "Menu",
-            "CharSelect",
-            "ToTheDeath",
-            "Onslaught",
-            "Keep Away",
-            "Race",
-            "Epic Race",
-            "ForwardMarch",
-            "FlagCatcher",
-            "Survival",
-            "Epic",
-            "Hockey",
-            "Football",
-            "Flying",
-            "Scary",
-            "Marching",
-            "GrandRomp",
-            "Chosen One",
-            "Scores",
-            "Victory",
+            'Menu',
+            'CharSelect',
+            'ToTheDeath',
+            'Onslaught',
+            'Keep Away',
+            'Race',
+            'Epic Race',
+            'ForwardMarch',
+            'FlagCatcher',
+            'Survival',
+            'Epic',
+            'Hockey',
+            'Football',
+            'Flying',
+            'Scary',
+            'Marching',
+            'GrandRomp',
+            'Chosen One',
+            'Scores',
+            'Victory',
         ]
 
         # FIXME: We should probably convert this to use translations.
-        type_names_translated = bui.app.lang.get_resource("soundtrackTypeNames")
+        type_names_translated = bui.app.lang.get_resource('soundtrackTypeNames')
         prev_type_button: bui.Widget | None = None
         prev_test_button: bui.Widget | None = None
 
@@ -286,8 +288,8 @@ class SoundtrackEditWindow(bui.MainWindow):
                 always_highlight=True,
                 text=type_name,
                 scale=0.7,
-                h_align="left",
-                v_align="center",
+                h_align='left',
+                v_align='center',
                 maxwidth=self._scroll_width - 360,
             )
 
@@ -306,13 +308,17 @@ class SoundtrackEditWindow(bui.MainWindow):
                 size=(230, 32),
                 label=self._get_entry_button_display_name(entry),
                 text_scale=0.6,
-                on_activate_call=bui.Call(self._get_entry, song_type, entry, type_name),
+                on_activate_call=bui.Call(
+                    self._get_entry, song_type, entry, type_name
+                ),
                 icon=(
                     self._file_tex
-                    if icon_type == "file"
-                    else self._folder_tex if icon_type == "folder" else None
+                    if icon_type == 'file'
+                    else self._folder_tex if icon_type == 'folder' else None
                 ),
-                icon_color=((1.1, 0.8, 0.2) if icon_type == "folder" else (1, 1, 1)),
+                icon_color=(
+                    (1.1, 0.8, 0.2) if icon_type == 'folder' else (1, 1, 1)
+                ),
                 left_widget=self._text_field,
                 iconscale=0.7,
                 autoselect=True,
@@ -326,7 +332,9 @@ class SoundtrackEditWindow(bui.MainWindow):
                 self._last_edited_song_type is not None
                 and song_type == self._last_edited_song_type
             ):
-                bui.containerwidget(edit=row, selected_child=btn, visible_child=btn)
+                bui.containerwidget(
+                    edit=row, selected_child=btn, visible_child=btn
+                )
                 bui.containerwidget(
                     edit=self._col, selected_child=row, visible_child=row
                 )
@@ -344,12 +352,12 @@ class SoundtrackEditWindow(bui.MainWindow):
             if prev_type_button is not None:
                 bui.widget(edit=prev_type_button, down_widget=btn)
             prev_type_button = btn
-            bui.textwidget(parent=row, size=(10, 32), text="")  # spacing
+            bui.textwidget(parent=row, size=(10, 32), text='')  # spacing
             assert bui.app.classic is not None
             btn = bui.buttonwidget(
                 parent=row,
                 size=(50, 32),
-                label=bui.Lstr(resource=f"{self._r}.testText"),
+                label=bui.Lstr(resource=f'{self._r}.testText'),
                 text_scale=0.6,
                 on_activate_call=bui.Call(self._test, bs.MusicType(song_type)),
                 up_widget=(
@@ -364,22 +372,26 @@ class SoundtrackEditWindow(bui.MainWindow):
             prev_test_button = btn
 
     @classmethod
-    def _restore_editor(cls, state: dict[str, Any], musictype: str, entry: Any) -> None:
+    def _restore_editor(
+        cls, state: dict[str, Any], musictype: str, entry: Any
+    ) -> None:
         assert bui.app.classic is not None
         music = bui.app.classic.music
 
         # Apply the change and recreate the window.
-        soundtrack = state["soundtrack"]
-        existing_entry = None if musictype not in soundtrack else soundtrack[musictype]
+        soundtrack = state['soundtrack']
+        existing_entry = (
+            None if musictype not in soundtrack else soundtrack[musictype]
+        )
         if existing_entry != entry:
-            bui.getsound("gunCocking").play()
+            bui.getsound('gunCocking').play()
 
         # Make sure this doesn't get mucked with after we get it.
         if entry is not None:
             entry = copy.deepcopy(entry)
 
         entry_type = music.get_soundtrack_entry_type(entry)
-        if entry_type == "default":
+        if entry_type == 'default':
             # For 'default' entries simply exclude them from the list.
             if musictype in soundtrack:
                 del soundtrack[musictype]
@@ -389,7 +401,7 @@ class SoundtrackEditWindow(bui.MainWindow):
         mainwindow = bui.app.ui_v1.get_main_window()
         assert mainwindow is not None
 
-        mainwindow.main_window_back_state = state["back_state"]
+        mainwindow.main_window_back_state = state['back_state']
         mainwindow.main_window_back()
 
     def _get_entry(
@@ -402,13 +414,13 @@ class SoundtrackEditWindow(bui.MainWindow):
         if not self.main_window_has_control():
             return
 
-        if selection_target_name != "":
+        if selection_target_name != '':
             selection_target_name = "'" + selection_target_name + "'"
         state = {
-            "name": self._soundtrack_name,
-            "existing_name": self._existing_soundtrack_name,
-            "soundtrack": self._soundtrack,
-            "last_edited_song_type": song_type,
+            'name': self._soundtrack_name,
+            'existing_name': self._existing_soundtrack_name,
+            'soundtrack': self._soundtrack,
+            'last_edited_song_type': song_type,
         }
         new_win = music.get_music_player().select_entry(
             bui.Call(self._restore_editor, state, song_type),
@@ -420,17 +432,17 @@ class SoundtrackEditWindow(bui.MainWindow):
         # Once we've set the new window, grab the back-state; we'll use
         # that to jump back here after selection completes.
         assert new_win.main_window_back_state is not None
-        state["back_state"] = new_win.main_window_back_state
+        state['back_state'] = new_win.main_window_back_state
 
     def _test(self, song_type: bs.MusicType) -> None:
         assert bui.app.classic is not None
         music = bui.app.classic.music
 
         # Warn if volume is zero.
-        if bui.app.config.resolve("Music Volume") < 0.01:
-            bui.getsound("error").play()
+        if bui.app.config.resolve('Music Volume') < 0.01:
+            bui.getsound('error').play()
             bui.screenmessage(
-                bui.Lstr(resource=f"{self._r}.musicVolumeZeroWarning"),
+                bui.Lstr(resource=f'{self._r}.musicVolumeZeroWarning'),
                 color=(1, 0.5, 0),
             )
         music.set_music_play_mode(bui.app.classic.MusicPlayMode.TEST)
@@ -445,9 +457,9 @@ class SoundtrackEditWindow(bui.MainWindow):
         music = bui.app.classic.music
         etype = music.get_soundtrack_entry_type(entry)
         ename: str | bui.Lstr
-        if etype == "default":
-            ename = bui.Lstr(resource=f"{self._r}.defaultGameMusicText")
-        elif etype in ("musicFile", "musicFolder"):
+        if etype == 'default':
+            ename = bui.Lstr(resource=f'{self._r}.defaultGameMusicText')
+        elif etype in ('musicFile', 'musicFolder'):
             ename = os.path.basename(music.get_soundtrack_entry_name(entry))
         else:
             ename = music.get_soundtrack_entry_name(entry)
@@ -457,10 +469,10 @@ class SoundtrackEditWindow(bui.MainWindow):
         assert bui.app.classic is not None
         music = bui.app.classic.music
         etype = music.get_soundtrack_entry_type(entry)
-        if etype == "musicFile":
-            return "file"
-        if etype == "musicFolder":
-            return "folder"
+        if etype == 'musicFile':
+            return 'file'
+        if etype == 'musicFolder':
+            return 'folder'
         return None
 
     def _cancel(self) -> None:
@@ -488,36 +500,42 @@ class SoundtrackEditWindow(bui.MainWindow):
         music = bui.app.classic.music
         cfg = bui.app.config
         new_name = cast(str, bui.textwidget(query=self._text_field))
-        if new_name != self._soundtrack_name and new_name in cfg["Soundtracks"]:
-            bui.screenmessage(bui.Lstr(resource=f"{self._r}.cantSaveAlreadyExistsText"))
-            bui.getsound("error").play()
+        if new_name != self._soundtrack_name and new_name in cfg['Soundtracks']:
+            bui.screenmessage(
+                bui.Lstr(resource=f'{self._r}.cantSaveAlreadyExistsText')
+            )
+            bui.getsound('error').play()
             return
         if not new_name:
-            bui.getsound("error").play()
+            bui.getsound('error').play()
             return
         if (
             new_name
-            == bui.Lstr(resource=f"{self._r}.defaultSoundtrackNameText").evaluate()
+            == bui.Lstr(
+                resource=f'{self._r}.defaultSoundtrackNameText'
+            ).evaluate()
         ):
-            bui.screenmessage(bui.Lstr(resource=f"{self._r}.cantOverwriteDefaultText"))
-            bui.getsound("error").play()
+            bui.screenmessage(
+                bui.Lstr(resource=f'{self._r}.cantOverwriteDefaultText')
+            )
+            bui.getsound('error').play()
             return
 
         # Make sure config exists.
-        if "Soundtracks" not in cfg:
-            cfg["Soundtracks"] = {}
+        if 'Soundtracks' not in cfg:
+            cfg['Soundtracks'] = {}
 
         # If we had an old one, delete it.
         if (
             self._existing_soundtrack_name is not None
-            and self._existing_soundtrack_name in cfg["Soundtracks"]
+            and self._existing_soundtrack_name in cfg['Soundtracks']
         ):
-            del cfg["Soundtracks"][self._existing_soundtrack_name]
-        cfg["Soundtracks"][new_name] = self._soundtrack
-        cfg["Soundtrack"] = new_name
+            del cfg['Soundtracks'][self._existing_soundtrack_name]
+        cfg['Soundtracks'][new_name] = self._soundtrack
+        cfg['Soundtrack'] = new_name
 
         cfg.commit()
-        bui.getsound("gunCocking").play()
+        bui.getsound('gunCocking').play()
 
         # Resets music back to normal.
         music.set_music_play_mode(
@@ -527,5 +545,5 @@ class SoundtrackEditWindow(bui.MainWindow):
         self.main_window_back()
 
     def _do_it_with_sound(self) -> None:
-        bui.getsound("swish").play()
+        bui.getsound('swish').play()
         self._do_it()

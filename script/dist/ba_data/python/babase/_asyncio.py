@@ -15,14 +15,18 @@ import logging
 import time
 import os
 
+from efro.util import strip_exception_tracebacks
+
 if TYPE_CHECKING:
+    from typing import Any
+
     import babase
 
 # Our timer and event loop for the ballistica logic thread.
 _asyncio_timer: babase.AppTimer | None = None
 _asyncio_event_loop: asyncio.AbstractEventLoop | None = None
 
-DEBUG_TIMING = os.environ.get("BA_DEBUG_TIMING") == "1"
+DEBUG_TIMING = os.environ.get('BA_DEBUG_TIMING') == '1'
 
 
 def setup_asyncio() -> asyncio.AbstractEventLoop:
@@ -38,13 +42,16 @@ def setup_asyncio() -> asyncio.AbstractEventLoop:
     # running on this thread before we do.
     try:
         asyncio.get_running_loop()
-        print("Found running asyncio loop; unexpected.")
+        print('Found running asyncio loop; unexpected.')
     except RuntimeError:
         pass
 
     global _asyncio_event_loop
     _asyncio_event_loop = asyncio.new_event_loop()
     _asyncio_event_loop.set_default_executor(babase.app.threadpool)
+
+    # Try to avoid reference loops from exceptions.
+    _asyncio_event_loop.set_exception_handler(_exception_handler)
 
     # Ideally we should integrate asyncio into our C++ Thread class's
     # low level event loop so that asyncio timers/sockets/etc. could
@@ -67,7 +74,7 @@ def setup_asyncio() -> asyncio.AbstractEventLoop:
             duration = endtime - starttime
             if duration > warn_time:
                 logging.warning(
-                    "Asyncio loop step took %.4fs; ideal max is %.4f",
+                    'Asyncio loop step took %.4fs; ideal max is %.4f',
                     duration,
                     warn_time,
                 )
@@ -78,12 +85,24 @@ def setup_asyncio() -> asyncio.AbstractEventLoop:
     if bool(False):
 
         async def aio_test() -> None:
-            print("TEST AIO TASK STARTING")
+            print('TEST AIO TASK STARTING')
             assert _asyncio_event_loop is not None
             assert asyncio.get_running_loop() is _asyncio_event_loop
             await asyncio.sleep(2.0)
-            print("TEST AIO TASK ENDING")
+            print('TEST AIO TASK ENDING')
 
         _testtask = _asyncio_event_loop.create_task(aio_test())
 
     return _asyncio_event_loop
+
+
+def _exception_handler(
+    loop: asyncio.AbstractEventLoop, context: dict[str, Any]
+) -> None:
+    # Do default behavior (should log the exception) and then rip out
+    # exception tracebacks to hopefully avoid reference cycles which
+    # would require cyclic garbage collection.
+    loop.default_exception_handler(context)
+    exc = context.get('exception')
+    if isinstance(exc, BaseException):
+        strip_exception_tracebacks(exc)

@@ -38,7 +38,7 @@ class FileValue:
 class State:
     """Holds all persistent state for the asset-manager."""
 
-    files: Annotated[dict[str, FileValue], IOAttrs("files")] = field(
+    files: Annotated[dict[str, FileValue], IOAttrs('files')] = field(
         default_factory=dict
     )
 
@@ -49,7 +49,7 @@ class AssetManager:
     _state: State
 
     def __init__(self, rootdir: Path) -> None:
-        print("AssetManager()")
+        print('AssetManager()')
         assert isinstance(rootdir, Path)
         self.thread_ident = threading.get_ident()
         self._rootdir = rootdir
@@ -60,9 +60,9 @@ class AssetManager:
         self.load_state()
 
     def __del__(self) -> None:
-        print("~AssetManager()")
+        print('~AssetManager()')
         if self._started:
-            logging.warning("AssetManager dying in a started state.")
+            logging.warning('AssetManager dying in a started state.')
 
     def launch_gather(
         self,
@@ -72,11 +72,11 @@ class AssetManager:
     ) -> AssetGather:
         """Spawn an asset-gather operation from this manager."""
         print(
-            "would gather",
+            'would gather',
             packages,
-            "and flavor",
+            'and flavor',
             flavor,
-            "with token",
+            'with token',
             account_token,
         )
         return AssetGather(self)
@@ -90,7 +90,7 @@ class AssetManager:
         This will initiate network activity and other processing.
         """
         if self._started:
-            logging.warning("AssetManager.start() called on running manager.")
+            logging.warning('AssetManager.start() called on running manager.')
         self._started = True
 
     def stop(self) -> None:
@@ -99,7 +99,7 @@ class AssetManager:
         All network activity should be ceased before this function returns.
         """
         if not self._started:
-            logging.warning("AssetManager.stop() called on stopped manager.")
+            logging.warning('AssetManager.stop() called on stopped manager.')
         self._started = False
         self.save_state()
 
@@ -111,30 +111,30 @@ class AssetManager:
     @property
     def state_path(self) -> Path:
         """The path of the state file."""
-        return Path(self._rootdir, "state")
+        return Path(self._rootdir, 'state')
 
     def load_state(self) -> None:
         """Loads state from disk. Resets to default state if unable to."""
-        print("ASSET-MANAGER LOADING STATE")
+        print('ASSET-MANAGER LOADING STATE')
         try:
             state_path = self.state_path
             if state_path.exists():
-                with open(self.state_path, encoding="utf-8") as infile:
+                with open(self.state_path, encoding='utf-8') as infile:
                     self._state = dataclass_from_json(State, infile.read())
                     return
         except Exception:
-            logging.exception("Error loading existing AssetManager state")
+            logging.exception('Error loading existing AssetManager state')
         self._state = State()
 
     def save_state(self) -> None:
         """Save state to disk (if possible)."""
 
-        print("ASSET-MANAGER SAVING STATE")
+        print('ASSET-MANAGER SAVING STATE')
         try:
-            with open(self.state_path, "w", encoding="utf-8") as outfile:
+            with open(self.state_path, 'w', encoding='utf-8') as outfile:
                 outfile.write(dataclass_to_json(self._state))
         except Exception:
-            logging.exception("Error writing AssetManager state")
+            logging.exception('Error writing AssetManager state')
 
 
 class AssetGather:
@@ -144,7 +144,7 @@ class AssetGather:
         assert threading.get_ident() == manager.thread_ident
         self._manager = weakref.ref(manager)
         # self._valid = True
-        print("AssetGather()")
+        print('AssetGather()')
         # url = 'https://files.ballistica.net/bombsquad/promo/BSGamePlay.mov'
         # url = 'http://www.python.org/ftp/python/2.7.3/Python-2.7.3.tgz'
         # fetch_url(url,
@@ -156,7 +156,7 @@ class AssetGather:
 
     def _run(self) -> None:
         """Run the gather in a background thread."""
-        print("hello from gather bg")
+        print('hello from gather bg')
 
         # First, do some sort of.
 
@@ -169,7 +169,7 @@ class AssetGather:
     #     return True
 
     def __del__(self) -> None:
-        print("~AssetGather()")
+        print('~AssetGather()')
 
 
 def fetch_url(url: str, filename: Path, asset_gather: AssetGather) -> None:
@@ -184,7 +184,7 @@ def fetch_url(url: str, filename: Path, asset_gather: AssetGather) -> None:
     # weak_gather = weakref.ref(asset_gather)
 
     if bool(True):
-        raise RuntimeError("should not be using this")
+        raise RuntimeError('should not be using this')
 
     # Pass a very short timeout to urllib so we have opportunities
     # to cancel even with network blockage.
@@ -196,19 +196,19 @@ def fetch_url(url: str, filename: Path, asset_gather: AssetGather) -> None:
     #     context=_babase.app.net.sslcontext,
     #     timeout=1,
     # )
-    file_size = int(req.headers["Content-Length"])
-    print(f"\nDownloading: {filename} Bytes: {file_size:,}")
+    file_size = int(req.headers['Content-Length'])
+    print(f'\nDownloading: {filename} Bytes: {file_size:,}')
 
     def doit() -> None:
         time.sleep(1)
-        print("dir", type(req.fp), dir(req.fp))
-        print("WOULD DO IT", flush=True)
+        print('dir', type(req.fp), dir(req.fp))
+        print('WOULD DO IT', flush=True)
         # req.close()
         # req.fp.close()
 
     threading.Thread(target=doit).start()
 
-    with open(filename, "wb") as outfile:
+    with open(filename, 'wb') as outfile:
         file_size_dl = 0
 
         block_sz = 1024 * 1024 * 1000
@@ -220,30 +220,33 @@ def fetch_url(url: str, filename: Path, asset_gather: AssetGather) -> None:
                 import traceback
 
                 traceback.print_exc()
-                print("VALUEERROR", flush=True)
+                print('VALUEERROR', flush=True)
                 break
             except socket.timeout:
-                print("TIMEOUT", flush=True)
+                print('TIMEOUT', flush=True)
                 # File has not had activity in max seconds.
                 if time_outs > 3:
-                    print("\n\n\nsorry -- try back later")
+                    print('\n\n\nsorry -- try back later')
                     os.unlink(filename)
                     raise
-                print("\nHmmm... little issue... " "I'll wait a couple of seconds")
+                print(
+                    '\nHmmm... little issue... '
+                    'I\'ll wait a couple of seconds'
+                )
                 time.sleep(3)
                 time_outs += 1
                 continue
 
             # We reached the end of the download!
             if not data:
-                sys.stdout.write("\rDone!\n\n")
+                sys.stdout.write('\rDone!\n\n')
                 sys.stdout.flush()
                 break
 
             file_size_dl += len(data)
             outfile.write(data)
             percent = file_size_dl * 1.0 / file_size
-            status = f"{file_size_dl:20,} Bytes [{percent:.2%}] received"
-            sys.stdout.write("\r" + status)
+            status = f'{file_size_dl:20,} Bytes [{percent:.2%}] received'
+            sys.stdout.write('\r' + status)
             sys.stdout.flush()
-    print("done with", req.fp)
+    print('done with', req.fp)

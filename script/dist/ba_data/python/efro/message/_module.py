@@ -102,10 +102,10 @@ def create_receiver_module(
 def _protocol_from_code(protocol_create_code: str) -> MessageProtocol:
     env: dict = {}
     exec(protocol_create_code, env)  # pylint: disable=exec-used
-    protocol = env.get("protocol")
+    protocol = env.get('protocol')
     if not isinstance(protocol, MessageProtocol):
         raise RuntimeError(
-            f"protocol_create_code yielded"
-            f" a {type(protocol)}; expected a MessageProtocol instance."
+            f'protocol_create_code yielded'
+            f' a {type(protocol)}; expected a MessageProtocol instance.'
         )
     return protocol

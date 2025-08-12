@@ -60,11 +60,11 @@ class TournamentScoresWindow(PopupWindow):
             position=(50, self._height - 30),
             size=(50, 50),
             scale=0.5,
-            label="",
+            label='',
             color=bg_color,
             on_activate_call=self._on_cancel_press,
             autoselect=True,
-            icon=bui.gettexture("crossOut"),
+            icon=bui.gettexture('crossOut'),
             iconscale=1.2,
         )
 
@@ -72,10 +72,10 @@ class TournamentScoresWindow(PopupWindow):
             parent=self.root_widget,
             position=(self._width * 0.5, self._height - 20),
             size=(0, 0),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             scale=0.6,
-            text=bui.Lstr(resource="tournamentStandingsText"),
+            text=bui.Lstr(resource='tournamentStandingsText'),
             maxwidth=200,
             color=bui.app.ui_v1.title_color,
         )
@@ -93,53 +93,57 @@ class TournamentScoresWindow(PopupWindow):
         self._loading_spinner = bui.spinnerwidget(
             parent=self.root_widget,
             position=(self._width * 0.5, self._height * 0.5),
-            style="bomb",
+            style='bomb',
             size=48,
         )
         self._loading_text = bui.textwidget(
             parent=self._scrollwidget,
             scale=0.5,
-            text="",
+            text='',
             size=(self._width - 60, 100),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )
 
-        bui.containerwidget(edit=self.root_widget, cancel_button=self._cancel_button)
+        bui.containerwidget(
+            edit=self.root_widget, cancel_button=self._cancel_button
+        )
 
         plus.tournament_query(
             args={
-                "tournamentIDs": [tournament_id],
-                "numScores": 50,
-                "source": "scores window",
+                'tournamentIDs': [tournament_id],
+                'numScores': 50,
+                'source': 'scores window',
             },
             callback=bui.WeakCall(self._on_tournament_query_response),
         )
 
-    def _on_tournament_query_response(self, data: dict[str, Any] | None) -> None:
+    def _on_tournament_query_response(
+        self, data: dict[str, Any] | None
+    ) -> None:
         if data is not None:
             # This used to be the whole payload.
-            data_t: list[dict[str, Any]] = data["t"]
+            data_t: list[dict[str, Any]] = data['t']
 
             # Kill our loading text if we've got scores; otherwise just
             # replace it with 'no scores yet'.
             bui.spinnerwidget(edit=self._loading_spinner, visible=False)
-            if data_t[0]["scores"]:
+            if data_t[0]['scores']:
                 self._loading_text.delete()
             else:
                 bui.textwidget(
                     edit=self._loading_text,
-                    text=bui.Lstr(resource="noScoresYetText"),
+                    text=bui.Lstr(resource='noScoresYetText'),
                 )
             incr = 30
             sub_width = self._width - 90
-            sub_height = 30 + len(data_t[0]["scores"]) * incr
+            sub_height = 30 + len(data_t[0]['scores']) * incr
             self._subcontainer = bui.containerwidget(
                 parent=self._scrollwidget,
                 size=(sub_width, sub_height),
                 background=False,
             )
-            for i, entry in enumerate(data_t[0]["scores"]):
+            for i, entry in enumerate(data_t[0]['scores']):
                 bui.textwidget(
                     parent=self._subcontainer,
                     position=(sub_width * 0.1 - 5, sub_height - 20 - incr * i),
@@ -150,8 +154,8 @@ class TournamentScoresWindow(PopupWindow):
                     shadow=0.0,
                     text=str(i + 1),
                     size=(0, 0),
-                    h_align="right",
-                    v_align="center",
+                    h_align='right',
+                    v_align='center',
                 )
 
                 bui.textwidget(
@@ -167,12 +171,12 @@ class TournamentScoresWindow(PopupWindow):
                             (entry[0] * 10) / 1000.0,
                             centi=True,
                         )
-                        if data_t[0]["scoreType"] == "time"
+                        if data_t[0]['scoreType'] == 'time'
                         else str(entry[0])
                     ),
                     size=(0, 0),
-                    h_align="center",
-                    v_align="center",
+                    h_align='center',
+                    v_align='center',
                 )
 
                 txt = bui.textwidget(
@@ -191,13 +195,15 @@ class TournamentScoresWindow(PopupWindow):
                     autoselect=True,
                     extra_touch_border_scale=0.0,
                     size=((sub_width * 0.6) / 0.7, incr / 0.7),
-                    h_align="left",
-                    v_align="center",
+                    h_align='left',
+                    v_align='center',
                 )
 
                 bui.textwidget(
                     edit=txt,
-                    on_activate_call=bui.Call(self._show_player_info, entry, txt),
+                    on_activate_call=bui.Call(
+                        self._show_player_info, entry, txt
+                    ),
                 )
                 if i == 0:
                     bui.widget(edit=txt, up_widget=self._cancel_button)
@@ -208,12 +214,12 @@ class TournamentScoresWindow(PopupWindow):
         # For the moment we only work if a single player-info is
         # present.
         if len(entry[2]) != 1:
-            bui.getsound("error").play()
+            bui.getsound('error').play()
             return
-        bui.getsound("swish").play()
+        bui.getsound('swish').play()
         AccountViewerWindow(
-            account_id=entry[2][0].get("a", None),
-            profile_id=entry[2][0].get("p", None),
+            account_id=entry[2][0].get('a', None),
+            profile_id=entry[2][0].get('p', None),
             position=textwidget.get_screen_space_center(),
         )
         self._transition_out()
@@ -224,9 +230,9 @@ class TournamentScoresWindow(PopupWindow):
     def _transition_out(self) -> None:
         if not self._transitioning_out:
             self._transitioning_out = True
-            bui.containerwidget(edit=self.root_widget, transition="out_scale")
+            bui.containerwidget(edit=self.root_widget, transition='out_scale')
 
     @override
     def on_popup_cancel(self) -> None:
-        bui.getsound("swish").play()
+        bui.getsound('swish').play()
         self._transition_out()

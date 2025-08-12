@@ -26,8 +26,8 @@ class SharedObjects:
         activity = bs.getactivity()
         if self._STORENAME in activity.customdata:
             raise RuntimeError(
-                "Use SharedObjects.get() to fetch the"
-                " shared instance for this activity."
+                'Use SharedObjects.get() to fetch the'
+                ' shared instance for this activity.'
             )
         self._object_material: bs.Material | None = None
         self._player_material: bs.Material | None = None
@@ -110,7 +110,9 @@ class SharedObjects:
         """
         if self._death_material is None:
             mat = self._death_material = bs.Material()
-            mat.add_actions(("message", "their_node", "at_connect", bs.DieMessage()))
+            mat.add_actions(
+                ('message', 'their_node', 'at_connect', bs.DieMessage())
+            )
         return self._death_material
 
     @property
@@ -131,14 +133,14 @@ class SharedObjects:
         """
         if self._railing_material is None:
             mat = self._railing_material = bs.Material()
-            mat.add_actions(("modify_part_collision", "collide", False))
-            mat.add_actions(("modify_part_collision", "stiffness", 0.003))
-            mat.add_actions(("modify_part_collision", "damping", 0.00001))
+            mat.add_actions(('modify_part_collision', 'collide', False))
+            mat.add_actions(('modify_part_collision', 'stiffness', 0.003))
+            mat.add_actions(('modify_part_collision', 'damping', 0.00001))
             mat.add_actions(
-                conditions=("they_have_material", self.player_material),
+                conditions=('they_have_material', self.player_material),
                 actions=(
-                    ("modify_part_collision", "collide", True),
-                    ("modify_part_collision", "friction", 0.0),
+                    ('modify_part_collision', 'collide', True),
+                    ('modify_part_collision', 'friction', 0.0),
                 ),
             )
         return self._railing_material

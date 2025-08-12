@@ -30,15 +30,15 @@ from baclassic._displayitem import show_display_item
 from baclassic._music import MusicPlayer
 
 __all__ = [
-    "ChestAppearanceDisplayInfo",
-    "CHEST_APPEARANCE_DISPLAY_INFO_DEFAULT",
-    "CHEST_APPEARANCE_DISPLAY_INFOS",
-    "ClassicAppMode",
-    "ClassicAppSubsystem",
-    "Achievement",
-    "AchievementSubsystem",
-    "show_display_item",
-    "MusicPlayer",
+    'ChestAppearanceDisplayInfo',
+    'CHEST_APPEARANCE_DISPLAY_INFO_DEFAULT',
+    'CHEST_APPEARANCE_DISPLAY_INFOS',
+    'ClassicAppMode',
+    'ClassicAppSubsystem',
+    'Achievement',
+    'AchievementSubsystem',
+    'show_display_item',
+    'MusicPlayer',
 ]
 
 # We want stuff here to show up as packagename.Foo instead of
@@ -52,10 +52,11 @@ __all__ = [
 # modules to make sure they never directly or indirectly import us
 # before their own execs complete.
 if __debug__:
-    for _mdl in "babase", "_babase":
-        if not hasattr(__import__(_mdl), "_REACHED_END_OF_MODULE"):
+    for _mdl in 'babase', '_babase':
+        if not hasattr(__import__(_mdl), '_REACHED_END_OF_MODULE'):
             logging.warning(
-                "%s was imported before %s finished importing;" " should not happen.",
+                '%s was imported before %s finished importing;'
+                ' should not happen.',
                 __name__,
                 _mdl,
             )

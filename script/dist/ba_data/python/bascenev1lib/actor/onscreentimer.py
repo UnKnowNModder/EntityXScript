@@ -22,23 +22,23 @@ class OnScreenTimer(bs.Actor):
         super().__init__()
         self._starttime_ms: int | None = None
         self.node = bs.newnode(
-            "text",
+            'text',
             attrs={
-                "v_attach": "top",
-                "h_attach": "center",
-                "h_align": "center",
-                "color": (1, 1, 0.5, 1),
-                "flatness": 0.5,
-                "shadow": 0.5,
-                "position": (0, -70),
-                "scale": 1.4,
-                "text": "",
+                'v_attach': 'top',
+                'h_attach': 'center',
+                'h_align': 'center',
+                'color': (1, 1, 0.5, 1),
+                'flatness': 0.5,
+                'shadow': 0.5,
+                'position': (0, -70),
+                'scale': 1.4,
+                'text': '',
             },
         )
         self.inputnode = bs.newnode(
-            "timedisplay", attrs={"timemin": 0, "showsubseconds": True}
+            'timedisplay', attrs={'timemin': 0, 'showsubseconds': True}
         )
-        self.inputnode.connectattr("output", self.node, "text")
+        self.inputnode.connectattr('output', self.node, 'text')
 
     def start(self) -> None:
         """Start the timer."""
@@ -46,7 +46,9 @@ class OnScreenTimer(bs.Actor):
         assert isinstance(tval, int)
         self._starttime_ms = tval
         self.inputnode.time1 = self._starttime_ms
-        bs.getactivity().globalsnode.connectattr("time", self.inputnode, "time2")
+        bs.getactivity().globalsnode.connectattr(
+            'time', self.inputnode, 'time2'
+        )
 
     def has_started(self) -> bool:
         """Return whether this timer has started yet."""
@@ -62,7 +64,9 @@ class OnScreenTimer(bs.Actor):
             endtime = bs.time()
 
         if self._starttime_ms is None:
-            logging.warning("OnScreenTimer.stop() called without first calling start()")
+            logging.warning(
+                'OnScreenTimer.stop() called without first calling start()'
+            )
         else:
             endtime_ms = int(endtime * 1000)
             self.inputnode.timemax = endtime_ms - self._starttime_ms
@@ -75,7 +79,7 @@ class OnScreenTimer(bs.Actor):
         """
         val_ms: Any
         if self._starttime_ms is None:
-            print("WARNING: getstarttime() called on un-started timer")
+            print('WARNING: getstarttime() called on un-started timer')
             val_ms = int(bs.time() * 1000.0)
         else:
             val_ms = self._starttime_ms

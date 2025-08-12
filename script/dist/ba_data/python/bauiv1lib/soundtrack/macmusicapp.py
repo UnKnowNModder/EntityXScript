@@ -22,12 +22,12 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
         existing_playlist: str | None,
         existing_entry: Any,
         *,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
         from baclassic.macmusicapp import MacMusicAppMusicPlayer
 
-        self._r = "editSoundtrackWindow"
+        self._r = 'editSoundtrackWindow'
         self._callback = callback
         self._existing_playlist = existing_playlist
         self._existing_entry = copy.deepcopy(existing_entry)
@@ -45,7 +45,7 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(35, self._height - 65),
             size=(130, 50),
-            label=bui.Lstr(resource="cancelText"),
+            label=bui.Lstr(resource='cancelText'),
             on_activate_call=self._back,
             autoselect=True,
         )
@@ -55,10 +55,10 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
             parent=self._root_widget,
             position=(20, self._height - 54),
             size=(self._width, 25),
-            text=bui.Lstr(resource=f"{self._r}.selectAPlaylistText"),
+            text=bui.Lstr(resource=f'{self._r}.selectAPlaylistText'),
             color=bui.app.ui_v1.title_color,
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
             maxwidth=200,
         )
         self._scrollwidget = bui.scrollwidget(
@@ -76,7 +76,7 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
         bui.textwidget(
             parent=self._column,
             size=(self._width - 80, 22),
-            text=bui.Lstr(resource=f"{self._r}.fetchingITunesText"),
+            text=bui.Lstr(resource=f'{self._r}.fetchingITunesText'),
             color=(0.6, 0.9, 0.6, 1.0),
             scale=0.8,
         )
@@ -84,7 +84,9 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
         musicplayer = bui.app.classic.music.get_music_player()
         assert isinstance(musicplayer, MacMusicAppMusicPlayer)
         musicplayer.get_playlists(self._playlists_cb)
-        bui.containerwidget(edit=self._root_widget, selected_child=self._scrollwidget)
+        bui.containerwidget(
+            edit=self._root_widget, selected_child=self._scrollwidget
+        )
 
     @override
     def get_main_window_state(self) -> bui.MainWindowState:
@@ -116,7 +118,7 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
                     parent=self._column,
                     size=(self._width - 80, 30),
                     text=playlist,
-                    v_align="center",
+                    v_align='center',
                     maxwidth=self._width - 110,
                     selectable=True,
                     on_activate_call=bui.Call(self._sel, playlist),
@@ -134,7 +136,7 @@ class MacMusicAppPlaylistSelectWindow(bui.MainWindow):
         if self._root_widget:
             # bui.containerwidget(
             # edit=self._root_widget, transition='out_right')
-            self._callback({"type": "iTunesPlaylist", "name": selection})
+            self._callback({'type': 'iTunesPlaylist', 'name': selection})
             self.main_window_back()
 
     def _back(self) -> None:

@@ -21,7 +21,7 @@ def get_human_readable_user_scripts_path() -> str:
     app = _babase.app
     path: str | None = app.env.python_directory_user
     if path is None:
-        return "<Not Available>"
+        return '<Not Available>'
 
     # These days, on Android, we use getExternalFilesDir() as the base of our
     # app's user-scripts dir, which gives us paths like:
@@ -36,8 +36,8 @@ def get_human_readable_user_scripts_path() -> str:
     # and show the whole ugly path as a fallback.
     # Note that we used to use externalStorageText resource but gonna try
     # without it for now. (simply 'foo' instead of <External Storage>/foo).
-    if app.classic is not None and app.classic.platform == "android":
-        for pre in ["/storage/emulated/0/"]:
+    if app.classic is not None and app.classic.platform == 'android':
+        for pre in ['/storage/emulated/0/']:
             if path.startswith(pre):
                 path = path.removeprefix(pre)
                 break
@@ -50,11 +50,13 @@ def _request_storage_permission() -> bool:
     from babase._mgen.enums import Permission
 
     if not _babase.have_permission(Permission.STORAGE):
-        _babase.getsimplesound("error").play()
+        _babase.getsimplesound('error').play()
         _babase.screenmessage(
-            Lstr(resource="storagePermissionAccessText"), color=(1, 0, 0)
+            Lstr(resource='storagePermissionAccessText'), color=(1, 0, 0)
         )
-        _babase.apptimer(1.0, lambda: _babase.request_permission(Permission.STORAGE))
+        _babase.apptimer(
+            1.0, lambda: _babase.request_permission(Permission.STORAGE)
+        )
         return True
     return False
 
@@ -70,7 +72,7 @@ def show_user_scripts() -> None:
 
     # If we're running in a nonstandard environment its possible this is unset.
     if env.python_directory_user is None:
-        _babase.screenmessage("<unset>")
+        _babase.screenmessage('<unset>')
         return
 
     # Secondly, if the dir doesn't exist, attempt to make it.
@@ -83,19 +85,19 @@ def show_user_scripts() -> None:
     # doesn't seem like there's a way to inform the media scanner of an empty
     # directory, which means they would have to reboot their device before
     # they can see it.
-    if app.classic is not None and app.classic.platform == "android":
+    if app.classic is not None and app.classic.platform == 'android':
         try:
             usd: str | None = env.python_directory_user
             if usd is not None and os.path.isdir(usd):
-                file_name = usd + "/about_this_folder.txt"
-                with open(file_name, "w", encoding="utf-8") as outfile:
+                file_name = usd + '/about_this_folder.txt'
+                with open(file_name, 'w', encoding='utf-8') as outfile:
                     outfile.write(
-                        "You can drop files in here to mod the game."
-                        "  See settings/advanced in the game for more info."
+                        'You can drop files in here to mod the game.'
+                        '  See settings/advanced in the game for more info.'
                     )
 
         except Exception:
-            applog.exception("Error writing about_this_folder stuff.")
+            applog.exception('Error writing about_this_folder stuff.')
 
     # On platforms that support it, open the dir in the UI.
     if _babase.supports_open_dir_externally():
@@ -122,19 +124,19 @@ def create_user_system_scripts() -> None:
 
     # Its possible these are unset in non-standard environments.
     if env.python_directory_user is None:
-        raise RuntimeError("user python dir unset")
+        raise RuntimeError('user python dir unset')
     if env.python_directory_app is None:
-        raise RuntimeError("app python dir unset")
+        raise RuntimeError('app python dir unset')
 
     path = (
-        f"{env.python_directory_user}/sys/"
-        f"{env.engine_version}_{env.engine_build_number}"
+        f'{env.python_directory_user}/sys/'
+        f'{env.engine_version}_{env.engine_build_number}'
     )
-    pathtmp = path + "_tmp"
+    pathtmp = path + '_tmp'
     if os.path.exists(path):
-        print("Delete Existing User Scripts first!")
+        print('Delete Existing User Scripts first!')
         _babase.screenmessage(
-            "Delete Existing User Scripts first!",
+            'Delete Existing User Scripts first!',
             color=(1, 0, 0),
         )
         return
@@ -148,7 +150,7 @@ def create_user_system_scripts() -> None:
         # to blow them away anyway to make changes;
         # See https://github.com/efroemling/ballistica/wiki
         # /Knowledge-Nuggets#python-cache-files-gotcha
-        return ("__pycache__",)
+        return ('__pycache__',)
 
     print(f'COPYING "{env.python_directory_app}" -> "{pathtmp}".')
     shutil.copytree(env.python_directory_app, pathtmp, ignore=_ignore_filter)
@@ -158,13 +160,13 @@ def create_user_system_scripts() -> None:
     print(
         f"Created system scripts at :'{path}"
         f"'\nRestart {_babase.appname()} to use them."
-        f" (use babase.quit() to exit the game)"
+        f' (use babase.quit() to exit the game)'
     )
-    _babase.screenmessage("Created User System Scripts", color=(0, 1, 0))
-    if app.classic is not None and app.classic.platform == "android":
+    _babase.screenmessage('Created User System Scripts', color=(0, 1, 0))
+    if app.classic is not None and app.classic.platform == 'android':
         print(
-            "Note: the new files may not be visible via "
-            "android-file-transfer until you restart your device."
+            'Note: the new files may not be visible via '
+            'android-file-transfer until you restart your device.'
         )
 
 
@@ -175,25 +177,25 @@ def delete_user_system_scripts() -> None:
     env = _babase.app.env
 
     if env.python_directory_user is None:
-        raise RuntimeError("user python dir unset")
+        raise RuntimeError('user python dir unset')
 
     path = (
-        f"{env.python_directory_user}/sys/"
-        f"{env.engine_version}_{env.engine_build_number}"
+        f'{env.python_directory_user}/sys/'
+        f'{env.engine_version}_{env.engine_build_number}'
     )
     if os.path.exists(path):
         shutil.rmtree(path)
-        print("User system scripts deleted.")
-        _babase.screenmessage("Deleted User System Scripts", color=(0, 1, 0))
+        print('User system scripts deleted.')
+        _babase.screenmessage('Deleted User System Scripts', color=(0, 1, 0))
         _babase.screenmessage(
-            f"Closing {_babase.appname()} to make changes.", color=(0, 1, 0)
+            f'Closing {_babase.appname()} to make changes.', color=(0, 1, 0)
         )
         _babase.apptimer(2.0, _babase.quit)
     else:
         print(f"User system scripts not found at '{path}'.")
-        _babase.screenmessage("User Scripts Not Found", color=(1, 0, 0))
+        _babase.screenmessage('User Scripts Not Found', color=(1, 0, 0))
 
     # If the sys path is empty, kill it.
-    dpath = env.python_directory_user + "/sys"
+    dpath = env.python_directory_user + '/sys'
     if os.path.isdir(dpath) and not os.listdir(dpath):
         os.rmdir(dpath)

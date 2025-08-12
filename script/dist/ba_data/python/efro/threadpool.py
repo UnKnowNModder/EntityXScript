@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from typing import Any, Callable
     from concurrent.futures import Future
 
-P = ParamSpec("P")
+P = ParamSpec('P')
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class ThreadPoolExecutorEx(ThreadPoolExecutor):
     def __init__(
         self,
         max_workers: int | None = None,
-        thread_name_prefix: str = "",
+        thread_name_prefix: str = '',
         initializer: Callable[[], None] | None = None,
         max_no_wait_count: int | None = None,
     ) -> None:
@@ -65,7 +65,8 @@ class ThreadPoolExecutorEx(ThreadPoolExecutor):
                 or now - self._last_no_wait_warn_time > 10.0
             ):
                 logger.warning(
-                    "ThreadPoolExecutorEx hit max no-wait limit of %s;" " blocking.",
+                    'ThreadPoolExecutorEx hit max no-wait limit of %s;'
+                    ' blocking.',
                     self._max_no_wait_count,
                 )
                 self._last_no_wait_warn_time = now
@@ -83,4 +84,4 @@ class ThreadPoolExecutorEx(ThreadPoolExecutor):
         try:
             fut.result()
         except Exception:
-            logger.exception("Error in work submitted via submit_no_wait().")
+            logger.exception('Error in work submitted via submit_no_wait().')

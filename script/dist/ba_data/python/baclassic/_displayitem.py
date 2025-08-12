@@ -34,11 +34,11 @@ def show_display_item(
     show_text = True
 
     if isinstance(itemwrapper.item, bacommon.bs.TicketsDisplayItem):
-        img = "tickets"
+        img = 'tickets'
         img_y_offs = width * 0.11
         text_y_offs = width * -0.15
     elif isinstance(itemwrapper.item, bacommon.bs.TokensDisplayItem):
-        img = "coin"
+        img = 'coin'
         img_y_offs = width * 0.11
         text_y_offs = width * -0.15
     elif isinstance(itemwrapper.item, bacommon.bs.ChestDisplayItem):
@@ -73,7 +73,7 @@ def show_display_item(
                 pos[1] - height * 0.5,
             ),
             size=(width, height),
-            texture=bauiv1.gettexture("white"),
+            texture=bauiv1.gettexture('white'),
             color=(0, 1, 0),
             opacity=0.1,
         )
@@ -99,11 +99,11 @@ def show_display_item(
             scale=width * 0.006,
             size=(0, 0),
             text=bauiv1.Lstr(
-                translate=("displayItemNames", itemwrapper.description),
+                translate=('displayItemNames', itemwrapper.description),
                 subs=pairs_from_flat(subs),
             ),
             maxwidth=width * 0.9,
             color=(0.0, 1.0, 0.0),
-            h_align="center",
-            v_align="center",
+            h_align='center',
+            v_align='center',
         )

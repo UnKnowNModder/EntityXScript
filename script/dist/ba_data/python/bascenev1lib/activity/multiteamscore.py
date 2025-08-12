@@ -16,8 +16,8 @@ class MultiTeamScoreScreenActivity(bs.ScoreScreenActivity):
 
     def __init__(self, settings: dict):
         super().__init__(settings=settings)
-        self._score_display_sound = bs.getsound("scoreHit01")
-        self._score_display_sound_small = bs.getsound("scoreHit02")
+        self._score_display_sound = bs.getsound('scoreHit01')
+        self._score_display_sound_small = bs.getsound('scoreHit02')
 
         self._show_up_next: bool = True
 
@@ -27,16 +27,18 @@ class MultiTeamScoreScreenActivity(bs.ScoreScreenActivity):
         session = self.session
         if self._show_up_next and isinstance(session, bs.MultiTeamSession):
             txt = bs.Lstr(
-                value="${A}   ${B}",
+                value='${A}   ${B}',
                 subs=[
                     (
-                        "${A}",
+                        '${A}',
                         bs.Lstr(
-                            resource="upNextText",
-                            subs=[("${COUNT}", str(session.get_game_number() + 1))],
+                            resource='upNextText',
+                            subs=[
+                                ('${COUNT}', str(session.get_game_number() + 1))
+                            ],
                         ),
                     ),
-                    ("${B}", session.get_next_game_description()),
+                    ('${B}', session.get_next_game_description()),
                 ],
             )
             Text(
@@ -113,7 +115,9 @@ class MultiTeamScoreScreenActivity(bs.ScoreScreenActivity):
             for winnergroup in results.winnergroups:
                 for team in winnergroup.teams:
                     if len(team.players) == 1:
-                        player_entry = _get_player_score_set_entry(team.players[0])
+                        player_entry = _get_player_score_set_entry(
+                            team.players[0]
+                        )
                         if player_entry is not None:
                             player_records.append(player_entry)
         else:
@@ -154,8 +158,8 @@ class MultiTeamScoreScreenActivity(bs.ScoreScreenActivity):
         session = self.session
         assert isinstance(session, bs.MultiTeamSession)
         tval = bs.Lstr(
-            resource="gameLeadersText",
-            subs=[("${COUNT}", str(session.get_game_number()))],
+            resource='gameLeadersText',
+            subs=[('${COUNT}', str(session.get_game_number()))],
         )
         _txt(
             180,
@@ -165,18 +169,20 @@ class MultiTeamScoreScreenActivity(bs.ScoreScreenActivity):
             extrascale=1.4,
             maxwidth=None,
         )
-        _txt(-15, 4, bs.Lstr(resource="playerText"), h_align=Text.HAlign.LEFT)
-        _txt(180, 4, bs.Lstr(resource="killsText"))
-        _txt(280, 4, bs.Lstr(resource="deathsText"), maxwidth=100)
+        _txt(-15, 4, bs.Lstr(resource='playerText'), h_align=Text.HAlign.LEFT)
+        _txt(180, 4, bs.Lstr(resource='killsText'))
+        _txt(280, 4, bs.Lstr(resource='deathsText'), maxwidth=100)
 
-        score_label = "Score" if results is None else results.score_label
-        translated = bs.Lstr(translate=("scoreNames", score_label))
+        score_label = 'Score' if results is None else results.score_label
+        translated = bs.Lstr(translate=('scoreNames', score_label))
 
         _txt(390, 0, translated)
 
         topkillcount = 0
         topkilledcount = 99999
-        top_score = 0 if not player_records else _get_prec_score(player_records[0])
+        top_score = (
+            0 if not player_records else _get_prec_score(player_records[0])
+        )
 
         for prec in player_records:
             topkillcount = max(topkillcount, prec.accum_kill_count)
@@ -196,7 +202,9 @@ class MultiTeamScoreScreenActivity(bs.ScoreScreenActivity):
                     ts_v_offset + (voffs + 15) * scale,
                 ),
                 scale=scale,
-                color=((1.0, 0.9, 0.5, 1.0) if highlight else (0.5, 0.5, 0.6, 0.5)),
+                color=(
+                    (1.0, 0.9, 0.5, 1.0) if highlight else (0.5, 0.5, 0.6, 0.5)
+                ),
                 h_align=Text.HAlign.RIGHT,
                 v_align=Text.VAlign.CENTER,
                 maxwidth=maxwidth,

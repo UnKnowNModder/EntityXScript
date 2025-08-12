@@ -13,10 +13,10 @@ from efro.dataclassio import ioprepped
 class LockType(Enum):
     """Types of locks that can be acquired on a host."""
 
-    HOST = "host"
-    WORKSPACE = "workspace"
-    PYCHARM = "pycharm"
-    CLION = "clion"
+    HOST = 'host'
+    WORKSPACE = 'workspace'
+    PYCHARM = 'pycharm'
+    CLION = 'clion'
 
 
 @ioprepped
@@ -29,13 +29,13 @@ class HostConfig:
     """
 
     address: str | None = None
-    user: str = "ubuntu"
+    user: str = 'ubuntu'
     port: int = 22
     mosh_port: int | None = None
     mosh_port_2: int | None = None
     mosh_server_path: str | None = None
-    mosh_shell: str = "sh"
-    workspaces_root: str = "/home/${USER}/cloudshell_workspaces"
+    mosh_shell: str = 'sh'
+    workspaces_root: str = '/home/${USER}/cloudshell_workspaces'
     sync_perms: bool = True
     precommand_noninteractive: str | None = None
     precommand_interactive: str | None = None
@@ -49,4 +49,4 @@ class HostConfig:
 
     def resolved_workspaces_root(self) -> str:
         """Returns workspaces_root with standard substitutions."""
-        return self.workspaces_root.replace("${USER}", self.user)
+        return self.workspaces_root.replace('${USER}', self.user)

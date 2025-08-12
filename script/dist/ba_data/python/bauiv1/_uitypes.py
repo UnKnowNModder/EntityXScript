@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 # Set environment variable BA_DEBUG_UI_CLEANUP_CHECKS to 1
 # to print detailed info about what is getting cleaned up when.
-DEBUG_UI_CLEANUP_CHECKS = os.environ.get("BA_DEBUG_UI_CLEANUP_CHECKS") == "1"
+DEBUG_UI_CLEANUP_CHECKS = os.environ.get('BA_DEBUG_UI_CLEANUP_CHECKS') == '1'
 
 
 class Window:
@@ -111,11 +111,11 @@ class MainWindow(Window):
 
         scale_origin: tuple[float, float] | None
         if origin_widget is not None:
-            self._main_window_transition_out = "out_scale"
+            self._main_window_transition_out = 'out_scale'
             scale_origin = origin_widget.get_screen_space_center()
-            transition = "in_scale"
+            transition = 'in_scale'
         else:
-            self._main_window_transition_out = "out_right"
+            self._main_window_transition_out = 'out_right'
             scale_origin = None
         _bauiv1.containerwidget(
             edit=root_widget,
@@ -134,12 +134,12 @@ class MainWindow(Window):
         try:
             self.on_main_window_close()
         except Exception:
-            logging.exception("Error in on_main_window_close() for %s.", self)
+            logging.exception('Error in on_main_window_close() for %s.', self)
 
         # Note: normally transition of None means instant, but we use
         # that to mean 'do the default' so we support a special
         # 'instant' string.
-        if transition == "instant":
+        if transition == 'instant':
             self._root_widget.delete()
         else:
             _bauiv1.containerwidget(
@@ -186,14 +186,16 @@ class MainWindow(Window):
 
             back_state = self.main_window_back_state
             if back_state is None:
-                raise RuntimeError(f"Main window {self} provides no back-state.")
+                raise RuntimeError(
+                    f'Main window {self} provides no back-state.'
+                )
 
             # Valid states should have values here.
             assert back_state.is_top_level is not None
             assert back_state.is_auxiliary is not None
             assert back_state.window_type is not None
 
-            backwin = back_state.create_window(transition="in_left")
+            backwin = back_state.create_window(transition='in_left')
 
             uiv1.set_main_window(
                 backwin,
@@ -220,20 +222,20 @@ class MainWindow(Window):
         if not self.main_window_has_control():
             new_window.get_root_widget().delete()
             raise RuntimeError(
-                f"main_window_replace() called on a not-in-control window"
-                f" ({self}); always check main_window_has_control() before"
-                f" calling main_window_replace()."
+                f'main_window_replace() called on a not-in-control window'
+                f' ({self}); always check main_window_has_control() before'
+                f' calling main_window_replace().'
             )
 
         # Just shove the old out the left to give the feel that we're
         # adding to the nav stack.
-        transition = "out_left"
+        transition = 'out_left'
 
         # Transition ourself out.
         try:
             self.on_main_window_close()
         except Exception:
-            logging.exception("Error in on_main_window_close() for %s.", self)
+            logging.exception('Error in on_main_window_close() for %s.', self)
 
         _bauiv1.containerwidget(edit=self._root_widget, transition=transition)
         babase.app.ui_v1.set_main_window(
@@ -272,7 +274,7 @@ class MainWindowState:
 
     def create_window(
         self,
-        transition: Literal["in_right", "in_left", "in_scale"] | None = None,
+        transition: Literal['in_right', 'in_left', 'in_scale'] | None = None,
         origin_widget: bauiv1.Widget | None = None,
     ) -> MainWindow:
         """Create a window based on this state.
@@ -290,7 +292,7 @@ class BasicMainWindowState(MainWindowState):
         self,
         create_call: Callable[
             [
-                Literal["in_right", "in_left", "in_scale"] | None,
+                Literal['in_right', 'in_left', 'in_scale'] | None,
                 bauiv1.Widget | None,
             ],
             bauiv1.MainWindow,
@@ -302,7 +304,7 @@ class BasicMainWindowState(MainWindowState):
     @override
     def create_window(
         self,
-        transition: Literal["in_right", "in_left", "in_scale"] | None = None,
+        transition: Literal['in_right', 'in_left', 'in_scale'] | None = None,
         origin_widget: bauiv1.Widget | None = None,
     ) -> bauiv1.MainWindow:
         return self.create_call(transition, origin_widget)
@@ -348,22 +350,24 @@ def uicleanupcheck(obj: Any, widget: bauiv1.Widget) -> None:
     however, and this helps detect such cases to avoid memory leaks.
     """
     if DEBUG_UI_CLEANUP_CHECKS:
-        print(f"adding uicleanup to {obj}")
+        print(f'adding uicleanup to {obj}')
     if not isinstance(widget, _bauiv1.Widget):
-        raise TypeError("widget arg is not a bauiv1.Widget")
+        raise TypeError('widget arg is not a bauiv1.Widget')
 
     if bool(False):
 
         def foobar() -> None:
             """Just testing."""
             if DEBUG_UI_CLEANUP_CHECKS:
-                print("uicleanupcheck widget dying...")
+                print('uicleanupcheck widget dying...')
 
         widget.add_delete_callback(foobar)
 
     assert babase.app.classic is not None
     babase.app.ui_v1.cleanupchecks.append(
-        UICleanupCheck(obj=weakref.ref(obj), widget=widget, widget_death_time=None)
+        UICleanupCheck(
+            obj=weakref.ref(obj), widget=widget, widget_death_time=None
+        )
     )
 
 
@@ -379,7 +383,7 @@ def ui_upkeep() -> None:
         # If the object has died, ignore and don't re-add.
         if obj is None:
             if DEBUG_UI_CLEANUP_CHECKS:
-                print("uicleanupcheck object is dead; hooray!")
+                print('uicleanupcheck object is dead; hooray!')
             continue
 
         # If the widget hadn't died yet, note if it has.
@@ -391,13 +395,13 @@ def ui_upkeep() -> None:
             # Widget was already dead; complain if its been too long.
             if now - check.widget_death_time > 5.0:
                 print(
-                    "WARNING:",
+                    'WARNING:',
                     obj,
-                    "is still alive 5 second after its Widget died;"
-                    " you might have a memory leak. Look for circular"
-                    " references or outside things referencing your Window"
-                    " class instance. See efro.debug module"
-                    " for tools that can help debug this sort of thing.",
+                    'is still alive 5 second after its Widget died;'
+                    ' you might have a memory leak. Look for circular'
+                    ' references or outside things referencing your Window'
+                    ' class instance. See efro.debug module'
+                    ' for tools that can help debug this sort of thing.',
                 )
             else:
                 remainingchecks.append(check)
@@ -421,12 +425,16 @@ class TextWidgetStringEditAdapter(babase.StringEditAdapter):
 
         screen_space_center = text_widget.get_screen_space_center()
 
-        super().__init__(description, initial_text, max_length, screen_space_center)
+        super().__init__(
+            description, initial_text, max_length, screen_space_center
+        )
 
     @override
     def _do_apply(self, new_text: str) -> None:
         if self.widget:
-            _bauiv1.textwidget(edit=self.widget, text=new_text, adapter_finished=True)
+            _bauiv1.textwidget(
+                edit=self.widget, text=new_text, adapter_finished=True
+            )
 
     @override
     def _do_cancel(self) -> None:

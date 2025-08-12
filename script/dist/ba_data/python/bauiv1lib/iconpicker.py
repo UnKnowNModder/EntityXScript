@@ -73,7 +73,9 @@ class IconPicker(PopupWindow):
         self._width = 10 + columns * (button_width + 2 * button_buffer_h) * (
             1.0 / 0.95
         ) * (1.0 / 0.8)
-        self._height = self._width * (0.8 if uiscale is bui.UIScale.SMALL else 1.06)
+        self._height = self._width * (
+            0.8 if uiscale is bui.UIScale.SMALL else 1.06
+        )
 
         self._scroll_width = self._width * 0.8
         self._scroll_height = self._height * 0.8
@@ -103,7 +105,9 @@ class IconPicker(PopupWindow):
         bui.containerwidget(edit=self._scrollwidget, claims_left_right=True)
 
         self._sub_width = self._scroll_width * 0.95
-        self._sub_height = 5 + rows * (button_height + 2 * button_buffer_v) + 100
+        self._sub_height = (
+            5 + rows * (button_height + 2 * button_buffer_v) + 100
+        )
         self._subcontainer = bui.containerwidget(
             parent=self._scrollwidget,
             size=(self._sub_width, self._sub_height),
@@ -120,19 +124,21 @@ class IconPicker(PopupWindow):
                 )
                 btn = bui.buttonwidget(
                     parent=self._subcontainer,
-                    button_type="square",
+                    button_type='square',
                     size=(button_width, button_height),
                     autoselect=True,
                     text_scale=1.2,
-                    label="",
+                    label='',
                     color=(0.65, 0.65, 0.65),
-                    on_activate_call=bui.Call(self._select_icon, self._icons[index]),
+                    on_activate_call=bui.Call(
+                        self._select_icon, self._icons[index]
+                    ),
                     position=pos,
                 )
                 bui.textwidget(
                     parent=self._subcontainer,
-                    h_align="center",
-                    v_align="center",
+                    h_align='center',
+                    v_align='center',
                     size=(0, 0),
                     position=(pos[0] + 0.5 * button_width - 1, pos[1] + 15),
                     draw_controller=btn,
@@ -156,7 +162,7 @@ class IconPicker(PopupWindow):
             parent=self._subcontainer,
             size=(self._sub_width * 0.8, 60),
             position=(self._sub_width * 0.1, 30),
-            label=bui.Lstr(resource="editProfileWindow.getMoreIconsText"),
+            label=bui.Lstr(resource='editProfileWindow.getMoreIconsText'),
             on_activate_call=self._on_store_press,
             color=(0.6, 0.6, 0.6),
             textcolor=(0.8, 0.8, 0.8),
@@ -170,7 +176,7 @@ class IconPicker(PopupWindow):
         plus = bui.app.plus
         assert plus is not None
 
-        if plus.get_v1_account_state() != "signed_in":
+        if plus.get_v1_account_state() != 'signed_in':
             show_sign_in_prompt()
             return
 
@@ -187,9 +193,9 @@ class IconPicker(PopupWindow):
     def _transition_out(self) -> None:
         if not self._transitioning_out:
             self._transitioning_out = True
-            bui.containerwidget(edit=self.root_widget, transition="out_scale")
+            bui.containerwidget(edit=self.root_widget, transition='out_scale')
 
     @override
     def on_popup_cancel(self) -> None:
-        bui.getsound("swish").play()
+        bui.getsound('swish').play()
         self._transition_out()

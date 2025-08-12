@@ -15,8 +15,8 @@ class RespawnIcon:
     This is used to indicate that a player is waiting to respawn.
     """
 
-    _MASKTEXSTORENAME = bs.storagename("masktex")
-    _ICONSSTORENAME = bs.storagename("icons")
+    _MASKTEXSTORENAME = bs.storagename('masktex')
+    _ICONSSTORENAME = bs.storagename('icons')
 
     def __init__(self, player: bs.Player, respawn_time: float):
         """Instantiate with a Player and respawn_time (in seconds)."""
@@ -29,7 +29,7 @@ class RespawnIcon:
         # Cache our mask tex on the team for easy access.
         mask_tex = player.team.customdata.get(self._MASKTEXSTORENAME)
         if mask_tex is None:
-            mask_tex = bs.gettexture("characterIconMask")
+            mask_tex = bs.gettexture('characterIconMask')
             player.team.customdata[self._MASKTEXSTORENAME] = mask_tex
         assert isinstance(mask_tex, bs.Texture)
 
@@ -45,67 +45,67 @@ class RespawnIcon:
 
         offs = offs_extra + index * -53
         icon = player.get_icon()
-        texture = icon["texture"]
+        texture = icon['texture']
         h_offs = -10
         ipos = (-40 - h_offs if on_right else 40 + h_offs, -180 + offs)
         self._image: bs.NodeActor | None = bs.NodeActor(
             bs.newnode(
-                "image",
+                'image',
                 attrs={
-                    "texture": texture,
-                    "tint_texture": icon["tint_texture"],
-                    "tint_color": icon["tint_color"],
-                    "tint2_color": icon["tint2_color"],
-                    "mask_texture": mask_tex,
-                    "position": ipos,
-                    "scale": (32, 32),
-                    "opacity": 1.0,
-                    "absolute_scale": True,
-                    "attach": "topRight" if on_right else "topLeft",
+                    'texture': texture,
+                    'tint_texture': icon['tint_texture'],
+                    'tint_color': icon['tint_color'],
+                    'tint2_color': icon['tint2_color'],
+                    'mask_texture': mask_tex,
+                    'position': ipos,
+                    'scale': (32, 32),
+                    'opacity': 1.0,
+                    'absolute_scale': True,
+                    'attach': 'topRight' if on_right else 'topLeft',
                 },
             )
         )
 
         assert self._image.node
-        bs.animate(self._image.node, "opacity", {0.0: 0, 0.2: 0.7})
+        bs.animate(self._image.node, 'opacity', {0.0: 0, 0.2: 0.7})
 
         npos = (-40 - h_offs if on_right else 40 + h_offs, -205 + 49 + offs)
         self._name: bs.NodeActor | None = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "v_attach": "top",
-                    "h_attach": "right" if on_right else "left",
-                    "text": bs.Lstr(value=player.getname()),
-                    "maxwidth": 100,
-                    "h_align": "center",
-                    "v_align": "center",
-                    "shadow": 1.0,
-                    "flatness": 1.0,
-                    "color": bs.safecolor(icon["tint_color"]),
-                    "scale": 0.5,
-                    "position": npos,
+                    'v_attach': 'top',
+                    'h_attach': 'right' if on_right else 'left',
+                    'text': bs.Lstr(value=player.getname()),
+                    'maxwidth': 100,
+                    'h_align': 'center',
+                    'v_align': 'center',
+                    'shadow': 1.0,
+                    'flatness': 1.0,
+                    'color': bs.safecolor(icon['tint_color']),
+                    'scale': 0.5,
+                    'position': npos,
                 },
             )
         )
 
         assert self._name.node
-        bs.animate(self._name.node, "scale", {0: 0, 0.1: 0.5})
+        bs.animate(self._name.node, 'scale', {0: 0, 0.1: 0.5})
 
         tpos = (-60 - h_offs if on_right else 60 + h_offs, -193 + offs)
         self._text: bs.NodeActor | None = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "position": tpos,
-                    "h_attach": "right" if on_right else "left",
-                    "h_align": "right" if on_right else "left",
-                    "scale": 0.9,
-                    "shadow": 0.5,
-                    "flatness": 0.5,
-                    "v_attach": "top",
-                    "color": bs.safecolor(icon["tint_color"]),
-                    "text": "",
+                    'position': tpos,
+                    'h_attach': 'right' if on_right else 'left',
+                    'h_align': 'right' if on_right else 'left',
+                    'scale': 0.9,
+                    'shadow': 0.5,
+                    'flatness': 0.5,
+                    'v_attach': 'top',
+                    'color': bs.safecolor(icon['tint_color']),
+                    'text': '',
                 },
             )
         )
@@ -118,25 +118,25 @@ class RespawnIcon:
         ):
             self._dec_text = bs.NodeActor(
                 bs.newnode(
-                    "text",
+                    'text',
                     attrs={
-                        "position": dpos,
-                        "h_attach": "right" if on_right else "left",
-                        "h_align": "right" if on_right else "left",
-                        "scale": 0.65,
-                        "shadow": 0.5,
-                        "flatness": 0.5,
-                        "v_attach": "top",
-                        "color": bs.safecolor(icon["tint_color"]),
-                        "text": "",
+                        'position': dpos,
+                        'h_attach': 'right' if on_right else 'left',
+                        'h_align': 'right' if on_right else 'left',
+                        'scale': 0.65,
+                        'shadow': 0.5,
+                        'flatness': 0.5,
+                        'v_attach': 'top',
+                        'color': bs.safecolor(icon['tint_color']),
+                        'text': '',
                     },
                 )
             )
 
         assert self._text.node
-        bs.animate(self._text.node, "scale", {0: 0, 0.1: 0.9})
+        bs.animate(self._text.node, 'scale', {0: 0, 0.1: 0.9})
         if self._dec_text:
-            bs.animate(self._dec_text.node, "scale", {0: 0, 0.1: 0.65})
+            bs.animate(self._dec_text.node, 'scale', {0: 0, 0.1: 0.65})
 
         self._respawn_time = bs.time() + respawn_time
         self._dec_timer: bs.Timer | None = None
@@ -207,13 +207,15 @@ class RespawnIcon:
                 self._text.node.text = str(remaining)
                 if self._dec_text:
                     # Display our decimal dots.
-                    self._dec_text.node.text = "..."
+                    self._dec_text.node.text = '...'
                     # Start the timer to tick down.
                     self._dec_timer = bs.Timer(
                         0.25,
-                        bs.WeakCall(self._dec_step, ["..", ".", ""]),
+                        bs.WeakCall(self._dec_step, ['..', '.', '']),
                         repeat=True,
                     )
         else:
             self._visible = False
-            self._image = self._text = self._dec_text = self._timer = self._name = None
+            self._image = self._text = self._dec_text = self._timer = (
+                self._name
+            ) = None

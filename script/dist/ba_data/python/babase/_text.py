@@ -36,25 +36,25 @@ def timestring(
     subs = []
     hval = (timeval // 1000) // (60 * 60)
     if hval != 0:
-        bits.append("${H}")
+        bits.append('${H}')
         subs.append(
             (
-                "${H}",
+                '${H}',
                 Lstr(
-                    resource="timeSuffixHoursText",
-                    subs=[("${COUNT}", str(hval))],
+                    resource='timeSuffixHoursText',
+                    subs=[('${COUNT}', str(hval))],
                 ),
             )
         )
     mval = ((timeval // 1000) // 60) % 60
     if mval != 0:
-        bits.append("${M}")
+        bits.append('${M}')
         subs.append(
             (
-                "${M}",
+                '${M}',
                 Lstr(
-                    resource="timeSuffixMinutesText",
-                    subs=[("${COUNT}", str(mval))],
+                    resource='timeSuffixMinutesText',
+                    subs=[('${COUNT}', str(mval))],
                 ),
             )
         )
@@ -64,27 +64,27 @@ def timestring(
         # pylint: disable=consider-using-f-string
         sval = timeval / 1000.0 % 60.0
         if sval >= 0.005 or not bits:
-            bits.append("${S}")
+            bits.append('${S}')
             subs.append(
                 (
-                    "${S}",
+                    '${S}',
                     Lstr(
-                        resource="timeSuffixSecondsText",
-                        subs=[("${COUNT}", ("%.2f" % sval))],
+                        resource='timeSuffixSecondsText',
+                        subs=[('${COUNT}', ('%.2f' % sval))],
                     ),
                 )
             )
     else:
         sval = timeval // 1000 % 60
         if sval != 0 or not bits:
-            bits.append("${S}")
+            bits.append('${S}')
             subs.append(
                 (
-                    "${S}",
+                    '${S}',
                     Lstr(
-                        resource="timeSuffixSecondsText",
-                        subs=[("${COUNT}", str(sval))],
+                        resource='timeSuffixSecondsText',
+                        subs=[('${COUNT}', str(sval))],
                     ),
                 )
             )
-    return Lstr(value=" ".join(bits), subs=subs)
+    return Lstr(value=' '.join(bits), subs=subs)

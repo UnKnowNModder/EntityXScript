@@ -38,7 +38,9 @@ class NetScanner:
         self._width = width
         self._last_selected_host: dict[str, Any] | None = None
 
-        self._update_timer = bui.AppTimer(1.0, bui.WeakCall(self.update), repeat=True)
+        self._update_timer = bui.AppTimer(
+            1.0, bui.WeakCall(self.update), repeat=True
+        )
         # Go ahead and run a few *almost* immediately so we don't
         # have to wait a second.
         self.update()
@@ -56,14 +58,16 @@ class NetScanner:
         if bs.app.classic is not None:
             bs.app.classic.save_ui_state()
 
-        bs.connect_to_party(host["address"])
+        bs.connect_to_party(host['address'])
 
     def update(self) -> None:
         """(internal)"""
 
         # In case our UI was killed from under us.
         if not self._columnwidget:
-            print(f"ERROR: NetScanner running without UI at time {bui.apptime()}.")
+            print(
+                f'ERROR: NetScanner running without UI at time {bui.apptime()}.'
+            )
             return
 
         t_scale = 1.6
@@ -82,9 +86,9 @@ class NetScanner:
                 on_select_call=bui.Call(self._on_select, host),
                 on_activate_call=bui.Call(self._on_activate, host),
                 click_activate=True,
-                text=host["display_string"],
-                h_align="left",
-                v_align="center",
+                text=host['display_string'],
+                h_align='left',
+                v_align='center',
                 corner_scale=t_scale,
                 maxwidth=(self._width / t_scale) * 0.93,
             )
@@ -139,9 +143,11 @@ class NearbyGatherTab(GatherTab):
             scale=1.3,
             size=(0, 0),
             maxwidth=c_width * 0.9,
-            h_align="center",
-            v_align="center",
-            text=bui.Lstr(resource="gatherWindow." "localNetworkDescriptionText"),
+            h_align='center',
+            v_align='center',
+            text=bui.Lstr(
+                resource='gatherWindow.' 'localNetworkDescriptionText'
+            ),
         )
         v -= 15
         v -= sub_scroll_height + 23

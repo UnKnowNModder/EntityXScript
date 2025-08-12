@@ -27,7 +27,7 @@ def split(chars: Iterable[str], maxlen: int) -> list[list[str]]:
             shatter = [i]
     if shatter:
         while len(shatter) < maxlen:
-            shatter.append("")
+            shatter.append('')
         result.append(shatter)
     return result
 
@@ -44,40 +44,41 @@ def generate_emojis(maxlen: int) -> list[list[str]]:
 class EnglishKeyboard(bui.Keyboard):
     """Default English keyboard."""
 
-    name = "English"
+    name = 'English'
     chars = [
-        ("q", "w", "e", "r", "t", "y", "u", "i", "o", "p"),
-        ("a", "s", "d", "f", "g", "h", "j", "k", "l"),
-        ("z", "x", "c", "v", "b", "n", "m"),
+        ('q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'),
+        ('a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'),
+        ('z', 'x', 'c', 'v', 'b', 'n', 'm'),
     ]
     nums = (
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "0",
-        "-",
-        "/",
-        ":",
-        ";",
-        "(",
-        ")",
-        "$",
-        "&",
-        "@",
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '0',
+        '-',
+        '/',
+        ':',
+        ';',
+        '(',
+        ')',
+        '$',
+        '&',
+        '@',
         '"',
-        ".",
-        ",",
-        "?",
-        "!",
-        "'",
-        "_",
+        '.',
+        ',',
+        '?',
+        '!',
+        '\'',
+        '_',
     )
     pages: dict[str, tuple[str, ...]] = {
-        f"emoji{i}": tuple(page) for i, page in enumerate(generate_emojis(len(nums)))
+        f'emoji{i}': tuple(page)
+        for i, page in enumerate(generate_emojis(len(nums)))
     }

@@ -42,7 +42,7 @@ class PlayerSpaz(Spaz):
         *,
         color: Sequence[float] = (1.0, 1.0, 1.0),
         highlight: Sequence[float] = (0.5, 0.5, 0.5),
-        character: str = "Spaz",
+        character: str = 'Spaz',
         powerups_expire: bool = True,
     ):
         """Create a spaz for the provided bascenev1.Player.
@@ -173,8 +173,8 @@ class PlayerSpaz(Spaz):
             self.on_fly_release()
         else:
             print(
-                "WARNING: disconnect_controls_from_player() called for"
-                " non-connected player"
+                'WARNING: disconnect_controls_from_player() called for'
+                ' non-connected player'
             )
 
     @override
@@ -198,14 +198,14 @@ class PlayerSpaz(Spaz):
             super().handlemessage(msg)
             self.held_count -= 1
             if self.held_count < 0:
-                print("ERROR: spaz held_count < 0")
+                print('ERROR: spaz held_count < 0')
 
             # Let's count someone dropping us as an attack.
             picked_up_by = msg.node.source_player
             if picked_up_by:
                 self.last_player_attacked_by = picked_up_by
                 self.last_attacked_time = bs.time()
-                self.last_attacked_type = ("picked_up", "default")
+                self.last_attacked_type = ('picked_up', 'default')
         elif isinstance(msg, bs.StandMessage):
             super().handlemessage(msg)  # Augment standard behavior.
 
@@ -268,7 +268,9 @@ class PlayerSpaz(Spaz):
                 # Only report if both the player and the activity still exist.
                 if killed and activity is not None and player:
                     activity.handlemessage(
-                        bs.PlayerDiedMessage(player, killed, killerplayer, msg.how)
+                        bs.PlayerDiedMessage(
+                            player, killed, killerplayer, msg.how
+                        )
                     )
 
             super().handlemessage(msg)  # Augment standard behavior.
@@ -299,4 +301,4 @@ class PlayerSpaz(Spaz):
         if player:
             assert self.node
             assert player.node
-            self.node.connectattr("torso_position", player.node, "position")
+            self.node.connectattr('torso_position', player.node, 'position')

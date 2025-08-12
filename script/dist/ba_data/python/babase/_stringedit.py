@@ -55,7 +55,7 @@ class StringEditAdapter:
         screen_space_center: tuple[float, float] | None,
     ) -> None:
         if not _babase.in_logic_thread():
-            raise RuntimeError("This must be called from the logic thread.")
+            raise RuntimeError('This must be called from the logic thread.')
 
         self.create_time = time.monotonic()
 
@@ -81,17 +81,17 @@ class StringEditAdapter:
         time out and be replaced with new ones.
         """
         if not _babase.in_logic_thread():
-            raise RuntimeError("This must be called from the logic thread.")
+            raise RuntimeError('This must be called from the logic thread.')
 
         # Allow ourself to be replaced after a bit.
         if time.monotonic() - self.create_time > 5.0:
             if _babase.do_once():
                 logging.warning(
-                    "StringEditAdapter can_be_replaced() check for %s"
-                    " yielding True due to timeout; ideally this should"
-                    " not be possible as the StringEditAdapter driver"
-                    " should be blocking anything else from kicking off"
-                    " new edits.",
+                    'StringEditAdapter can_be_replaced() check for %s'
+                    ' yielding True due to timeout; ideally this should'
+                    ' not be possible as the StringEditAdapter driver'
+                    ' should be blocking anything else from kicking off'
+                    ' new edits.',
                     self,
                 )
             return True
@@ -112,14 +112,14 @@ class StringEditAdapter:
         this adapter is no longer the globally active one).
         """
         if not _babase.in_logic_thread():
-            raise RuntimeError("This must be called from the logic thread.")
+            raise RuntimeError('This must be called from the logic thread.')
 
         # Make sure whoever is feeding this adapter is honoring max-length.
         if self.max_length is not None and len(new_text) > self.max_length:
             logging.warning(
-                "apply() on %s was passed a string of length %d,"
-                " but adapter max_length is %d; this should not happen"
-                " (will truncate).",
+                'apply() on %s was passed a string of length %d,'
+                ' but adapter max_length is %d; this should not happen'
+                ' (will truncate).',
                 self,
                 len(new_text),
                 self.max_length,
@@ -133,7 +133,7 @@ class StringEditAdapter:
     def cancel(self) -> None:
         """Should be called by the owner when editing is cancelled."""
         if not _babase.in_logic_thread():
-            raise RuntimeError("This must be called from the logic thread.")
+            raise RuntimeError('This must be called from the logic thread.')
         self._do_cancel()
 
     def _do_apply(self, new_text: str) -> None:
@@ -141,11 +141,11 @@ class StringEditAdapter:
 
         Will always be called in the logic thread.
         """
-        raise NotImplementedError("Subclasses must override this.")
+        raise NotImplementedError('Subclasses must override this.')
 
     def _do_cancel(self) -> None:
         """Should be overridden by subclasses to handle cancel.
 
         Will always be called in the logic thread.
         """
-        raise NotImplementedError("Subclasses must override this.")
+        raise NotImplementedError('Subclasses must override this.')

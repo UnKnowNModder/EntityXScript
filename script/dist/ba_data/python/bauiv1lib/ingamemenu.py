@@ -19,14 +19,16 @@ class InGameMenuWindow(bui.MainWindow):
 
     def __init__(
         self,
-        transition: str | None = "in_right",
+        transition: str | None = 'in_right',
         origin_widget: bui.Widget | None = None,
     ):
 
         # Make a vanilla container; we'll modify it to our needs in
         # refresh.
         super().__init__(
-            root_widget=bui.containerwidget(toolbar_visibility=("menu_in_game")),
+            root_widget=bui.containerwidget(
+                toolbar_visibility=('menu_in_game')
+            ),
             transition=transition,
             origin_widget=origin_widget,
         )
@@ -60,7 +62,7 @@ class InGameMenuWindow(bui.MainWindow):
         for child in children:
             child.delete()
 
-        self._r = "mainMenu"
+        self._r = 'mainMenu'
 
         self._input_device = input_device = bs.get_main_ui_input_device()
 
@@ -90,7 +92,7 @@ class InGameMenuWindow(bui.MainWindow):
                 scale=scale,
                 size=(self._button_width, self._button_height),
                 autoselect=self._use_autoselect,
-                label=bui.Lstr(resource="replayEndText"),
+                label=bui.Lstr(resource='replayEndText'),
                 on_activate_call=self._confirm_end_replay,
             )
         elif bs.get_foreground_host_session() is not None:
@@ -102,7 +104,11 @@ class InGameMenuWindow(bui.MainWindow):
                 autoselect=self._use_autoselect,
                 label=bui.Lstr(
                     resource=self._r
-                    + (".endTestText" if self._is_benchmark() else ".endGameText")
+                    + (
+                        '.endTestText'
+                        if self._is_benchmark()
+                        else '.endGameText'
+                    )
                 ),
                 on_activate_call=(
                     self._confirm_end_test
@@ -118,7 +124,7 @@ class InGameMenuWindow(bui.MainWindow):
                 scale=scale,
                 size=(self._button_width, self._button_height),
                 autoselect=self._use_autoselect,
-                label=bui.Lstr(resource=f"{self._r}.leavePartyText"),
+                label=bui.Lstr(resource=f'{self._r}.leavePartyText'),
                 on_activate_call=self._confirm_leave_party,
             )
 
@@ -145,12 +151,12 @@ class InGameMenuWindow(bui.MainWindow):
             self._replay_speed_text = bui.textwidget(
                 parent=self._root_widget,
                 text=bui.Lstr(
-                    resource="watchWindow.playbackSpeedText",
-                    subs=[("${SPEED}", str(1.23))],
+                    resource='watchWindow.playbackSpeedText',
+                    subs=[('${SPEED}', str(1.23))],
                 ),
                 position=(h, v + v_offs + 15 * t_scale),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 size=(0, 0),
                 scale=t_scale,
             )
@@ -168,51 +174,51 @@ class InGameMenuWindow(bui.MainWindow):
                     h - b_size - b_buffer_1,
                     v - b_size - b_buffer_2 + v_offs,
                 ),
-                button_type="square",
+                button_type='square',
                 size=(b_size, b_size),
-                label="",
+                label='',
                 autoselect=True,
                 on_activate_call=bui.Call(self._change_replay_speed, -1),
             )
             bui.textwidget(
                 parent=self._root_widget,
                 draw_controller=btn,
-                text="-",
+                text='-',
                 position=(
                     h - b_size * 0.5 - b_buffer_1,
                     v - b_size * 0.5 - b_buffer_2 + 5 * t_scale + v_offs,
                 ),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 size=(0, 0),
                 scale=3.0 * t_scale,
             )
             btn = bui.buttonwidget(
                 parent=self._root_widget,
                 position=(h + b_buffer_1, v - b_size - b_buffer_2 + v_offs),
-                button_type="square",
+                button_type='square',
                 size=(b_size, b_size),
-                label="",
+                label='',
                 autoselect=True,
                 on_activate_call=bui.Call(self._change_replay_speed, 1),
             )
             bui.textwidget(
                 parent=self._root_widget,
                 draw_controller=btn,
-                text="+",
+                text='+',
                 position=(
                     h + b_size * 0.5 + b_buffer_1,
                     v - b_size * 0.5 - b_buffer_2 + 5 * t_scale + v_offs,
                 ),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 size=(0, 0),
                 scale=3.0 * t_scale,
             )
             self._pause_resume_button = btn = bui.buttonwidget(
                 parent=self._root_widget,
                 position=(h - b_size * 0.5, v - b_size - b_buffer_2 + v_offs),
-                button_type="square",
+                button_type='square',
                 size=(b_size, b_size),
                 label=bui.charstr(
                     bui.SpecialChar.PLAY_BUTTON
@@ -228,9 +234,9 @@ class InGameMenuWindow(bui.MainWindow):
                     h - b_size * 1.5 - b_buffer_1 * 2,
                     v - b_size - b_buffer_2 + v_offs,
                 ),
-                button_type="square",
+                button_type='square',
                 size=(b_size, b_size),
-                label="",
+                label='',
                 autoselect=True,
                 on_activate_call=bui.WeakCall(self._rewind_replay),
             )
@@ -243,8 +249,8 @@ class InGameMenuWindow(bui.MainWindow):
                     h - b_size - b_buffer_1 * 2,
                     v - b_size * 0.5 - b_buffer_2 + 5 * t_scale + v_offs,
                 ),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 size=(0, 0),
                 scale=2.0 * t_scale,
             )
@@ -254,9 +260,9 @@ class InGameMenuWindow(bui.MainWindow):
                     h + b_size * 0.5 + b_buffer_1 * 2,
                     v - b_size - b_buffer_2 + v_offs,
                 ),
-                button_type="square",
+                button_type='square',
                 size=(b_size, b_size),
-                label="",
+                label='',
                 autoselect=True,
                 on_activate_call=bui.WeakCall(self._forward_replay),
             )
@@ -269,8 +275,8 @@ class InGameMenuWindow(bui.MainWindow):
                     h + b_size + b_buffer_1 * 2,
                     v - b_size * 0.5 - b_buffer_2 + 5 * t_scale + v_offs,
                 ),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 size=(0, 0),
                 scale=2.0 * t_scale,
             )
@@ -297,15 +303,19 @@ class InGameMenuWindow(bui.MainWindow):
                     cme_any: Any = cme  # Type check may not hold true.
                     if (
                         not isinstance(cme_any, dict)
-                        or "label" not in cme
-                        or not isinstance(cme["label"], (str, bui.Lstr))
-                        or "call" not in cme
-                        or not callable(cme["call"])
+                        or 'label' not in cme
+                        or not isinstance(cme['label'], (str, bui.Lstr))
+                        or 'call' not in cme
+                        or not callable(cme['call'])
                     ):
-                        raise ValueError("invalid custom menu entry: " + str(cme))
+                        raise ValueError(
+                            'invalid custom menu entry: ' + str(cme)
+                        )
             except Exception:
                 custom_menu_entries = []
-                logging.exception("Error getting custom menu entries for %s.", session)
+                logging.exception(
+                    'Error getting custom menu entries for %s.', session
+                )
         variant = bui.app.env.variant
         vart = type(variant)
         arcade_or_demo = variant is vart.ARCADE or variant is vart.DEMO
@@ -353,11 +363,11 @@ class InGameMenuWindow(bui.MainWindow):
                 size=(self._button_width, self._button_height),
                 color=(1, 1, 1, 0.5),
                 scale=0.7,
-                h_align="center",
+                h_align='center',
                 text=bui.Lstr(value=player_name),
             )
         else:
-            player_name = ""
+            player_name = ''
         h, v, scale = positions[self._p_index]
         self._p_index += 1
         btn = bui.buttonwidget(
@@ -365,7 +375,7 @@ class InGameMenuWindow(bui.MainWindow):
             position=(h - self._button_width / 2, v),
             size=(self._button_width, self._button_height),
             scale=scale,
-            label=bui.Lstr(resource=f"{self._r}.resumeText"),
+            label=bui.Lstr(resource=f'{self._r}.resumeText'),
             autoselect=self._use_autoselect,
             on_activate_call=self._resume,
         )
@@ -378,12 +388,12 @@ class InGameMenuWindow(bui.MainWindow):
 
             # Ask the entry whether we should resume when we call
             # it (defaults to true).
-            resume = bool(entry.get("resume_on_call", True))
+            resume = bool(entry.get('resume_on_call', True))
 
             if resume:
-                call = bui.Call(self._resume_and_call, entry["call"])
+                call = bui.Call(self._resume_and_call, entry['call'])
             else:
-                call = bui.Call(entry["call"], bui.WeakCall(self._resume))
+                call = bui.Call(entry['call'], bui.WeakCall(self._resume))
 
             bui.buttonwidget(
                 parent=self._root_widget,
@@ -391,7 +401,7 @@ class InGameMenuWindow(bui.MainWindow):
                 size=(self._button_width, self._button_height),
                 scale=scale,
                 on_activate_call=call,
-                label=entry["label"],
+                label=entry['label'],
                 autoselect=self._use_autoselect,
             )
 
@@ -407,14 +417,18 @@ class InGameMenuWindow(bui.MainWindow):
                 size=(self._button_width, self._button_height),
                 scale=scale,
                 on_activate_call=self._leave,
-                label="",
+                label='',
                 autoselect=self._use_autoselect,
             )
 
-            if player_name != "" and player_name[0] != "<" and player_name[-1] != ">":
+            if (
+                player_name != ''
+                and player_name[0] != '<'
+                and player_name[-1] != '>'
+            ):
                 txt = bui.Lstr(
-                    resource=f"{self._r}.justPlayerText",
-                    subs=[("${NAME}", player_name)],
+                    resource=f'{self._r}.justPlayerText',
+                    subs=[('${NAME}', player_name)],
                 )
             else:
                 txt = bui.Lstr(value=player_name)
@@ -422,14 +436,16 @@ class InGameMenuWindow(bui.MainWindow):
                 parent=self._root_widget,
                 position=(
                     h,
-                    v + self._button_height * (0.64 if player_name != "" else 0.5),
+                    v
+                    + self._button_height
+                    * (0.64 if player_name != '' else 0.5),
                 ),
                 size=(0, 0),
-                text=bui.Lstr(resource=f"{self._r}.leaveGameText"),
-                scale=(0.83 if player_name != "" else 1.0),
+                text=bui.Lstr(resource=f'{self._r}.leaveGameText'),
+                scale=(0.83 if player_name != '' else 1.0),
                 color=(0.75, 1.0, 0.7),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 draw_controller=btn,
                 maxwidth=self._button_width * 0.9,
             )
@@ -439,8 +455,8 @@ class InGameMenuWindow(bui.MainWindow):
                 size=(0, 0),
                 text=txt,
                 color=(0.75, 1.0, 0.7),
-                h_align="center",
-                v_align="center",
+                h_align='center',
+                v_align='center',
                 draw_controller=btn,
                 scale=0.45,
                 maxwidth=self._button_width * 0.9,
@@ -450,15 +466,15 @@ class InGameMenuWindow(bui.MainWindow):
     def _change_replay_speed(self, offs: int) -> None:
         if not self._replay_speed_text:
             if bui.do_once():
-                print("_change_replay_speed called without widget")
+                print('_change_replay_speed called without widget')
             return
         bs.set_replay_speed_exponent(bs.get_replay_speed_exponent() + offs)
         actual_speed = pow(2.0, bs.get_replay_speed_exponent())
         bui.textwidget(
             edit=self._replay_speed_text,
             text=bui.Lstr(
-                resource="watchWindow.playbackSpeedText",
-                subs=[("${SPEED}", str(actual_speed))],
+                resource='watchWindow.playbackSpeedText',
+                subs=[('${SPEED}', str(actual_speed))],
             ),
         )
 
@@ -478,7 +494,7 @@ class InGameMenuWindow(bui.MainWindow):
 
     def _is_benchmark(self) -> bool:
         session = bs.get_foreground_host_session()
-        return getattr(session, "benchmark_type", None) == "cpu" or (
+        return getattr(session, 'benchmark_type', None) == 'cpu' or (
             bui.app.classic is not None
             and bui.app.classic.stress_test_update_timer is not None
         )
@@ -492,7 +508,7 @@ class InGameMenuWindow(bui.MainWindow):
         # Select cancel by default; this occasionally gets called by accident
         # in a fit of button mashing and this will help reduce damage.
         ConfirmWindow(
-            bui.Lstr(resource=f"{self._r}.exitToMenuText"),
+            bui.Lstr(resource=f'{self._r}.exitToMenuText'),
             self._end_game,
             cancel_is_selected=True,
         )
@@ -504,7 +520,7 @@ class InGameMenuWindow(bui.MainWindow):
         # Select cancel by default; this occasionally gets called by accident
         # in a fit of button mashing and this will help reduce damage.
         ConfirmWindow(
-            bui.Lstr(resource=f"{self._r}.exitToMenuText"),
+            bui.Lstr(resource=f'{self._r}.exitToMenuText'),
             self._end_game,
             cancel_is_selected=True,
         )
@@ -516,7 +532,7 @@ class InGameMenuWindow(bui.MainWindow):
         # Select cancel by default; this occasionally gets called by accident
         # in a fit of button mashing and this will help reduce damage.
         ConfirmWindow(
-            bui.Lstr(resource=f"{self._r}.exitToMenuText"),
+            bui.Lstr(resource=f'{self._r}.exitToMenuText'),
             self._end_game,
             cancel_is_selected=True,
         )
@@ -528,7 +544,7 @@ class InGameMenuWindow(bui.MainWindow):
         # Select cancel by default; this occasionally gets called by accident
         # in a fit of button mashing and this will help reduce damage.
         ConfirmWindow(
-            bui.Lstr(resource=f"{self._r}.leavePartyConfirmText"),
+            bui.Lstr(resource=f'{self._r}.leavePartyConfirmText'),
             self._leave_party,
             cancel_is_selected=True,
         )
@@ -543,7 +559,7 @@ class InGameMenuWindow(bui.MainWindow):
         if not self._root_widget or self._root_widget.transitioning_out:
             return
 
-        bui.containerwidget(edit=self._root_widget, transition="out_left")
+        bui.containerwidget(edit=self._root_widget, transition='out_left')
         bui.app.classic.return_to_main_menu_session_gracefully(reset_ui=False)
 
     def _leave(self) -> None:
@@ -571,7 +587,7 @@ class InGameMenuWindow(bui.MainWindow):
             try:
                 call()
             except Exception:
-                logging.exception("Error in classic resume callback.")
+                logging.exception('Error in classic resume callback.')
 
         classic.main_menu_resume_callbacks.clear()
 

@@ -126,8 +126,8 @@ class ConfigNumberEdit:
             text=displayname,
             maxwidth=150 + xoffset,
             color=(0.8, 0.8, 0.8, 1.0),
-            h_align="left",
-            v_align="center",
+            h_align='left',
+            v_align='center',
             scale=textscale,
         )
         self.valuetext = bui.textwidget(
@@ -136,8 +136,8 @@ class ConfigNumberEdit:
             size=(0, 0),
             editable=False,
             color=(0.3, 1.0, 0.3, 1.0),
-            h_align="right",
-            v_align="center",
+            h_align='right',
+            v_align='center',
             text=str(self._value),
             padding=2,
         )
@@ -145,7 +145,7 @@ class ConfigNumberEdit:
             parent=parent,
             position=(position[0] + 230 + xoffset, position[1]),
             size=(28, 28),
-            label="-",
+            label='-',
             autoselect=True,
             on_activate_call=bui.Call(self._down),
             repeat=True,
@@ -155,7 +155,7 @@ class ConfigNumberEdit:
             parent=parent,
             position=(position[0] + 280 + xoffset, position[1]),
             size=(28, 28),
-            label="+",
+            label='+',
             autoselect=True,
             on_activate_call=bui.Call(self._up),
             repeat=True,
@@ -182,7 +182,7 @@ class ConfigNumberEdit:
 
     def _update_display(self) -> None:
         if self._as_percent:
-            val = f"{round(self._value*100.0)}%"
+            val = f'{round(self._value*100.0)}%'
         else:
-            val = f"{self._value:.{self._f}f}"
+            val = f'{self._value:.{self._f}f}'
         bui.textwidget(edit=self.valuetext, text=val)

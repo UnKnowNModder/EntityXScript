@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     import bascenev1
 
 DEFAULT_TEAM_COLORS = ((0.1, 0.25, 1.0), (1.0, 0.25, 0.2))
-DEFAULT_TEAM_NAMES = ("Blue", "Red")
+DEFAULT_TEAM_NAMES = ('Blue', 'Red')
 
 
 class MultiTeamSession(Session):
@@ -31,9 +31,9 @@ class MultiTeamSession(Session):
     """
 
     # These should be overridden.
-    _playlist_selection_var = "UNSET Playlist Selection"
-    _playlist_randomize_var = "UNSET Playlist Randomize"
-    _playlists_var = "UNSET Playlists"
+    _playlist_selection_var = 'UNSET Playlist Selection'
+    _playlist_randomize_var = 'UNSET Playlist Randomize'
+    _playlists_var = 'UNSET Playlists'
 
     def __init__(self) -> None:
         """Set up playlists & launch a bascenev1.Activity to accept joiners."""
@@ -47,8 +47,8 @@ class MultiTeamSession(Session):
         cfg = app.config
 
         if self.use_teams:
-            team_names = cfg.get("Custom Team Names", DEFAULT_TEAM_NAMES)
-            team_colors = cfg.get("Custom Team Colors", DEFAULT_TEAM_COLORS)
+            team_names = cfg.get('Custom Team Names', DEFAULT_TEAM_NAMES)
+            team_colors = cfg.get('Custom Team Colors', DEFAULT_TEAM_COLORS)
         else:
             team_names = None
             team_colors = None
@@ -64,10 +64,10 @@ class MultiTeamSession(Session):
             max_players=self.get_max_players(),
         )
 
-        self._series_length: int = int(cfg.get("Teams Series Length", 7))
-        self._ffa_series_length: int = int(cfg.get("FFA Series Length", 24))
+        self._series_length: int = int(cfg.get('Teams Series Length', 7))
+        self._ffa_series_length: int = int(cfg.get('FFA Series Length', 24))
 
-        show_tutorial = cfg.get("Show Tutorial", True)
+        show_tutorial = cfg.get('Show Tutorial', True)
 
         # Special case: don't show tutorial while stress testing.
         if classic.stress_test_update_timer is not None:
@@ -80,11 +80,15 @@ class MultiTeamSession(Session):
             tutorial_activity = TutorialActivity
 
             # Get this loading.
-            self._tutorial_activity_instance = _bascenev1.newactivity(tutorial_activity)
+            self._tutorial_activity_instance = _bascenev1.newactivity(
+                tutorial_activity
+            )
         else:
             self._tutorial_activity_instance = None
 
-        self._playlist_name = cfg.get(self._playlist_selection_var, "__default__")
+        self._playlist_name = cfg.get(
+            self._playlist_selection_var, '__default__'
+        )
         self._playlist_randomize = cfg.get(self._playlist_randomize_var, False)
 
         # Which game activity we're on.
@@ -92,7 +96,10 @@ class MultiTeamSession(Session):
 
         playlists = cfg.get(self._playlists_var, {})
 
-        if self._playlist_name != "__default__" and self._playlist_name in playlists:
+        if (
+            self._playlist_name != '__default__'
+            and self._playlist_name in playlists
+        ):
             # Make sure to copy this, as we muck with it in place once we've
             # got it and we don't want that to affect our config.
             playlist = copy.deepcopy(playlists[self._playlist_name])
@@ -107,11 +114,11 @@ class MultiTeamSession(Session):
             playlist,
             sessiontype=type(self),
             add_resolved_type=True,
-            name="default teams" if self.use_teams else "default ffa",
+            name='default teams' if self.use_teams else 'default ffa',
         )
 
         if not playlist_resolved:
-            raise RuntimeError("Playlist contains no valid games.")
+            raise RuntimeError('Playlist contains no valid games.')
 
         self._playlist = ShuffleList(
             playlist_resolved, shuffle=self._playlist_randomize
@@ -121,7 +128,7 @@ class MultiTeamSession(Session):
         self._current_game_spec: dict[str, Any] | None = None
         self._next_game_spec: dict[str, Any] = self._playlist.pull_next()
         self._next_game: type[bascenev1.GameActivity] = self._next_game_spec[
-            "resolved_type"
+            'resolved_type'
         ]
 
         # Go ahead and instantiate the next game we'll
@@ -144,7 +151,7 @@ class MultiTeamSession(Session):
         # pylint: disable=cyclic-import
         from bascenev1._gameactivity import GameActivity
 
-        gametype: type[GameActivity] = self._next_game_spec["resolved_type"]
+        gametype: type[GameActivity] = self._next_game_spec['resolved_type']
         assert issubclass(gametype, GameActivity)
         return gametype.get_settings_display_string(self._next_game_spec)
 
@@ -154,25 +161,27 @@ class MultiTeamSession(Session):
 
     @override
     def on_team_join(self, team: bascenev1.SessionTeam) -> None:
-        team.customdata["previous_score"] = team.customdata["score"] = 0
+        team.customdata['previous_score'] = team.customdata['score'] = 0
 
     def get_max_players(self) -> int:
         """Return max number of Players allowed to join the game at once."""
         if self.use_teams:
-            val = babase.app.config.get("Team Game Max Players", 8)
+            val = babase.app.config.get('Team Game Max Players', 8)
         else:
-            val = babase.app.config.get("Free-for-All Max Players", 8)
+            val = babase.app.config.get('Free-for-All Max Players', 8)
         assert isinstance(val, int)
         return val
 
     def _instantiate_next_game(self) -> None:
         self._next_game_instance = _bascenev1.newactivity(
-            self._next_game_spec["resolved_type"],
-            self._next_game_spec["settings"],
+            self._next_game_spec['resolved_type'],
+            self._next_game_spec['settings'],
         )
 
     @override
-    def on_activity_end(self, activity: bascenev1.Activity, results: Any) -> None:
+    def on_activity_end(
+        self, activity: bascenev1.Activity, results: Any
+    ) -> None:
         # pylint: disable=cyclic-import
         from bascenev1lib.tutorial import TutorialActivity
         from bascenev1lib.activity.multiteamvictory import (
@@ -206,7 +215,7 @@ class MultiTeamSession(Session):
                 self.stats.reset()
                 self._game_number = 0
                 for team in self.sessionteams:
-                    team.customdata["score"] = 0
+                    team.customdata['score'] = 0
 
             # Otherwise just set accum (per-game) scores.
             else:
@@ -243,7 +252,7 @@ class MultiTeamSession(Session):
     def _switch_to_score_screen(self, results: Any) -> None:
         """Switch to a score screen after leaving a round."""
         del results  # Unused arg.
-        logging.error("This should be overridden.", stack_info=True)
+        logging.error('This should be overridden.', stack_info=True)
 
     def announce_game_results(
         self,
@@ -264,7 +273,7 @@ class MultiTeamSession(Session):
         from bascenev1._freeforallsession import FreeForAllSession
         from bascenev1._messages import CelebrateMessage
 
-        _bascenev1.timer(delay, _bascenev1.getsound("boxingBell").play)
+        _bascenev1.timer(delay, _bascenev1.getsound('boxingBell').play)
 
         if announce_winning_team:
             winning_sessionteam = results.winning_sessionteam
@@ -279,12 +288,12 @@ class MultiTeamSession(Session):
 
                 # Some languages say "FOO WINS" different for teams vs players.
                 if isinstance(self, FreeForAllSession):
-                    wins_resource = "winsPlayerText"
+                    wins_resource = 'winsPlayerText'
                 else:
-                    wins_resource = "winsTeamText"
+                    wins_resource = 'winsTeamText'
                 wins_text = babase.Lstr(
                     resource=wins_resource,
-                    subs=[("${NAME}", winning_sessionteam.name)],
+                    subs=[('${NAME}', winning_sessionteam.name)],
                 )
                 activity.show_zoom_message(
                     wins_text,
@@ -324,11 +333,11 @@ class ShuffleList:
                 # lets try to keep looking.
                 if len(self.shuffle_list) > 1 and self.last_gotten is not None:
                     if (
-                        test_obj["settings"]["map"]
-                        == self.last_gotten["settings"]["map"]
+                        test_obj['settings']['map']
+                        == self.last_gotten['settings']['map']
                     ):
                         continue
-                    if test_obj["type"] == self.last_gotten["type"]:
+                    if test_obj['type'] == self.last_gotten['type']:
                         continue
 
                 # Sufficiently different; lets go with it.

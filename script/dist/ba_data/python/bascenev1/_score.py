@@ -16,16 +16,16 @@ if TYPE_CHECKING:
 class ScoreType(Enum):
     """Type of scores."""
 
-    SECONDS = "s"
-    MILLISECONDS = "ms"
-    POINTS = "p"
+    SECONDS = 's'
+    MILLISECONDS = 'ms'
+    POINTS = 'p'
 
 
 @dataclass
 class ScoreConfig:
     """Settings for how a game handles scores."""
 
-    label: str = "Score"
+    label: str = 'Score'
     """A label show to the user for scores; 'Score', 'Time Survived', etc."""
 
     scoretype: bascenev1.ScoreType = ScoreType.POINTS
@@ -38,6 +38,6 @@ class ScoreConfig:
     """Whether a value of None is considered better than other scores.
        By default it is not."""
 
-    version: str = ""
+    version: str = ''
     """To change high-score lists used by a game without renaming the game,
        change this. Defaults to an empty string."""

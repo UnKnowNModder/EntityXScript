@@ -89,21 +89,21 @@ class PowerupBoxFactory:
 
         shared = SharedObjects.get()
         self._lastpoweruptype: str | None = None
-        self.mesh = bs.getmesh("powerup")
-        self.mesh_simple = bs.getmesh("powerupSimple")
-        self.tex_bomb = bs.gettexture("powerupBomb")
-        self.tex_punch = bs.gettexture("powerupPunch")
-        self.tex_ice_bombs = bs.gettexture("powerupIceBombs")
-        self.tex_sticky_bombs = bs.gettexture("powerupStickyBombs")
-        self.tex_shield = bs.gettexture("powerupShield")
-        self.tex_impact_bombs = bs.gettexture("powerupImpactBombs")
-        self.tex_health = bs.gettexture("powerupHealth")
-        self.tex_land_mines = bs.gettexture("powerupLandMines")
-        self.tex_curse = bs.gettexture("powerupCurse")
-        self.health_powerup_sound = bs.getsound("healthPowerup")
-        self.powerup_sound = bs.getsound("powerup01")
-        self.powerdown_sound = bs.getsound("powerdown01")
-        self.drop_sound = bs.getsound("boxDrop")
+        self.mesh = bs.getmesh('powerup')
+        self.mesh_simple = bs.getmesh('powerupSimple')
+        self.tex_bomb = bs.gettexture('powerupBomb')
+        self.tex_punch = bs.gettexture('powerupPunch')
+        self.tex_ice_bombs = bs.gettexture('powerupIceBombs')
+        self.tex_sticky_bombs = bs.gettexture('powerupStickyBombs')
+        self.tex_shield = bs.gettexture('powerupShield')
+        self.tex_impact_bombs = bs.gettexture('powerupImpactBombs')
+        self.tex_health = bs.gettexture('powerupHealth')
+        self.tex_land_mines = bs.gettexture('powerupLandMines')
+        self.tex_curse = bs.gettexture('powerupCurse')
+        self.health_powerup_sound = bs.getsound('healthPowerup')
+        self.powerup_sound = bs.getsound('powerup01')
+        self.powerdown_sound = bs.getsound('powerdown01')
+        self.drop_sound = bs.getsound('boxDrop')
 
         # Material for powerups.
         self.powerup_material = bs.Material()
@@ -113,23 +113,23 @@ class PowerupBoxFactory:
 
         # Pass a powerup-touched message to applicable stuff.
         self.powerup_material.add_actions(
-            conditions=("they_have_material", self.powerup_accept_material),
+            conditions=('they_have_material', self.powerup_accept_material),
             actions=(
-                ("modify_part_collision", "collide", True),
-                ("modify_part_collision", "physical", False),
-                ("message", "our_node", "at_connect", _TouchedMessage()),
+                ('modify_part_collision', 'collide', True),
+                ('modify_part_collision', 'physical', False),
+                ('message', 'our_node', 'at_connect', _TouchedMessage()),
             ),
         )
 
         # We don't wanna be picked up.
         self.powerup_material.add_actions(
-            conditions=("they_have_material", shared.pickup_material),
-            actions=("modify_part_collision", "collide", False),
+            conditions=('they_have_material', shared.pickup_material),
+            actions=('modify_part_collision', 'collide', False),
         )
 
         self.powerup_material.add_actions(
-            conditions=("they_have_material", shared.footing_material),
-            actions=("impact_sound", self.drop_sound, 0.5, 0.1),
+            conditions=('they_have_material', shared.footing_material),
+            actions=('impact_sound', self.drop_sound, 0.5, 0.1),
         )
 
         self._powerupdist: list[str] = []
@@ -160,8 +160,8 @@ class PowerupBoxFactory:
         else:
             # If the last one was a curse, make this one a health to
             # provide some hope.
-            if self._lastpoweruptype == "curse":
-                ptype = "health"
+            if self._lastpoweruptype == 'curse':
+                ptype = 'health'
             else:
                 while True:
                     ptype = self._powerupdist[
@@ -177,7 +177,7 @@ class PowerupBoxFactory:
         """Return a shared bs.PowerupBoxFactory object, creating if needed."""
         activity = bs.getactivity()
         if activity is None:
-            raise bs.ContextError("No current activity.")
+            raise bs.ContextError('No current activity.')
         factory = activity.customdata.get(cls._STORENAME)
         if factory is None:
             factory = activity.customdata[cls._STORENAME] = PowerupBoxFactory()
@@ -204,7 +204,7 @@ class PowerupBox(bs.Actor):
     def __init__(
         self,
         position: Sequence[float] = (0.0, 1.0, 0.0),
-        poweruptype: str = "triple_bombs",
+        poweruptype: str = 'triple_bombs',
         expire: bool = True,
     ):
         """Create a powerup-box of the requested type at the given position.
@@ -218,48 +218,48 @@ class PowerupBox(bs.Actor):
         self.poweruptype = poweruptype
         self._powersgiven = False
 
-        if poweruptype == "triple_bombs":
+        if poweruptype == 'triple_bombs':
             tex = factory.tex_bomb
-        elif poweruptype == "punch":
+        elif poweruptype == 'punch':
             tex = factory.tex_punch
-        elif poweruptype == "ice_bombs":
+        elif poweruptype == 'ice_bombs':
             tex = factory.tex_ice_bombs
-        elif poweruptype == "impact_bombs":
+        elif poweruptype == 'impact_bombs':
             tex = factory.tex_impact_bombs
-        elif poweruptype == "land_mines":
+        elif poweruptype == 'land_mines':
             tex = factory.tex_land_mines
-        elif poweruptype == "sticky_bombs":
+        elif poweruptype == 'sticky_bombs':
             tex = factory.tex_sticky_bombs
-        elif poweruptype == "shield":
+        elif poweruptype == 'shield':
             tex = factory.tex_shield
-        elif poweruptype == "health":
+        elif poweruptype == 'health':
             tex = factory.tex_health
-        elif poweruptype == "curse":
+        elif poweruptype == 'curse':
             tex = factory.tex_curse
         else:
-            raise ValueError("invalid poweruptype: " + str(poweruptype))
+            raise ValueError('invalid poweruptype: ' + str(poweruptype))
 
         if len(position) != 3:
-            raise ValueError("expected 3 floats for position")
+            raise ValueError('expected 3 floats for position')
 
         self.node = bs.newnode(
-            "prop",
+            'prop',
             delegate=self,
             attrs={
-                "body": "box",
-                "position": position,
-                "mesh": factory.mesh,
-                "light_mesh": factory.mesh_simple,
-                "shadow_size": 0.5,
-                "color_texture": tex,
-                "reflection": "powerup",
-                "reflection_scale": [1.0],
-                "materials": (factory.powerup_material, shared.object_material),
+                'body': 'box',
+                'position': position,
+                'mesh': factory.mesh,
+                'light_mesh': factory.mesh_simple,
+                'shadow_size': 0.5,
+                'color_texture': tex,
+                'reflection': 'powerup',
+                'reflection_scale': [1.0],
+                'materials': (factory.powerup_material, shared.object_material),
             },
         )
 
         # Animate in.
-        curve = bs.animate(self.node, "mesh_scale", {0: 0, 0.14: 1.6, 0.2: 1})
+        curve = bs.animate(self.node, 'mesh_scale', {0: 0, 0.14: 1.6, 0.2: 1})
         bs.timer(0.2, curve.delete)
 
         if expire:
@@ -283,8 +283,10 @@ class PowerupBox(bs.Actor):
         if isinstance(msg, bs.PowerupAcceptMessage):
             factory = PowerupBoxFactory.get()
             assert self.node
-            if self.poweruptype == "health":
-                factory.health_powerup_sound.play(3, position=self.node.position)
+            if self.poweruptype == 'health':
+                factory.health_powerup_sound.play(
+                    3, position=self.node.position
+                )
 
             factory.powerup_sound.play(3, position=self.node.position)
             self._powersgiven = True
@@ -302,7 +304,7 @@ class PowerupBox(bs.Actor):
                 if msg.immediate:
                     self.node.delete()
                 else:
-                    bs.animate(self.node, "mesh_scale", {0: 1, 0.1: 0})
+                    bs.animate(self.node, 'mesh_scale', {0: 1, 0.1: 0})
                     bs.timer(0.1, self.node.delete)
 
         elif isinstance(msg, bs.OutOfBoundsMessage):
@@ -310,7 +312,7 @@ class PowerupBox(bs.Actor):
 
         elif isinstance(msg, bs.HitMessage):
             # Don't die on punches (that's annoying).
-            if msg.hit_type != "punch":
+            if msg.hit_type != 'punch':
                 self.handlemessage(bs.DieMessage())
         else:
             return super().handlemessage(msg)

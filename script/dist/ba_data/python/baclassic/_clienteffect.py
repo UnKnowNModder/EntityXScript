@@ -30,7 +30,7 @@ def run_bs_client_effects(
         if effecttype is ClientEffectTypeID.SCREEN_MESSAGE:
             assert isinstance(effect, bacommon.bs.ClientEffectScreenMessage)
             textfin = bauiv1.Lstr(
-                translate=("serverResponses", effect.message)
+                translate=('serverResponses', effect.message)
             ).evaluate()
             if effect.subs is not None:
                 # Should always be even.
@@ -42,7 +42,9 @@ def run_bs_client_effects(
                     )
             bauiv1.apptimer(
                 delay,
-                strict_partial(bauiv1.screenmessage, textfin, color=effect.color),
+                strict_partial(
+                    bauiv1.screenmessage, textfin, color=effect.color
+                ),
             )
 
         elif effecttype is ClientEffectTypeID.SOUND:
@@ -52,15 +54,15 @@ def run_bs_client_effects(
             if effect.sound is smcls.UNKNOWN:
                 # Server should avoid sending us sounds we don't
                 # support. Make some noise if it happens.
-                logging.error("Got unrecognized bacommon.bs.ClientEffectSound.")
+                logging.error('Got unrecognized bacommon.bs.ClientEffectSound.')
             elif effect.sound is smcls.CASH_REGISTER:
-                soundfile = "cashRegister"
+                soundfile = 'cashRegister'
             elif effect.sound is smcls.ERROR:
-                soundfile = "error"
+                soundfile = 'error'
             elif effect.sound is smcls.POWER_DOWN:
-                soundfile = "powerdown01"
+                soundfile = 'powerdown01'
             elif effect.sound is smcls.GUN_COCKING:
-                soundfile = "gunCocking"
+                soundfile = 'gunCocking'
             else:
                 assert_never(effect.sound)
             if soundfile is not None:
@@ -76,7 +78,9 @@ def run_bs_client_effects(
             delay += effect.seconds
 
         elif effecttype is ClientEffectTypeID.CHEST_WAIT_TIME_ANIMATION:
-            assert isinstance(effect, bacommon.bs.ClientEffectChestWaitTimeAnimation)
+            assert isinstance(
+                effect, bacommon.bs.ClientEffectChestWaitTimeAnimation
+            )
             bauiv1.apptimer(
                 delay,
                 strict_partial(
@@ -116,7 +120,8 @@ def run_bs_client_effects(
             # Server should not send us stuff we can't digest. Make
             # some noise if it happens.
             logging.error(
-                "Got unrecognized bacommon.bs.ClientEffect;" " should not happen."
+                'Got unrecognized bacommon.bs.ClientEffect;'
+                ' should not happen.'
             )
 
         else:

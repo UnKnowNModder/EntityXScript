@@ -36,9 +36,9 @@ class _Entry:
         self._height = (32.0 if height is None else height) * self._scale
         self._bar_width = 2.0 * self._scale
         self._bar_height = 32.0 * self._scale
-        self._bar_tex = self._backing_tex = bs.gettexture("bar")
-        self._cover_tex = bs.gettexture("uiAtlas")
-        self._mesh = bs.getmesh("meterTransparent")
+        self._bar_tex = self._backing_tex = bs.gettexture('bar')
+        self._cover_tex = bs.gettexture('uiAtlas')
+        self._mesh = bs.getmesh('meterTransparent')
         self._pos: Sequence[float] | None = None
         self._flash_timer: bs.Timer | None = None
         self._flash_counter: int | None = None
@@ -62,14 +62,14 @@ class _Entry:
         opacity = (0.8 if vrmode else 0.8) if self._do_cover else 0.5
         self._backing = bs.NodeActor(
             bs.newnode(
-                "image",
+                'image',
                 attrs={
-                    "scale": (self._width, self._height),
-                    "opacity": opacity,
-                    "color": self._backing_color,
-                    "vr_depth": -3,
-                    "attach": "topLeft",
-                    "texture": self._backing_tex,
+                    'scale': (self._width, self._height),
+                    'opacity': opacity,
+                    'color': self._backing_color,
+                    'vr_depth': -3,
+                    'attach': 'topLeft',
+                    'texture': self._backing_tex,
                 },
             )
         )
@@ -77,46 +77,46 @@ class _Entry:
         self._barcolor = safe_team_color
         self._bar = bs.NodeActor(
             bs.newnode(
-                "image",
+                'image',
                 attrs={
-                    "opacity": 0.7,
-                    "color": self._barcolor,
-                    "attach": "topLeft",
-                    "texture": self._bar_tex,
+                    'opacity': 0.7,
+                    'color': self._barcolor,
+                    'attach': 'topLeft',
+                    'texture': self._bar_tex,
                 },
             )
         )
 
         self._bar_scale = bs.newnode(
-            "combine",
+            'combine',
             owner=self._bar.node,
             attrs={
-                "size": 2,
-                "input0": self._bar_width,
-                "input1": self._bar_height,
+                'size': 2,
+                'input0': self._bar_width,
+                'input1': self._bar_height,
             },
         )
         assert self._bar.node
-        self._bar_scale.connectattr("output", self._bar.node, "scale")
+        self._bar_scale.connectattr('output', self._bar.node, 'scale')
         self._bar_position = bs.newnode(
-            "combine",
+            'combine',
             owner=self._bar.node,
-            attrs={"size": 2, "input0": 0, "input1": 0},
+            attrs={'size': 2, 'input0': 0, 'input1': 0},
         )
-        self._bar_position.connectattr("output", self._bar.node, "position")
+        self._bar_position.connectattr('output', self._bar.node, 'position')
         self._cover_color = safe_team_color
         if self._do_cover:
             self._cover = bs.NodeActor(
                 bs.newnode(
-                    "image",
+                    'image',
                     attrs={
-                        "scale": (self._width * 1.15, self._height * 1.6),
-                        "opacity": 1.0,
-                        "color": self._cover_color,
-                        "vr_depth": 2,
-                        "attach": "topLeft",
-                        "texture": self._cover_tex,
-                        "mesh_transparent": self._mesh,
+                        'scale': (self._width * 1.15, self._height * 1.6),
+                        'opacity': 1.0,
+                        'color': self._cover_color,
+                        'vr_depth': 2,
+                        'attach': 'topLeft',
+                        'texture': self._cover_tex,
+                        'mesh_transparent': self._mesh,
                     },
                 )
             )
@@ -126,19 +126,19 @@ class _Entry:
         flatness = (1.0 if vrmode else 0.5) if self._do_cover else 1.0
         self._score_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "h_attach": "left",
-                    "v_attach": "top",
-                    "h_align": "right",
-                    "v_align": "center",
-                    "maxwidth": maxwidth,
-                    "vr_depth": 2,
-                    "scale": self._scale * 0.9,
-                    "text": "",
-                    "shadow": 1.0 if vrmode else 0.5,
-                    "flatness": flatness,
-                    "color": clr,
+                    'h_attach': 'left',
+                    'v_attach': 'top',
+                    'h_align': 'right',
+                    'v_align': 'center',
+                    'maxwidth': maxwidth,
+                    'vr_depth': 2,
+                    'scale': self._scale * 0.9,
+                    'text': '',
+                    'shadow': 1.0 if vrmode else 0.5,
+                    'flatness': flatness,
+                    'color': clr,
                 },
             )
         )
@@ -160,35 +160,37 @@ class _Entry:
                 if team_name_label.is_flat_value():
                     val = team_name_label.evaluate()
                     if len(val) > 10:
-                        team_name_label = bs.Lstr(value=val[:10] + "...")
+                        team_name_label = bs.Lstr(value=val[:10] + '...')
             else:
                 if len(team_name_label) > 10:
-                    team_name_label = team_name_label[:10] + "..."
+                    team_name_label = team_name_label[:10] + '...'
                 team_name_label = bs.Lstr(value=team_name_label)
 
         flatness = (1.0 if vrmode else 0.5) if self._do_cover else 1.0
         self._name_text = bs.NodeActor(
             bs.newnode(
-                "text",
+                'text',
                 attrs={
-                    "h_attach": "left",
-                    "v_attach": "top",
-                    "h_align": "left",
-                    "v_align": "center",
-                    "vr_depth": 2,
-                    "scale": self._scale * 0.9,
-                    "shadow": 1.0 if vrmode else 0.5,
-                    "flatness": flatness,
-                    "maxwidth": 130 * scoreboard.score_split,
-                    "text": team_name_label,
-                    "color": clr + (1.0,),
+                    'h_attach': 'left',
+                    'v_attach': 'top',
+                    'h_align': 'left',
+                    'v_align': 'center',
+                    'vr_depth': 2,
+                    'scale': self._scale * 0.9,
+                    'shadow': 1.0 if vrmode else 0.5,
+                    'flatness': flatness,
+                    'maxwidth': 130 * scoreboard.score_split,
+                    'text': team_name_label,
+                    'color': clr + (1.0,),
                 },
             )
         )
 
     def flash(self, countdown: bool, extra_flash: bool) -> None:
         """Flash momentarily."""
-        self._flash_timer = bs.Timer(0.1, bs.WeakCall(self._do_flash), repeat=True)
+        self._flash_timer = bs.Timer(
+            0.1, bs.WeakCall(self._do_flash), repeat=True
+        )
         if countdown:
             self._flash_counter = 10
         else:
@@ -294,7 +296,9 @@ class _Entry:
         else:
             if score > self._score or (countdown and score < self._score):
                 extra_flash = (
-                    max_score is not None and score >= max_score and not countdown
+                    max_score is not None
+                    and score >= max_score
+                    and not countdown
                 ) or (countdown and score == 0)
                 if flash:
                     self.flash(countdown, extra_flash)
@@ -315,13 +319,15 @@ class _Entry:
                 )
 
         cur_width = self._bar_scale.input0
-        bs.animate(self._bar_scale, "input0", {0.0: cur_width, 0.25: self._bar_width})
+        bs.animate(
+            self._bar_scale, 'input0', {0.0: cur_width, 0.25: self._bar_width}
+        )
         self._bar_scale.input1 = self._bar_height
         cur_x = self._bar_position.input0
         assert self._pos is not None
         bs.animate(
             self._bar_position,
-            "input0",
+            'input0',
             {0.0: cur_x, 0.25: self._pos[0] + self._bar_width / 2},
         )
         self._bar_position.input1 = self._pos[1] - self._bar_height / 2
@@ -329,7 +335,7 @@ class _Entry:
         if show_value:
             self._score_text.node.text = str(score)
         else:
-            self._score_text.node.text = ""
+            self._score_text.node.text = ''
 
 
 class _EntryProxy:
@@ -365,7 +371,7 @@ class Scoreboard:
     category: Gameplay Classes
     """
 
-    _ENTRYSTORENAME = bs.storagename("entry")
+    _ENTRYSTORENAME = bs.storagename('entry')
 
     def __init__(
         self,
@@ -381,7 +387,7 @@ class Scoreboard:
         show up on boards if provided.
         """
         # pylint: disable=too-many-positional-arguments
-        self._flat_tex = bs.gettexture("null")
+        self._flat_tex = bs.gettexture('null')
         self._entries: dict[int, _Entry] = {}
         self._label = label
         self.score_split = score_split
@@ -434,7 +440,7 @@ class Scoreboard:
 
     def _add_team(self, team: bs.Team) -> None:
         if team.id in self._entries:
-            raise RuntimeError("Duplicate team add")
+            raise RuntimeError('Duplicate team add')
         self._entries[team.id] = _Entry(
             self,
             team,

@@ -23,16 +23,16 @@ def get_filtered_map_name(name: str) -> str:
     This can be used to support old playlists, etc.
     """
     # Some legacy name fallbacks... can remove these eventually.
-    if name in ("AlwaysLand", "Happy Land"):
-        name = "Happy Thoughts"
-    if name == "Hockey Arena":
-        name = "Hockey Stadium"
+    if name in ('AlwaysLand', 'Happy Land'):
+        name = 'Happy Thoughts'
+    if name == 'Hockey Arena':
+        name = 'Hockey Stadium'
     return name
 
 
 def get_map_display_string(name: str) -> babase.Lstr:
     """Return a babase.Lstr for displaying a given map's name."""
-    return babase.Lstr(translate=("mapsNames", name))
+    return babase.Lstr(translate=('mapsNames', name))
 
 
 def get_map_class(name: str) -> type[Map]:
@@ -54,7 +54,7 @@ class Map(Actor):
     """
 
     defs: Any = None
-    name = "Map"
+    name = 'Map'
     _playtypes: list[str] = []
 
     @classmethod
@@ -102,7 +102,9 @@ class Map(Actor):
         """
         return None
 
-    def __init__(self, vr_overlay_offset: Sequence[float] | None = None) -> None:
+    def __init__(
+        self, vr_overlay_offset: Sequence[float] | None = None
+    ) -> None:
         """Instantiate a map."""
         super().__init__()
 
@@ -117,24 +119,24 @@ class Map(Actor):
             self.preloaddata = _bascenev1.getactivity().preloads[type(self)]
         except Exception as exc:
             raise babase.NotFoundError(
-                "Preload data not found for "
+                'Preload data not found for '
                 + str(type(self))
-                + "; make sure to call the type's preload()"
-                " staticmethod in the activity constructor"
+                + '; make sure to call the type\'s preload()'
+                ' staticmethod in the activity constructor'
             ) from exc
 
         # Set various globals.
         gnode = _bascenev1.getactivity().globalsnode
 
         # Set area-of-interest bounds.
-        aoi_bounds = self.get_def_bound_box("area_of_interest_bounds")
+        aoi_bounds = self.get_def_bound_box('area_of_interest_bounds')
         if aoi_bounds is None:
             print('WARNING: no "aoi_bounds" found for map:', self.getname())
             aoi_bounds = (-1, -1, -1, 1, 1, 1)
         gnode.area_of_interest_bounds = aoi_bounds
 
         # Set map bounds.
-        map_bounds = self.get_def_bound_box("map_bounds")
+        map_bounds = self.get_def_bound_box('map_bounds')
         if map_bounds is None:
             print('WARNING: no "map_bounds" found for map:', self.getname())
             map_bounds = (-30, -10, -30, 30, 100, 30)
@@ -145,10 +147,10 @@ class Map(Actor):
             gnode.shadow_range = [
                 self.defs.points[v][1]
                 for v in [
-                    "shadow_lower_bottom",
-                    "shadow_lower_top",
-                    "shadow_upper_bottom",
-                    "shadow_upper_top",
+                    'shadow_lower_bottom',
+                    'shadow_lower_top',
+                    'shadow_upper_bottom',
+                    'shadow_upper_top',
                 ]
             ]
         except Exception:
@@ -170,25 +172,29 @@ class Map(Actor):
         gnode.vr_overlay_center = center
         gnode.vr_overlay_center_enabled = True
 
-        self.spawn_points = self.get_def_points("spawn") or [(0, 0, 0, 0, 0, 0)]
-        self.ffa_spawn_points = self.get_def_points("ffa_spawn") or [(0, 0, 0, 0, 0, 0)]
-        self.spawn_by_flag_points = self.get_def_points("spawn_by_flag") or [
+        self.spawn_points = self.get_def_points('spawn') or [(0, 0, 0, 0, 0, 0)]
+        self.ffa_spawn_points = self.get_def_points('ffa_spawn') or [
             (0, 0, 0, 0, 0, 0)
         ]
-        self.flag_points = self.get_def_points("flag") or [(0, 0, 0)]
+        self.spawn_by_flag_points = self.get_def_points('spawn_by_flag') or [
+            (0, 0, 0, 0, 0, 0)
+        ]
+        self.flag_points = self.get_def_points('flag') or [(0, 0, 0)]
 
         # We just want points.
         self.flag_points = [p[:3] for p in self.flag_points]
-        self.flag_points_default = self.get_def_point("flag_default") or (
+        self.flag_points_default = self.get_def_point('flag_default') or (
             0,
             1,
             0,
         )
-        self.powerup_spawn_points = self.get_def_points("powerup_spawn") or [(0, 0, 0)]
+        self.powerup_spawn_points = self.get_def_points('powerup_spawn') or [
+            (0, 0, 0)
+        ]
 
         # We just want points.
         self.powerup_spawn_points = [p[:3] for p in self.powerup_spawn_points]
-        self.tnt_points = self.get_def_points("tnt") or []
+        self.tnt_points = self.get_def_points('tnt') or []
 
         # We just want points.
         self.tnt_points = [p[:3] for p in self.tnt_points]
@@ -199,9 +205,13 @@ class Map(Actor):
         # FIXME: this should be part of game; not map.
         # Let's select random index for first spawn point,
         # so that no one is offended by the constant spawn on the edge.
-        self._next_ffa_start_index = random.randrange(len(self.ffa_spawn_points))
+        self._next_ffa_start_index = random.randrange(
+            len(self.ffa_spawn_points)
+        )
 
-    def is_point_near_edge(self, point: babase.Vec3, running: bool = False) -> bool:
+    def is_point_near_edge(
+        self, point: babase.Vec3, running: bool = False
+    ) -> bool:
         """Return whether the provided point is near an edge of the map.
 
         Simple bot logic uses this call to determine if they
@@ -232,7 +242,11 @@ class Map(Actor):
     def get_def_point(self, name: str) -> Sequence[float] | None:
         """Return a single defined point or a default value in its absence."""
         val = self.defs.points.get(name)
-        return None if val is None else babase.vec3validate(val) if __debug__ else val
+        return (
+            None
+            if val is None
+            else babase.vec3validate(val) if __debug__ else val
+        )
 
     def get_def_points(self, name: str) -> list[Sequence[float]]:
         """Return a list of named points.
@@ -241,7 +255,7 @@ class Map(Actor):
         If none are defined, returns an empty list.
         """
         point_list = []
-        if self.defs and name + "1" in self.defs.points:
+        if self.defs and name + '1' in self.defs.points:
             i = 1
             while name + str(i) in self.defs.points:
                 pts = self.defs.points[name + str(i)]
@@ -249,7 +263,7 @@ class Map(Actor):
                     point_list.append(pts)
                 else:
                     if len(pts) != 3:
-                        raise ValueError("invalid point")
+                        raise ValueError('invalid point')
                     point_list.append(pts + (0, 0, 0))
                 i += 1
         return point_list
@@ -314,7 +328,9 @@ class Map(Actor):
         assert farthestpt is not None
         return tuple(farthestpt)
 
-    def get_flag_position(self, team_index: int | None = None) -> Sequence[float]:
+    def get_flag_position(
+        self, team_index: int | None = None
+    ) -> Sequence[float]:
         """Return a flag position on the map for the given team index.
 
         Pass ``None`` to get the default flag point.
