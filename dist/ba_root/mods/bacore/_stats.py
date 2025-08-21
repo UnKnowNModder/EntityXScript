@@ -12,8 +12,19 @@ class Stats(Storage):
 	def bootstrap(self) -> None:
 		"""creates essential files."""
 		if not self.path.exists():
-			self.commit([])
+			self.commit({})
 	
-	def get(self) -> list[dict]:
-		""" returns sorted stats. """
-		
+	def sort(self) -> dict[str, dict]:
+		""" sorts the stats in descending order. """
+		stats = self.read()
+		sorted_raw = sorted(
+			stats.items(),
+			key=lambda item: (item[1]["score"], item[1]["kills"], -item[1]["deaths"], item[1]["games"]),
+			reverse = True
+		)
+		sorted_stats = {}
+		for rank, (account_id, data) in enumerate(sorted_raw, start=1):
+			data = dict(data) # copying to avoid mutating og ref.
+			data["rank"] = rank
+			sorted_stats[account_id] = data
+		self.commit(sorted_stats)

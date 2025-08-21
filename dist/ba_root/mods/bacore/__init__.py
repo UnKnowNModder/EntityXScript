@@ -6,6 +6,7 @@ import babase, sys
 from ._config import Config
 from ._roles import Roles
 from ._tournament import Tournament
+from ._stats import Stats
 from ._clients import (
 	Client,
 	Player,
@@ -38,4 +39,5 @@ class Initialize(babase.Plugin):
 		module.config = Config()
 		module.roles = Roles()
 		module.tournament = Tournament()
+		module.stats = Stats()
 		print("✅ Initiated storage methods. ")

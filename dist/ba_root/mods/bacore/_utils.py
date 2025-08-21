@@ -25,7 +25,7 @@ def send(
 		return
 	bascenev1.chatmessage(message, clients=clients, sender_override=sender)
 
-def replace_method(module, func_name: str, initial: bool = True):
+def replace_method(module, func_name: str, initial: bool = False):
     """ Decorator to replace a function in a module/class by name."""
     if not hasattr(module, func_name):
         raise AttributeError(f"Module '{module.__name__}' has no attribute '{func_name}'")
@@ -46,7 +46,7 @@ def replace_method(module, func_name: str, initial: bool = True):
                     return new_func(*args, **kwargs, og_result=result)
             return new_func(*args, **kwargs)
 
-        # incase we might need the original function
+        # incase we need the original function
         wrapper._original = original_func
 
         # patch it into the module

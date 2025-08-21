@@ -3,6 +3,7 @@
 import babase
 from .tournament import replace_old_methods_with_new
 from .protector import Protector
+from .stats import update_stats
 
 # ba_meta export babase.Plugin
 class Execute(babase.Plugin):
