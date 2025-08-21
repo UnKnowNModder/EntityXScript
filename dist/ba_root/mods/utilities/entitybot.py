@@ -96,7 +96,7 @@ class EntityBot(commands.Bot):
 
     """Increases the limit of server max players"""
     @commands.command(name='limit', description='Increase in-game max players limit')
-    async def limit(ctx, limit: int):
+    async def limit(self, ctx, limit: int):
         try:
             if bacore.roles.has_role(LEADER, ctx.author.id):
                 bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
@@ -111,7 +111,7 @@ class EntityBot(commands.Bot):
 
     """Restart the server"""
     @commands.command(name='quit', description='Restart the server')
-    async def quit(ctx):
+    async def quit(self, ctx):
         try:
             if bacore.roles.has_role(LEADER, ctx.author.id):
                 await ctx.send('Restarting Server.\n[10%==========100%]')
