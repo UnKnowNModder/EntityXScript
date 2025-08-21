@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import bacore
 import babase
+import bascenev1
 
 
 class EntityBot(commands.Bot):
@@ -22,6 +23,29 @@ class EntityBot(commands.Bot):
     @commands.command(name='ping')
     async def ping(self, ctx):
         await ctx.send('Pong!')
+
+    """Increases the limit of server max players"""
+    @commands.command(name='limit', description='Increase in-game max players limit')
+    async def limit(ctx, limit: int):
+        try:
+            bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
+            await ctx.send(f"Set max-player limit to {limit}")
+        except Exception as e:
+            traceback = traceback.print_exc()
+            await ctx.send(traceback)
+            print(traceback)
+
+    """Restart the server"""
+    @commands.command(name='quit', description='Restart the server')
+    async def quit(ctx):
+        try:
+            await ctx.send('Restarting Server.\n[10%==========100%]')
+            babase.quit()
+        except Exception as e:
+            traceback = traceback.print_exc()
+            print(traceback)
+            await ctx.send(traceback)
+    
 
     """Creates a slash command group named match so we can use commands like /match add..."""
     match_group = app_commands.Group(name='match', description='Match Management')
