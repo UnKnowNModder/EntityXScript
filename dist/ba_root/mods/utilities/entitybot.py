@@ -23,11 +23,11 @@ class EntityBot(commands.Bot):
     """Add or remove a discord user to owner list"""
     @commands.command(name='owner')
     @commands.is_owner() # Check if ctx.user is bot owner
-    async def owner(ctx, user: discord.Member):
+    async def owner(self, ctx, user: discord.Member):
         try:
-            if bacore.roles.has_role(Roles.OWNER, user.id):
-                bacore.roles.remove(Roles.OWNER, user.id)
-                await ctx.send(f"{user.name}[`{user.id}`] Removed from Role: OWNER")
+            if bacore.roles.has_role(LEADER, user.id):
+                bacore.roles.remove(LEADER, user.id)
+                await self.ctx.send(f"{user.name}[`{user.id}`] Removed from Role: LEADER")
             else:
                 bacore.roles.add(Roles.OWNER, user.id)
                 await ctx.send(f"{user.name}[`{user.id}`] Added Role: OWNER")
