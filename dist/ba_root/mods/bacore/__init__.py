@@ -19,6 +19,7 @@ from ._utils import (
 	success,
 	error,
 	send
+	replace_method
 )
 from ._enums import (
 	Authority,

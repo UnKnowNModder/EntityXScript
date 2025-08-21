@@ -1,6 +1,9 @@
 """basic helper utility."""
 
 from __future__ import annotations
+from functools import wrap
+from inspect import signature
+from typing import Any
 import bascenev1
 
 def error(message: str, clients: list[int] | None = None) -> None:
@@ -21,3 +24,34 @@ def send(
 		# cover up for server authority exploitation.
 		return
 	bascenev1.chatmessage(message, clients=clients, sender_override=sender)
+
+def replace_method(module, func_name: str, initial: bool = True):
+    """ Decorator to replace a function in a module/class by name."""
+    if not hasattr(module, func_name):
+        raise AttributeError(f"Module '{module.__name__}' has no attribute '{func_name}'")
+    original_func = getattr(module, func_name)
+    
+    if not callable(original_func):
+        raise TypeError(f"Attribute '{func_name}' in '{module.__name__}' is not callable")
+
+    def decorator(new_func):
+        @wraps(original_func)
+        def wrapper(*args, **kwargs) -> Any:
+            if initial:
+                # if this is true, we'll call the original function initially.
+                result = original_func(*args, **kwargs)
+                sign = signature(function)
+                params = [param for param in sign.parameters]
+                if "og_result" in params:
+                    return new_func(*args, **kwargs, og_result=result)
+            return new_func(*args, **kwargs)
+
+        # incase we might need the original function
+        wrapper._original = original_func
+
+        # patch it into the module
+        setattr(module, func_name, wrapper)
+
+        return wrapper  # just to be safe.
+    return decorator
+
