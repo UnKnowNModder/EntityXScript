@@ -18,6 +18,14 @@ class EntityBot(commands.Bot):
         if message.author == self.user:
             return
         await self.process_commands(message)
+
+    """Add or remove a discord user to owner list"""
+    @commands.command(name='owner')
+    @commands.is_owner() # Check if ctx.user is bot owner
+    async def owner(ctx, user: discord.Member):
+        try:
+            user_authority = bacore.roles.get_authority_level(user.id)
+         
      
     """To check bot response"""
     @commands.command(name='ping')
