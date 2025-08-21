@@ -33,10 +33,10 @@ class EntityBot(commands.Bot):
                 bacore.roles.add(Roles.OWNER, user.id)
                 await ctx.send(f"{user.name}[`{user.id}`] Added Role: LEADER")
         except Exception as e:
-            traceback_msg = traceback.print_exc()
+            traceback_msg = traceback.format_exc()
             print(traceback_msg)
             await ctx.send(traceback_msg)
-            pass
+            
          
      
     """Sync slash commands"""
@@ -104,10 +104,10 @@ class EntityBot(commands.Bot):
             else:
                 await ctx.send('Access Denied')
         except Exception as e:
-            traceback_msg = traceback.print_exc()
+            traceback_msg = traceback.format_exc()
             await ctx.send(traceback_msg)
             print(traceback_msg)
-            pass
+            
 
     """Restart the server"""
     @commands.command(name='quit', description='Restart the server')
@@ -119,10 +119,10 @@ class EntityBot(commands.Bot):
             else:
                 await ctx.send('Access Denied')
         except Exception as e:
-            traceback_msg = traceback.print_exc()
+            traceback_msg = traceback.format_exc()
             print(traceback_msg)
             await ctx.send(traceback_msg)
-            pass
+            
     
 
     """Creates a slash command group named match so we can use commands like /match add..."""
@@ -143,10 +143,10 @@ class EntityBot(commands.Bot):
             else:
                 await interaction.response.send_message("Access Denied")
         except Exception as e:
-            traceback_msg = traceback.print_exc()
+            traceback_msg = traceback.format_exc()
             await interaction.response.send_message(traceback_msg)
             print(traceback_msg)
-            pass
+            
 
 def start_bot():
     bot = EntityBot()
