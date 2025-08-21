@@ -26,11 +26,11 @@ class EntityBot(commands.Bot):
     @commands.is_owner() # Check if ctx.user is bot owner
     async def owner(self, ctx, user: discord.Member):
         try:
-            if bacore.roles.has_role(bacore.Roles.OWNER, user.id):
-                bacore.roles.remove(bacore.Roles.OWNER, user.id)
+            if bacore.roles.has_role(bacore.Role.OWNER, user.id):
+                bacore.roles.remove(bacore.Role.OWNER, user.id)
                 await self.ctx.send(f"{user.name}[`{user.id}`] Removed from Role: LEADER")
             else:
-                bacore.roles.add(bacore.Roles.OWNER, user.id)
+                bacore.roles.add(bacore.Role.OWNER, user.id)
                 await ctx.send(f"{user.name}[`{user.id}`] Added Role: LEADER")
         except Exception as e:
             traceback_msg = traceback.format_exc()
@@ -98,7 +98,7 @@ class EntityBot(commands.Bot):
     @commands.command(name='limit', description='Increase in-game max players limit')
     async def limit(self, ctx, limit: int):
         try:
-            if bacore.roles.has_role(bacore.Roles.OWNER, ctx.author.id):
+            if bacore.roles.has_role(bacore.Role.OWNER, ctx.author.id):
                 bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
                 await ctx.send(f"Set max-player limit to {limit}")
             else:
@@ -113,7 +113,7 @@ class EntityBot(commands.Bot):
     @commands.command(name='quit', description='Restart the server')
     async def quit(self, ctx):
         try:
-            if bacore.roles.has_role(bacore.Roles.OWNER, ctx.author.id):
+            if bacore.roles.has_role(bacore.Role.OWNER, ctx.author.id):
                 await ctx.send('Restarting Server.\n[10%==========100%]')
                 babase.quit()
             else:
@@ -131,7 +131,7 @@ class EntityBot(commands.Bot):
     @match_group.command(name='add',description='Appoint a match')
     async def match_add(self, interaction: discord.Interaction, series_count: int, team_name1: str, team_name2: str, team1_players: str, team2_players: str):
         try:
-            if bacore.roles.has_role(bacore.Roles.OWNER, interaction.user.id):
+            if bacore.roles.has_role(bacore.Role.OWNER, interaction.user.id):
                 match = {}
                 match["series"] = int(series_count)
                 match["team1"] = {}
