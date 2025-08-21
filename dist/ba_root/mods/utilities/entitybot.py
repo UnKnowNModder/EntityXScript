@@ -153,7 +153,7 @@ def start_bot():
     bot.run("Enter Your Fuking Bot Token Here")
 
 # ba_meta import babase.Plugin
-class BotPlugin(babase.plugin):
+class BotPlugin(babase.Plugin):
     def __init__(self):
         start_bot()
         
