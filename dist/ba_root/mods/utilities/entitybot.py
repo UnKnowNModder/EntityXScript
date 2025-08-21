@@ -27,8 +27,8 @@ class EntityBot(commands.Bot):
         try:
             team1_players = team1_pbids.split(',')
             team2_players = team2_pbids.split(',')
-            if len(team1_players) or len(team2_players) < 4:
-                await interaction.response.send_message("Enter equal players **4** in both teams")
+            if len(team1_players) or len(team2_players) < 1:
+                await interaction.response.send_message("Enter equal players in both teams")
             else:
                 match = {"series": series_count, "team1": [team_name1, team1_players], "team2": [team_name2, team2_players]}
                 bacore.tournament.insert(match)
