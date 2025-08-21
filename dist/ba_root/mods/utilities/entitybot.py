@@ -4,6 +4,7 @@ from discord import app_commands
 import bacore
 import babase
 import bascenev1
+import traceback
 
 
 class EntityBot(commands.Bot):
@@ -24,7 +25,17 @@ class EntityBot(commands.Bot):
     @commands.is_owner() # Check if ctx.user is bot owner
     async def owner(ctx, user: discord.Member):
         try:
-            user_authority = bacore.roles.get_authority_level(user.id)
+            if bacore.roles.has_role(Roles.OWNER, user.id):
+                bacore.roles.remove(Roles.OWNER, user.id)
+                await ctx.send(f"{user.name}[`{user.id}`] Removed from Role: OWNER")
+            else:
+                bacore.roles.add(Roles.OWNER, user.id)
+                await ctx.send(f"{user.name}[`{user.id}`] Added Role: OWNER")
+        except Exception as e:
+            traceback_msg = traceback.print_exc()
+            print(traceback_msg)
+            await ctx.send(traceback_msg)
+            pass
          
      
     """To check bot response"""
@@ -36,23 +47,31 @@ class EntityBot(commands.Bot):
     @commands.command(name='limit', description='Increase in-game max players limit')
     async def limit(ctx, limit: int):
         try:
-            bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
-            await ctx.send(f"Set max-player limit to {limit}")
+            if bacore.roles.has_role(Roles.OWNER, ctx.author.id):
+                bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
+                await ctx.send(f"Set max-player limit to {limit}")
+            else:
+                await ctx.send('Access Denied')
         except Exception as e:
-            traceback = traceback.print_exc()
-            await ctx.send(traceback)
-            print(traceback)
+            traceback_msg = traceback.print_exc()
+            await ctx.send(traceback_msg)
+            print(traceback_msg)
+            pass
 
     """Restart the server"""
     @commands.command(name='quit', description='Restart the server')
     async def quit(ctx):
         try:
-            await ctx.send('Restarting Server.\n[10%==========100%]')
-            babase.quit()
+            if bacore.roles.has_role(Roles.OWNER, ctx.author.id):
+                await ctx.send('Restarting Server.\n[10%==========100%]')
+                babase.quit()
+            else:
+                await ctx.send('Access Denied')
         except Exception as e:
-            traceback = traceback.print_exc()
-            print(traceback)
-            await ctx.send(traceback)
+            traceback_msg = traceback.print_exc()
+            print(traceback_msg)
+            await ctx.send(traceback_msg)
+            pass
     
 
     """Creates a slash command group named match so we can use commands like /match add..."""
@@ -61,16 +80,21 @@ class EntityBot(commands.Bot):
     @match_group.command(name='add',description='Appoint a match')
     async def match_add(self, interaction: discord.Interaction, series_count: int, team_name1: str, team_name2: str, team1_players: str, team2_players: str):
         try:
-            match = {}
-            match["series"] = int(series_count)
-            match["team1"] = {}
-            match["team1"][team_name1] = list(eval(team1_players))
-            match["team2"] = {}
-            match["team2"][team_name2] = list(eval(team2_players))
-            bacore.tournament.insert(match)
-            await interaction.response.send_message("Match Appointed")
+            if bacore.roles.has_role(Roles.OWNER, interaction.user.id):
+                match = {}
+                match["series"] = int(series_count)
+                match["team1"] = {}
+                match["team1"][team_name1] = list(eval(team1_players))
+                match["team2"] = {}
+                match["team2"][team_name2] = list(eval(team2_players))
+                bacore.tournament.insert(match)
+                await interaction.response.send_message("Match Appointed")
+            else:
+                await interaction.response.send_message("Access Denied")
         except Exception as e:
-            await interaction.response.send_message(e)
+            traceback_msg = traceback.print_exc()
+            await interaction.response.send_message(traceback_msg)
+            print(traceback_msg)
             pass
 
 def start_bot():
