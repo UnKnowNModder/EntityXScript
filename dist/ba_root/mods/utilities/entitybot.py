@@ -5,6 +5,7 @@ import bacore
 import babase
 import bascenev1
 import traceback
+import typing
 
 
 class EntityBot(commands.Bot):
@@ -30,7 +31,7 @@ class EntityBot(commands.Bot):
                 await self.ctx.send(f"{user.name}[`{user.id}`] Removed from Role: LEADER")
             else:
                 bacore.roles.add(Roles.OWNER, user.id)
-                await ctx.send(f"{user.name}[`{user.id}`] Added Role: OWNER")
+                await ctx.send(f"{user.name}[`{user.id}`] Added Role: LEADER")
         except Exception as e:
             traceback_msg = traceback.print_exc()
             print(traceback_msg)
@@ -42,7 +43,7 @@ class EntityBot(commands.Bot):
     @commands.command()
     @commands.guild_only()
     @commands.is_owner()
-    async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~", "*", "^"]] = None) -> None:
+    async def sync(self, ctx: commands.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~", "*", "^"]] = None) -> None:
         if not guilds:
             if spec == "~":
 
@@ -97,7 +98,7 @@ class EntityBot(commands.Bot):
     @commands.command(name='limit', description='Increase in-game max players limit')
     async def limit(ctx, limit: int):
         try:
-            if bacore.roles.has_role(Roles.OWNER, ctx.author.id):
+            if bacore.roles.has_role(LEADER, ctx.author.id):
                 bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
                 await ctx.send(f"Set max-player limit to {limit}")
             else:
@@ -112,7 +113,7 @@ class EntityBot(commands.Bot):
     @commands.command(name='quit', description='Restart the server')
     async def quit(ctx):
         try:
-            if bacore.roles.has_role(Roles.OWNER, ctx.author.id):
+            if bacore.roles.has_role(LEADER, ctx.author.id):
                 await ctx.send('Restarting Server.\n[10%==========100%]')
                 babase.quit()
             else:
@@ -130,7 +131,7 @@ class EntityBot(commands.Bot):
     @match_group.command(name='add',description='Appoint a match')
     async def match_add(self, interaction: discord.Interaction, series_count: int, team_name1: str, team_name2: str, team1_players: str, team2_players: str):
         try:
-            if bacore.roles.has_role(Roles.OWNER, interaction.user.id):
+            if bacore.roles.has_role(LEADER, interaction.user.id):
                 match = {}
                 match["series"] = int(series_count)
                 match["team1"] = {}
