@@ -9,7 +9,7 @@ import traceback
 
 class EntityBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="e!", intents=discord.Intents.default())
+        super().__init__(command_prefix="e!", intents=discord.Intents.default(), owner_id=924617239301324856)
 
     async def on_ready(self):
         print(f'Logged in as {self.user.name} - {self.user.id}')
