@@ -36,7 +36,7 @@ class Tournament(Storage):
 		tournament = [match for match in tournament if match["id"] != id]
 		self.commit(tournament)
 
-	def confirm(self, client: str) -> bool:
+	def confirm(self, client: str) -> bool | None:
 		"""confirms the client if they are in a match."""
 		tournament = self.read()
 		for index, match in enumerate(tournament):
@@ -45,6 +45,9 @@ class Tournament(Storage):
 			)  # messy but works.
 
 			if client in all_members:
+				if client in match["players"]:
+					# ah, double confirm, pretty smart huh?
+					return None
 				match["players"].append(client)
 				tournament[index] = match
 				if len(match["players"]) == len(all_members):

@@ -83,8 +83,12 @@ def new_on_team_join(self, team: bascenev1.SessionTeam) -> None:
 @on_command(name="/confirm")
 def confirm(client: Client) -> None:
 	"""confirms the client to the tournament match."""
-	if status := bacore.tournament.confirm(client.account_id):
+	status = bacore.tournament.confirm(client.account_id)
+	if status:
 		client.success("You've been confirmed in the match. ")
+		return
+	elif status is None:
+		client.error("You've already been confirmed in the match.")
 		return
 	client.error("You're not in any match, cannot confirm.")
 

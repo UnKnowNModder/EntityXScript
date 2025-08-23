@@ -40,7 +40,7 @@ def replace_method(module, func_name: str, initial: bool = False):
             if initial:
                 # if this is true, we'll call the original function initially.
                 result = original_func(*args, **kwargs)
-                sign = signature(function)
+                sign = signature(new_func)
                 params = [param for param in sign.parameters]
                 if "og_result" in params:
                     return new_func(*args, **kwargs, og_result=result)
