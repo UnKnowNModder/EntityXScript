@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import bacore
+import threading
+import asyncio
 import babase
 import bascenev1
 import traceback
@@ -10,7 +12,8 @@ import typing
 
 class EntityBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="e!", intents=discord.Intents.default(), owner_id=924617239301324856)
+        super().__init__(command_prefix="*", intents=discord.Intents.all(), owner_id=924617239301324856)
+        
 
     async def on_ready(self):
         print(f'Logged in as {self.user.name} - {self.user.id}')
@@ -19,18 +22,22 @@ class EntityBot(commands.Bot):
         """Check messages if sent by itself return None else process the command (if any)"""
         if message.author == self.user:
             return
+        # print(message) Enable it for msg debug
         await self.process_commands(message)
 
+class BotCmd(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
     """Add or remove a discord user to owner list"""
     @commands.command(name='owner')
     @commands.is_owner() # Check if ctx.user is bot owner
     async def owner(self, ctx, user: discord.Member):
         try:
-            if bacore.roles.has_role(bacore.Role.OWNER, user.id):
-                bacore.roles.remove(bacore.Role.OWNER, user.id)
-                await self.ctx.send(f"{user.name}[`{user.id}`] Removed from Role: LEADER")
+            if bacore.roles.has_role(bacore.Role.LEADER, user.id):
+                bacore.roles.remove(bacore.Role.LEADER, user.id)
+                await ctx.send(f"{user.name}[`{user.id}`] Removed from Role: LEADER")
             else:
-                bacore.roles.add(bacore.Role.OWNER, user.id)
+                bacore.roles.add(bacore.Role.LEADER, user.id)
                 await ctx.send(f"{user.name}[`{user.id}`] Added Role: LEADER")
         except Exception as e:
             traceback_msg = traceback.format_exc()
@@ -98,7 +105,7 @@ class EntityBot(commands.Bot):
     @commands.command(name='limit', description='Increase in-game max players limit')
     async def limit(self, ctx, limit: int):
         try:
-            if bacore.roles.has_role(bacore.Role.OWNER, ctx.author.id):
+            if bacore.roles.has_role(bacore.Role.LEADER, ctx.author.id):
                 bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
                 await ctx.send(f"Set max-player limit to {limit}")
             else:
@@ -113,7 +120,7 @@ class EntityBot(commands.Bot):
     @commands.command(name='quit', description='Restart the server')
     async def quit(self, ctx):
         try:
-            if bacore.roles.has_role(bacore.Role.OWNER, ctx.author.id):
+            if bacore.roles.has_role(bacore.Role.LEADER, ctx.author.id):
                 await ctx.send('Restarting Server.\n[10%==========100%]')
                 babase.quit()
             else:
@@ -131,7 +138,7 @@ class EntityBot(commands.Bot):
     @match_group.command(name='add',description='Appoint a match')
     async def match_add(self, interaction: discord.Interaction, series_count: int, team_name1: str, team_name2: str, team1_players: str, team2_players: str):
         try:
-            if bacore.roles.has_role(bacore.Role.OWNER, interaction.user.id):
+            if bacore.roles.has_role(bacore.Role.LEADER, interaction.user.id):
                 match = {}
                 match["series"] = int(series_count)
                 match["team1"] = {}
@@ -139,7 +146,7 @@ class EntityBot(commands.Bot):
                 match["team2"] = {}
                 match["team2"][team_name2] = list(eval(team2_players))
                 bacore.tournament.insert(match)
-                await interaction.response.send_message("Match Appointed")
+                await interaction.response.send_message("Match has been appointed")
             else:
                 await interaction.response.send_message("Access Denied")
         except Exception as e:
@@ -148,12 +155,23 @@ class EntityBot(commands.Bot):
             print(traceback_msg)
             
 
-def start_bot():
+async def start_bot():
     bot = EntityBot()
-    bot.run("Enter Your Fuking Bot Token Here")
+    await bot.add_cog(BotCmd(bot))
+    await bot.start("Your Bot Token Here")
 
-# ba_meta import babase.Plugin
+
+def run_thread(loop):
+    asyncio.set_event_loop(loop)
+    loop.run_forever()
+
+def run():
+    loop = asyncio.new_event_loop()
+    threading.Thread(target=run_thread, args=(loop,)).start()
+    asyncio.run_coroutine_threadsafe(start_bot(), loop)
+
+
+# ba_meta export babase.Plugin
 class BotPlugin(babase.Plugin):
     def __init__(self):
-        start_bot()
-        
+        run()

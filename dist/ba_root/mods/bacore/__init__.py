@@ -19,7 +19,7 @@ from ._clients import (
 from ._utils import (
 	success,
 	error,
-	send
+	send,
 	replace_method
 )
 from ._enums import (

@@ -2,6 +2,7 @@
 thanks to smoothy and ankit for their honourable work."""
 from __future__ import annotations
 from bascenev1._activitytypes import ScoreScreenActivity
+from commands import on_command
 import bacore, bascenev1, threading, requests
 
 def update_stats(stats: bascenev1.Stats) -> None:
@@ -64,3 +65,13 @@ class RefreshStats(threading.Thread):
 		except:
 			return "??"
 	
+@on_command(name="/stats")
+def show_stats(client: Client) -> None:
+	"""shows the client his stats."""
+	try:
+		stats = bacore.stats.get(client.account_id)
+		message = "rank: {} | score: {} | kills: {} | deaths: {} | games: {}".format(stats["rank"], stats["score"], stats["kills"], stats["deaths"], stats["games"])
+		client.send(message)
+	except:
+		client.error("Your stats will be available soon.")
+

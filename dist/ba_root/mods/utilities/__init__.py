@@ -3,7 +3,8 @@
 import babase
 from .tournament import replace_old_methods_with_new
 from .protector import Protector
-from .stats import update_stats
+from .stats import update_stats # js to run the file.
+from .spaz import patch
 
 # ba_meta export babase.Plugin
 class Execute(babase.Plugin):
@@ -11,3 +12,4 @@ class Execute(babase.Plugin):
 		""" called on app running. """
 		replace_old_methods_with_new()
 		Protector().on_app_running()
+		patch()

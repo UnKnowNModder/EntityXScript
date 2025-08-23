@@ -14,6 +14,12 @@ class Stats(Storage):
 		if not self.path.exists():
 			self.commit({})
 	
+	def get(self, account_id: str) -> dict[str, int] | None:
+		""" returns the stats of the account. """
+		stats = self.read()
+		if account_id in stats:
+			return stats[account_id]
+	
 	def sort(self) -> dict[str, dict]:
 		""" sorts the stats in descending order. """
 		stats = self.read()

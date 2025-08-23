@@ -1,7 +1,7 @@
 """basic helper utility."""
 
 from __future__ import annotations
-from functools import wrap
+from functools import wraps
 from inspect import signature
 from typing import Any
 import bascenev1
