@@ -1,15 +1,27 @@
-""" utilities executor plugin. """
+""" utilities loader plugin. """
 # ba_meta require api 9
-import babase
-from .tournament import replace_old_methods_with_new
+import babase, bacore
+from .bot import start_bot_utility
 from .protector import Protector
-from .stats import update_stats # js to run the file.
-from .spaz import patch
+
+def _load_utilities():
+    """automatically imports utility files in the directory."""
+    package_dir = Path(__file__).parent
+    for file in package_dir.glob("*.py"):
+        if file.stem == "__init__" or file.stem == "bot":
+            continue
+        module_name = f"{__package__}.{file.stem}"
+        try:
+            importlib.import_module(module_name)
+            print(f"✅ Loaded {file.stem} utility.")
+        except ImportError:
+            print(f"⚠️ Failed to load command file {file.stem}")
 
 # ba_meta export babase.Plugin
 class Execute(babase.Plugin):
 	def on_app_running(self) -> None:
 		""" called on app running. """
-		replace_old_methods_with_new()
-		Protector().on_app_running()
-		patch()
+		Protector()
+		if bacore.config.read()["bot"]:
+			start_bot_utility()
+		_load_utilities()

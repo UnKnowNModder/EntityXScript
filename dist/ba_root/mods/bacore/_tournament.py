@@ -32,6 +32,10 @@ class Tournament(Storage):
 
 	def discard(self, id: int) -> None:
 		"""discards the match with it's id."""
+		# if the ongoing match matches the id, discard it immediately.
+		if self.match["id"] == id:
+			# js use shortcut duh
+			bascenev1.chatmessage("/discard")
 		tournament = self.read()
 		tournament = [match for match in tournament if match["id"] != id]
 		self.commit(tournament)

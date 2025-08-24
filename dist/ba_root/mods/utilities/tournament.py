@@ -10,6 +10,7 @@ import bascenev1lib.activity.multiteamvictory
 series: list = []  # i like lists.. (more like i hate using global keyword)
 
 
+@bacore.replace_method(baclassic._servermode.ServerController, "handle_transition")
 def new_handle_transition(self) -> bool:
 	# this is a modified function of ServerController class..
 	if bacore.tournament.match:
@@ -21,11 +22,7 @@ def new_handle_transition(self) -> bool:
 	return False
 
 
-old_on_begin = (
-	bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin
-)
-
-
+@bacore.replace_method(bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity, "on_begin")
 def new_on_begin(self) -> None:
 	if match := bacore.tournament.match:
 		# a series has ended-.
@@ -39,13 +36,11 @@ def new_on_begin(self) -> None:
 			bacore.tournament.save_result(self.settings_raw["winner"])
 		else:
 			bacore.success(f"Series: {len(series)}/{match['series']}")
-	old_on_begin(self)
+	new_on_begin._original(self)
 
 
-old_on_player_request = bascenev1._session.Session.on_player_request
-
-
-def new_on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
+@bacore.replace_method(bascenev1._session.Session, "on_player_request", initial = True)
+def new_on_player_request(self, player: bascenev1.SessionPlayer, og_result) -> bool:
 	client = Dummy(player.inputdevice.client_id, player.get_v1_account_id())
 	if not client.authenticity:
 		auth_code = client.get_auth_code()
@@ -56,8 +51,7 @@ def new_on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
 			# match is on.
 			client.error("You cannot join in between matches.. ")
 			return False
-	result = old_on_player_request(self, player)
-	return result
+	return og_result
 
 def change_team_name(team: bascenev1.SessionTeam, match: bacore.Match) -> None:
 	if len(team.players) == 0: return
@@ -71,10 +65,8 @@ def change_team_name(team: bascenev1.SessionTeam, match: bacore.Match) -> None:
 		team.name = team2_name
 		return
 
-old_on_activity_end = bascenev1._dualteamsession.DualTeamSession.on_activity_end
-
+@bacore.replace_method(bascenev1._dualteamsession.DualTeamSession, "on_activity_end", initial = True)
 def new_on_activity_end(self, activity: bascenev1.Activity, results) -> None:
-	old_on_activity_end(self, activity, results)
 	if isinstance(activity, bascenev1._activitytypes.JoinActivity):
 		if match := bacore.tournament.match:
 			if session := bascenev1.get_foreground_host_session():
@@ -110,11 +102,11 @@ def discard(client: Client):
 		return
 	client.error("No match is registered. ")
 
-
-def replace_old_methods_with_new() -> None:
-	"""replaces the original methods with newly defined ones."""
-	bascenev1._session.Session.on_player_request = new_on_player_request
-	baclassic._servermode.ServerController.handle_transition = new_handle_transition
-	bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin = new_on_begin
-	bascenev1._dualteamsession.DualTeamSession.on_activity_end = new_on_activity_end
-	print("✅ Executed tournament utility. ")
+@on_command(
+	name="/listmatch", aliases=["/lm", "/matches"], authority=Authority.LEADER
+)
+def list_matches(client: Client):
+	""" lists all the tournament matches. """
+	for match in bacore.tournament.read():
+		message = f'{next(iter(match["team1"]))} vs {next(iter(match["team2"]))} [series: {match["series"]}]'
+		client.send(message, sender=f"{match['id']}")

@@ -16,7 +16,7 @@ class EntityBot(commands.Bot):
         
 
     async def on_ready(self):
-        print(f'Logged in as {self.user.name} - {self.user.id}')
+        print(f'✅ Loaded discord bot utility as {self.user.name} -> {self.user.id}')
 
     async def on_message(self, message):
         """Check messages if sent by itself return None else process the command (if any)"""
@@ -165,15 +165,8 @@ def run_thread(loop):
     asyncio.set_event_loop(loop)
     loop.run_forever()
 
-def run():
-    if not bacore.config.read()["bot"]:
-        return
+def start_bot_utility():
     loop = asyncio.new_event_loop()
     threading.Thread(target=run_thread, args=(loop,)).start()
     asyncio.run_coroutine_threadsafe(start_bot(), loop)
 
-
-# ba_meta export babase.Plugin
-class BotPlugin(babase.Plugin):
-    def __init__(self):
-        run()

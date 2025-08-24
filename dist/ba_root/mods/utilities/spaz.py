@@ -45,13 +45,8 @@ def attach_rank(self, player: bs.Player) -> None:
 			rank = f"#{stats['rank']}"
 			Text(self.node, rank)
 
-old_init = playerspaz.PlayerSpaz.__init__
 
+@bacore.replace_method(playerspaz.PlayerSpaz, "__init__", initial = True)
 def new_init(self,player: bs.Player,*,color: Sequence[float] = (1.0, 1.0, 1.0),highlight: Sequence[float] = (0.5, 0.5, 0.5),character: str = "Spaz",powerups_expire: bool = True):
 	""" modified constructor of PlayerSpaz class. """
-	old_init(self,player=player,color=color,highlight=highlight,character=character,powerups_expire=powerups_expire)
 	attach_rank(self, player)
-
-def patch() -> None:
-	""" patches the modified spaz to original one. """
-	playerspaz.PlayerSpaz.__init__ = new_init

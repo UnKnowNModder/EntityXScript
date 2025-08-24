@@ -12,8 +12,6 @@ class Protector:
 	def __init__(self):
 		self.afk_time = 20  # seconds, + 10 will be added in code.
 		self.lobby = {}
-
-	def on_app_running(self):
 		# delay to get a valid session..
 		self.runner_loop_timer = bascenev1.AppTimer(3, self.check_context)
 
@@ -24,7 +22,6 @@ class Protector:
 				self.runner_loop_timer = bascenev1.timer(
 					1, babase.Call(self.runner_loop), repeat=True
 				)
-				print("✅ Executed protector utility. ")
 
 	def runner_loop(self):
 		"""this is the runner loop that protects everything.."""
