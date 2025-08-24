@@ -3,7 +3,7 @@
 from __future__ import annotations
 from commands import on_command
 from bacore import Dummy, Client, Authority
-import bacore, bascenev1, babase
+import bacore, bascenev1, babase, time
 import baclassic._servermode
 import bascenev1lib.activity.multiteamvictory
 
@@ -59,23 +59,27 @@ def new_on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
 	result = old_on_player_request(self, player)
 	return result
 
+def change_team_name(team: bascenev1.SessionTeam, match: bacore.Match) -> None:
+	if len(team.players) == 0: return
+	account_id = team.players[0].get_v1_account_id()
+	team1_name, members1 = next(iter(match["team1"].items()))
+	if account_id in members1:
+		team.name = team1_name
+		return
+	team2_name, members2 = next(iter(match["team2"].items()))
+	if account_id in members2:
+		team.name = team2_name
+		return
 
-old_on_team_join = bascenev1._dualteamsession.DualTeamSession.on_team_join
+old_on_activity_end = bascenev1._dualteamsession.DualTeamSession.on_activity_end
 
-
-def new_on_team_join(self, team: bascenev1.SessionTeam) -> None:
-	old_on_team_join(self, team)
-	if match := bacore.tournament.match:
-		account_id = team.players[0].get_v1_account_id()
-		team1_name, members1 = next(iter(match["team1"].items()))
-		if account_id in members1:
-			team.name = team1_name
-			return
-		team2_name, members2 = next(iter(match["team2"].items()))
-		if account_id in members2:
-			team.name = team2_name
-			return
-
+def new_on_activity_end(self, activity: bascenev1.Activity, results) -> None:
+	old_on_activity_end(self, activity, results)
+	if isinstance(activity, bascenev1._activitytypes.JoinActivity):
+		if match := bacore.tournament.match:
+			if session := bascenev1.get_foreground_host_session():
+				for team in session.sessionteams:
+					change_team_name(team, match)
 
 ## tournament-related commands.
 
@@ -112,5 +116,5 @@ def replace_old_methods_with_new() -> None:
 	bascenev1._session.Session.on_player_request = new_on_player_request
 	baclassic._servermode.ServerController.handle_transition = new_handle_transition
 	bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity.on_begin = new_on_begin
-	bascenev1._dualteamsession.DualTeamSession.on_team_join = new_on_team_join
+	bascenev1._dualteamsession.DualTeamSession.on_activity_end = new_on_activity_end
 	print("✅ Executed tournament utility. ")

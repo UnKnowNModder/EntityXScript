@@ -1444,7 +1444,7 @@
     "tokenPack2Text": "中型炸币包",
     "tokenPack3Text": "大型炸币包",
     "tokenPack4Text": "超大炸币包",
-    "tokensDescriptionText": "代币用于加速胸部解锁以及其他游戏和帐户功能。\n您可以在游戏中赢得代币，\n\n也可以打包购买。\n或者购买无限代币的Gold Pass，\n再也不会听说它们了。",
+    "tokensDescriptionText": "代币用于加速解锁宝箱以及其他游戏和帐户功能。\n您可以在游戏中赢得代币，\n\n也可以打包购买。\n或者购买无限代币的Gold Pass，\n再也不会听说它们了。",
     "youHaveGoldPassText": "你获得了黄金通行证\n所有花销全部免费啦！\n感谢你游玩本游戏！"
   },
   "topFriendsText": "最佳好友",
@@ -1621,6 +1621,7 @@
       "Indonesian": "印尼语",
       "Italian": "意大利语",
       "Japanese": "日本语",
+      "Kazakh": "哈萨克语",
       "Korean": "朝鲜语",
       "Malay": "马来语",
       "Persian": "波斯文",

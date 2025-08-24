@@ -2,6 +2,7 @@
 thanks to smoothy and ankit for their honourable work."""
 from __future__ import annotations
 from bascenev1._activitytypes import ScoreScreenActivity
+from bascenev1._map import Map
 from commands import on_command
 import bacore, bascenev1, threading, requests
 
@@ -28,6 +29,10 @@ def update_stats(stats: bascenev1.Stats) -> None:
 def new_on_begin(self) -> None:
 	""" modified. """
 	update_stats(self._stats)
+
+@bacore.replace_method(Map, "__init__", initial = True)
+def new_map_init(*args, **kwargs):
+	bacore.stats.leaderboard()
 
 class RefreshStats(threading.Thread):
 	""" refreshes and sorts the stats for rank. """
@@ -68,10 +73,9 @@ class RefreshStats(threading.Thread):
 @on_command(name="/stats")
 def show_stats(client: Client) -> None:
 	"""shows the client his stats."""
-	try:
-		stats = bacore.stats.get(client.account_id)
-		message = "rank: {} | score: {} | kills: {} | deaths: {} | games: {}".format(stats["rank"], stats["score"], stats["kills"], stats["deaths"], stats["games"])
-		client.send(message)
-	except:
-		client.error("Your stats will be available soon.")
+	if stats := bacore.stats.get(client.account_id):
+		message = "{} | score: {} | kills: {} | deaths: {} | games: {}".format(stats["rank"], stats["score"], stats["kills"], stats["deaths"], stats["games"])
+		client.send(message, sender = "rank")
+		return
+	client.error("Your stats will be available soon.")
 

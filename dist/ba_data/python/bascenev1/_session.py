@@ -794,7 +794,6 @@ class Session:
             ):
                 pass_to_activity = False
                 
-
         # If we're a non-team session, each player gets their own team.
         # (keeps mini-game coding simpler if we can always deal with teams).
         if self.use_teams:

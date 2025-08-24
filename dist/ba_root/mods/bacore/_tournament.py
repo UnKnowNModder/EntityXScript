@@ -61,8 +61,9 @@ class Tournament(Storage):
 				return True
 
 	def save_result(self, winner: bascenev1.SessionTeam) -> None:
-		"""registers a match result."""
+		"""saves a match result."""
 		id = self.match["id"]
+		self.match.clear()
 		self.discard(id)
 		results = self.read(self.results)
 		results.append({"id": id, "winner": str(winner.name)})

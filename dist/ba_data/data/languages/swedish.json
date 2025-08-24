@@ -7,6 +7,7 @@
     "campaignProgressText": "Kampanjutveckling: [svår] ${PROGRESS}",
     "changeOncePerSeason": "Du kan enbart ändra detta en gång per säsong.",
     "changeOncePerSeasonError": "Du måste vänta tills nästa säsong för att ändra detta igen (${NUM} days)",
+    "createAnAccountText": "Skapa ett konto",
     "customName": "Anpassat Namn",
     "deleteAccountText": "Ta bort konto",
     "googlePlayGamesAccountSwitchText": "Om du vill använda ett annat Google-konto,\nanvänd appen Google Play Spel för att byta.",
