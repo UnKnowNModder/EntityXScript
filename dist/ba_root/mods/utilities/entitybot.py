@@ -158,7 +158,7 @@ class BotCmd(commands.Cog):
 async def start_bot():
     bot = EntityBot()
     await bot.add_cog(BotCmd(bot))
-    await bot.start("Your Bot Token Here")
+    await bot.start(bacore.config.read()["bot"])
 
 
 def run_thread(loop):
@@ -166,6 +166,8 @@ def run_thread(loop):
     loop.run_forever()
 
 def run():
+    if not bacore.config.read()["bot"]:
+        return
     loop = asyncio.new_event_loop()
     threading.Thread(target=run_thread, args=(loop,)).start()
     asyncio.run_coroutine_threadsafe(start_bot(), loop)
