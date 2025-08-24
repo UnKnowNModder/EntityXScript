@@ -41,7 +41,7 @@ class BotCmd(commands.Cog):
                 await ctx.send(f"{user.name}[`{user.id}`] Added Role: LEADER")
         except Exception as e:
             traceback_msg = traceback.format_exc()
-            print(traceback_msg)
+            # print(traceback_msg)
             await ctx.send(traceback_msg)
             
          
@@ -106,7 +106,7 @@ class BotCmd(commands.Cog):
     async def limit(self, ctx, limit: int):
         try:
             if bacore.roles.has_role(bacore.Role.LEADER, ctx.author.id):
-                bascenev1.pushcall(babase.chatmessage, message=f"/limit {limit}", sender_override=ctx.user.name,from_other_thread=True)
+                bascenev1.pushcall(bascenev1.Call(bascenev1.chatmessage, f"/limit {limit}"), from_other_thread=True)
                 await ctx.send(f"Set max-player limit to {limit}")
             else:
                 await ctx.send('Access Denied')
