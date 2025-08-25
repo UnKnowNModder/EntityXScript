@@ -81,3 +81,6 @@ class Protector:
 					transient=True,
 					clients=[client],
 				)
+
+# call on import.
+Protector()

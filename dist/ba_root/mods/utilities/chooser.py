@@ -1,5 +1,3 @@
-# ba_meta require api 9
-
 '''
 Character Chooser by Mr.Smoothy
 
@@ -347,14 +345,11 @@ def _update_text(self) -> None:
 
     self._text_node.text = text
 
-# ba_meta export babase.Plugin
+def setup():
+    _lobby.Chooser.__init__ = __init__
+    _lobby.Chooser._set_ready = _set_ready
 
+    _lobby.Chooser._update_text = _update_text
+    _lobby.Chooser.handlemessage = handlemessage
 
-class HeySmoothy(babase.Plugin):
-
-    def __init__(self):
-        _lobby.Chooser.__init__ = __init__
-        _lobby.Chooser._set_ready = _set_ready
-
-        _lobby.Chooser._update_text = _update_text
-        _lobby.Chooser.handlemessage = handlemessage
+setup()
