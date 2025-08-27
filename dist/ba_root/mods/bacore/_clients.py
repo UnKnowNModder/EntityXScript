@@ -71,6 +71,14 @@ class Client:
 			return self.authenticate()
 
 	@property
+	def is_participant(self) -> bool:
+		""" whether the account is any participant of the current match. """
+		from . import tournament
+		if tournament.match:
+			return self.account_id in tournament.match["confirmed"]
+		return False
+
+	@property
 	def is_mute(self) -> bool:
 		"""returns whether the client is mute or not."""
 		return self.account_id in Client.__mute_clients
@@ -109,7 +117,7 @@ class Client:
 class Dummy(Client):
 	"""dummy client."""
 
-	def __init__(self, client_id: int, account_id: str) -> None:
+	def __init__(self, client_id: int, account_id: str = "") -> None:
 		self.client_id = client_id
 		self.account_id = account_id
 

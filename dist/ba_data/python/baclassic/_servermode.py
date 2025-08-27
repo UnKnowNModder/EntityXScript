@@ -175,6 +175,10 @@ class ServerController:
         Should return True if action will be handled by us; False if the
         session should just continue on it's merry way.
         """
+        from bacore import tournament
+        # special check: we don't want server to restart if a tournament match is on-going.
+        if tournament.match:
+        	return False
         if self._shutdown_reason is not None:
             self._execute_shutdown()
             return True

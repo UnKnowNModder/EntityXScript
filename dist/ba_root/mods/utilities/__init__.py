@@ -2,12 +2,13 @@
 # ba_meta require api 9
 import babase, importlib
 from pathlib import Path
+from .tournament import TournamentSession
 
 def _load_utilities():
     """automatically imports utility files in the directory."""
     package_dir = Path(__file__).parent
     for file in package_dir.glob("*.py"):
-        if file.stem == "__init__":
+        if file.stem in ["__init__", "tournament"]:
             continue
         module_name = f"{__package__}.{file.stem}"
         try:

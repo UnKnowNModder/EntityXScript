@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import babase, bascenev1
 from ._storage import Storage
+from ._clients import Client
 from ._enums import Match
 from ._utils import success
 
@@ -26,68 +27,71 @@ class Tournament(Storage):
 		"""inserts the match to the database."""
 		tournament = self.read()
 		match["id"] = len(tournament) + 1
-		match["players"] = []
+		match["confirmed"] = []
 		tournament.append(match)
 		self.commit(tournament)
 
 	def discard(self, id: int) -> None:
-		"""discards the match with it's id."""
-		# if the ongoing match matches the id, discard it immediately.
-		if self.match["id"] == id:
-			# js use shortcut duh
-			bascenev1.chatmessage("/discard")
+		"""discards a match."""
 		tournament = self.read()
 		tournament = [match for match in tournament if match["id"] != id]
 		self.commit(tournament)
 
-	def confirm(self, client: str) -> bool | None:
+	def get_player_team(self, player: bascenev1.SessionPlayer) -> dict:
+		""" returns the tournament team this player is associated with. """
+		account_id = player.get_v1_account_id()
+		for team in self.match["teams"]:
+			if account_id in team["participants"]:
+				return team
+		return {}
+
+
+	def confirm(self, client: Client) -> bool | None:
 		"""confirms the client if they are in a match."""
+		# check: if any match is ongoing
+		if self.match:
+			client.error("A match is in progress — confirmation unavailable.")
+			return False
+		account_id = client.account_id
 		tournament = self.read()
 		for index, match in enumerate(tournament):
-			all_members = (
-				list(match["team1"].values())[0] + list(match["team2"].values())[0]
-			)  # messy but works.
+			all_members = match["teams"][0]["participants"] + match["teams"][1]["participants"]
 
-			if client in all_members:
-				if client in match["players"]:
+			if account_id in all_members:
+				if account_id in match["confirmed"]:
 					# ah, double confirm, pretty smart huh?
-					return None
-				match["players"].append(client)
+					client.error("You have already confirmed.")
+					return False
+				match["confirmed"].append(account_id)
 				tournament[index] = match
-				if len(match["players"]) == len(all_members):
+				if len(match["confirmed"]) == len(all_members):
 					# all clients have been registered, assign the self.match it's value.
 					self.match = match
-					# do registeration.
-					self.on_match_registration()
+					# load and start the tournament session.
+					with babase.ContextRef.empty():
+						babase.apptimer(2.0, self.begin)
 					# clean up.
 					tournament.remove(match)
 				self.commit(tournament)
+				client.success("You have been successfully confirmed.")
 				return True
+		client.error("You are not part of any match.")
 
-	def save_result(self, winner: bascenev1.SessionTeam) -> None:
-		"""saves a match result."""
-		id = self.match["id"]
-		self.match.clear()
-		self.discard(id)
+	def declare(self, winner: bascenev1.SessionTeam, message: str) -> None:
+		"""declares a match winner and saves it."""
+		success(message)
+		self.discard(self.match["id"])
+		self.match["winner"] = winner.name
 		results = self.read(self.results)
-		results.append({"id": id, "winner": str(winner.name)})
+		results.append(self.match)
 		self.commit(results, self.results)
-		with bascenev1.get_foreground_host_session().context:
-			success("The tournament match has ended..\nThe server will restart soon. ")
-			bascenev1.timer(5, babase.quit)
+		babase.app.classic.server._execute_shutdown()
+		
 
-	def on_match_registration(self) -> None:
-		"""called when a match has been registered."""
-
+	def begin(self) -> None:
+		"""begins the tournament session."""
 		# start the match.
-		def start_over():
-			babase.pushcall(
-				bascenev1.Call(
-					bascenev1.new_host_session,
-					bascenev1._dualteamsession.DualTeamSession,
-				)
-			)
-
-		with bascenev1.get_foreground_host_session().context:
-			bascenev1.timer(2, start_over)
-			success("Match is starting soon.. be ready..")
+		from utilities import TournamentSession
+		call = babase.Call(bascenev1.new_host_session, TournamentSession)
+		babase.pushcall(call)
+		success("Your match is about to begin.")

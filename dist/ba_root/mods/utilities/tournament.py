@@ -1,112 +1,118 @@
-"""tournament related."""
-
+# Released under the MIT License. See LICENSE for details.
+#
+"""Functionality related to tournament sessions."""
 from __future__ import annotations
-from commands import on_command
-from bacore import Dummy, Client, Authority
-import bacore, bascenev1, babase, time
-import baclassic._servermode
-import bascenev1lib.activity.multiteamvictory
 
-series: list = []  # i like lists.. (more like i hate using global keyword)
+from typing import TYPE_CHECKING, override
 
+import babase, bacore
+import _bascenev1
+from bascenev1._dualteamsession import DualTeamSession
 
-@bacore.replace_method(baclassic._servermode.ServerController, "handle_transition")
-def new_handle_transition(self) -> bool:
-	# this is a modified function of ServerController class..
-	if bacore.tournament.match:
-		# we don't wanna restart yet if a match is ongoing/registered.
-		return False
-	if self._shutdown_reason is not None:
-		self._execute_shutdown()
-		return True
-	return False
+if TYPE_CHECKING:
+	from typing import Any
+	import bascenev1
 
 
-@bacore.replace_method(bascenev1lib.activity.multiteamvictory.TeamSeriesVictoryScoreScreenActivity, "on_begin")
-def new_on_begin(self) -> None:
-	if match := bacore.tournament.match:
-		# a series has ended-.
-		series.append(
-			1
-		)  # whatever value is fine, we js want the length to increase by 1.
-		if len(series) == match["series"]:
-			# hmph, the given series count has matched.
-			series.clear()
-			# save the result
-			bacore.tournament.save_result(self.settings_raw["winner"])
-		else:
-			bacore.success(f"Series: {len(series)}/{match['series']}")
-	new_on_begin._original(self)
+class TournamentSession(DualTeamSession):
+	"""special session type for tournament. """
 
+	def __init__(self) -> None:
+		super().__init__()
+		self._series: int = 0
+		self._disqualify_time: int = 15 # minutes
+		self._disqualify_timers: dict = {}
 
-@bacore.replace_method(bascenev1._session.Session, "on_player_request", initial = True)
-def new_on_player_request(self, player: bascenev1.SessionPlayer, og_result) -> bool:
-	client = Dummy(player.inputdevice.client_id, player.get_v1_account_id())
-	if not client.authenticity:
-		auth_code = client.get_auth_code()
-		client.error(f"Your auth code is: {auth_code}\nPlease enter in chat to verify.")
-		return False
-	if match := bacore.tournament.match:
-		if client.account_id not in match["players"]:
-			# match is on.
-			client.error("You cannot join in between matches.. ")
+	@override
+	def on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
+		identifier = player.get_v1_account_id()
+		client = bacore.Dummy(player.inputdevice.client_id, identifier)
+		if not client.is_participant:
+			client.error("A match is in progress — joining is not allowed.")
 			return False
-	return og_result
+		
+		if identifier in self._disqualify_timers:
+			del self._disqualify_timer[identifier]
+		
+		return super().on_player_request(player)
 
-def change_team_name(team: bascenev1.SessionTeam, match: bacore.Match) -> None:
-	if len(team.players) == 0: return
-	account_id = team.players[0].get_v1_account_id()
-	team1_name, members1 = next(iter(match["team1"].items()))
-	if account_id in members1:
-		team.name = team1_name
-		return
-	team2_name, members2 = next(iter(match["team2"].items()))
-	if account_id in members2:
-		team.name = team2_name
-		return
+	@override
+	def on_player_leave(self, sessionplayer: bascenev1.SessionPlayer) -> None:
+		super().on_player_leave(sessionplayer)
+		
+		message = "Join within {} minutes to avoid disqualification.".format(self._disqualify_time)
+		bascenev1.broadcastmessage(message, color=(1, 0, 0), transient=True, clients=[sessionplayer.inputdevice.client_id])
+		
+		identifier = self._player_requested_identifiers.get(sessionplayer.id)
+		
+		with self.context:
+			self._disqualify_timers[identifier] = bascenev1.Timer(self._disqualify_time*60, bascenev1.WeakCall(self.disqualify_team, sessionplayer.sessionteam, identifier))
 
-@bacore.replace_method(bascenev1._dualteamsession.DualTeamSession, "on_activity_end", initial = True)
-def new_on_activity_end(self, activity: bascenev1.Activity, results) -> None:
-	if isinstance(activity, bascenev1._activitytypes.JoinActivity):
-		if match := bacore.tournament.match:
-			if session := bascenev1.get_foreground_host_session():
-				for team in session.sessionteams:
-					change_team_name(team, match)
+	def disqualify_team(self, team: bascenev1.SessionTeam, identifier: str) -> None:) -> None:
+		""" disqualifies a team from the tournament. """
+		# clean up
+		del self._disqualify_timer[identifier]
+		teams = self.sessionteams
+		winner_team = teams[team.id ^ 1]
+		disqualify_message = "Team {} has been disqualified due to a player leaving — Team {} wins by default".format(team.name, winner_team.name)
+		bacore.tournament.declare(winner_team, disqualify_message)
 
-## tournament-related commands.
+	@override
+	def on_team_join(self, team: bascenev1.SessionTeam) -> None:
+		super().on_team_join(team)
+		# swap team name with tournament team name.
+		team.name = bacore.tournament.match["teams"][team.id]["name"]
+	
+	@override
+	def handlemessage(self, msg: Any) -> Any:
+		from bascenev1._lobby import PlayerReadyMessage
+		if isinstance(msg, PlayerReadyMessage):
+			player = msg.choose.getplayer()
+			player_team_name = bacore.tournament.get_player_team(player)["name"]
+			if not msg.chooser.sessionteam.name == player_team_name:
+				bascenev1.broadcastmessage("Incorrect team — please verify and join your assigned team.", color=(1, 0, 0), transient=True, clients=[player.inputdevice.client_id])
+				return None
+			self._on_player_ready(msg.chooser)
+		
+		else:
+			return super().handlemessage(msg)
 
+	@override
+	def _switch_to_score_screen(self, results: bascenev1.GameResults) -> None:
+		# pylint: disable=cyclic-import
+		from bascenev1lib.activity.multiteamvictory import (
+			TeamSeriesVictoryScoreScreenActivity,
+		)
+		from bascenev1lib.activity.dualteamscore import (
+			TeamVictoryScoreScreenActivity,
+		)
+		from bascenev1lib.activity.drawscore import DrawScoreScreenActivity
 
-@on_command(name="/confirm")
-def confirm(client: Client) -> None:
-	"""confirms the client to the tournament match."""
-	status = bacore.tournament.confirm(client.account_id)
-	if status:
-		client.success("You've been confirmed in the match. ")
-		return
-	elif status is None:
-		client.error("You've already been confirmed in the match.")
-		return
-	client.error("You're not in any match, cannot confirm.")
+		winnergroups = results.winnergroups
 
+		# If everyone has the same score, call it a draw.
+		if len(winnergroups) < 2:
+			self.setactivity(_bascenev1.newactivity(DrawScoreScreenActivity))
+		else:
+			winner = winnergroups[0].teams[0]
+			winner.customdata['score'] += 1
 
-@on_command(
-	name="/discard", aliases=["/endmatch", "/rmmatch"], authority=Authority.LEADER
-)
-def discard(client: Client):
-	"""discards the match if registered..
-	it can be up again if players confirm."""
-	if match := bacore.tournament.match:
-		match.clear()
-		series.clear()
-		client.success("Match has been discarded.")
-		return
-	client.error("No match is registered. ")
-
-@on_command(
-	name="/listmatch", aliases=["/lm", "/matches"], authority=Authority.LEADER
-)
-def list_matches(client: Client):
-	""" lists all the tournament matches. """
-	for match in bacore.tournament.read():
-		message = f'{next(iter(match["team1"]))} vs {next(iter(match["team2"]))} [series: {match["series"]}]'
-		client.send(message, sender=f"{match['id']}")
+			# If a team has won, show final victory screen.
+			if winner.customdata['score'] >= (self._series_length - 1) / 2 + 1:
+				self._series += 1
+				self.setactivity(
+					_bascenev1.newactivity(
+						TeamSeriesVictoryScoreScreenActivity,
+						{'winner': winner},
+					)
+				)
+				if self._series >= bacore.tournament.match["series"]:
+					win_message = "Match concluded — winner: {}.".format(winner.name)
+					bacore.tournament.declare(winner, win_message)
+			else:
+				self.setactivity(
+					_bascenev1.newactivity(
+						TeamVictoryScoreScreenActivity, {'winner': winner}
+					)
+				)
+				
