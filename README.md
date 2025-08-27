@@ -1,29 +1,30 @@
 # Bombsquad Server Scripts
 it's a modified version server scripts
 it has a few features and utilities described below.
-- script version: 1.7.46 (dev)
+- script version: 1.7.48
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Chat-7289DA?style=for-the-badge&logo=discord&logoColor=white&labelColor=7289DA)](https://discord.gg/yrYqbSU7wT)
 
 ## Features:
 - has important commands
-- tournament utility
+- tournament system
 - protection (v2 check)
-- party and session leave/join messages has been removed
+- session leave/join messages has been removed (note: party messages would still be visible)
 - once a week OTP verification for every player.
 
-## Tournament Utility:
-- it's basically an utility that manages tournament matches, the methods for it can be seen in bacore/_tournament.py, it's not much advanced but helpful.
-- the matches should be added through discord bot / through manual code (the support for in-game commands has not been added)
-- /confirm command for participents who have been registered in a match, once all participents of a specific match has been confirmed, the match will automatically start
-- after the match ends, the result will be stored in tournament_results.json, along with the winner team's name.
-
+## Tournament System:
+- it's a tournament system, that uses a different session for matches.
+- the support for adding matches through discord bot will be added soon
+### Features:
+- the participants can simply do /confirm in-game to confirm their presence in the tournament match.
+- once all the participants of a match have been confirmed, the match will begin.
+- if any player lefts in between the tournament match, he'll be given 15 minutes to join back, exceeded the time, the team will be disqualified.
+- once match starts, it can only be stopped by restarting the server (will add other way in upcoming commits).
 
 # Todo:
 - add support for discord bot
-- add team lives balancer
-- todo: add more TODOs :D
+- refine the tournament system to allow participants to agree on player leaves if they want, overriding the default leave-win system.
 
 
 ## Modification?
