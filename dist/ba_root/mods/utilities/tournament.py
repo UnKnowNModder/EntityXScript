@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, override
 
 import babase, bacore
 import _bascenev1
+from bacore import Client
 from bascenev1._dualteamsession import DualTeamSession
 
 if TYPE_CHECKING:
@@ -26,7 +27,7 @@ class TournamentSession(DualTeamSession):
 	@override
 	def on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
 		identifier = player.get_v1_account_id()
-		client = bacore.Dummy(player.inputdevice.client_id, identifier)
+		client = Client(player.inputdevice.client_id, identifier)
 		if not client.is_participant:
 			client.error("A match is in progress — joining is not allowed.")
 			return False
@@ -41,14 +42,14 @@ class TournamentSession(DualTeamSession):
 		super().on_player_leave(sessionplayer)
 		
 		message = "Join within {} minutes to avoid disqualification.".format(self._disqualify_time)
-		bascenev1.broadcastmessage(message, color=(1, 0, 0), transient=True, clients=[sessionplayer.inputdevice.client_id])
+		Client(sessionplayer.inputdevice.client_id).error(message)
 		
 		identifier = self._player_requested_identifiers.get(sessionplayer.id)
 		
 		with self.context:
 			self._disqualify_timers[identifier] = bascenev1.Timer(self._disqualify_time*60, bascenev1.WeakCall(self.disqualify_team, sessionplayer.sessionteam, identifier))
 
-	def disqualify_team(self, team: bascenev1.SessionTeam, identifier: str) -> None:) -> None:
+	def disqualify_team(self, team: bascenev1.SessionTeam, identifier: str) -> None:
 		""" disqualifies a team from the tournament. """
 		# clean up
 		del self._disqualify_timer[identifier]
@@ -70,7 +71,7 @@ class TournamentSession(DualTeamSession):
 			player = msg.choose.getplayer()
 			player_team_name = bacore.tournament.get_player_team(player)["name"]
 			if not msg.chooser.sessionteam.name == player_team_name:
-				bascenev1.broadcastmessage("Incorrect team — please verify and join your assigned team.", color=(1, 0, 0), transient=True, clients=[player.inputdevice.client_id])
+				Client(player.inputdevice.client_id).error("Incorrect team — please verify and join your assigned team.")
 				return None
 			self._on_player_ready(msg.chooser)
 		

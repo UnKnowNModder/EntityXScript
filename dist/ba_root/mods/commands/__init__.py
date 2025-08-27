@@ -2,7 +2,7 @@
 # ba_meta require api 9
 # thanks to snoweee for enlightening me with decorators <3
 from __future__ import annotations
-from bacore import Authority, Players, Dummy, Client, fetch_client, fetch_player
+from bacore import Authority, Players, Client, fetch_client, fetch_player
 import importlib, babase, inspect
 from pathlib import Path
 
@@ -66,7 +66,7 @@ def command_line(msg: str, client: Client) -> str | None:
 
 def control_message(msg: str, client_id: int) -> bool:
 	""" controls the message for filters/commands. """
-	client = Dummy(client_id, "Host") if client_id == -1 else fetch_client(client_id)
+	client = Client(client_id) if client_id == -1 else fetch_client(client_id)
 	if client and msg:
 		if not client.authenticity:
 			auth_code = client.get_auth_code()

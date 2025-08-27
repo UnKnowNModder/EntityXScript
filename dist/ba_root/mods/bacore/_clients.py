@@ -114,13 +114,6 @@ class Client:
 		utils.send(message, clients=[self.client_id], sender=sender)
 
 
-class Dummy(Client):
-	"""dummy client."""
-
-	def __init__(self, client_id: int, account_id: str = "") -> None:
-		self.client_id = client_id
-		self.account_id = account_id
-
 class Player:
 	"""Player object."""
 

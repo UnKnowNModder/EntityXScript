@@ -3,8 +3,17 @@ though I'm not unwanted :D (hope so)
 """
 
 from __future__ import annotations
+from bacore import Client, replace_method
 import bacore, bascenev1, babase
 
+@replace_method(bascenev1._session.Session, "on_player_request", initial = True)
+def on_player_request(self, player: bascenev1.SessionPlayer, og_result) -> bool:
+	client = Client(player.inputdevice.client_id, player.get_v1_account_id())
+	if not client.authenticity:
+		auth_code = client.get_auth_code()
+		client.error(f"Your auth code is: {auth_code}\nPlease enter in chat to verify.")
+		return False
+	return og_result
 
 class Protector:
 	"""somewhat fishy name.."""

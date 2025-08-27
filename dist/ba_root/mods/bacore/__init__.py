@@ -10,7 +10,6 @@ from ._stats import Stats
 from ._clients import (
 	Client,
 	Player,
-	Dummy,
 	Players,
 	all_clients,
 	fetch_client,

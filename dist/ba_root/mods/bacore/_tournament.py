@@ -37,6 +37,24 @@ class Tournament(Storage):
 		tournament = [match for match in tournament if match["id"] != id]
 		self.commit(tournament)
 
+	def register(self, match_id: int, team_name: str, account_id: str) -> str:
+		""" register a player in a tournament match. """
+		tournament = self.read()
+		for match in tournament:
+			if match["id"] != match_id:
+				continue
+			for team in match["teams"]:
+				if team["name"] != team_name:
+					continue
+				if account_id not in team["participants"]:
+					team["participants"].append(account_id)
+					self.commit(tournament)
+					return "You have been registered in Team {}.".format(team_name)
+				else:
+					return "You are already registered in Team {}.".format(team_name)
+			return "No team found with the provided name."
+		return "No match found with the provided id."
+
 	def get_player_team(self, player: bascenev1.SessionPlayer) -> dict:
 		""" returns the tournament team this player is associated with. """
 		account_id = player.get_v1_account_id()
@@ -54,7 +72,7 @@ class Tournament(Storage):
 			return False
 		account_id = client.account_id
 		tournament = self.read()
-		for index, match in enumerate(tournament):
+		for match in tournament:
 			all_members = match["teams"][0]["participants"] + match["teams"][1]["participants"]
 
 			if account_id in all_members:
@@ -63,7 +81,6 @@ class Tournament(Storage):
 					client.error("You have already confirmed.")
 					return False
 				match["confirmed"].append(account_id)
-				tournament[index] = match
 				if len(match["confirmed"]) == len(all_members):
 					# all clients have been registered, assign the self.match it's value.
 					self.match = match
