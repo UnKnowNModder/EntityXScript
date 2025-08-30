@@ -71,7 +71,7 @@ class MakeMatchView(View):
 				await interaction.response.send_message("Teams must be different. Pick again.", ephemeral=True)
 			else:
 				bacore.tournament.pair_match(1, team1, team2)
-				embed = discord.Embed(title="⚔️ Match Settled",description=f"**{team1}** will face off against **{team2}**!",color=discord.Color.gold())
+				embed = discord.Embed(title="⚔️Match Settled ",description=f"**{team1}** will face off against **{team2}**!",color=discord.Color.gold())
 				embed.set_footer(text="May the best team win!")
 				await interaction.response.edit_message(content=None, embed=embed, view=None)
 			return False
@@ -79,7 +79,7 @@ class MakeMatchView(View):
 
 class Zielc(commands.Bot):
 	def __init__(self):
-		super().__init__(command_prefix="!", intents=discord.Intents.all(), owner_id=bacore.config.read()["owner_id"])
+		super().__init__(command_prefix="!", intents=discord.Intents.all(), owner_id=1395772991769415780)
 
 	async def on_ready(self):
 		print(f"Logged in as {self.user}")
@@ -96,6 +96,8 @@ class Commands(commands.Cog):
 		self.bot = bot
 	
 	async def interaction_check(self, interaction: discord.Interaction) -> bool:
+		if interaction.command.name == "register":
+			return True
 		if (interaction.user.id != self.bot.owner_id) and (not bacore.roles.has_role(bacore.Role.LEADER, interaction.user.id)):
 			await interaction.response.send_message("You are not authorized to use this command.", ephemeral=True)
 			return False
@@ -194,8 +196,7 @@ async def start_bot():
     bot_instance = Zielc()
     await bot_instance.add_cog(Commands(bot_instance))
     try:
-    	
-        await bot_instance.start(bacore.config.read()["bot_token"])
+        await bot_instance.start("Your Bot Token Here.")
     except asyncio.CancelledError:
         print("Bot task was cancelled")
     except Exception as e:
@@ -227,7 +228,7 @@ def run():
     
     # Start the bot in the background thread
     asyncio.run_coroutine_threadsafe(start_bot(), bot_loop)
-    print("✅ Loaded discord bot utility.")
+    print("✅ Loaded discord bot.")
 
 
 def shutdown():
@@ -256,11 +257,7 @@ def shutdown():
 # ba_meta export babase.Plugin
 class Start(babase.Plugin):
 	def __init__(self):
-		self.loaded = False
-		if bacore.config.read()["bot_token"]:
-			run()
-			self.loaded = True
+		run()
 	
 	def on_app_shutdown(self):
-		if self.loaded:
-			shutdown()
+		shutdown()

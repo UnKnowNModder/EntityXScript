@@ -3,7 +3,8 @@ though I'm not unwanted :D (hope so)
 """
 
 from __future__ import annotations
-from bacore import Client, replace_method
+from bacore import Client
+from .utils import replace_method
 import bacore, bascenev1, babase
 
 @replace_method(bascenev1._session.Session, "on_player_request", initial = True)

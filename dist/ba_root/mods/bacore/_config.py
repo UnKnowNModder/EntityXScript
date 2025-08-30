@@ -16,8 +16,6 @@ class Config(Storage):
 		"""creates essential files."""
 		if not self.path.exists():
 			config = {}
-			config["bot_token"] = ""
-			config["owner_id"] = ""
 			config[Utility.WHITELIST] = False
 			config[Utility.SPECTATOR] = True
 			self.commit(config)

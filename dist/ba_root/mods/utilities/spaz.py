@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Sequence
 import bascenev1 as bs
 import bacore
+from .utils import replace_method
 from bascenev1lib.actor import playerspaz
 
 class Text:
@@ -46,7 +47,7 @@ def attach_rank(self, player: bs.Player) -> None:
 			Text(self.node, rank)
 
 
-@bacore.replace_method(playerspaz.PlayerSpaz, "__init__", initial = True)
+@replace_method(playerspaz.PlayerSpaz, "__init__", initial = True)
 def new_init(self,player: bs.Player,*,color: Sequence[float] = (1.0, 1.0, 1.0),highlight: Sequence[float] = (0.5, 0.5, 0.5),character: str = "Spaz",powerups_expire: bool = True):
 	""" modified constructor of PlayerSpaz class. """
 	attach_rank(self, player)

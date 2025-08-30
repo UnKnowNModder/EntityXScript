@@ -2,6 +2,7 @@
 thanks to smoothy and ankit for their honourable work."""
 from __future__ import annotations
 from bascenev1._activitytypes import ScoreScreenActivity
+from .utils import replace_method
 from bascenev1._map import Map
 from commands import on_command
 import bacore, bascenev1, threading, requests
@@ -25,12 +26,12 @@ def update_stats(stats: bascenev1.Stats) -> None:
 	if rec_scores:
 		RefreshStats(rec_scores, rec_kills, rec_deaths).start() # to decrease load, we run a thread to be safe.
 
-@bacore.replace_method(ScoreScreenActivity, "on_begin", initial = True)
+@replace_method(ScoreScreenActivity, "on_begin", initial = True)
 def new_on_begin(self) -> None:
 	""" modified. """
 	update_stats(self._stats)
 
-@bacore.replace_method(Map, "__init__", initial = True)
+@replace_method(Map, "__init__", initial = True)
 def new_map_init(*args, **kwargs):
 	bacore.stats.leaderboard()
 
