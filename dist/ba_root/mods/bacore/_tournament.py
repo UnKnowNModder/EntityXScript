@@ -94,9 +94,10 @@ class Tournament(Storage):
 		matches = []
 		tournament = self.read()
 		for match in tournament:
+			series = match["series"]
 			team1 = match["teams"][0]["name"]
 			team2 = match["teams"][1]["name"]
-			form = f"{match['id']} -> {team1} vs {team2}"
+			form = f"{series} -> {team1} vs {team2}"
 			matches.append(form)
 		return matches
 
