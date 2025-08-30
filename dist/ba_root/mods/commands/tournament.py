@@ -1,12 +1,12 @@
 """ cheat commands. """
 from __future__ import annotations
 from . import on_command
-from bacore import Authority, Client
+from bacore import Authority, Client, tournament
 
 @on_command(name="/confirm")
 def confirm(client: Client) -> None:
 	"""confirms the client to the tournament match."""
-	bacore.tournament.confirm(client)
+	tournament.confirm(client)
 
 @on_command(
 	name="/listmatch", aliases=["/lm", "/matches"], authority=Authority.LEADER

@@ -4,15 +4,17 @@ import os
 import babase, bascenev1
 from ._storage import Storage
 from ._clients import Client
-from ._enums import Match
+from ._enums import Match, Team
 from ._utils import success
 
 class Tournament(Storage):
 	"""tournament storage class."""
 
 	def __init__(self) -> None:
-		super().__init__("tournament.json")
-		self.results = self.directory / "tournament_results.json"
+		super().__init__("tournament", is_dir = True)
+		self.path = self.directory / "matches.json"
+		self.results = self.directory / "results.json"
+		self.registration = self.directory / "registrations.json"
 		self.match: Match = {}
 		self.bootstrap()
 
@@ -22,6 +24,8 @@ class Tournament(Storage):
 			self.commit([])
 		if not self.results.exists():
 			self.commit([], self.results)
+		if not self.registration.exists():
+			self.commit({}, self.registration)
 
 	def insert(self, match: Match) -> None:
 		"""inserts the match to the database."""
@@ -31,29 +35,46 @@ class Tournament(Storage):
 		tournament.append(match)
 		self.commit(tournament)
 
-	def discard(self, id: int) -> None:
+	def discard(self, id: int, survive: bool = False) -> None:
 		"""discards a match."""
 		tournament = self.read()
-		tournament = [match for match in tournament if match["id"] != id]
-		self.commit(tournament)
-
-	def register(self, match_id: int, team_name: str, account_id: str) -> str:
-		""" register a player in a tournament match. """
-		tournament = self.read()
-		for match in tournament:
-			if match["id"] != match_id:
-				continue
+		match = [m for m in tournament if m["id"] == id][0]
+		if survive:
 			for team in match["teams"]:
-				if team["name"] != team_name:
-					continue
-				if account_id not in team["participants"]:
-					team["participants"].append(account_id)
-					self.commit(tournament)
-					return "You have been registered in Team {}.".format(team_name)
-				else:
-					return "You are already registered in Team {}.".format(team_name)
-			return "No team found with the provided name."
-		return "No match found with the provided id."
+				self.register(team["name"], team["participants"])
+		tournament.remove(match)
+		self.commit(tournament)
+	
+	def register(self, name: str, account_ids: list[str]) -> bool:
+		""" registers a team/player in teams/solo tournament. """
+		registration = self.read(self.registration)
+		if name in registration:
+			return False
+		registration[name] = account_ids
+		self.commit(registration, self.registration)
+		return True
+
+	def pair_match(self, series: int, first_team: str, second_team: str) -> None:
+		""" pairs a match between two given teams/players. """
+		registration = self.read(self.registration)
+		assert first_team in registration
+		assert second_team in registration
+		match: Match = {}
+		match["series"] = series
+		match["teams"] = []
+		team: Team = {}
+		team["name"] = first_team
+		team["participants"] = registration[first_team]
+		match["teams"].append(team)
+		team: Team = {}
+		team["name"] = second_team
+		team["participants"] = registration[second_team]
+		match["teams"].append(team)
+		self.insert(match)
+		del registration[first_team]
+		del registration[second_team]
+		self.commit(registration, self.registration)
+
 
 	def get_player_team(self, player: bascenev1.SessionPlayer) -> dict:
 		""" returns the tournament team this player is associated with. """
@@ -63,6 +84,21 @@ class Tournament(Storage):
 				return team
 		return {}
 
+	def list_teams(self) -> list[str]:
+		""" returns registered team's names."""
+		registration = self.read(self.registration)
+		return [team for team in registration]
+
+	def list_match(self) -> list[str]:
+		""" idk. """
+		matches = []
+		tournament = self.read()
+		for match in tournament:
+			team1 = match["teams"][0]["name"]
+			team2 = match["teams"][1]["name"]
+			form = f"{match['id']} -> {team1} vs {team2}"
+			matches.append(form)
+		return matches
 
 	def confirm(self, client: Client) -> bool | None:
 		"""confirms the client if they are in a match."""
@@ -86,6 +122,7 @@ class Tournament(Storage):
 					self.match = match
 					# load and start the tournament session.
 					with babase.ContextRef.empty():
+						success("Your match is about to begin.")
 						babase.apptimer(2.0, self.begin)
 					# clean up.
 					tournament.remove(match)
@@ -96,19 +133,31 @@ class Tournament(Storage):
 
 	def declare(self, winner: bascenev1.SessionTeam, message: str) -> None:
 		"""declares a match winner and saves it."""
+		from bacommon.servermanager import ShutdownReason
 		success(message)
+		result = {}
 		self.discard(self.match["id"])
-		self.match["winner"] = winner.name
+		for team in self.match["teams"]:
+			if team["name"] == winner.name:
+				result["winner"] = team["name"]
+				result["members"] = team["participants"]
+				continue
+			result["loser"] = team["name"]
+		# also register the team for next rounds.
+		self.register(winner.name, result["members"])
 		results = self.read(self.results)
-		results.append(self.match)
+		results.append(result)
 		self.commit(results, self.results)
-		babase.app.classic.server._execute_shutdown()
+		# it does not hurt to clean-up the server entirely.
+		babase.app.classic.server.shutdown(ShutdownReason.RESTARTING, False)
 		
 
 	def begin(self) -> None:
 		"""begins the tournament session."""
 		# start the match.
-		from utilities import TournamentSession
-		call = babase.Call(bascenev1.new_host_session, TournamentSession)
-		babase.pushcall(call)
-		success("Your match is about to begin.")
+		from utilities import TournamentTransitionActivity
+		session = bascenev1.get_foreground_host_session()
+		with session.context:
+			session.setactivity(bascenev1.newactivity(TournamentTransitionActivity))
+		
+		

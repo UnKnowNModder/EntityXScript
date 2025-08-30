@@ -93,6 +93,6 @@ def _load_commands():
 
 # ba_meta export babase.Plugin
 class Load(babase.Plugin):
-	def on_app_running(self) -> None:
+	def __init__(self) -> None:
 		_load_commands()
 		print("✅ Loaded commands. ")

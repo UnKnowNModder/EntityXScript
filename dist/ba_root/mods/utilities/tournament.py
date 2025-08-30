@@ -6,13 +6,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 import babase, bacore
-import _bascenev1
+import _bascenev1, bascenev1
 from bacore import Client
 from bascenev1._dualteamsession import DualTeamSession
+from bascenev1._activitytypes import TransitionActivity
 
 if TYPE_CHECKING:
 	from typing import Any
-	import bascenev1
 
 
 class TournamentSession(DualTeamSession):
@@ -42,7 +42,8 @@ class TournamentSession(DualTeamSession):
 		super().on_player_leave(sessionplayer)
 		
 		message = "Join within {} minutes to avoid disqualification.".format(self._disqualify_time)
-		Client(sessionplayer.inputdevice.client_id).error(message)
+		try: Client(sessionplayer.inputdevice.client_id).error(message)
+		except: pass
 		
 		identifier = self._player_requested_identifiers.get(sessionplayer.id)
 		
@@ -68,7 +69,7 @@ class TournamentSession(DualTeamSession):
 	def handlemessage(self, msg: Any) -> Any:
 		from bascenev1._lobby import PlayerReadyMessage
 		if isinstance(msg, PlayerReadyMessage):
-			player = msg.choose.getplayer()
+			player = msg.chooser.getplayer()
 			player_team_name = bacore.tournament.get_player_team(player)["name"]
 			if not msg.chooser.sessionteam.name == player_team_name:
 				Client(player.inputdevice.client_id).error("Incorrect team — please verify and join your assigned team.")
@@ -117,3 +118,11 @@ class TournamentSession(DualTeamSession):
 					)
 				)
 				
+class TournamentTransitionActivity(TransitionActivity):
+	"""A simple transition activity to switch from any session to tournament session. """
+	
+	@override
+	def end(self, results: Any = None, delay: float = 0.0, force: bool = False) -> None:
+		call = babase.Call(_bascenev1.new_host_session, TournamentSession)
+		babase.pushcall(call)
+		

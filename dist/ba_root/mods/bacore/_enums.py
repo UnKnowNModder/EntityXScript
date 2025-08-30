@@ -43,9 +43,10 @@ class Team(TypedDict):
 	participants: list[str]
 
 class Match(TypedDict):
-	""" tournament match type."""
+	""" match type for tournament. """
 
 	id: NotRequired[int]
 	series: int
 	teams: list[Team]
 	confirmed: NotRequired[list[str]]
+ 
