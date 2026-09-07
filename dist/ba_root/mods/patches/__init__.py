@@ -21,16 +21,11 @@ def patch_method(module, func_name: str, initial: bool = False):
         )
 
     def decorator(new_func):
-        sign = signature(new_func)
-        has_og_result = "og_result" in sign.parameters
-
         @wraps(original_func)
         def wrapper(*args, **kwargs) -> Any:
             if initial:
                 # if this is true, we'll call the original function initially.
-                result = original_func(*args, **kwargs)
-                if has_og_result:
-                    return new_func(*args, **kwargs, og_result=result)
+                wrapper.result = original_func(*args, **kwargs)
             return new_func(*args, **kwargs)
 
         # incase we need the original function

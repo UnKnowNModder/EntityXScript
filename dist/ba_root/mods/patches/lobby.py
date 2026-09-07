@@ -18,13 +18,13 @@ logging.basicConfig(
 
 
 @patch_method(bascenev1._session.Session, "on_player_request", initial=True)
-def on_player_request(self, player: bascenev1.SessionPlayer, og_result) -> bool:
+def on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
     client = Client(player.inputdevice.client_id, player.get_account_id())
     if not client.authenticity:
         auth_code = client.get_auth_code()
         client.error(f"Your auth code is: {auth_code}\nPlease enter in chat to verify.")
         return False
-    return og_result
+    return on_player_request.result
 
 
 @patch_method(bascenev1.DualTeamSession, "on_player_leave", initial=True)

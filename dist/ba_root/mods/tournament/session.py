@@ -14,13 +14,12 @@ class TournamentSession(DualTeamSession):
 
     def __init__(self):
         super().__init__()
-        self.manager = manager
 
     @override
     def on_team_join(self, team: bascenev1.Team) -> None:
         super().on_team_join(team)
         # change the team name to their actual team name.
-        team.name = self.manager.active_match["teams"][team.id]
+        team.name = manager.active_match["teams"][team.id]
 
     @override
     def on_player_request(self, player: bascenev1.SessionPlayer):
@@ -28,19 +27,19 @@ class TournamentSession(DualTeamSession):
             client_id=player.inputdevice.client_id, account_id=player.get_account_id()
         )
         if (
-            self.manager.active_match
-            and not client.account_id in self.manager.active_match["players"]
+            manager.active_match
+            and not client.account_id in manager.active_match["players"]
         ):
             # a match is active, if the player is not any of the teams of the match, dont let them join.
             client.error("A match is active. You cannot join.")
             return False
 
-        if not client.public_uuid in self.manager.active_match["uuids"]:
+        if not client.public_uuid in manager.active_match["uuids"]:
             utils.error(
                 message=f"{player.getname(full=True)}'s device uuid is changed, please contact the server admins."
             )
             client.error(
-                "Your device uuid is changed, please contact the server admins."
+                "Your device uuid could not be verified, please contact the server admins."
             )
             return False
 
@@ -56,7 +55,7 @@ class TournamentSession(DualTeamSession):
                 return
             team = msg.chooser.team
             identifier = player.get_account_id()
-            if team.name != self.manager.players[identifier][1]:
+            if team.name != manager.players[identifier][1]:
                 # if this is not the team of the player, we move him into his team.
                 msg.chooser.handlemessage(ChangeMessage("team", 1))
                 return
@@ -111,7 +110,7 @@ class TournamentSession(DualTeamSession):
                     utils.success(
                         message=f"Match concluded. Winner: {winner.name}, Loser: {loser.name}"
                     )
-                    self.manager.conclude_active_match(winner, loser)
+                    manager.conclude_active_match(winner, loser)
             else:
                 self.setactivity(
                     bascenev1.newactivity(
