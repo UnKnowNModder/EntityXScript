@@ -1,6 +1,7 @@
 from . import patch_method
 from bascenev1._activity import Activity
 from utilities.endvote import EndVote
+from utilities.team_balancer import check_team_balance
 from time import monotonic
 
 
@@ -8,7 +9,8 @@ from time import monotonic
 def end(*args, **kwargs):
     # if there is an end vote ongoing, just close it.
     EndVote.end()
-
+    # balance teams if needed.
+    check_team_balance()
 
 @patch_method(Activity, "on_begin", initial=True)
 def on_begin(*args, **kwargs):

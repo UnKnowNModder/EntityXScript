@@ -63,15 +63,15 @@ class EndVote:
             from bascenev1 import get_game_roster
             players_count = len(get_game_roster()) - 1
             if players_count < 3:
-                client.send("Not enough players to start an end vote.")
+                client.error("Not enough players to start an end vote.")
                 return
             if EndVote.is_started():
-                client.send(
+                client.error(
                     "End vote is already started, vote with `end` if you haven't already."
                 )
                 return
             if monotonic() < EndVote.relaxation:
-                client.send("End vote cannot be started yet, try again in a bit.")
+                client.error("End vote cannot be started yet, try again in a bit.")
                 return
             from bascenev1 import get_foreground_host_activity, timer
 
