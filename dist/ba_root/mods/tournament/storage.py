@@ -3,11 +3,10 @@
 from pathlib import Path
 from typing import override
 
-from server.storage import Storage
+from server.storage import Storage, MODS_DIR
 from tournament.schema import SeasonSchema, TournamentSchema
 
-SEASONS_DIR = Path("tournament") / "seasons"
-
+SEASONS_DIR = MODS_DIR / "tournament" / "seasons"
 
 class Tournament(Storage):
     """reads/writes json files."""

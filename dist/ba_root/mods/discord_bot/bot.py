@@ -165,8 +165,20 @@ class Commands(commands.Cog):
     async def registrations(self, interaction: Interaction, option: bool) -> None:
         """open/close the registrations"""
         if option:
+            if tournament.are_registrations_open:
+                await interaction.response.send_message(
+                    "Cannot open the registrations! they are already open.",
+                    ephemeral=True,
+                )
+                return
             tournament.open_registrations()
         else:
+            if not tournament.are_registrations_open:
+                await interaction.response.send_message(
+                    "Cannot close the registrations! they are already closed.",
+                    ephemeral=True,
+                )
+                return
             tournament.close_registrations()
 
         await interaction.response.send_message(
@@ -232,6 +244,7 @@ class Commands(commands.Cog):
             )
             return
         from tournament.registration import Registration
+        await interaction.response.defer(ephemeral=True)
 
         # we need to generate the brackets.
         registration = Registration(season_id=brackets.season_id)
@@ -239,12 +252,12 @@ class Commands(commands.Cog):
         try:
             brackets.generate_group_stage(teams=teams)
         except AssertionError:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 "The number of teams are either odd or less than 4. The brackets cannot be generated.",
                 ephemeral=True,
             )
             return
-        await interaction.response.send_message(
+        await interaction.followup.send(
             "The brackets have been started!", ephemeral=True
         )
 

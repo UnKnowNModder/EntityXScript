@@ -62,10 +62,16 @@ class Manager:
         round_key: str | None = None,
     ):
         """registers a pending match."""
+        if group_key and round_key:
+            # add group and round to the match key.
+            key = f"{group_key}-{round_key}-{match_key}"
+        else:
+            key = match_key
         players1 = self.extract_from_team_players(team=team1, key="account_id")
         players2 = self.extract_from_team_players(team=team2, key="account_id")
 
-        self.pending_matches[match_key] = {
+        self.pending_matches[key] = {
+            "match_key": match_key,
             "team1": team1,
             "team2": team2,
             "uuids": self.extract_from_team_players(team=team1, key="device_uuid")
@@ -75,10 +81,10 @@ class Manager:
             "round_key": round_key,
         }
 
-        self.ready_players[match_key] = set()
+        self.ready_players[key] = set()
         for team, players in ((team1, players1), (team2, players2)):
             for player in players:
-                self.players[player] = [match_key, team]
+                self.players[player] = [key, team]
 
     def extract_from_team_players(self, team: str, key: str) -> list:
         """extracts the key from team dict players."""
@@ -99,14 +105,18 @@ class Manager:
         if self.active_match:
             return {"status": "error", "message": "A match is already active."}
 
+        if account_id in self.ready_players.get(match_key, set()):
+            return {"status": "error", "message": "You are already ready."}
+
         self.ready_players[match_key].add(account_id)
         match = self.pending_matches[match_key]
 
         # if all players of a match are ready, we can start the match.
         if self.ready_players[match_key] == set(match["players"]):
             self.active_match = {
-                "match_key": match_key,
+                "match_key": match["match_key"],
                 "players": match["players"],
+                "uuids": match["uuids"],
                 "teams": [match["team1"], match["team2"]],
                 "group_key": match["group_key"],
                 "round_key": match["round_key"],
@@ -164,7 +174,7 @@ class Manager:
             )
 
         self.send_results(
-            winner, loser, series1, series2, f"{group_key}-{round_key}-{match_key}"
+            winner, score1, score2, series1, series2
         )
         self.end_tournament_session()
 
@@ -179,15 +189,17 @@ class Manager:
     def send_results(
         self,
         winner: bascenev1.SessionTeam,
-        loser: bascenev1.SessionTeam,
+        score1: int,
+        score2: int,
         series1: int,
         series2: int,
-        key: str,
     ) -> None:
         details = {
             "team1": self.active_match["teams"][0],
             "team2": self.active_match["teams"][1],
             "winner": winner.name,
+            "score1": score1,
+            "score2": score2,
             "series1": series1,
             "series2": series2,
             "season_id": self.season_id,

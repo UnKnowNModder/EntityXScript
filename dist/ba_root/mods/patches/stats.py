@@ -11,9 +11,10 @@ import os
 def new_on_begin(self) -> None:
     """modified."""
     if os.getenv("BA_TOURNAMENT_MATCH") is not None:
-        stats.tournament_path = (
-            stats.tournament_path / os.getenv("BA_TOURNAMENT_MATCH") / "stats.json"
-        )
+        if stats.tournament_path.is_dir():
+            stats.tournament_path = (
+                stats.tournament_path / os.getenv("BA_TOURNAMENT_MATCH") / "stats.json"
+            )
         update_stats(self._stats, tournament=True)
         return
     if config.stats.enable:

@@ -129,7 +129,7 @@ def character(client: Client, args: list[str]):
                 node.style = appearance.style
 
                 player.set_icon_info(appearance.icon_texture, appearance.icon_mask_texture, player.color, player.highlight)
-                if player.activityplayer.icons:
+                if hasattr(player.activityplayer, "icons") and player.activityplayer.icons:
                     player.activityplayer.icons[0].node.texture = bascenev1.gettexture(appearance.icon_texture) 
                     player.activityplayer.icons[0].node.tint_texture = bascenev1.gettexture(appearance.icon_mask_texture)
                 client.success(f"Changed character to {new_character}")

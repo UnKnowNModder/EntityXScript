@@ -10,8 +10,8 @@ from server.storage import MODS_DIR
 DATA = []
 
 FILES = {
-    "title.png": "https://i.imgur.com/bebmLoP.png",
-    "logo.png": "https://i.imgur.com/3eKBCl5.png",
+    "title.png": "https://files.catbox.moe/aw1utu.png",
+    "logo.png": "https://files.catbox.moe/g92tad.png",
     "arial.ttf": "https://cdn.jsdelivr.net/gh/taveevut/Windows-10-Fonts-Default@master/arial.ttf",
     "arialbd.ttf": "https://cdn.jsdelivr.net/gh/taveevut/Windows-10-Fonts-Default@master/arialbd.ttf",
 }

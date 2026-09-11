@@ -22,7 +22,7 @@ def ready(client: Client):
             from server.utils import success
 
             success(
-                message=f"Tournament match between {manager.active_match['team_names'][0]} and {manager.active_match['team_names'][1]} is starting in 2 seconds."
+                message=f"Tournament match between {manager.active_match['teams'][0]} and {manager.active_match['teams'][1]} is starting in 2 seconds."
             )
         return
     if response["status"] == "error":

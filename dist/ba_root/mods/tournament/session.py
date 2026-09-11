@@ -53,7 +53,7 @@ class TournamentSession(DualTeamSession):
             player = msg.chooser.getplayer()
             if not player:
                 return
-            team = msg.chooser.team
+            team = msg.chooser.sessionteam
             identifier = player.get_account_id()
             if team.name != manager.players[identifier][1]:
                 # if this is not the team of the player, we move him into his team.

@@ -1,5 +1,4 @@
-import logging
-
+from datetime import datetime
 import bascenev1
 
 from server.clients import Client, fetch_client
@@ -8,14 +7,13 @@ from tournament import tournament
 
 from . import patch_method
 
-logging.basicConfig(
-    filename=MODS_DIR / "server.log",
-    filemode="a",
-    format="%(asctime)s %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    level=logging.INFO,
-)
+LOG_FILE = MODS_DIR / "server.log"
 
+def log(message: str) -> None:
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    message = f"[{timestamp}] {message}"
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(message + "\n")
 
 @patch_method(bascenev1._session.Session, "on_player_request", initial=True)
 def on_player_request(self, player: bascenev1.SessionPlayer) -> bool:
@@ -40,4 +38,4 @@ def on_player_leave(self, player: bascenev1.SessionPlayer) -> None:
 def on_client_joined(client_id: int) -> None:
     client = fetch_client(client_id)
     message = f"{client.name} Joined the server (Addr: {client.address}, uuid: {client.public_uuid})"
-    logging.info(message)
+    log(message)

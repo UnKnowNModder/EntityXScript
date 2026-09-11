@@ -17,6 +17,7 @@ class Brackets(Storage):
         super().__init__("brackets.json", SEASONS_DIR / season_id)
         self.season_id = season_id
         self.group_stage_path = self.directory / "rounds" / "group-stage.json"
+        self.group_stage_path.parent.mkdir(parents=True, exist_ok=True)
         self.bootstrap()
 
     def bootstrap(self):
@@ -218,7 +219,7 @@ class Brackets(Storage):
             for match in round["matches"].values():
                 # add to stats
                 for team_id in (match["team1"], match["team2"]):
-                    if team_id not in stats:
+                    if team_id and team_id not in stats:
                         stats[team_id] = {
                             "id": team_id,
                             "wins": 0,
@@ -233,6 +234,9 @@ class Brackets(Storage):
         for round in group["rounds"].values():
             for match in round["matches"].values():
                 if match["status"] != Status.COMPLETED:
+                    continue
+
+                if match["team1"] is None or match["team2"] is None:
                     continue
                 t1 = match["team1"]
                 t2 = match["team2"]
